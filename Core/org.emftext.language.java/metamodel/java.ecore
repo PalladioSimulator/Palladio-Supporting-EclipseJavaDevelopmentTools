@@ -892,6 +892,10 @@
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="octalValue" lowerBound="1"
           eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBigInteger"/>
     </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="BinaryIntegerLiteral" eSuperTypes="#_Wo2Yn9z1Ed2bJ_pQViWxFg">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="binaryValue" lowerBound="1"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBigInteger"/>
+    </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="LongLiteral" abstract="true" eSuperTypes="#_Wo2YsNz1Ed2bJ_pQViWxFg"/>
     <eClassifiers xsi:type="ecore:EClass" name="DecimalLongLiteral" eSuperTypes="#//literals/LongLiteral">
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="decimalValue" lowerBound="1"
@@ -903,6 +907,10 @@
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="OctalLongLiteral" eSuperTypes="#//literals/LongLiteral">
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="octalValue" lowerBound="1"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBigInteger"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="BinaryLongLiteral" eSuperTypes="#//literals/LongLiteral">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="binaryValue" lowerBound="1"
           eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBigInteger"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" xmi:id="_Wo2Yr9z1Ed2bJ_pQViWxFg" name="NullLiteral"

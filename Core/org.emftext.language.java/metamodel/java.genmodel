@@ -62,23 +62,32 @@
     <nestedGenPackages prefix="Classifiers" basePackage="org.emftext.language.java"
         disposableProviderFactory="true" ecorePackage="java.ecore#//classifiers">
       <genClasses image="false" ecoreClass="java.ecore#//classifiers/Classifier">
-        <genOperations ecoreOperation="java.ecore#//classifiers/Classifier/getAllSuperClassifiers"/>
-        <genOperations ecoreOperation="java.ecore#//classifiers/Classifier/addImport">
+        <genOperations ecoreOperation="java.ecore#//classifiers/Classifier/getAllSuperClassifiers"
+            body="return org.emftext.language.java.extensions.classifiers.ClassifierExtension.getAllSuperClassifiers((org.emftext.language.java.classifiers.Classifier) this);"/>
+        <genOperations ecoreOperation="java.ecore#//classifiers/Classifier/addImport"
+            body="org.emftext.language.java.extensions.classifiers.ClassifierExtension.addImport((org.emftext.language.java.classifiers.Classifier) this, nameOfClassToImport);">
           <genParameters ecoreParameter="java.ecore#//classifiers/Classifier/addImport/nameOfClassToImport"/>
         </genOperations>
-        <genOperations ecoreOperation="java.ecore#//classifiers/Classifier/addPackageImport">
+        <genOperations ecoreOperation="java.ecore#//classifiers/Classifier/addPackageImport"
+            body="org.emftext.language.java.extensions.classifiers.ClassifierExtension.addPackageImport((org.emftext.language.java.classifiers.Classifier) this, packageName);">
           <genParameters ecoreParameter="java.ecore#//classifiers/Classifier/addPackageImport/packageName"/>
         </genOperations>
       </genClasses>
       <genClasses image="false" ecoreClass="java.ecore#//classifiers/ConcreteClassifier">
-        <genOperations ecoreOperation="java.ecore#//classifiers/ConcreteClassifier/getInnerClassifiers"/>
-        <genOperations ecoreOperation="java.ecore#//classifiers/ConcreteClassifier/getAllInnerClassifiers"/>
-        <genOperations ecoreOperation="java.ecore#//classifiers/ConcreteClassifier/getSuperTypeReferences"/>
-        <genOperations ecoreOperation="java.ecore#//classifiers/ConcreteClassifier/getAllMembers">
+        <genOperations ecoreOperation="java.ecore#//classifiers/ConcreteClassifier/getInnerClassifiers"
+            body="return org.emftext.language.java.extensions.classifiers.ConcreteClassifierExtension.getInnerClassifiers((org.emftext.language.java.classifiers.ConcreteClassifier) this);"/>
+        <genOperations ecoreOperation="java.ecore#//classifiers/ConcreteClassifier/getAllInnerClassifiers"
+            body="return org.emftext.language.java.extensions.classifiers.ConcreteClassifierExtension.getAllInnerClassifiers((org.emftext.language.java.classifiers.ConcreteClassifier) this);"/>
+        <genOperations ecoreOperation="java.ecore#//classifiers/ConcreteClassifier/getSuperTypeReferences"
+            body="return org.emftext.language.java.extensions.classifiers.ConcreteClassifierExtension.getSuperTypeReferences((org.emftext.language.java.classifiers.ConcreteClassifier) this);"/>
+        <genOperations ecoreOperation="java.ecore#//classifiers/ConcreteClassifier/getAllMembers"
+            body="return org.emftext.language.java.extensions.classifiers.ConcreteClassifierExtension.getAllMembers((org.emftext.language.java.classifiers.ConcreteClassifier) this, (org.emftext.language.java.commons.Commentable) context);">
           <genParameters ecoreParameter="java.ecore#//classifiers/ConcreteClassifier/getAllMembers/context"/>
         </genOperations>
-        <genOperations ecoreOperation="java.ecore#//classifiers/ConcreteClassifier/getQualifiedName"/>
-        <genOperations ecoreOperation="java.ecore#//classifiers/ConcreteClassifier/isJavaLangObject">
+        <genOperations ecoreOperation="java.ecore#//classifiers/ConcreteClassifier/getQualifiedName"
+            body="return org.emftext.language.java.extensions.classifiers.ConcreteClassifierExtension.getQualifiedName((org.emftext.language.java.classifiers.ConcreteClassifier) this);"/>
+        <genOperations ecoreOperation="java.ecore#//classifiers/ConcreteClassifier/isJavaLangObject"
+            body="return org.emftext.language.java.extensions.classifiers.ConcreteClassifierExtension.isJavaLangObject((org.emftext.language.java.classifiers.ConcreteClassifier) clazz);">
           <genParameters ecoreParameter="java.ecore#//classifiers/ConcreteClassifier/isJavaLangObject/clazz"/>
         </genOperations>
       </genClasses>
@@ -88,29 +97,39 @@
       <genClasses ecoreClass="java.ecore#//classifiers/Class">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//classifiers/Class/extends"/>
         <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference java.ecore#//classifiers/Class/defaultExtends"/>
-        <genOperations ecoreOperation="java.ecore#//classifiers/Class/getAllSuperClassifiers"/>
-        <genOperations ecoreOperation="java.ecore#//classifiers/Class/getSuperClass"/>
-        <genOperations ecoreOperation="java.ecore#//classifiers/Class/unWrapPrimitiveType"/>
+        <genOperations ecoreOperation="java.ecore#//classifiers/Class/getAllSuperClassifiers"
+            body="return org.emftext.language.java.extensions.classifiers.ClassExtension.getAllSuperClassifiers((org.emftext.language.java.classifiers.Class) this);"/>
+        <genOperations ecoreOperation="java.ecore#//classifiers/Class/getSuperClass"
+            body="return org.emftext.language.java.extensions.classifiers.ClassExtension.getSuperClass((org.emftext.language.java.classifiers.Class) this);"/>
+        <genOperations ecoreOperation="java.ecore#//classifiers/Class/unWrapPrimitiveType"
+            body="return org.emftext.language.java.extensions.classifiers.ClassExtension.unWrapPrimitiveType((org.emftext.language.java.classifiers.Class) this);"/>
       </genClasses>
       <genClasses ecoreClass="java.ecore#//classifiers/Interface">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//classifiers/Interface/extends"/>
         <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference java.ecore#//classifiers/Interface/defaultExtends"/>
-        <genOperations ecoreOperation="java.ecore#//classifiers/Interface/getAllSuperClassifiers"/>
+        <genOperations ecoreOperation="java.ecore#//classifiers/Interface/getAllSuperClassifiers"
+            body="return org.emftext.language.java.extensions.classifiers.InterfaceExtension.getAllSuperClassifiers((org.emftext.language.java.classifiers.Interface) this);"/>
       </genClasses>
       <genClasses ecoreClass="java.ecore#//classifiers/Enumeration">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//classifiers/Enumeration/constants"/>
-        <genOperations ecoreOperation="java.ecore#//classifiers/Enumeration/getAllSuperClassifiers"/>
-        <genOperations ecoreOperation="java.ecore#//classifiers/Enumeration/getContainedConstant">
+        <genOperations ecoreOperation="java.ecore#//classifiers/Enumeration/getAllSuperClassifiers"
+            body="return org.emftext.language.java.extensions.classifiers.EnumerationExtension.getAllSuperClassifiers((org.emftext.language.java.classifiers.Enumeration) this);"/>
+        <genOperations ecoreOperation="java.ecore#//classifiers/Enumeration/getContainedConstant"
+            body="return org.emftext.language.java.extensions.classifiers.EnumerationExtension.getContainedConstant((org.emftext.language.java.classifiers.Enumeration) this, name);">
           <genParameters ecoreParameter="java.ecore#//classifiers/Enumeration/getContainedConstant/name"/>
         </genOperations>
       </genClasses>
       <genClasses ecoreClass="java.ecore#//classifiers/Annotation">
-        <genOperations ecoreOperation="java.ecore#//classifiers/Annotation/getAllSuperClassifiers"/>
+        <genOperations ecoreOperation="java.ecore#//classifiers/Annotation/getAllSuperClassifiers"
+            body="return org.emftext.language.java.extensions.classifiers.AnnotationExtension.getAllSuperClassifiers((org.emftext.language.java.classifiers.Annotation) this);"/>
       </genClasses>
       <genClasses ecoreClass="java.ecore#//classifiers/AnonymousClass">
-        <genOperations ecoreOperation="java.ecore#//classifiers/AnonymousClass/getAllSuperClassifiers"/>
-        <genOperations ecoreOperation="java.ecore#//classifiers/AnonymousClass/getSuperClassifier"/>
-        <genOperations ecoreOperation="java.ecore#//classifiers/AnonymousClass/getAllMembers">
+        <genOperations ecoreOperation="java.ecore#//classifiers/AnonymousClass/getAllSuperClassifiers"
+            body="return org.emftext.language.java.extensions.classifiers.AnonymousClassExtension.getAllSuperClassifiers((org.emftext.language.java.classifiers.AnonymousClass) this);"/>
+        <genOperations ecoreOperation="java.ecore#//classifiers/AnonymousClass/getSuperClassifier"
+            body="return org.emftext.language.java.extensions.classifiers.AnonymousClassExtension.getSuperClassifier((org.emftext.language.java.classifiers.AnonymousClass) this);"/>
+        <genOperations ecoreOperation="java.ecore#//classifiers/AnonymousClass/getAllMembers"
+            body="return org.emftext.language.java.extensions.classifiers.AnonymousClassExtension.getAllMembers((org.emftext.language.java.classifiers.AnonymousClass) this, (org.emftext.language.java.commons.Commentable) context);">
           <genParameters ecoreParameter="java.ecore#//classifiers/AnonymousClass/getAllMembers/context"/>
         </genOperations>
       </genClasses>
@@ -119,63 +138,89 @@
         ecorePackage="java.ecore#//commons">
       <genClasses image="false" ecoreClass="java.ecore#//commons/Commentable">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//commons/Commentable/layoutInformations"/>
-        <genOperations ecoreOperation="java.ecore#//commons/Commentable/getConcreteClassifier">
+        <genOperations ecoreOperation="java.ecore#//commons/Commentable/getConcreteClassifier"
+            body="return org.emftext.language.java.extensions.commons.CommentableExtension.getConcreteClassifier((org.emftext.language.java.commons.Commentable) this, name);">
           <genParameters ecoreParameter="java.ecore#//commons/Commentable/getConcreteClassifier/name"/>
         </genOperations>
-        <genOperations ecoreOperation="java.ecore#//commons/Commentable/getConcreteClassifierProxy">
+        <genOperations ecoreOperation="java.ecore#//commons/Commentable/getConcreteClassifierProxy"
+            body="return org.emftext.language.java.extensions.commons.CommentableExtension.getConcreteClassifierProxy((org.emftext.language.java.commons.Commentable) this, name);">
           <genParameters ecoreParameter="java.ecore#//commons/Commentable/getConcreteClassifierProxy/name"/>
         </genOperations>
-        <genOperations ecoreOperation="java.ecore#//commons/Commentable/getConcreteClassifiers">
+        <genOperations ecoreOperation="java.ecore#//commons/Commentable/getConcreteClassifiers"
+            body="return org.emftext.language.java.extensions.commons.CommentableExtension.getConcreteClassifiers((org.emftext.language.java.commons.Commentable) this, packageName, classifierQuery);">
           <genParameters ecoreParameter="java.ecore#//commons/Commentable/getConcreteClassifiers/packageName"/>
           <genParameters ecoreParameter="java.ecore#//commons/Commentable/getConcreteClassifiers/classifierQuery"/>
         </genOperations>
-        <genOperations ecoreOperation="java.ecore#//commons/Commentable/getConcreteClassifierProxies">
+        <genOperations ecoreOperation="java.ecore#//commons/Commentable/getConcreteClassifierProxies"
+            body="return org.emftext.language.java.extensions.commons.CommentableExtension.getConcreteClassifierProxies((org.emftext.language.java.commons.Commentable) this, packageName, classifierQuery);">
           <genParameters ecoreParameter="java.ecore#//commons/Commentable/getConcreteClassifierProxies/packageName"/>
           <genParameters ecoreParameter="java.ecore#//commons/Commentable/getConcreteClassifierProxies/classifierQuery"/>
         </genOperations>
-        <genOperations ecoreOperation="java.ecore#//commons/Commentable/getLibClass">
+        <genOperations ecoreOperation="java.ecore#//commons/Commentable/getLibClass"
+            body="return org.emftext.language.java.extensions.commons.CommentableExtension.getLibClass((org.emftext.language.java.commons.Commentable) this, name);">
           <genParameters ecoreParameter="java.ecore#//commons/Commentable/getLibClass/name"/>
         </genOperations>
-        <genOperations ecoreOperation="java.ecore#//commons/Commentable/getLibInterface">
+        <genOperations ecoreOperation="java.ecore#//commons/Commentable/getLibInterface"
+            body="return org.emftext.language.java.extensions.commons.CommentableExtension.getLibInterface((org.emftext.language.java.commons.Commentable) this, name);">
           <genParameters ecoreParameter="java.ecore#//commons/Commentable/getLibInterface/name"/>
         </genOperations>
-        <genOperations ecoreOperation="java.ecore#//commons/Commentable/getClassClass"/>
-        <genOperations ecoreOperation="java.ecore#//commons/Commentable/getObjectClass"/>
-        <genOperations ecoreOperation="java.ecore#//commons/Commentable/getStringClass"/>
-        <genOperations ecoreOperation="java.ecore#//commons/Commentable/getAnnotationInterface"/>
-        <genOperations ecoreOperation="java.ecore#//commons/Commentable/getContainingAnnotationInstance"/>
-        <genOperations ecoreOperation="java.ecore#//commons/Commentable/getContainingAnonymousClass"/>
-        <genOperations ecoreOperation="java.ecore#//commons/Commentable/getContainingConcreteClassifier"/>
-        <genOperations ecoreOperation="java.ecore#//commons/Commentable/getContainingCompilationUnit"/>
-        <genOperations ecoreOperation="java.ecore#//commons/Commentable/getContainingPackageName"/>
-        <genOperations ecoreOperation="java.ecore#//commons/Commentable/getContainingContainerName"/>
-        <genOperations ecoreOperation="java.ecore#//commons/Commentable/getParentConcreteClassifier"/>
-        <genOperations ecoreOperation="java.ecore#//commons/Commentable/getParentByEType">
+        <genOperations ecoreOperation="java.ecore#//commons/Commentable/getClassClass"
+            body="return org.emftext.language.java.extensions.commons.CommentableExtension.getClassClass((org.emftext.language.java.commons.Commentable) this);"/>
+        <genOperations ecoreOperation="java.ecore#//commons/Commentable/getObjectClass"
+            body="return org.emftext.language.java.extensions.commons.CommentableExtension.getObjectClass((org.emftext.language.java.commons.Commentable) this);"/>
+        <genOperations ecoreOperation="java.ecore#//commons/Commentable/getStringClass"
+            body="return org.emftext.language.java.extensions.commons.CommentableExtension.getStringClass((org.emftext.language.java.commons.Commentable) this);"/>
+        <genOperations ecoreOperation="java.ecore#//commons/Commentable/getAnnotationInterface"
+            body="return org.emftext.language.java.extensions.commons.CommentableExtension.getAnnotationInterface((org.emftext.language.java.commons.Commentable) this);"/>
+        <genOperations ecoreOperation="java.ecore#//commons/Commentable/getContainingAnnotationInstance"
+            body="return org.emftext.language.java.extensions.commons.CommentableExtension.getContainingAnnotationInstance((org.emftext.language.java.commons.Commentable) this);"/>
+        <genOperations ecoreOperation="java.ecore#//commons/Commentable/getContainingAnonymousClass"
+            body="return org.emftext.language.java.extensions.commons.CommentableExtension.getContainingAnonymousClass((org.emftext.language.java.commons.Commentable) this);"/>
+        <genOperations ecoreOperation="java.ecore#//commons/Commentable/getContainingConcreteClassifier"
+            body="return org.emftext.language.java.extensions.commons.CommentableExtension.getContainingConcreteClassifier((org.emftext.language.java.commons.Commentable) this);"/>
+        <genOperations ecoreOperation="java.ecore#//commons/Commentable/getContainingCompilationUnit"
+            body="return org.emftext.language.java.extensions.commons.CommentableExtension.getContainingCompilationUnit((org.emftext.language.java.commons.Commentable) this);"/>
+        <genOperations ecoreOperation="java.ecore#//commons/Commentable/getContainingPackageName"
+            body="return org.emftext.language.java.extensions.commons.CommentableExtension.getContainingPackageName((org.emftext.language.java.commons.Commentable) this);"/>
+        <genOperations ecoreOperation="java.ecore#//commons/Commentable/getContainingContainerName"
+            body="return org.emftext.language.java.extensions.commons.CommentableExtension.getContainingContainerName((org.emftext.language.java.commons.Commentable) this);"/>
+        <genOperations ecoreOperation="java.ecore#//commons/Commentable/getParentConcreteClassifier"
+            body="return org.emftext.language.java.extensions.commons.CommentableExtension.getParentConcreteClassifier((org.emftext.language.java.commons.Commentable) this);"/>
+        <genOperations ecoreOperation="java.ecore#//commons/Commentable/getParentByEType"
+            body="return org.emftext.language.java.extensions.commons.CommentableExtension.getParentByEType((org.emftext.language.java.commons.Commentable) this, (org.eclipse.emf.ecore.EClass) type);">
           <genParameters ecoreParameter="java.ecore#//commons/Commentable/getParentByEType/type"/>
         </genOperations>
-        <genOperations ecoreOperation="java.ecore#//commons/Commentable/getFirstChildByEType">
+        <genOperations ecoreOperation="java.ecore#//commons/Commentable/getFirstChildByEType"
+            body="return org.emftext.language.java.extensions.commons.CommentableExtension.getFirstChildByEType((org.emftext.language.java.commons.Commentable) this, (org.eclipse.emf.ecore.EClass) type);">
           <genParameters ecoreParameter="java.ecore#//commons/Commentable/getFirstChildByEType/type"/>
         </genOperations>
-        <genOperations ecoreOperation="java.ecore#//commons/Commentable/getParentByType">
+        <genOperations ecoreOperation="java.ecore#//commons/Commentable/getParentByType"
+            body="return org.emftext.language.java.extensions.commons.CommentableExtension.getParentByType((org.emftext.language.java.commons.Commentable) this, type);">
           <genParameters ecoreParameter="java.ecore#//commons/Commentable/getParentByType/type"/>
           <genTypeParameters ecoreTypeParameter="java.ecore#//commons/Commentable/getParentByType/T"/>
         </genOperations>
-        <genOperations ecoreOperation="java.ecore#//commons/Commentable/getFirstChildByType">
+        <genOperations ecoreOperation="java.ecore#//commons/Commentable/getFirstChildByType"
+            body="return org.emftext.language.java.extensions.commons.CommentableExtension.getFirstChildByType((org.emftext.language.java.commons.Commentable) this, ( java.lang.Class&lt;T>) type);">
           <genParameters ecoreParameter="java.ecore#//commons/Commentable/getFirstChildByType/type"/>
           <genTypeParameters ecoreTypeParameter="java.ecore#//commons/Commentable/getFirstChildByType/T"/>
         </genOperations>
-        <genOperations ecoreOperation="java.ecore#//commons/Commentable/getChildrenByEType">
+        <genOperations ecoreOperation="java.ecore#//commons/Commentable/getChildrenByEType"
+            body="return org.emftext.language.java.extensions.commons.CommentableExtension.getChildrenByEType((org.emftext.language.java.commons.Commentable) this, (org.eclipse.emf.ecore.EClass) type);">
           <genParameters ecoreParameter="java.ecore#//commons/Commentable/getChildrenByEType/type"/>
         </genOperations>
-        <genOperations ecoreOperation="java.ecore#//commons/Commentable/getChildrenByType">
+        <genOperations ecoreOperation="java.ecore#//commons/Commentable/getChildrenByType"
+            body="return org.emftext.language.java.extensions.commons.CommentableExtension.getChildrenByType((org.emftext.language.java.commons.Commentable) this, ( java.lang.Class&lt;T>) type);">
           <genParameters ecoreParameter="java.ecore#//commons/Commentable/getChildrenByType/type"/>
           <genTypeParameters ecoreTypeParameter="java.ecore#//commons/Commentable/getChildrenByType/T"/>
         </genOperations>
-        <genOperations ecoreOperation="java.ecore#//commons/Commentable/getComments"/>
-        <genOperations ecoreOperation="java.ecore#//commons/Commentable/addBeforeContainingStatement">
+        <genOperations ecoreOperation="java.ecore#//commons/Commentable/getComments"
+            body="return org.emftext.language.java.extensions.commons.CommentableExtension.getComments((org.emftext.language.java.commons.Commentable) this);"/>
+        <genOperations ecoreOperation="java.ecore#//commons/Commentable/addBeforeContainingStatement"
+            body="org.emftext.language.java.extensions.commons.CommentableExtension.addBeforeContainingStatement((org.emftext.language.java.commons.Commentable) this, (org.emftext.language.java.statements.Statement) statementToAdd);">
           <genParameters ecoreParameter="java.ecore#//commons/Commentable/addBeforeContainingStatement/statementToAdd"/>
         </genOperations>
-        <genOperations ecoreOperation="java.ecore#//commons/Commentable/addAfterContainingStatement">
+        <genOperations ecoreOperation="java.ecore#//commons/Commentable/addAfterContainingStatement"
+            body="org.emftext.language.java.extensions.commons.CommentableExtension.addAfterContainingStatement((org.emftext.language.java.commons.Commentable) this, (org.emftext.language.java.statements.Statement) statementToAdd);">
           <genParameters ecoreParameter="java.ecore#//commons/Commentable/addAfterContainingStatement/statementToAdd"/>
         </genOperations>
       </genClasses>
@@ -184,36 +229,49 @@
       </genClasses>
       <genClasses image="false" ecoreClass="java.ecore#//commons/NamespaceAwareElement">
         <genFeatures createChild="false" ecoreFeature="ecore:EAttribute java.ecore#//commons/NamespaceAwareElement/namespaces"/>
-        <genOperations ecoreOperation="java.ecore#//commons/NamespaceAwareElement/getNamespacesAsString"/>
-        <genOperations ecoreOperation="java.ecore#//commons/NamespaceAwareElement/getClassifierAtNamespaces"/>
+        <genOperations ecoreOperation="java.ecore#//commons/NamespaceAwareElement/getNamespacesAsString"
+            body="return org.emftext.language.java.extensions.commons.NamespaceAwareElementExtension.getNamespacesAsString((org.emftext.language.java.commons.NamespaceAwareElement) this);"/>
+        <genOperations ecoreOperation="java.ecore#//commons/NamespaceAwareElement/getClassifierAtNamespaces"
+            body="return org.emftext.language.java.extensions.commons.NamespaceAwareElementExtension.getClassifierAtNamespaces((org.emftext.language.java.commons.NamespaceAwareElement) this);"/>
       </genClasses>
     </nestedGenPackages>
     <nestedGenPackages prefix="Containers" basePackage="org.emftext.language.java"
         disposableProviderFactory="true" ecorePackage="java.ecore#//containers">
       <genClasses image="false" ecoreClass="java.ecore#//containers/JavaRoot">
-        <genOperations ecoreOperation="java.ecore#//containers/JavaRoot/getClassifiersInSamePackage"/>
+        <genOperations ecoreOperation="java.ecore#//containers/JavaRoot/getClassifiersInSamePackage"
+            body="return org.emftext.language.java.extensions.containers.JavaRootExtension.getClassifiersInSamePackage((org.emftext.language.java.containers.JavaRoot) this);"/>
       </genClasses>
       <genClasses ecoreClass="java.ecore#//containers/CompilationUnit">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//containers/CompilationUnit/classifiers"/>
-        <genOperations ecoreOperation="java.ecore#//containers/CompilationUnit/getContainedClassifier">
+        <genOperations ecoreOperation="java.ecore#//containers/CompilationUnit/getContainedClassifier"
+            body="return org.emftext.language.java.extensions.containers.CompilationUnitExtension.getContainedClassifier((org.emftext.language.java.containers.CompilationUnit) this, name);">
           <genParameters ecoreParameter="java.ecore#//containers/CompilationUnit/getContainedClassifier/name"/>
         </genOperations>
-        <genOperations ecoreOperation="java.ecore#//containers/CompilationUnit/getClassifiersInSamePackage"/>
-        <genOperations ecoreOperation="java.ecore#//containers/CompilationUnit/getContainedClass"/>
-        <genOperations ecoreOperation="java.ecore#//containers/CompilationUnit/getContainedInterface"/>
-        <genOperations ecoreOperation="java.ecore#//containers/CompilationUnit/getContainedAnnotation"/>
-        <genOperations ecoreOperation="java.ecore#//containers/CompilationUnit/getContainedEnumeration"/>
-        <genOperations ecoreOperation="java.ecore#//containers/CompilationUnit/addImport">
+        <genOperations ecoreOperation="java.ecore#//containers/CompilationUnit/getClassifiersInSamePackage"
+            body="return org.emftext.language.java.extensions.containers.CompilationUnitExtension.getClassifiersInSamePackage((org.emftext.language.java.containers.CompilationUnit) this);"/>
+        <genOperations ecoreOperation="java.ecore#//containers/CompilationUnit/getContainedClass"
+            body="return org.emftext.language.java.extensions.containers.CompilationUnitExtension.getContainedClass((org.emftext.language.java.containers.CompilationUnit) this);"/>
+        <genOperations ecoreOperation="java.ecore#//containers/CompilationUnit/getContainedInterface"
+            body="return org.emftext.language.java.extensions.containers.CompilationUnitExtension.getContainedInterface((org.emftext.language.java.containers.CompilationUnit) this);"/>
+        <genOperations ecoreOperation="java.ecore#//containers/CompilationUnit/getContainedAnnotation"
+            body="return org.emftext.language.java.extensions.containers.CompilationUnitExtension.getContainedAnnotation((org.emftext.language.java.containers.CompilationUnit) this);"/>
+        <genOperations ecoreOperation="java.ecore#//containers/CompilationUnit/getContainedEnumeration"
+            body="return org.emftext.language.java.extensions.containers.CompilationUnitExtension.getContainedEnumeration((org.emftext.language.java.containers.CompilationUnit) this);"/>
+        <genOperations ecoreOperation="java.ecore#//containers/CompilationUnit/addImport"
+            body="org.emftext.language.java.extensions.containers.CompilationUnitExtension.addImport((org.emftext.language.java.containers.CompilationUnit) this, nameOfClassToImport);">
           <genParameters ecoreParameter="java.ecore#//containers/CompilationUnit/addImport/nameOfClassToImport"/>
         </genOperations>
-        <genOperations ecoreOperation="java.ecore#//containers/CompilationUnit/addPackageImport">
+        <genOperations ecoreOperation="java.ecore#//containers/CompilationUnit/addPackageImport"
+            body="org.emftext.language.java.extensions.containers.CompilationUnitExtension.addPackageImport((org.emftext.language.java.containers.CompilationUnit) this, packageName);">
           <genParameters ecoreParameter="java.ecore#//containers/CompilationUnit/addPackageImport/packageName"/>
         </genOperations>
       </genClasses>
       <genClasses ecoreClass="java.ecore#//containers/Package">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//containers/Package/compilationUnits"/>
-        <genOperations ecoreOperation="java.ecore#//containers/Package/getNamespacesAsString"/>
-        <genOperations ecoreOperation="java.ecore#//containers/Package/getClassifiersInSamePackage"/>
+        <genOperations ecoreOperation="java.ecore#//containers/Package/getNamespacesAsString"
+            body="return org.emftext.language.java.extensions.containers.PackageExtension.getNamespacesAsString((org.emftext.language.java.containers.Package) this);"/>
+        <genOperations ecoreOperation="java.ecore#//containers/Package/getClassifiersInSamePackage"
+            body="return org.emftext.language.java.extensions.containers.PackageExtension.getClassifiersInSamePackage((org.emftext.language.java.containers.Package) this);"/>
       </genClasses>
       <genClasses ecoreClass="java.ecore#//containers/EmptyModel"/>
     </nestedGenPackages>
@@ -223,12 +281,16 @@
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#_Wo2YGNz1Ed2bJ_pQViWxFg"/>
       </genClasses>
       <genClasses image="false" ecoreClass="java.ecore#_Wo2YDNz1Ed2bJ_pQViWxFg">
-        <genOperations ecoreOperation="java.ecore#//expressions/Expression/getType"/>
-        <genOperations ecoreOperation="java.ecore#//expressions/Expression/getAlternativeType"/>
-        <genOperations ecoreOperation="java.ecore#//expressions/Expression/getOneType">
+        <genOperations ecoreOperation="java.ecore#//expressions/Expression/getType"
+            body="return org.emftext.language.java.extensions.expressions.ExpressionExtension.getType((org.emftext.language.java.expressions.Expression) this);"/>
+        <genOperations ecoreOperation="java.ecore#//expressions/Expression/getAlternativeType"
+            body="return org.emftext.language.java.extensions.expressions.ExpressionExtension.getAlternativeType((org.emftext.language.java.expressions.Expression) this);"/>
+        <genOperations ecoreOperation="java.ecore#//expressions/Expression/getOneType"
+            body="return org.emftext.language.java.extensions.expressions.ExpressionExtension.getOneType((org.emftext.language.java.expressions.Expression) this, alternative);">
           <genParameters ecoreParameter="java.ecore#//expressions/Expression/getOneType/alternative"/>
         </genOperations>
-        <genOperations ecoreOperation="java.ecore#//expressions/Expression/getArrayDimension"/>
+        <genOperations ecoreOperation="java.ecore#//expressions/Expression/getArrayDimension"
+            body="return org.emftext.language.java.extensions.expressions.ExpressionExtension.getArrayDimension((org.emftext.language.java.expressions.Expression) this);"/>
       </genClasses>
       <genClasses ecoreClass="java.ecore#//expressions/AssignmentExpression">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//expressions/AssignmentExpression/child"/>
@@ -332,11 +394,14 @@
       </genClasses>
       <genClasses ecoreClass="java.ecore#//generics/TypeParameter">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//generics/TypeParameter/extendTypes"/>
-        <genOperations ecoreOperation="java.ecore#//generics/TypeParameter/getAllSuperClassifiers"/>
-        <genOperations ecoreOperation="java.ecore#//generics/TypeParameter/getAllMembers">
+        <genOperations ecoreOperation="java.ecore#//generics/TypeParameter/getAllSuperClassifiers"
+            body="return org.emftext.language.java.extensions.generics.TypeParameterExtension.getAllSuperClassifiers((org.emftext.language.java.generics.TypeParameter) this);"/>
+        <genOperations ecoreOperation="java.ecore#//generics/TypeParameter/getAllMembers"
+            body="return org.emftext.language.java.extensions.generics.TypeParameterExtension.getAllMembers((org.emftext.language.java.generics.TypeParameter) this, (org.emftext.language.java.commons.Commentable) context);">
           <genParameters ecoreParameter="java.ecore#//generics/TypeParameter/getAllMembers/context"/>
         </genOperations>
-        <genOperations ecoreOperation="java.ecore#//generics/TypeParameter/getBoundType">
+        <genOperations ecoreOperation="java.ecore#//generics/TypeParameter/getBoundType"
+            body="return org.emftext.language.java.extensions.generics.TypeParameterExtension.getBoundType((org.emftext.language.java.generics.TypeParameter) this, (org.emftext.language.java.types.TypeReference) typeReference, (org.emftext.language.java.references.Reference) reference);">
           <genParameters ecoreParameter="java.ecore#//generics/TypeParameter/getBoundType/typeReference"/>
           <genParameters ecoreParameter="java.ecore#//generics/TypeParameter/getBoundType/reference"/>
         </genOperations>
@@ -346,15 +411,19 @@
     <nestedGenPackages prefix="Imports" basePackage="org.emftext.language.java" disposableProviderFactory="true"
         ecorePackage="java.ecore#//imports">
       <genClasses image="false" ecoreClass="java.ecore#//imports/Import">
-        <genOperations ecoreOperation="java.ecore#//imports/Import/getImportedClassifier">
+        <genOperations ecoreOperation="java.ecore#//imports/Import/getImportedClassifier"
+            body="return org.emftext.language.java.extensions.imports.ImportExtension.getImportedClassifier((org.emftext.language.java.imports.Import) this, name);">
           <genParameters ecoreParameter="java.ecore#//imports/Import/getImportedClassifier/name"/>
         </genOperations>
-        <genOperations ecoreOperation="java.ecore#//imports/Import/getImportedClassifiers"/>
-        <genOperations ecoreOperation="java.ecore#//imports/Import/getImportedMembers"/>
+        <genOperations ecoreOperation="java.ecore#//imports/Import/getImportedClassifiers"
+            body="return org.emftext.language.java.extensions.imports.ImportExtension.getImportedClassifiers((org.emftext.language.java.imports.Import) this);"/>
+        <genOperations ecoreOperation="java.ecore#//imports/Import/getImportedMembers"
+            body="return org.emftext.language.java.extensions.imports.ImportExtension.getImportedMembers((org.emftext.language.java.imports.Import) this);"/>
       </genClasses>
       <genClasses image="false" ecoreClass="java.ecore#//imports/ImportingElement">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//imports/ImportingElement/imports"/>
-        <genOperations ecoreOperation="java.ecore#//imports/ImportingElement/getDefaultImports"/>
+        <genOperations ecoreOperation="java.ecore#//imports/ImportingElement/getDefaultImports"
+            body="return org.emftext.language.java.extensions.imports.ImportingElementExtension.getDefaultImports((org.emftext.language.java.imports.ImportingElement) this);"/>
       </genClasses>
       <genClasses image="false" ecoreClass="java.ecore#//imports/StaticImport">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//imports/StaticImport/static"/>
@@ -386,7 +455,7 @@
     <nestedGenPackages prefix="Literals" basePackage="org.emftext.language.java" disposableProviderFactory="true"
         ecorePackage="java.ecore#_Wo2Yntz1Ed2bJ_pQViWxFg">
       <genClasses image="false" ecoreClass="java.ecore#_Wo2YsNz1Ed2bJ_pQViWxFg">
-        <genOperations ecoreOperation="java.ecore#//literals/Literal/getOneType">
+        <genOperations ecoreOperation="java.ecore#//literals/Literal/getOneType" body="return org.emftext.language.java.extensions.literals.LiteralExtension.getOneType((org.emftext.language.java.literals.Literal) this);">
           <genParameters ecoreParameter="java.ecore#//literals/Literal/getOneType/alternative"/>
         </genOperations>
       </genClasses>
@@ -421,6 +490,9 @@
       <genClasses ecoreClass="java.ecore#//literals/OctalIntegerLiteral">
         <genFeatures createChild="false" ecoreFeature="ecore:EAttribute java.ecore#//literals/OctalIntegerLiteral/octalValue"/>
       </genClasses>
+      <genClasses ecoreClass="java.ecore#//literals/BinaryIntegerLiteral">
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute java.ecore#//literals/BinaryIntegerLiteral/binaryValue"/>
+      </genClasses>
       <genClasses image="false" ecoreClass="java.ecore#//literals/LongLiteral"/>
       <genClasses ecoreClass="java.ecore#//literals/DecimalLongLiteral">
         <genFeatures createChild="false" ecoreFeature="ecore:EAttribute java.ecore#//literals/DecimalLongLiteral/decimalValue"/>
@@ -430,6 +502,9 @@
       </genClasses>
       <genClasses ecoreClass="java.ecore#//literals/OctalLongLiteral">
         <genFeatures createChild="false" ecoreFeature="ecore:EAttribute java.ecore#//literals/OctalLongLiteral/octalValue"/>
+      </genClasses>
+      <genClasses ecoreClass="java.ecore#//literals/BinaryLongLiteral">
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute java.ecore#//literals/BinaryLongLiteral/binaryValue"/>
       </genClasses>
       <genClasses ecoreClass="java.ecore#_Wo2Yr9z1Ed2bJ_pQViWxFg"/>
       <genClasses ecoreClass="java.ecore#//literals/Super"/>
@@ -444,31 +519,41 @@
       <genClasses image="false" ecoreClass="java.ecore#//members/MemberContainer">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//members/MemberContainer/members"/>
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//members/MemberContainer/defaultMembers"/>
-        <genOperations ecoreOperation="java.ecore#//members/MemberContainer/getContainedClassifier">
+        <genOperations ecoreOperation="java.ecore#//members/MemberContainer/getContainedClassifier"
+            body="return org.emftext.language.java.extensions.members.MemberContainerExtension.getContainedClassifier((org.emftext.language.java.members.MemberContainer) this, name);">
           <genParameters ecoreParameter="java.ecore#//members/MemberContainer/getContainedClassifier/name"/>
         </genOperations>
-        <genOperations ecoreOperation="java.ecore#//members/MemberContainer/getContainedField">
+        <genOperations ecoreOperation="java.ecore#//members/MemberContainer/getContainedField"
+            body="return org.emftext.language.java.extensions.members.MemberContainerExtension.getContainedField((org.emftext.language.java.members.MemberContainer) this, name);">
           <genParameters ecoreParameter="java.ecore#//members/MemberContainer/getContainedField/name"/>
         </genOperations>
-        <genOperations ecoreOperation="java.ecore#//members/MemberContainer/getContainedMethod">
+        <genOperations ecoreOperation="java.ecore#//members/MemberContainer/getContainedMethod"
+            body="return org.emftext.language.java.extensions.members.MemberContainerExtension.getContainedMethod((org.emftext.language.java.members.MemberContainer) this, name);">
           <genParameters ecoreParameter="java.ecore#//members/MemberContainer/getContainedMethod/name"/>
         </genOperations>
-        <genOperations ecoreOperation="java.ecore#//members/MemberContainer/getMethods"/>
-        <genOperations ecoreOperation="java.ecore#//members/MemberContainer/removeMethods">
+        <genOperations ecoreOperation="java.ecore#//members/MemberContainer/getMethods"
+            body="return org.emftext.language.java.extensions.members.MemberContainerExtension.getMethods((org.emftext.language.java.members.MemberContainer) this);"/>
+        <genOperations ecoreOperation="java.ecore#//members/MemberContainer/removeMethods"
+            body="org.emftext.language.java.extensions.members.MemberContainerExtension.removeMethods((org.emftext.language.java.members.MemberContainer) this, name);">
           <genParameters ecoreParameter="java.ecore#//members/MemberContainer/removeMethods/name"/>
         </genOperations>
-        <genOperations ecoreOperation="java.ecore#//members/MemberContainer/getMembersByName">
+        <genOperations ecoreOperation="java.ecore#//members/MemberContainer/getMembersByName"
+            body="return org.emftext.language.java.extensions.members.MemberContainerExtension.getMembersByName((org.emftext.language.java.members.MemberContainer) this, name);">
           <genParameters ecoreParameter="java.ecore#//members/MemberContainer/getMembersByName/name"/>
         </genOperations>
-        <genOperations ecoreOperation="java.ecore#//members/MemberContainer/createField">
+        <genOperations ecoreOperation="java.ecore#//members/MemberContainer/createField"
+            body="return org.emftext.language.java.extensions.members.MemberContainerExtension.createField((org.emftext.language.java.members.MemberContainer) this, name, qualifiedTypeName);">
           <genParameters ecoreParameter="java.ecore#//members/MemberContainer/createField/name"/>
           <genParameters ecoreParameter="java.ecore#//members/MemberContainer/createField/qualifiedTypeName"/>
         </genOperations>
-        <genOperations ecoreOperation="java.ecore#//members/MemberContainer/getFields"/>
-        <genOperations ecoreOperation="java.ecore#//members/MemberContainer/getConstructors"/>
+        <genOperations ecoreOperation="java.ecore#//members/MemberContainer/getFields"
+            body="return org.emftext.language.java.extensions.members.MemberContainerExtension.getFields((org.emftext.language.java.members.MemberContainer) this);"/>
+        <genOperations ecoreOperation="java.ecore#//members/MemberContainer/getConstructors"
+            body="return org.emftext.language.java.extensions.members.MemberContainerExtension.getConstructors((org.emftext.language.java.members.MemberContainer) this);"/>
       </genClasses>
       <genClasses ecoreClass="java.ecore#//members/AdditionalField">
-        <genOperations ecoreOperation="java.ecore#//members/AdditionalField/getArrayDimension"/>
+        <genOperations ecoreOperation="java.ecore#//members/AdditionalField/getArrayDimension"
+            body="return org.emftext.language.java.extensions.members.AdditionalFieldExtension.getArrayDimension((org.emftext.language.java.members.AdditionalField) this);"/>
       </genClasses>
       <genClasses ecoreClass="java.ecore#//members/Constructor"/>
       <genClasses ecoreClass="java.ecore#//members/EmptyMember"/>
@@ -476,18 +561,22 @@
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//members/Field/additionalFields"/>
       </genClasses>
       <genClasses image="false" ecoreClass="java.ecore#//members/Method">
-        <genOperations ecoreOperation="java.ecore#//members/Method/isMethodForCall">
+        <genOperations ecoreOperation="java.ecore#//members/Method/isMethodForCall"
+            body="return org.emftext.language.java.extensions.members.MethodExtension.isMethodForCall((org.emftext.language.java.members.Method) this, (org.emftext.language.java.references.MethodCall) methodCall, needsPerfectMatch);">
           <genParameters ecoreParameter="java.ecore#//members/Method/isMethodForCall/methodCall"/>
           <genParameters ecoreParameter="java.ecore#//members/Method/isMethodForCall/needsPerfectMatch"/>
         </genOperations>
-        <genOperations ecoreOperation="java.ecore#//members/Method/isSomeMethodForCall">
+        <genOperations ecoreOperation="java.ecore#//members/Method/isSomeMethodForCall"
+            body="return org.emftext.language.java.extensions.members.MethodExtension.isSomeMethodForCall((org.emftext.language.java.members.Method) this, (org.emftext.language.java.references.MethodCall) methodCall);">
           <genParameters ecoreParameter="java.ecore#//members/Method/isSomeMethodForCall/methodCall"/>
         </genOperations>
-        <genOperations ecoreOperation="java.ecore#//members/Method/isBetterMethodForCall">
+        <genOperations ecoreOperation="java.ecore#//members/Method/isBetterMethodForCall"
+            body="return org.emftext.language.java.extensions.members.MethodExtension.isBetterMethodForCall((org.emftext.language.java.members.Method) this, (org.emftext.language.java.members.Method) otherMethod, (org.emftext.language.java.references.MethodCall) methodCall);">
           <genParameters ecoreParameter="java.ecore#//members/Method/isBetterMethodForCall/otherMethod"/>
           <genParameters ecoreParameter="java.ecore#//members/Method/isBetterMethodForCall/methodCall"/>
         </genOperations>
-        <genOperations ecoreOperation="java.ecore#//members/Method/getArrayDimension"/>
+        <genOperations ecoreOperation="java.ecore#//members/Method/getArrayDimension"
+            body="return org.emftext.language.java.extensions.members.MethodExtension.getArrayDimension((org.emftext.language.java.members.Method) this);"/>
       </genClasses>
       <genClasses ecoreClass="java.ecore#//members/InterfaceMethod"/>
       <genClasses ecoreClass="java.ecore#//members/ClassMethod"/>
@@ -502,28 +591,42 @@
       <genClasses image="false" ecoreClass="java.ecore#//modifiers/AnnotableAndModifiable">
         <genFeatures notify="false" createChild="false" propertySortChoices="true"
             ecoreFeature="ecore:EReference java.ecore#//modifiers/AnnotableAndModifiable/annotationsAndModifiers"/>
-        <genOperations ecoreOperation="java.ecore#//modifiers/AnnotableAndModifiable/isHidden">
+        <genOperations ecoreOperation="java.ecore#//modifiers/AnnotableAndModifiable/isHidden"
+            body="return org.emftext.language.java.extensions.modifiers.AnnotableAndModifiableExtension.isHidden((org.emftext.language.java.modifiers.AnnotableAndModifiable) this, (org.emftext.language.java.commons.Commentable) context);">
           <genParameters ecoreParameter="java.ecore#//modifiers/AnnotableAndModifiable/isHidden/context"/>
         </genOperations>
-        <genOperations ecoreOperation="java.ecore#//modifiers/AnnotableAndModifiable/isStatic"/>
-        <genOperations ecoreOperation="java.ecore#//modifiers/AnnotableAndModifiable/removeModifier">
+        <genOperations ecoreOperation="java.ecore#//modifiers/AnnotableAndModifiable/isStatic"
+            body="return org.emftext.language.java.extensions.modifiers.AnnotableAndModifiableExtension.isStatic((org.emftext.language.java.modifiers.AnnotableAndModifiable) this);"/>
+        <genOperations ecoreOperation="java.ecore#//modifiers/AnnotableAndModifiable/removeModifier"
+            body="org.emftext.language.java.extensions.modifiers.AnnotableAndModifiableExtension.removeModifier((org.emftext.language.java.modifiers.AnnotableAndModifiable) this, modifierType);">
           <genParameters ecoreParameter="java.ecore#//modifiers/AnnotableAndModifiable/removeModifier/modifierType"/>
         </genOperations>
-        <genOperations ecoreOperation="java.ecore#//modifiers/AnnotableAndModifiable/makePublic"/>
-        <genOperations ecoreOperation="java.ecore#//modifiers/AnnotableAndModifiable/makePrivate"/>
-        <genOperations ecoreOperation="java.ecore#//modifiers/AnnotableAndModifiable/makeProtected"/>
-        <genOperations ecoreOperation="java.ecore#//modifiers/AnnotableAndModifiable/getModifiers"/>
-        <genOperations ecoreOperation="java.ecore#//modifiers/AnnotableAndModifiable/removeAllModifiers"/>
-        <genOperations ecoreOperation="java.ecore#//modifiers/AnnotableAndModifiable/hasModifier">
+        <genOperations ecoreOperation="java.ecore#//modifiers/AnnotableAndModifiable/makePublic"
+            body="org.emftext.language.java.extensions.modifiers.AnnotableAndModifiableExtension.makePublic((org.emftext.language.java.modifiers.AnnotableAndModifiable) this);"/>
+        <genOperations ecoreOperation="java.ecore#//modifiers/AnnotableAndModifiable/makePrivate"
+            body="org.emftext.language.java.extensions.modifiers.AnnotableAndModifiableExtension.makePrivate((org.emftext.language.java.modifiers.AnnotableAndModifiable) this);"/>
+        <genOperations ecoreOperation="java.ecore#//modifiers/AnnotableAndModifiable/makeProtected"
+            body="org.emftext.language.java.extensions.modifiers.AnnotableAndModifiableExtension.makeProtected((org.emftext.language.java.modifiers.AnnotableAndModifiable) this);"/>
+        <genOperations ecoreOperation="java.ecore#//modifiers/AnnotableAndModifiable/getModifiers"
+            body="return org.emftext.language.java.extensions.modifiers.AnnotableAndModifiableExtension.getModifiers((org.emftext.language.java.modifiers.AnnotableAndModifiable) this);"/>
+        <genOperations ecoreOperation="java.ecore#//modifiers/AnnotableAndModifiable/removeAllModifiers"
+            body="org.emftext.language.java.extensions.modifiers.AnnotableAndModifiableExtension.removeAllModifiers((org.emftext.language.java.modifiers.AnnotableAndModifiable) this);"/>
+        <genOperations ecoreOperation="java.ecore#//modifiers/AnnotableAndModifiable/hasModifier"
+            body="return org.emftext.language.java.extensions.modifiers.AnnotableAndModifiableExtension.hasModifier((org.emftext.language.java.modifiers.AnnotableAndModifiable) this, type);">
           <genParameters ecoreParameter="java.ecore#//modifiers/AnnotableAndModifiable/hasModifier/type"/>
         </genOperations>
-        <genOperations ecoreOperation="java.ecore#//modifiers/AnnotableAndModifiable/isPublic"/>
-        <genOperations ecoreOperation="java.ecore#//modifiers/AnnotableAndModifiable/isPrivate"/>
-        <genOperations ecoreOperation="java.ecore#//modifiers/AnnotableAndModifiable/isProtected"/>
-        <genOperations ecoreOperation="java.ecore#//modifiers/AnnotableAndModifiable/addModifier">
+        <genOperations ecoreOperation="java.ecore#//modifiers/AnnotableAndModifiable/isPublic"
+            body="return org.emftext.language.java.extensions.modifiers.AnnotableAndModifiableExtension.isPublic((org.emftext.language.java.modifiers.AnnotableAndModifiable) this);"/>
+        <genOperations ecoreOperation="java.ecore#//modifiers/AnnotableAndModifiable/isPrivate"
+            body="return org.emftext.language.java.extensions.modifiers.AnnotableAndModifiableExtension.isPrivate((org.emftext.language.java.modifiers.AnnotableAndModifiable) this);"/>
+        <genOperations ecoreOperation="java.ecore#//modifiers/AnnotableAndModifiable/isProtected"
+            body="return org.emftext.language.java.extensions.modifiers.AnnotableAndModifiableExtension.isProtected((org.emftext.language.java.modifiers.AnnotableAndModifiable) this);"/>
+        <genOperations ecoreOperation="java.ecore#//modifiers/AnnotableAndModifiable/addModifier"
+            body="org.emftext.language.java.extensions.modifiers.AnnotableAndModifiableExtension.addModifier((org.emftext.language.java.modifiers.AnnotableAndModifiable) this, (org.emftext.language.java.modifiers.Modifier) newModifier);">
           <genParameters ecoreParameter="java.ecore#//modifiers/AnnotableAndModifiable/addModifier/newModifier"/>
         </genOperations>
-        <genOperations ecoreOperation="java.ecore#//modifiers/AnnotableAndModifiable/getAnnotationInstances"/>
+        <genOperations ecoreOperation="java.ecore#//modifiers/AnnotableAndModifiable/getAnnotationInstances"
+            body="return org.emftext.language.java.extensions.modifiers.AnnotableAndModifiableExtension.getAnnotationInstances((org.emftext.language.java.modifiers.AnnotableAndModifiable) this);"/>
       </genClasses>
       <genClasses image="false" ecoreClass="java.ecore#//modifiers/Modifiable">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//modifiers/Modifiable/modifiers"/>
@@ -596,12 +699,15 @@
       <genClasses image="false" ecoreClass="java.ecore#//references/Reference">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//references/Reference/next"/>
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//references/Reference/arraySelectors"/>
-        <genOperations ecoreOperation="java.ecore#//references/Reference/getReferencedType"/>
-        <genOperations ecoreOperation="java.ecore#//references/Reference/getPrevious"/>
+        <genOperations ecoreOperation="java.ecore#//references/Reference/getReferencedType"
+            body="return org.emftext.language.java.extensions.references.ReferenceExtension.getReferencedType((org.emftext.language.java.references.Reference) this);"/>
+        <genOperations ecoreOperation="java.ecore#//references/Reference/getPrevious"
+            body="return org.emftext.language.java.extensions.references.ReferenceExtension.getPrevious((org.emftext.language.java.references.Reference) this);"/>
       </genClasses>
       <genClasses image="false" ecoreClass="java.ecore#//references/Argumentable">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//references/Argumentable/arguments"/>
-        <genOperations ecoreOperation="java.ecore#//references/Argumentable/getArgumentTypes"/>
+        <genOperations ecoreOperation="java.ecore#//references/Argumentable/getArgumentTypes"
+            body="return org.emftext.language.java.extensions.references.ArgumentableExtension.getArgumentTypes((org.emftext.language.java.references.Argumentable) this);"/>
       </genClasses>
       <genClasses image="false" ecoreClass="java.ecore#//references/ReferenceableElement"/>
       <genClasses image="false" ecoreClass="java.ecore#//references/ElementReference">
@@ -631,7 +737,8 @@
       </genClasses>
       <genClasses image="false" ecoreClass="java.ecore#//statements/StatementListContainer">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//statements/StatementListContainer/statements"/>
-        <genOperations ecoreOperation="java.ecore#//statements/StatementListContainer/getLocalVariable">
+        <genOperations ecoreOperation="java.ecore#//statements/StatementListContainer/getLocalVariable"
+            body="return org.emftext.language.java.extensions.statements.StatementListContainerExtension.getLocalVariable((org.emftext.language.java.statements.StatementListContainer) this, name);">
           <genParameters ecoreParameter="java.ecore#//statements/StatementListContainer/getLocalVariable/name"/>
         </genOperations>
       </genClasses>
@@ -700,17 +807,17 @@
     <nestedGenPackages prefix="Types" basePackage="org.emftext.language.java" disposableProviderFactory="true"
         ecorePackage="java.ecore#_Wo2ZOtz1Ed2bJ_pQViWxFg">
       <genClasses image="false" ecoreClass="java.ecore#_Wo2ZO9z1Ed2bJ_pQViWxFg">
-        <genOperations ecoreOperation="java.ecore#//types/Type/equalsType">
+        <genOperations ecoreOperation="java.ecore#//types/Type/equalsType" body="return org.emftext.language.java.extensions.types.TypeExtension.equalsType((org.emftext.language.java.types.Type) this, arrayDimension, (org.emftext.language.java.types.Type) otherType, otherArrayDimension);">
           <genParameters ecoreParameter="java.ecore#//types/Type/equalsType/arrayDimension"/>
           <genParameters ecoreParameter="java.ecore#//types/Type/equalsType/otherType"/>
           <genParameters ecoreParameter="java.ecore#//types/Type/equalsType/otherArrayDimension"/>
         </genOperations>
-        <genOperations ecoreOperation="java.ecore#//types/Type/isSuperType">
+        <genOperations ecoreOperation="java.ecore#//types/Type/isSuperType" body="return org.emftext.language.java.extensions.types.TypeExtension.isSuperType((org.emftext.language.java.types.Type) this, arrayDimension, (org.emftext.language.java.types.Type) otherType, (org.emftext.language.java.arrays.ArrayTypeable) otherArrayType);">
           <genParameters ecoreParameter="java.ecore#//types/Type/isSuperType/arrayDimension"/>
           <genParameters ecoreParameter="java.ecore#//types/Type/isSuperType/otherType"/>
           <genParameters ecoreParameter="java.ecore#//types/Type/isSuperType/otherArrayType"/>
         </genOperations>
-        <genOperations ecoreOperation="java.ecore#//types/Type/getAllMembers">
+        <genOperations ecoreOperation="java.ecore#//types/Type/getAllMembers" body="// method has to be specified in subclasses&#xA;throw new java.lang.UnsupportedOperationException();">
           <genParameters ecoreParameter="java.ecore#//types/Type/getAllMembers/context"/>
         </genOperations>
       </genClasses>
@@ -718,14 +825,18 @@
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#_Wo2ZQdz1Ed2bJ_pQViWxFg"/>
       </genClasses>
       <genClasses image="false" ecoreClass="java.ecore#_Wo2ZPdz1Ed2bJ_pQViWxFg">
-        <genOperations ecoreOperation="java.ecore#//types/TypeReference/getTarget"/>
-        <genOperations ecoreOperation="java.ecore#//types/TypeReference/setTarget">
+        <genOperations ecoreOperation="java.ecore#//types/TypeReference/getTarget"
+            body="return org.emftext.language.java.extensions.types.TypeReferenceExtension.getBoundTarget((org.emftext.language.java.types.TypeReference) this, null);"/>
+        <genOperations ecoreOperation="java.ecore#//types/TypeReference/setTarget"
+            body="org.emftext.language.java.extensions.types.TypeReferenceExtension.setTarget((org.emftext.language.java.types.TypeReference) this, (org.emftext.language.java.classifiers.Classifier) type);">
           <genParameters ecoreParameter="java.ecore#//types/TypeReference/setTarget/type"/>
         </genOperations>
-        <genOperations ecoreOperation="java.ecore#//types/TypeReference/getBoundTarget">
+        <genOperations ecoreOperation="java.ecore#//types/TypeReference/getBoundTarget"
+            body="return org.emftext.language.java.extensions.types.TypeReferenceExtension.getBoundTarget((org.emftext.language.java.types.TypeReference) this, (org.emftext.language.java.references.Reference) reference);">
           <genParameters ecoreParameter="java.ecore#//types/TypeReference/getBoundTarget/reference"/>
         </genOperations>
-        <genOperations ecoreOperation="java.ecore#//types/TypeReference/getPureClassifierReference"/>
+        <genOperations ecoreOperation="java.ecore#//types/TypeReference/getPureClassifierReference"
+            body="return org.emftext.language.java.extensions.types.TypeReferenceExtension.getPureClassifierReference((org.emftext.language.java.types.TypeReference) this);"/>
       </genClasses>
       <genClasses ecoreClass="java.ecore#//types/ClassifierReference">
         <genFeatures notify="false" createChild="false" propertySortChoices="true"
@@ -735,10 +846,12 @@
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#_Wo2ZRdz1Ed2bJ_pQViWxFg"/>
       </genClasses>
       <genClasses image="false" ecoreClass="java.ecore#_Wo2ZR9z1Ed2bJ_pQViWxFg">
-        <genOperations ecoreOperation="java.ecore#//types/PrimitiveType/getAllMembers">
+        <genOperations ecoreOperation="java.ecore#//types/PrimitiveType/getAllMembers"
+            body="return org.emftext.language.java.extensions.types.PrimitiveTypeExtension.getAllMembers((org.emftext.language.java.types.PrimitiveType) this, (org.emftext.language.java.commons.Commentable) context);">
           <genParameters ecoreParameter="java.ecore#//types/PrimitiveType/getAllMembers/context"/>
         </genOperations>
-        <genOperations ecoreOperation="java.ecore#//types/PrimitiveType/wrapPrimitiveType"/>
+        <genOperations ecoreOperation="java.ecore#//types/PrimitiveType/wrapPrimitiveType"
+            body="return org.emftext.language.java.extensions.types.PrimitiveTypeExtension.wrapPrimitiveType((org.emftext.language.java.types.PrimitiveType) this);"/>
       </genClasses>
       <genClasses ecoreClass="java.ecore#_Wo2ZS9z1Ed2bJ_pQViWxFg"/>
       <genClasses ecoreClass="java.ecore#_Wo2ZT9z1Ed2bJ_pQViWxFg"/>
@@ -753,12 +866,15 @@
     <nestedGenPackages prefix="Variables" basePackage="org.emftext.language.java"
         disposableProviderFactory="true" ecorePackage="java.ecore#//variables">
       <genClasses image="false" ecoreClass="java.ecore#//variables/Variable">
-        <genOperations ecoreOperation="java.ecore#//variables/Variable/getArrayDimension"/>
-        <genOperations ecoreOperation="java.ecore#//variables/Variable/createMethodCallStatement">
+        <genOperations ecoreOperation="java.ecore#//variables/Variable/getArrayDimension"
+            body="return org.emftext.language.java.extensions.variables.VariableExtension.getArrayDimension((org.emftext.language.java.variables.Variable) this);"/>
+        <genOperations ecoreOperation="java.ecore#//variables/Variable/createMethodCallStatement"
+            body="return org.emftext.language.java.extensions.variables.VariableExtension.createMethodCallStatement((org.emftext.language.java.variables.Variable) this, methodName, arguments);">
           <genParameters ecoreParameter="java.ecore#//variables/Variable/createMethodCallStatement/methodName"/>
           <genParameters ecoreParameter="java.ecore#//variables/Variable/createMethodCallStatement/arguments"/>
         </genOperations>
-        <genOperations ecoreOperation="java.ecore#//variables/Variable/createMethodCall">
+        <genOperations ecoreOperation="java.ecore#//variables/Variable/createMethodCall"
+            body="return org.emftext.language.java.extensions.variables.VariableExtension.createMethodCall((org.emftext.language.java.variables.Variable) this, methodName, arguments);">
           <genParameters ecoreParameter="java.ecore#//variables/Variable/createMethodCall/methodName"/>
           <genParameters ecoreParameter="java.ecore#//variables/Variable/createMethodCall/arguments"/>
         </genOperations>
@@ -767,7 +883,8 @@
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//variables/LocalVariable/additionalLocalVariables"/>
       </genClasses>
       <genClasses ecoreClass="java.ecore#//variables/AdditionalLocalVariable">
-        <genOperations ecoreOperation="java.ecore#//variables/AdditionalLocalVariable/getArrayDimension"/>
+        <genOperations ecoreOperation="java.ecore#//variables/AdditionalLocalVariable/getArrayDimension"
+            body="return org.emftext.language.java.extensions.variables.AdditionalLocalVariableExtension.getArrayDimension((org.emftext.language.java.variables.AdditionalLocalVariable) this);"/>
       </genClasses>
     </nestedGenPackages>
   </genPackages>
