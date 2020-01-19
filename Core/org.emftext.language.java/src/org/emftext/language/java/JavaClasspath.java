@@ -164,7 +164,8 @@ public class JavaClasspath extends AdapterImpl {
 
 	/**
 	 * If this option is set to <code>true</code> (default) in a resource set, the Java standard library (i.e., rt.jar
-	 * or classes.jar) is registered automatically based on <code>System.getProperty("sun.boot.class.path")</code>.
+	 * or classes.jar for Java 8- or src.zip for Java 9+) is registered automatically based on
+	 * <code>System.getProperty("sun.boot.class.path")</code> or <code>System.getProperty("java.home")</code>.
 	 */
 	public static final String OPTION_REGISTER_STD_LIB = "OPTION_REGISTER_STD_LIB";
 
@@ -388,19 +389,25 @@ public class JavaClasspath extends AdapterImpl {
 	}
 
 	/**
-	 * Registers all classes of the Java standard library (<code>classes.jar</code> or <code>rt.jar</code>) located at
-	 * <code>System.getProperty("sun.boot.class.path")</code>.
+	 * Registers all classes of the Java standard library (<code>classes.jar</code> or <code>rt.jar</code> for Java 8- or
+	 * <code>src.zip</code> for Java 9+) located at <code>System.getProperty("sun.boot.class.path")</code> or
+	 * <code>System.getProperty("java.home")</code>.
 	 */
 	public void registerStdLib() {
 		String classpath = System.getProperty("sun.boot.class.path");
+		if (classpath==null || classpath.equals("")) {
+			classpath = System.getProperty("java.home") + File.separator + "lib" + File.separator + "src.zip";
+		}
 		String[] classpathEntries = classpath.split(File.pathSeparator);
 
 		String classesJarSuffix = File.separator + "classes.jar";
 		String rtJarSuffix = File.separator + "rt.jar";
+		String srcZipSuffix = File.separator + "src.zip";
 
 		for (int idx = 0; idx < classpathEntries.length; idx++) {
 			String classpathEntry = classpathEntries[idx];
-			if (classpathEntry.endsWith(classesJarSuffix) || classpathEntry.endsWith(rtJarSuffix)) {
+			if (classpathEntry.endsWith(classesJarSuffix) || classpathEntry.endsWith(rtJarSuffix)
+					|| classpathEntry.endsWith(srcZipSuffix)) {
 				URI uri = URI.createFileURI(classpathEntry);
 				registerClassifierJar(uri);
 			}
@@ -431,7 +438,7 @@ public class JavaClasspath extends AdapterImpl {
 			ZipEntry entry = entries.nextElement();
 
 			String entryName = entry.getName();
-			if (entryName.endsWith(JavaUniquePathConstructor.JAVA_CLASS_FILE_EXTENSION) && entryName.startsWith(prefix)) {
+			if (/*entryName.endsWith(JavaUniquePathConstructor.JAVA_CLASS_FILE_EXTENSION) && */entryName.startsWith(prefix)) {
 				String uri = "archive:" + jarURI.toString() + "!/" + entryName;
 
 				String fullName = entryName.substring(prefix.length());
