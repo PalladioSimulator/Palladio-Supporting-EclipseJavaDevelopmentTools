@@ -269,6 +269,11 @@ parameters.OrdinaryParameter
 	;
 
 @SuppressWarnings(featureWithoutSyntax)
+parameters.CatchParameter
+    ::= annotationsAndModifiers* typeReferences ("|" typeReferences)* name[]
+    ;
+
+@SuppressWarnings(featureWithoutSyntax)
 parameters.VariableLengthParameter
 	::= annotationsAndModifiers* typeReference arrayDimensionsBefore* ("<" typeArguments ("," typeArguments)* ">")? "..." name[] 
 	;
