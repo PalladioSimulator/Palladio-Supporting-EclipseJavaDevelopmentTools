@@ -313,6 +313,19 @@ instantiations.NewConstructorCall
 		("." next)? 
      ;
 
+@SuppressWarnings(featureWithoutSyntax)
+instantiations.NewConstructorCallWithDiamondCallTypeArgument
+	::= "new"
+		// these are the arguments for the constructor type parameters
+		("<" typeArguments ("," typeArguments)* ">")?
+		typeReference
+		// diamond for the class type parameters that are inferred
+		"<>"
+		"(" (arguments:expressions.AssignmentExpression ("," arguments:expressions.AssignmentExpression)* )? ")"
+		anonymousClass?
+		("." next)?
+     ;
+
 @SuppressWarnings(featureWithoutSyntax) //arraySelectors 
 instantiations.ExplicitConstructorCall 
 	::= ("<" typeArguments ("," typeArguments)* ">")?

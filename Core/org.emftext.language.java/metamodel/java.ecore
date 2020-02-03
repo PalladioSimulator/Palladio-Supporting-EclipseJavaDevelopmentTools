@@ -831,6 +831,8 @@
       <eStructuralFeatures xsi:type="ecore:EReference" name="anonymousClass" eType="#//classifiers/AnonymousClass"
           containment="true"/>
     </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="NewConstructorCallWithDiamondCallTypeArgument"
+        eSuperTypes="#//instantiations/NewConstructorCall"/>
     <eClassifiers xsi:type="ecore:EClass" name="ExplicitConstructorCall" eSuperTypes="#//instantiations/Instantiation">
       <eStructuralFeatures xsi:type="ecore:EReference" name="callTarget" lowerBound="1"
           eType="#//literals/Self" containment="true"/>
