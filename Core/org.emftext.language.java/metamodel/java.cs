@@ -282,6 +282,11 @@ variables.LocalVariable
 	::= annotationsAndModifiers* typeReference arrayDimensionsBefore* ("<" typeArguments ("," typeArguments)* ">")? name[] arrayDimensionsAfter* (#1 "=" #1 initialValue:expressions.AssignmentExpression)? ("," additionalLocalVariables)*
 	;
 
+@SuppressWarnings(featureWithoutSyntax,minOccurenceMismatch)
+variables.LocalResource
+    ::= annotationsAndModifiers* typeReference arrayDimensionsBefore* name[] #1 "=" #1 initialValue
+    ;
+
 statements.LocalVariableStatement
 	::= variable ";" ;
 
@@ -464,7 +469,8 @@ statements.SynchronizedBlock
 	::= "synchronized" #1 "(" lockProvider:expressions.AssignmentExpression ")" #1 "{" (!1 statements)* !0 "}" ;
 	
 statements.TryBlock
-	::= "try" #1 "{" (!1 statements)* !0 "}"
+	::= "try" ("(" resources (";" resources)* (";")? ")")?
+	    #1 "{" (!1 statements)* !0 "}"
 		catcheBlocks* 
 		("finally" finallyBlock)?;
 

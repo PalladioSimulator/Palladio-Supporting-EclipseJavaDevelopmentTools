@@ -801,6 +801,7 @@
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#_Wo2ZIdz1Ed2bJ_pQViWxFg"/>
       </genClasses>
       <genClasses ecoreClass="java.ecore#_Wo2ZCNz1Ed2bJ_pQViWxFg">
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//statements/TryBlock/resources"/>
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#_Wo2ZDtz1Ed2bJ_pQViWxFg"/>
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#_Wo2ZDNz1Ed2bJ_pQViWxFg"/>
       </genClasses>
@@ -890,6 +891,8 @@
         <genOperations ecoreOperation="java.ecore#//variables/AdditionalLocalVariable/getArrayDimension"
             body="return org.emftext.language.java.extensions.variables.AdditionalLocalVariableExtension.getArrayDimension((org.emftext.language.java.variables.AdditionalLocalVariable) this);"/>
       </genClasses>
+      <genClasses image="false" ecoreClass="java.ecore#//variables/Resource"/>
+      <genClasses ecoreClass="java.ecore#//variables/LocalResource"/>
     </nestedGenPackages>
   </genPackages>
 </genmodel:GenModel>

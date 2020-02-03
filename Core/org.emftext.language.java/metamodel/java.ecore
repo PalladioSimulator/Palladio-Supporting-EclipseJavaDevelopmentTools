@@ -1272,7 +1272,7 @@
     <eClassifiers xsi:type="ecore:EClass" name="ReferenceableElement" abstract="true"
         eSuperTypes="#//commons/NamedElement"/>
     <eClassifiers xsi:type="ecore:EClass" name="ElementReference" abstract="true"
-        eSuperTypes="#//references/Reference">
+        eSuperTypes="#//references/Reference #//variables/Resource">
       <eStructuralFeatures xsi:type="ecore:EReference" name="target" lowerBound="1"
           eType="#//references/ReferenceableElement"/>
     </eClassifiers>
@@ -1406,6 +1406,8 @@
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" xmi:id="_Wo2ZCNz1Ed2bJ_pQViWxFg" name="TryBlock"
         eSuperTypes="#_Wo2YzNz1Ed2bJ_pQViWxFg #//statements/StatementListContainer">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="resources" upperBound="-1"
+          eType="#//variables/Resource" containment="true"/>
       <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_Wo2ZDtz1Ed2bJ_pQViWxFg"
           name="catcheBlocks" upperBound="-1" eType="#_Wo2ZD9z1Ed2bJ_pQViWxFg" containment="true"/>
       <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_Wo2ZDNz1Ed2bJ_pQViWxFg"
@@ -1562,5 +1564,8 @@
         </eAnnotations>
       </eOperations>
     </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="Resource" abstract="true" interface="true"
+        eSuperTypes="#//commons/Commentable"/>
+    <eClassifiers xsi:type="ecore:EClass" name="LocalResource" eSuperTypes="#//variables/LocalVariable"/>
   </eSubpackages>
 </ecore:EPackage>
