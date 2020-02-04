@@ -283,7 +283,7 @@ variables.LocalVariable
 	;
 
 @SuppressWarnings(featureWithoutSyntax,minOccurenceMismatch)
-variables.LocalResource
+variables.LocalResourceVariable
     ::= annotationsAndModifiers* typeReference arrayDimensionsBefore* name[] #1 "=" #1 initialValue
     ;
 
@@ -469,9 +469,9 @@ statements.SynchronizedBlock
 	::= "synchronized" #1 "(" lockProvider ")" #1 "{" (!1 statements)* !0 "}" ;
 	
 statements.TryBlock
-	::= "try" ("(" resources (";" resources)* (";")? ")")?
+	::= "try" ("(" resources (";" resources)* (trailingSemicolon)? ")")?
 	    #1 "{" (!1 statements)* !0 "}"
-		catcheBlocks* 
+		catchBlocks* 
 		("finally" finallyBlock)?;
 
 statements.CatchBlock

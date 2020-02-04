@@ -1410,8 +1410,10 @@
         eSuperTypes="#_Wo2YzNz1Ed2bJ_pQViWxFg #//statements/StatementListContainer">
       <eStructuralFeatures xsi:type="ecore:EReference" name="resources" upperBound="-1"
           eType="#//variables/Resource" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="trailingSemicolon" eType="#_Wo2ZK9z1Ed2bJ_pQViWxFg"
+          containment="true"/>
       <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_Wo2ZDtz1Ed2bJ_pQViWxFg"
-          name="catcheBlocks" upperBound="-1" eType="#_Wo2ZD9z1Ed2bJ_pQViWxFg" containment="true"/>
+          name="catchBlocks" upperBound="-1" eType="#_Wo2ZD9z1Ed2bJ_pQViWxFg" containment="true"/>
       <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_Wo2ZDNz1Ed2bJ_pQViWxFg"
           name="finallyBlock" eType="#//statements/Block" containment="true"/>
     </eClassifiers>
@@ -1568,6 +1570,6 @@
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="Resource" abstract="true" interface="true"
         eSuperTypes="#//commons/Commentable"/>
-    <eClassifiers xsi:type="ecore:EClass" name="LocalResource" eSuperTypes="#//variables/LocalVariable"/>
+    <eClassifiers xsi:type="ecore:EClass" name="LocalResourceVariable" eSuperTypes="#//variables/LocalVariable"/>
   </eSubpackages>
 </ecore:EPackage>
