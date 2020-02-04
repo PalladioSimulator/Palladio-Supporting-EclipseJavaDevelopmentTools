@@ -318,7 +318,7 @@ instantiations.NewConstructorCall
 		typeReference 
 		// these are the arguments for the class type parameters
 		("<" callTypeArguments ("," callTypeArguments)* ">")?
-		"(" (arguments:expressions.AssignmentExpression ("," arguments:expressions.AssignmentExpression)* )? ")"
+		"(" (arguments ("," arguments)* )? ")"
 		anonymousClass?
 		("." next)? 
      ;
@@ -331,7 +331,7 @@ instantiations.NewConstructorCallWithDiamondCallTypeArgument
 		typeReference
 		// diamond for the class type parameters that are inferred
 		"<>"
-		"(" (arguments:expressions.AssignmentExpression ("," arguments:expressions.AssignmentExpression)* )? ")"
+		"(" (arguments ("," arguments)* )? ")"
 		anonymousClass?
 		("." next)?
      ;
@@ -339,7 +339,7 @@ instantiations.NewConstructorCallWithDiamondCallTypeArgument
 @SuppressWarnings(featureWithoutSyntax) //arraySelectors 
 instantiations.ExplicitConstructorCall 
 	::= ("<" typeArguments ("," typeArguments)* ">")?
-		callTarget "(" (arguments:expressions.AssignmentExpression ("," arguments:expressions.AssignmentExpression)* )? ")"
+		callTarget "(" (arguments ("," arguments)* )? ")"
 		("." next)? 
      ;
 
@@ -371,7 +371,7 @@ arrays.ArrayInitializer
     ;
 
 arrays.ArraySelector
-	::= "[" position:expressions.AssignmentExpression? "]"
+	::= "[" position? "]"
 	;
 	
 types.NamespaceClassifierReference
@@ -388,7 +388,7 @@ references.MethodCall
 	::= ("<" callTypeArguments ("," callTypeArguments)* ">")?
 	    target[]
 		("<" typeArguments ("," typeArguments)* ">")?
-		"(" (arguments:expressions.AssignmentExpression ("," arguments:expressions.AssignmentExpression)* )? ")"
+		"(" (arguments ("," arguments)* )? ")"
 		arraySelectors* ("." next)? 
 	;
 	
@@ -509,17 +509,17 @@ statements.ExpressionStatement
 
 @SuppressWarnings(minOccurenceMismatch) //the expression simplifier removes the cases where min occurrence does not match
 expressions.ExpressionList
-    ::= expressions:expressions.AssignmentExpression ("," expressions:expressions.AssignmentExpression)*
+    ::= expressions ("," expressions)*
     ;
 
 @SuppressWarnings(minOccurenceMismatch) //the expression simplifier removes the cases where min occurrence does not match
 expressions.AssignmentExpression
-	::= child:expressions.ConditionalExpression (#1 assignmentOperator #1 value:expressions.AssignmentExpression)?
+	::= child:expressions.ConditionalExpression (#1 assignmentOperator #1 value)?
     ;
 
 @SuppressWarnings(minOccurenceMismatch) //the expression simplifier removes the cases where min occurrence does not match   	
 expressions.ConditionalExpression
-    ::= child:expressions.ConditionalOrExpression ("?" expressionIf:expressions.AssignmentExpression ":" expressionElse:expressions.ConditionalExpression)?
+    ::= child:expressions.ConditionalOrExpression ("?" expressionIf ":" expressionElse:expressions.ConditionalExpression)?
     ;
     
 expressions.ConditionalOrExpression
@@ -575,8 +575,7 @@ expressions.MultiplicativeExpression
 
 @SuppressWarnings(minOccurenceMismatch) //the expression simplifier removes the cases where min occurrence does not match 
 expressions.UnaryExpression
-    ::= operators* child:expressions.UnaryModificationExpression
-    // TODO why does UnaryExpression have multiple operators?
+    ::= operators* child:expressions.UnaryModificationExpression // multiple operators for, e. g., -+-+-+-+-+j where j is an int
     ;
 
 @SuppressWarnings(minOccurenceMismatch) //the expression simplifier removes the cases where min occurrence does not match 
@@ -591,11 +590,11 @@ expressions.PrefixUnaryModificationExpression
 
 @SuppressWarnings(featureWithoutSyntax)
 expressions.CastExpression
-    ::= "(" typeReference arrayDimensionsBefore* ")" #1 child:expressions.UnaryExpression
+    ::= "(" typeReference arrayDimensionsBefore* (#1 "&" #1 additionalBounds)* ")" #1 child:expressions.UnaryExpression
     ;
 
 @SuppressWarnings(featureWithoutSyntax) //typeArguments
-expressions.NestedExpression ::= "(" expression:expressions.AssignmentExpression ")"  arraySelectors* ("." next)? 
+expressions.NestedExpression ::= "(" expression ")"  arraySelectors* ("." next)? 
     ;	
 
        
