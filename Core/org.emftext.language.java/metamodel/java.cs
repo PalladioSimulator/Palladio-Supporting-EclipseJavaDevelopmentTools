@@ -279,7 +279,7 @@ parameters.VariableLengthParameter
 	;
 
 variables.LocalVariable
-	::= annotationsAndModifiers* typeReference arrayDimensionsBefore* ("<" typeArguments ("," typeArguments)* ">")? name[] arrayDimensionsAfter* (#1 "=" #1 initialValue:expressions.AssignmentExpression)? ("," additionalLocalVariables)*
+	::= annotationsAndModifiers* typeReference arrayDimensionsBefore* ("<" typeArguments ("," typeArguments)* ">")? name[] arrayDimensionsAfter* (#1 "=" #1 initialValue)? ("," additionalLocalVariables)*
 	;
 
 @SuppressWarnings(featureWithoutSyntax,minOccurenceMismatch)
@@ -292,7 +292,7 @@ statements.LocalVariableStatement
 
 @SuppressWarnings(featureWithoutSyntax)
 variables.AdditionalLocalVariable
-	::= name[] arrayDimensionsAfter* (#1 "=" #1 initialValue:expressions.AssignmentExpression)?
+	::= name[] arrayDimensionsAfter* (#1 "=" #1 initialValue)?
 	;
 
 members.Field
@@ -444,29 +444,29 @@ generics.SuperTypeArgument
 
 @SuppressWarnings(minOccurenceMismatch) //condition can be empty in other cases
 statements.Assert
-	::= "assert" condition:expressions.AssignmentExpression (":" errorMessage:expressions.AssignmentExpression)? ";" ;
+	::= "assert" condition (":" errorMessage)? ";" ;
 
 @SuppressWarnings(minOccurenceMismatch) //condition can be empty in other cases
 statements.Condition 
-	::= "if" #1 "(" condition:expressions.AssignmentExpression ")" statement ("else" elseStatement)? ;
+	::= "if" #1 "(" condition ")" statement ("else" elseStatement)? ;
 	
 statements.ForLoop
-	::= "for" #1 "(" init? ";" condition:expressions.AssignmentExpression? ";" (updates:expressions.AssignmentExpression ("," updates:expressions.AssignmentExpression)* )? ")" statement;
+	::= "for" #1 "(" init? ";" condition? ";" (updates:expressions.AssignmentExpression ("," updates:expressions.AssignmentExpression)* )? ")" statement;
 
 statements.ForEachLoop
-	::= "for" #1 "(" next ":" collection:expressions.AssignmentExpression ")" statement;
+	::= "for" #1 "(" next ":" collection ")" statement;
 	
 statements.WhileLoop
-	::= "while" #1 "(" condition:expressions.AssignmentExpression ")" statement;
+	::= "while" #1 "(" condition ")" statement;
 	
 statements.DoWhileLoop	
-	::= "do" statement "while" #1 "(" condition:expressions.AssignmentExpression ")" ";" ;
+	::= "do" statement "while" #1 "(" condition ")" ";" ;
 	
 statements.EmptyStatement	
 	::= ";" ;
 	
 statements.SynchronizedBlock
-	::= "synchronized" #1 "(" lockProvider:expressions.AssignmentExpression ")" #1 "{" (!1 statements)* !0 "}" ;
+	::= "synchronized" #1 "(" lockProvider ")" #1 "{" (!1 statements)* !0 "}" ;
 	
 statements.TryBlock
 	::= "try" ("(" resources (";" resources)* (";")? ")")?
@@ -479,7 +479,7 @@ statements.CatchBlock
 	;
 
 statements.Switch
-	::= "switch" #1 "(" variable:expressions.AssignmentExpression ")" #1 "{" (cases*) "}";
+	::= "switch" #1 "(" variable ")" #1 "{" (cases*) "}";
 
 @SuppressWarnings(minOccurenceMismatch) //condition can be empty in other cases
 statements.NormalSwitchCase
@@ -489,10 +489,10 @@ statements.DefaultSwitchCase
 	::= "default" ":" (!1 statements)* !0 ;
 	
 statements.Return
-	::= "return" returnValue:expressions.AssignmentExpression? ";" ;
+	::= "return" returnValue? ";" ;
 	
 statements.Throw
-	::= "throw" throwable:expressions.AssignmentExpression ";" ;
+	::= "throw" throwable ";" ;
 	
 statements.Break
 	::= "break" (target[])? ";" ;
