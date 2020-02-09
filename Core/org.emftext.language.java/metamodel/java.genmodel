@@ -373,6 +373,14 @@
       <genClasses ecoreClass="java.ecore#//expressions/NestedExpression">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//expressions/NestedExpression/expression"/>
       </genClasses>
+      <genClasses image="false" ecoreClass="java.ecore#//expressions/MethodReferenceExpression"/>
+      <genClasses ecoreClass="java.ecore#//expressions/PrimaryExpressionReferenceExpression">
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//expressions/PrimaryExpressionReferenceExpression/child"/>
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//expressions/PrimaryExpressionReferenceExpression/methodReference"/>
+      </genClasses>
+      <genClasses ecoreClass="java.ecore#//expressions/ClassTypeConstructorReferenceExpression"/>
+      <genClasses ecoreClass="java.ecore#//expressions/ArrayConstructorReferenceExpression"/>
+      <genClasses image="false" ecoreClass="java.ecore#//expressions/MethodReferenceExpressionChild"/>
     </nestedGenPackages>
     <nestedGenPackages prefix="Generics" basePackage="org.emftext.language.java" disposableProviderFactory="true"
         ecorePackage="java.ecore#//generics">

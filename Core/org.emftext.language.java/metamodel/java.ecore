@@ -715,11 +715,26 @@
           containment="true"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="PrimaryExpression" abstract="true"
-        eSuperTypes="#//expressions/UnaryModificationExpressionChild"/>
+        eSuperTypes="#//expressions/MethodReferenceExpressionChild"/>
     <eClassifiers xsi:type="ecore:EClass" name="NestedExpression" eSuperTypes="#//references/Reference">
       <eStructuralFeatures xsi:type="ecore:EReference" name="expression" lowerBound="1"
           eType="#_Wo2YDNz1Ed2bJ_pQViWxFg" containment="true"/>
     </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="MethodReferenceExpression" abstract="true"
+        eSuperTypes="#//expressions/UnaryModificationExpressionChild"/>
+    <eClassifiers xsi:type="ecore:EClass" name="PrimaryExpressionReferenceExpression"
+        eSuperTypes="#//expressions/MethodReferenceExpression #//generics/CallTypeArgumentable">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="child" lowerBound="1"
+          eType="#//expressions/MethodReferenceExpressionChild" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="methodReference" eType="#//references/Reference"
+          containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="ClassTypeConstructorReferenceExpression"
+        eSuperTypes="#_Wo2ZP9z1Ed2bJ_pQViWxFg #//generics/CallTypeArgumentable #//expressions/MethodReferenceExpression"/>
+    <eClassifiers xsi:type="ecore:EClass" name="ArrayConstructorReferenceExpression"
+        eSuperTypes="#//expressions/MethodReferenceExpression #//arrays/ArrayTypeable #_Wo2ZP9z1Ed2bJ_pQViWxFg"/>
+    <eClassifiers xsi:type="ecore:EClass" name="MethodReferenceExpressionChild" abstract="true"
+        eSuperTypes="#//expressions/UnaryModificationExpressionChild"/>
   </eSubpackages>
   <eSubpackages name="generics" nsURI="http://www.emftext.org/java/generics" nsPrefix="generics">
     <eClassifiers xsi:type="ecore:EClass" name="TypeArgument" abstract="true" eSuperTypes="#//arrays/ArrayTypeable"/>

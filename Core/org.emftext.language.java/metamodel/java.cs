@@ -595,7 +595,20 @@ expressions.CastExpression
 
 @SuppressWarnings(featureWithoutSyntax) //typeArguments
 expressions.NestedExpression ::= "(" expression ")"  arraySelectors* ("." next)? 
-    ;	
+    ;
+
+expressions.PrimaryExpressionReferenceExpression
+    ::= child ("::" ("<" callTypeArguments ("," callTypeArguments)* ">")? methodReference)?
+    ;
+
+expressions.ClassTypeConstructorReferenceExpression
+    ::= typeReference "::" ("<" callTypeArguments ("," callTypeArguments)* ">")? "new"
+    ;
+
+@SuppressWarnings(featureWithoutSyntax,minOccurenceMismatch)
+expressions.ArrayConstructorReferenceExpression
+    ::= typeReference arrayDimensionsBefore+ "::" "new"
+    ;
 
        
 
