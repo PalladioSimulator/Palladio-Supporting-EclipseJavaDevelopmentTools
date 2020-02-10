@@ -579,6 +579,10 @@
       <eStructuralFeatures xsi:type="ecore:EReference" name="expressionElse" lowerBound="1"
           eType="#//expressions/AssignmentExpressionChild" containment="true"/>
     </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="ConditionalElseLambdaExpression" eSuperTypes="#_Wo2YIdz1Ed2bJ_pQViWxFg">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="elseLambda" eType="#//expressions/LambdaExpression"
+          containment="true"/>
+    </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="ConditionalExpressionChild" abstract="true"
         eSuperTypes="#//expressions/AssignmentExpressionChild"/>
     <eClassifiers xsi:type="ecore:EClass" xmi:id="_Wo2YHdz1Ed2bJ_pQViWxFg" name="ConditionalOrExpression"
@@ -713,6 +717,10 @@
       <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_Wo2YXdz1Ed2bJ_pQViWxFg"
           name="child" lowerBound="1" eType="#//expressions/MultiplicativeExpressionChild"
           containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="CastLambdaExpression" eSuperTypes="#_Wo2YWdz1Ed2bJ_pQViWxFg">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="lambdaChild" lowerBound="1"
+          eType="#//expressions/LambdaExpression" containment="true"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="PrimaryExpression" abstract="true"
         eSuperTypes="#//expressions/MethodReferenceExpressionChild"/>

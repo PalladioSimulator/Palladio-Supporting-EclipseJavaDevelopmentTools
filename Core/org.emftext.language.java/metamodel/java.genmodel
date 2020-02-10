@@ -303,6 +303,9 @@
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#_Wo2YJdz1Ed2bJ_pQViWxFg"/>
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//expressions/ConditionalExpression/expressionElse"/>
       </genClasses>
+      <genClasses ecoreClass="java.ecore#//expressions/ConditionalElseLambdaExpression">
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//expressions/ConditionalElseLambdaExpression/elseLambda"/>
+      </genClasses>
       <genClasses image="false" ecoreClass="java.ecore#//expressions/ConditionalExpressionChild"/>
       <genClasses ecoreClass="java.ecore#_Wo2YHdz1Ed2bJ_pQViWxFg">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#_Wo2YH9z1Ed2bJ_pQViWxFg"/>
@@ -368,6 +371,9 @@
       <genClasses ecoreClass="java.ecore#_Wo2YWdz1Ed2bJ_pQViWxFg">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//expressions/CastExpression/additionalBounds"/>
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#_Wo2YXdz1Ed2bJ_pQViWxFg"/>
+      </genClasses>
+      <genClasses ecoreClass="java.ecore#//expressions/CastLambdaExpression">
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//expressions/CastLambdaExpression/lambdaChild"/>
       </genClasses>
       <genClasses image="false" ecoreClass="java.ecore#//expressions/PrimaryExpression"/>
       <genClasses ecoreClass="java.ecore#//expressions/NestedExpression">

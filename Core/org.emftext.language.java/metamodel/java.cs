@@ -444,134 +444,122 @@ generics.SuperTypeArgument
 
 @SuppressWarnings(minOccurenceMismatch) //condition can be empty in other cases
 statements.Assert
-	::= "assert" condition (":" errorMessage)? ";" ;
+    ::= "assert" condition (":" errorMessage)? ";";
 
 @SuppressWarnings(minOccurenceMismatch) //condition can be empty in other cases
 statements.Condition 
-	::= "if" #1 "(" condition ")" statement ("else" elseStatement)? ;
-	
+    ::= "if" #1 "(" condition ")" statement ("else" elseStatement)? ;
+
 statements.ForLoop
-	::= "for" #1 "(" init? ";" condition? ";" (updates:expressions.AssignmentExpression ("," updates:expressions.AssignmentExpression)* )? ")" statement;
+    ::= "for" #1 "(" init? ";" condition? ";" (updates:expressions.AssignmentExpression ("," updates:expressions.AssignmentExpression)* )? ")" statement;
 
 statements.ForEachLoop
-	::= "for" #1 "(" next ":" collection ")" statement;
-	
+    ::= "for" #1 "(" next ":" collection ")" statement;
+
 statements.WhileLoop
-	::= "while" #1 "(" condition ")" statement;
-	
+    ::= "while" #1 "(" condition ")" statement;
+
 statements.DoWhileLoop	
-	::= "do" statement "while" #1 "(" condition ")" ";" ;
-	
+    ::= "do" statement "while" #1 "(" condition ")" ";";
+
 statements.EmptyStatement	
-	::= ";" ;
-	
+    ::= ";";
+
 statements.SynchronizedBlock
-	::= "synchronized" #1 "(" lockProvider ")" #1 "{" (!1 statements)* !0 "}" ;
-	
+    ::= "synchronized" #1 "(" lockProvider ")" #1 "{" (!1 statements)* !0 "}";
+
 statements.TryBlock
-	::= "try" ("(" resources (";" resources)* (trailingSemicolon)? ")")?
-	    #1 "{" (!1 statements)* !0 "}"
-		catchBlocks* 
-		("finally" finallyBlock)?;
+    ::= "try" ("(" resources (";" resources)* (trailingSemicolon)? ")")?
+        #1 "{" (!1 statements)* !0 "}"
+        catchBlocks* 
+        ("finally" finallyBlock)?;
 
 statements.CatchBlock
-	::=	"catch" #1 "(" parameter ")" #1 "{" (!1 statements)* !0 "}"
-	;
+    ::=	"catch" #1 "(" parameter ")" #1 "{" (!1 statements)* !0 "}";
 
 statements.Switch
-	::= "switch" #1 "(" variable ")" #1 "{" (cases*) "}";
+    ::= "switch" #1 "(" variable ")" #1 "{" (cases*) "}";
 
 @SuppressWarnings(minOccurenceMismatch) //condition can be empty in other cases
 statements.NormalSwitchCase
-	::= "case" condition:expressions.AssignmentExpression ":" (!1 statements)* !0 ;
-	
+    ::= "case" condition:expressions.AssignmentExpression ":" (!1 statements)* !0;
+
 statements.DefaultSwitchCase
-	::= "default" ":" (!1 statements)* !0 ;
-	
+    ::= "default" ":" (!1 statements)* !0;
+
 statements.Return
-	::= "return" returnValue? ";" ;
-	
+    ::= "return" returnValue? ";";
+
 statements.Throw
-	::= "throw" throwable ";" ;
-	
+    ::= "throw" throwable ";";
+
 statements.Break
-	::= "break" (target[])? ";" ;
-	
+    ::= "break" (target[])? ";";
+
 statements.Continue
-	::= "continue" (target[])? ";" ;
-	
+    ::= "continue" (target[])? ";";
+
 statements.JumpLabel
-	::= name[] ":" statement ;
+    ::= name[] ":" statement;
 
 statements.ExpressionStatement 
-	::= expression:expressions.AssignmentExpression ";" 
-	;
+    ::= expression:expressions.AssignmentExpression ";";
 
 @SuppressWarnings(minOccurenceMismatch) //the expression simplifier removes the cases where min occurrence does not match
 expressions.ExpressionList
-    ::= expressions ("," expressions)*
-    ;
+    ::= expressions ("," expressions)* ;
 
 @SuppressWarnings(minOccurenceMismatch) //the expression simplifier removes the cases where min occurrence does not match
 expressions.AssignmentExpression
-	::= child:expressions.ConditionalExpression (#1 assignmentOperator #1 value)?
-    ;
+    ::= child:expressions.ConditionalExpression (#1 assignmentOperator #1 value)? ;
 
 @SuppressWarnings(minOccurenceMismatch) //the expression simplifier removes the cases where min occurrence does not match   	
 expressions.ConditionalExpression
-    ::= child:expressions.ConditionalOrExpression ("?" expressionIf ":" expressionElse:expressions.ConditionalExpression)?
-    ;
+    ::= child:expressions.ConditionalOrExpression ("?" expressionIf ":" expressionElse:expressions.ConditionalExpression)? ;
+
+@SuppressWarnings(featureWithoutSyntax,minOccurenceMismatch)
+expressions.ConditionalElseLambdaExpression
+    ::= child:expressions.ConditionalOrExpression ("?" expressionIf ":" elseLambda)? ;
     
 expressions.ConditionalOrExpression
-    ::= children:expressions.ConditionalAndExpression ( "||" children:expressions.ConditionalAndExpression )*
-    ;
+    ::= children:expressions.ConditionalAndExpression ("||" children:expressions.ConditionalAndExpression)* ;
     
 expressions.ConditionalAndExpression
-    ::= children:expressions.InclusiveOrExpression ( "&&" children:expressions.InclusiveOrExpression )*
-    ;
+    ::= children:expressions.InclusiveOrExpression ("&&" children:expressions.InclusiveOrExpression)* ;
        
 expressions.InclusiveOrExpression
-    ::= children:expressions.ExclusiveOrExpression ( "|" children:expressions.ExclusiveOrExpression )*
-    ;
+    ::= children:expressions.ExclusiveOrExpression ("|" children:expressions.ExclusiveOrExpression)* ;
 
 expressions.ExclusiveOrExpression
-    ::= children:expressions.AndExpression ( "^" children:expressions.AndExpression )*
-    ;
+    ::= children:expressions.AndExpression ("^" children:expressions.AndExpression)* ;
 
 expressions.AndExpression
-    ::= children:expressions.EqualityExpression ( "&" children:expressions.EqualityExpression )*
-    ;
+    ::= children:expressions.EqualityExpression ("&" children:expressions.EqualityExpression)* ;
 
 @SuppressWarnings(minOccurenceMismatch) //the expression simplifier removes the cases where min occurrence does not match
 expressions.EqualityExpression
-    ::= children:expressions.InstanceOfExpression ( #1 equalityOperators #1 children:expressions.InstanceOfExpression )*
-    ;
+    ::= children:expressions.InstanceOfExpression (#1 equalityOperators #1 children:expressions.InstanceOfExpression)* ;
 
 @SuppressWarnings(featureWithoutSyntax)
 @SuppressWarnings(minOccurenceMismatch) //the expression simplifier removes the cases where min occurrence does not match 
 expressions.InstanceOfExpression
-    ::= child:expressions.RelationExpression ("instanceof" typeReference arrayDimensionsBefore*)?
-    ;
+    ::= child:expressions.RelationExpression ("instanceof" typeReference arrayDimensionsBefore*)? ;
 
 @SuppressWarnings(minOccurenceMismatch) //the expression simplifier removes the cases where min occurrence does not match   
 expressions.RelationExpression
-	::= children:expressions.ShiftExpression ( #1 relationOperators #1 children:expressions.ShiftExpression)*
-	;
+    ::= children:expressions.ShiftExpression (#1 relationOperators #1 children:expressions.ShiftExpression)* ;
 
 @SuppressWarnings(minOccurenceMismatch) //the expression simplifier removes the cases where min occurrence does not match	
 expressions.ShiftExpression
-	::= children:expressions.AdditiveExpression ( #1 shiftOperators #1 children:expressions.AdditiveExpression)*
-	;
+    ::= children:expressions.AdditiveExpression (#1 shiftOperators #1 children:expressions.AdditiveExpression)* ;
 
 @SuppressWarnings(minOccurenceMismatch) //the expression simplifier removes the cases where min occurrence does not match
 expressions.AdditiveExpression
-    ::= children:expressions.MultiplicativeExpression ( #1 additiveOperators #1 children:expressions.MultiplicativeExpression )*
-    ;
+    ::= children:expressions.MultiplicativeExpression (#1 additiveOperators #1 children:expressions.MultiplicativeExpression)* ;
 
 @SuppressWarnings(minOccurenceMismatch) //the expression simplifier removes the cases where min occurrence does not match
 expressions.MultiplicativeExpression
-    ::=	children:expressions.UnaryExpression ( #1 multiplicativeOperators #1 children:expressions.UnaryExpression )*
-    ;
+    ::=	children:expressions.UnaryExpression (#1 multiplicativeOperators #1 children:expressions.UnaryExpression)* ;
 
 @SuppressWarnings(minOccurenceMismatch) //the expression simplifier removes the cases where min occurrence does not match 
 expressions.UnaryExpression
@@ -580,35 +568,33 @@ expressions.UnaryExpression
 
 @SuppressWarnings(minOccurenceMismatch) //the expression simplifier removes the cases where min occurrence does not match 
 expressions.SuffixUnaryModificationExpression
-	::= child (operator)?
-	;
+    ::= child (operator)? ;
 
 @SuppressWarnings(minOccurenceMismatch) //the expression simplifier removes the cases where min occurrence does not match 	
 expressions.PrefixUnaryModificationExpression
-	::= (operator)? child
-	;
+    ::= (operator)? child;
 
 @SuppressWarnings(featureWithoutSyntax)
 expressions.CastExpression
-    ::= "(" typeReference arrayDimensionsBefore* (#1 "&" #1 additionalBounds)* ")" #1 child:expressions.UnaryExpression
-    ;
+    ::= "(" typeReference arrayDimensionsBefore* (#1 "&" #1 additionalBounds)* ")" #1 child:expressions.UnaryExpression;
+
+@SuppressWarnings(featureWithoutSyntax)
+expressions.CastLambdaExpression
+    ::= "(" typeReference arrayDimensionsBefore* (#1 "&" #1 additionalBounds)* ")" #1 lambdaChild;
 
 @SuppressWarnings(featureWithoutSyntax) //typeArguments
-expressions.NestedExpression ::= "(" expression ")"  arraySelectors* ("." next)? 
-    ;
+expressions.NestedExpression
+    ::= "(" expression ")"  arraySelectors* ("." next)? ;
 
 expressions.PrimaryExpressionReferenceExpression
-    ::= child ("::" ("<" callTypeArguments ("," callTypeArguments)* ">")? methodReference)?
-    ;
+    ::= child ("::" ("<" callTypeArguments ("," callTypeArguments)* ">")? methodReference)? ;
 
 expressions.ClassTypeConstructorReferenceExpression
-    ::= typeReference "::" ("<" callTypeArguments ("," callTypeArguments)* ">")? "new"
-    ;
+    ::= typeReference "::" ("<" callTypeArguments ("," callTypeArguments)* ">")? "new";
 
 @SuppressWarnings(featureWithoutSyntax,minOccurenceMismatch)
 expressions.ArrayConstructorReferenceExpression
-    ::= typeReference arrayDimensionsBefore+ "::" "new"
-    ;
+    ::= typeReference arrayDimensionsBefore+ "::" "new";
 
 expressions.ExplicitlyTypedLambdaParameters
     ::= "(" (parameters ("," parameters)*)? ")";
@@ -623,10 +609,10 @@ expressions.SingleImplicitLambdaParameter
 expressions.LambdaExpression
     ::= parameters "->" body;
 
-       
 
-    
-    
+
+
+
 operators.Assignment                   ::= "=";
 operators.AssignmentPlus               ::= "+=";
 operators.AssignmentMinus              ::= "-=";
@@ -643,25 +629,25 @@ operators.AssignmentUnsignedRightShift ::= ">" ">" ">" "=";
 operators.Addition              ::= "+";
 operators.Subtraction           ::= "-";
 
-operators.Multiplication        ::= "*" ;
-operators.Division              ::= "/" ;
-operators.Remainder             ::= "%" ;
+operators.Multiplication        ::= "*";
+operators.Division              ::= "/";
+operators.Remainder             ::= "%";
 
 operators.LessThan 			    ::= "<";
 operators.LessThanOrEqual		::= "<" "=";
 operators.GreaterThan			::= ">";
 operators.GreaterThanOrEqual	::= ">" "=";
 
-operators.LeftShift 			::= "<" "<" ;
-operators.RightShift 			::= ">" ">" ;
-operators.UnsignedRightShift	::= ">" ">" ">" ;
+operators.LeftShift 			::= "<" "<";
+operators.RightShift 			::= ">" ">";
+operators.UnsignedRightShift	::= ">" ">" ">";
 
 operators.Equal		::= "==";	
 operators.NotEqual	::= "!=";
 operators.PlusPlus 	::= "++" ;
-operators.MinusMinus 	::= "--" ;
-operators.Complement 	::= "~" ;
-operators.Negate 		::= "!" ;
+operators.MinusMinus 	::= "--";
+operators.Complement 	::= "~";
+operators.Negate 		::= "!";
 
 arrays.ArrayDimension ::= ("[" "]");
 
