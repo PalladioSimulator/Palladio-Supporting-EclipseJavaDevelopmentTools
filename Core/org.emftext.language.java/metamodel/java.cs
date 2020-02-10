@@ -610,6 +610,19 @@ expressions.ArrayConstructorReferenceExpression
     ::= typeReference arrayDimensionsBefore+ "::" "new"
     ;
 
+expressions.ExplicitlyTypedLambdaParameters
+    ::= "(" (parameters ("," parameters)*)? ")";
+
+expressions.ImplicitlyTypedLambdaParameters
+    ::= "(" (identifierReferences ("," identifierReferences)*)? ")";
+
+@SuppressWarnings(minOccurenceMismatch)
+expressions.SingleImplicitLambdaParameter
+    ::= identifierReferences;
+
+expressions.LambdaExpression
+    ::= parameters "->" body;
+
        
 
     

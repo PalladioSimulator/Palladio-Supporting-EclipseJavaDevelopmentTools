@@ -381,6 +381,17 @@
       <genClasses ecoreClass="java.ecore#//expressions/ClassTypeConstructorReferenceExpression"/>
       <genClasses ecoreClass="java.ecore#//expressions/ArrayConstructorReferenceExpression"/>
       <genClasses image="false" ecoreClass="java.ecore#//expressions/MethodReferenceExpressionChild"/>
+      <genClasses ecoreClass="java.ecore#//expressions/LambdaExpression">
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//expressions/LambdaExpression/parameters"/>
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//expressions/LambdaExpression/body"/>
+      </genClasses>
+      <genClasses image="false" ecoreClass="java.ecore#//expressions/LambdaBody"/>
+      <genClasses image="false" ecoreClass="java.ecore#//expressions/LambdaParameters"/>
+      <genClasses ecoreClass="java.ecore#//expressions/ExplicitlyTypedLambdaParameters"/>
+      <genClasses ecoreClass="java.ecore#//expressions/ImplicitlyTypedLambdaParameters">
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//expressions/ImplicitlyTypedLambdaParameters/identifierReferences"/>
+      </genClasses>
+      <genClasses ecoreClass="java.ecore#//expressions/SingleImplicitLambdaParameter"/>
     </nestedGenPackages>
     <nestedGenPackages prefix="Generics" basePackage="org.emftext.language.java" disposableProviderFactory="true"
         ecorePackage="java.ecore#//generics">
