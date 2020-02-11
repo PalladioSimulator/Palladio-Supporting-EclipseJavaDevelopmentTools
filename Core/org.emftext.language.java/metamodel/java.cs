@@ -142,20 +142,20 @@ containers.CompilationUnit
         (classifiers (";")* !0 !0)+
         ("\u001a")?
 	;
-	
+
 imports.ClassifierImport
-	::= "import" (namespaces[]  "."  )* classifier[]  ";";
+    ::= "import" (namespaces[] ".")* classifier[] ";";
 
 @SuppressWarnings(minOccurenceMismatch) //the minimal occurence of namespaces[] is in other cases 0
 imports.PackageImport
-	::= "import" (namespaces[]  "."  )+  "*"  ";";
+    ::= "import" (namespaces[] ".")+ "*" ";";
 
 imports.StaticMemberImport
-	::= "import" static (namespaces[]  "."  )* staticMembers[]  ";";
+    ::= "import" static (namespaces[] ".")* staticMembers[] ";";
 
 @SuppressWarnings(minOccurenceMismatch) //the minimal occurence of namespaces[] is in other cases 0
 imports.StaticClassifierImport
-	::= "import" static (namespaces[]  "."  )+  "*"  ";";
+    ::= "import" static (namespaces[] ".")+ "*" ";";
 
 @SuppressWarnings(featureWithoutSyntax) //defaultExtends is filled by post processor
 classifiers.Class
@@ -259,35 +259,31 @@ annotations.AnnotationAttribute
 	;
 
 parameters.OrdinaryParameter
-	::= annotationsAndModifiers* typeReference arrayDimensionsBefore* ("<" typeArguments ("," typeArguments)* ">")? name[] arrayDimensionsAfter*
-	;
+    ::= annotationsAndModifiers* typeReference arrayDimensionsBefore* ("<" typeArguments ("," typeArguments)* ">")? name[] arrayDimensionsAfter* ;
 
 @SuppressWarnings(featureWithoutSyntax)
 parameters.CatchParameter
-    ::= annotationsAndModifiers* typeReferences ("|" typeReferences)* name[]
-    ;
+    ::= annotationsAndModifiers* typeReferences ("|" typeReferences)* name[];
 
 @SuppressWarnings(featureWithoutSyntax)
 parameters.VariableLengthParameter
-	::= annotationsAndModifiers* typeReference arrayDimensionsBefore* ("<" typeArguments ("," typeArguments)* ">")? "..." name[] 
-	;
+    ::= annotationsAndModifiers* typeReference arrayDimensionsBefore* ("<" typeArguments ("," typeArguments)* ">")? "..." name[];
 
 variables.LocalVariable
-	::= annotationsAndModifiers* typeReference arrayDimensionsBefore* ("<" typeArguments ("," typeArguments)* ">")? name[] arrayDimensionsAfter* (#1 "=" #1 initialValue)? ("," additionalLocalVariables)*
-	;
+    ::= annotationsAndModifiers* typeReference arrayDimensionsBefore* ("<" typeArguments ("," typeArguments)* ">")? name[]
+        arrayDimensionsAfter* (#1 "=" #1 initialValue)?
+        ("," additionalLocalVariables)* ;
 
 @SuppressWarnings(featureWithoutSyntax,minOccurenceMismatch)
 variables.LocalResourceVariable
-    ::= annotationsAndModifiers* typeReference arrayDimensionsBefore* name[] #1 "=" #1 initialValue
-    ;
+    ::= annotationsAndModifiers* typeReference arrayDimensionsBefore* name[] #1 "=" #1 initialValue;
 
 statements.LocalVariableStatement
-	::= variable ";" ;
+    ::= variable ";";
 
 @SuppressWarnings(featureWithoutSyntax)
 variables.AdditionalLocalVariable
-	::= name[] arrayDimensionsAfter* (#1 "=" #1 initialValue)?
-	;
+    ::= name[] arrayDimensionsAfter* (#1 "=" #1 initialValue)? ;
 
 members.Field
     ::= annotationsAndModifiers* typeReference arrayDimensionsBefore* ("<" typeArguments ("," typeArguments)* ">")?
@@ -444,7 +440,7 @@ statements.TryBlock
     ::= "try" ("(" resources (";" resources)* (trailingSemicolon)? ")")?
         #1 "{" (!1 statements)* !0 "}"
         catchBlocks* 
-        ("finally" finallyBlock)?;
+        ("finally" finallyBlock)? ;
 
 statements.CatchBlock
     ::=	"catch" #1 "(" parameter ")" #1 "{" (!1 statements)* !0 "}";
@@ -649,46 +645,45 @@ types.Float ::= "float";
 types.Double ::= "double";
 
 // do not change the order of the literals!
-literals.DecimalLongLiteral 
-	::= decimalValue[DECIMAL_LONG_LITERAL];
+literals.DecimalLongLiteral
+    ::= decimalValue[DECIMAL_LONG_LITERAL];
 
-literals.DecimalFloatLiteral 
-	::= decimalValue[DECIMAL_FLOAT_LITERAL];
+literals.DecimalFloatLiteral
+    ::= decimalValue[DECIMAL_FLOAT_LITERAL];
 
-literals.DecimalIntegerLiteral 
-	::= decimalValue[DECIMAL_INTEGER_LITERAL];
+literals.DecimalIntegerLiteral
+    ::= decimalValue[DECIMAL_INTEGER_LITERAL];
 
-literals.DecimalDoubleLiteral 
-	::= decimalValue[DECIMAL_DOUBLE_LITERAL];
+literals.DecimalDoubleLiteral
+    ::= decimalValue[DECIMAL_DOUBLE_LITERAL];
 
-literals.HexLongLiteral 
-	::= hexValue[HEX_LONG_LITERAL];
+literals.HexLongLiteral
+    ::= hexValue[HEX_LONG_LITERAL];
 
-literals.HexFloatLiteral 
-	::= hexValue[HEX_FLOAT_LITERAL];
+literals.HexFloatLiteral
+    ::= hexValue[HEX_FLOAT_LITERAL];
 
-literals.HexDoubleLiteral 
-	::= hexValue[HEX_DOUBLE_LITERAL];
+literals.HexDoubleLiteral
+    ::= hexValue[HEX_DOUBLE_LITERAL];
 
-literals.HexIntegerLiteral 
-	::= hexValue[HEX_INTEGER_LITERAL];
+literals.HexIntegerLiteral
+    ::= hexValue[HEX_INTEGER_LITERAL];
 
-literals.OctalLongLiteral 
-	::= octalValue[OCTAL_LONG_LITERAL];
+literals.OctalLongLiteral
+    ::= octalValue[OCTAL_LONG_LITERAL];
 
-literals.OctalIntegerLiteral 
-	::= octalValue[OCTAL_INTEGER_LITERAL];
-	
+literals.OctalIntegerLiteral
+    ::= octalValue[OCTAL_INTEGER_LITERAL];
+
 literals.BinaryLongLiteral
-	::= binaryValue[BINARY_LONG_LITERAL];
-	
+    ::= binaryValue[BINARY_LONG_LITERAL];
+
 literals.BinaryIntegerLiteral
-	::= binaryValue[BINARY_INTEGER_LITERAL];
+    ::= binaryValue[BINARY_INTEGER_LITERAL];
 
-literals.CharacterLiteral 
-	::= value[CHARACTER_LITERAL];
+literals.CharacterLiteral
+    ::= value[CHARACTER_LITERAL];
 
-literals.BooleanLiteral 
-	::= value[BOOLEAN_LITERAL];
-	
+literals.BooleanLiteral
+    ::= value[BOOLEAN_LITERAL];
 }
