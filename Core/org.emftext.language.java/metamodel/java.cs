@@ -230,33 +230,28 @@ generics.TypeParameter
 
 @SuppressWarnings(optionalKeyword)
 members.EnumConstant
-    ::= annotations* name[] (#1 "(" (arguments:expressions.AssignmentExpression ("," arguments:expressions.AssignmentExpression)*)? ")" )?
-    	(anonymousClass)?
-    ;
+    ::= annotations* name[] (#1 "(" (arguments ("," arguments)*)? ")" )?
+        (anonymousClass)? ;
 
 @SuppressWarnings(featureWithoutSyntax) //name is set by JavaModelCompletion.setBlockName()
 statements.Block
-	::=	modifiers* #1 "{" (!1 statements)* !0 "}"
-	;
+    ::= modifiers* #1 "{" (!1 statements)* !0 "}";
 
 members.Constructor
-	::=	annotationsAndModifiers* ("<" typeParameters ("," typeParameters)* ">")? name[]
-	"(" (parameters ("," parameters)* )? ")" 
-	("throws" exceptions ("," exceptions)*)? #1 "{" (!2 statements)* !1 "}"
-	;
+    ::= annotationsAndModifiers* ("<" typeParameters ("," typeParameters)* ">")? name[]
+        "(" (parameters ("," parameters)* )? ")"
+        ("throws" exceptions ("," exceptions)*)? #1 "{" (!2 statements)* !1 "}";
 
 members.InterfaceMethod
-	::=	annotationsAndModifiers* ("<"  typeParameters ( "," typeParameters)*  ">")? (typeReference arrayDimensionsBefore*) name[]  
-	"("  (parameters ("," parameters)* )? ")" arrayDimensionsAfter*
-	("throws" exceptions ("," exceptions)*)? ";"
-	;
+    ::= annotationsAndModifiers* ("<" typeParameters ("," typeParameters)* ">")? (typeReference arrayDimensionsBefore*) name[]
+        "("  (parameters ("," parameters)* )? ")" arrayDimensionsAfter*
+        ("throws" exceptions ("," exceptions)*)? ";";
 
 members.ClassMethod
-	::=	annotationsAndModifiers* ("<" typeParameters ("," typeParameters)* ">")? (typeReference arrayDimensionsBefore*) name[]  
-	"(" (parameters ("," parameters)* )? ")" arrayDimensionsAfter*
-	("throws" exceptions ("," exceptions)*)? #1 "{" (!2 statements)* !1 "}"
-	;
-	
+    ::= annotationsAndModifiers* ("<" typeParameters ("," typeParameters)* ">")? (typeReference arrayDimensionsBefore*) name[]
+        "(" (parameters ("," parameters)* )? ")" arrayDimensionsAfter*
+        ("throws" exceptions ("," exceptions)*)? #1 "{" (!2 statements)* !1 "}";
+
 annotations.AnnotationAttribute
 	::=	annotationsAndModifiers* ("<" typeParameters ("," typeParameters)* ">")? (typeReference arrayDimensionsBefore*) name[]  
 	"(" (parameters ("," parameters)* )? ")" arrayDimensionsAfter*
@@ -295,18 +290,17 @@ variables.AdditionalLocalVariable
 	;
 
 members.Field
-	::= annotationsAndModifiers* typeReference arrayDimensionsBefore* ("<" typeArguments ("," typeArguments)* ">")? name[] arrayDimensionsAfter* (#1 "=" #1 initialValue:expressions.AssignmentExpression)? ("," additionalFields)* ";"
-	;
+    ::= annotationsAndModifiers* typeReference arrayDimensionsBefore* ("<" typeArguments ("," typeArguments)* ">")?
+        name[] arrayDimensionsAfter* (#1 "=" #1 initialValue)?
+        ("," additionalFields)* ";";
 
 @SuppressWarnings(featureWithoutSyntax)
 members.AdditionalField
-	::= name[] arrayDimensionsAfter* (#1 "=" #1 initialValue:expressions.AssignmentExpression)?
-	;
+    ::= name[] arrayDimensionsAfter* (#1 "=" #1 initialValue)? ;
 
 @SuppressWarnings(featureWithoutSyntax) //name is set by JavaModelCompletion.setEmptyMemberName()
 members.EmptyMember
-	::= ";"
-	;
+    ::= ";";
 
 // INSTANTIATIONS
 @SuppressWarnings(featureWithoutSyntax) //arraySelectors
