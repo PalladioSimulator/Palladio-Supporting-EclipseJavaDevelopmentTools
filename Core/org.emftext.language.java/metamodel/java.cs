@@ -310,37 +310,34 @@ members.EmptyMember
 
 // INSTANTIATIONS
 @SuppressWarnings(featureWithoutSyntax) //arraySelectors
-instantiations.NewConstructorCall 
-	::= "new" 
-		// these are the arguments for the constructor type parameters
-		("<" typeArguments ("," typeArguments)* ">")?
-		typeReference 
-		// these are the arguments for the class type parameters
-		("<" callTypeArguments ("," callTypeArguments)* ">")?
-		"(" (arguments ("," arguments)* )? ")"
-		anonymousClass?
-		("." next)? 
-     ;
+instantiations.NewConstructorCall
+    ::= "new"
+        // these are the arguments for the constructor type parameters
+        ("<" typeArguments ("," typeArguments)* ">")?
+        typeReference
+        // these are the arguments for the class type parameters
+        ("<" callTypeArguments ("," callTypeArguments)* ">")?
+        "(" (arguments ("," arguments)* )? ")"
+        anonymousClass?
+        ("." next)? ;
 
 @SuppressWarnings(featureWithoutSyntax)
 instantiations.NewConstructorCallWithDiamondCallTypeArgument
-	::= "new"
-		// these are the arguments for the constructor type parameters
-		("<" typeArguments ("," typeArguments)* ">")?
-		typeReference
-		// diamond for the class type parameters that are inferred
-		"<>"
-		"(" (arguments ("," arguments)* )? ")"
-		anonymousClass?
-		("." next)?
-     ;
+    ::= "new"
+        // these are the arguments for the constructor type parameters
+        ("<" typeArguments ("," typeArguments)* ">")?
+        typeReference
+        // diamond for the class type parameters that are inferred
+        "<>"
+        "(" (arguments ("," arguments)* )? ")"
+        anonymousClass?
+        ("." next)? ;
 
-@SuppressWarnings(featureWithoutSyntax) //arraySelectors 
-instantiations.ExplicitConstructorCall 
-	::= ("<" typeArguments ("," typeArguments)* ">")?
-		callTarget "(" (arguments ("," arguments)* )? ")"
-		("." next)? 
-     ;
+@SuppressWarnings(featureWithoutSyntax) //arraySelectors
+instantiations.ExplicitConstructorCall
+    ::= ("<" typeArguments ("," typeArguments)* ">")?
+        callTarget "(" (arguments ("," arguments)* )? ")"
+        ("." next)? ;
 
 @SuppressWarnings(featureWithoutSyntax) //arrayDimensionsAfter
 @SuppressWarnings(minOccurenceMismatch) //arrayDimensionsBefore required here
@@ -375,45 +372,37 @@ types.ClassifierReference
 	::= target[] 
 		("<" typeArguments ("," typeArguments)* ">")?
 	;
-	
 
+@SuppressWarnings(featureWithoutSyntax) //typeArguments
 references.MethodCall
-	::= ("<" callTypeArguments ("," callTypeArguments)* ">")?
-	    target[]
-		("<" typeArguments ("," typeArguments)* ">")?
-		"(" (arguments ("," arguments)* )? ")"
-		arraySelectors* ("." next)? 
-	;
-	
+    ::= ("<" callTypeArguments ("," callTypeArguments)* ">")?
+        target[]
+        "(" (arguments ("," arguments)* )? ")"
+        arraySelectors* ("." next)? ;
+
 references.IdentifierReference
-	::= target[]
-		("<" typeArguments ("," typeArguments)* ">")?
-		arraySelectors* ("." next)? 
-	;
+    ::= target[]
+        ("<" typeArguments ("," typeArguments)* ">")?
+        arraySelectors* ("." next)? ;
 
 @SuppressWarnings(featureWithoutSyntax) //typeArguments	
-references.ReflectiveClassReference ::= "class"
-		("." next)? 
-	;
+references.ReflectiveClassReference
+    ::= "class" ("." next)? ;
 
 @SuppressWarnings(featureWithoutSyntax) //typeArguments
-references.SelfReference ::= self
-		("." next)? 
-	;
+references.SelfReference
+    ::= self ("." next)? ;
 
 @SuppressWarnings(featureWithoutSyntax) //typeArguments
-references.PrimitiveTypeReference ::= primitiveType
-		arraySelectors* ("." next)? 
-	;
-			
+references.PrimitiveTypeReference
+    ::= primitiveType arraySelectors* ("." next)? ;
+
 literals.This ::= "this";
 literals.Super ::= "super";
 
 @SuppressWarnings(featureWithoutSyntax) //typeArguments
-references.StringReference 
-	::= value[STRING_LITERAL]
-		("." next)? 
-	;
+references.StringReference
+    ::= value[STRING_LITERAL] ("." next)? ;
 
 @SuppressWarnings(featureWithoutSyntax)
 generics.QualifiedTypeArgument
