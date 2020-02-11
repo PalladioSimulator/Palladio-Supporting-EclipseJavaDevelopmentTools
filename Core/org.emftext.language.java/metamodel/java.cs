@@ -226,8 +226,7 @@ annotations.AnnotationAttributeSetting
 	;
 
 generics.TypeParameter
-	::= name[] ("extends" extendTypes ("&" extendTypes)*)?
-	;
+    ::= name[] ("extends" extendTypes ("&" extendTypes)*)? ;
 
 @SuppressWarnings(optionalKeyword)
 members.EnumConstant
@@ -346,34 +345,28 @@ instantiations.ExplicitConstructorCall
 @SuppressWarnings(featureWithoutSyntax) //arrayDimensionsAfter
 @SuppressWarnings(minOccurenceMismatch) //arrayDimensionsBefore required here
 arrays.ArrayInstantiationByValuesTyped
-	::= "new" typeReference arrayDimensionsBefore+ arrayInitializer
-		arraySelectors* ("." next)? 
-	;
+    ::= "new" typeReference arrayDimensionsBefore+ arrayInitializer
+        arraySelectors* ("." next)? ;
 
 @SuppressWarnings(featureWithoutSyntax) //typeArguments not applicable
 arrays.ArrayInstantiationByValuesUntyped
-	::= arrayInitializer
-		arraySelectors* ("." next)? 
-	;
+    ::= arrayInitializer
+        arraySelectors* ("." next)? ;
 
 @SuppressWarnings(featureWithoutSyntax)
 arrays.ArrayInstantiationBySize 
-	::= "new" typeReference 
-		("[" sizes:expressions.AssignmentExpression "]")+
-		arrayDimensionsBefore*
-		("." next)?
-	;
+    ::= "new" typeReference
+        ("[" sizes "]")+
+        arrayDimensionsBefore*
+        ("." next)? ;
 
 @SuppressWarnings(optionalKeyword)
 arrays.ArrayInitializer
-    ::= #1 "{" (initialValues:expressions.AssignmentExpression,arrays.ArrayInitializer
-            ("," initialValues:expressions.AssignmentExpression,arrays.ArrayInitializer )*)? (",")? "}"    
-    ;
+    ::= #1 "{" (initialValues ("," initialValues)*)? (",")? "}";
 
 arrays.ArraySelector
-	::= "[" position? "]"
-	;
-	
+    ::= "[" position? "]";
+
 types.NamespaceClassifierReference
 	::= (namespaces[]  ".")* (classifierReferences ".")* classifierReferences
 	;
@@ -424,23 +417,19 @@ references.StringReference
 
 @SuppressWarnings(featureWithoutSyntax)
 generics.QualifiedTypeArgument
-	::= typeReference arrayDimensionsBefore*
-	;
+    ::= typeReference arrayDimensionsBefore* ;
 
 @SuppressWarnings(featureWithoutSyntax)
 generics.UnknownTypeArgument
-	::= "?"
-	;
+    ::= "?";
 
 @SuppressWarnings(featureWithoutSyntax)
 generics.ExtendsTypeArgument
-	::= "?" "extends" extendTypes ("&" extendTypes)* arrayDimensionsBefore*
-	;
+    ::= "?" "extends" extendType arrayDimensionsBefore* ;
 
 @SuppressWarnings(featureWithoutSyntax)
 generics.SuperTypeArgument
-	::= "?" "super" superType arrayDimensionsBefore*
-	;
+    ::= "?" "super" superType arrayDimensionsBefore* ;
 
 @SuppressWarnings(minOccurenceMismatch) //condition can be empty in other cases
 statements.Assert

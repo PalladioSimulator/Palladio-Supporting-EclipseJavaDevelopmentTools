@@ -412,7 +412,7 @@
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//generics/TypeParametrizable/typeParameters"/>
       </genClasses>
       <genClasses ecoreClass="java.ecore#//generics/ExtendsTypeArgument">
-        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//generics/ExtendsTypeArgument/extendTypes"/>
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//generics/ExtendsTypeArgument/extendType"/>
       </genClasses>
       <genClasses ecoreClass="java.ecore#//generics/QualifiedTypeArgument"/>
       <genClasses ecoreClass="java.ecore#//generics/SuperTypeArgument">
