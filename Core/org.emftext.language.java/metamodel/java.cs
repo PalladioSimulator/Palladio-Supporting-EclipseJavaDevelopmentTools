@@ -118,30 +118,27 @@ RULES {
 
 @SuppressWarnings(optionalKeyword)
 @SuppressWarnings(featureWithoutSyntax) //name is set by JavaSourceOrClassFileResource.load()
-containers.EmptyModel 
-   ::= (imports  ";" !0 )* (";")*
-   ;
+containers.EmptyModel
+   ::= (imports !0)* (";")* ;
 
 @SuppressWarnings(optionalKeyword)
 @SuppressWarnings(featureWithoutSyntax) //subpackages is filled by JavaSourceOrClassFileResource.load()
 containers.Package
-   ::=  annotations* "package" (namespaces[]  "."  )* name[]  ";" 
-        (";")? //TODO this is required to let T7312 of JacksTest pass... not sure if this is correct or if it should be * instead of ?
+    ::= annotations* "package" (namespaces[] ".")* name[] ";"
+        // (";")? // Here, no semicolons are allowed.
         !0 !0
-        (imports !0 )* (";")*
-   ;
+        (imports !0)* (";")* ;
 
 @SuppressWarnings(optionalKeyword)
-@SuppressWarnings(featureWithoutSyntax) //name is set by JavaSourceOrClassFileResource or ClassFileModelLoader 
-containers.CompilationUnit 
-   ::=	("package" namespaces[] ( "."  namespaces[])*  ";" )?
+@SuppressWarnings(featureWithoutSyntax) //name is set by JavaSourceOrClassFileResource or ClassFileModelLoader
+containers.CompilationUnit
+    ::= ("package" namespaces[] ("." namespaces[])* ";")?
         !0 !0
-        (imports !0 )*
+        (imports !0)*
         (";" !0)*
         !0
         (classifiers (";")* !0 !0)+
-        ("\u001a")?
-	;
+        ("\u001a")? ;
 
 imports.ClassifierImport
     ::= "import" (namespaces[] ".")* classifier[] ";";
@@ -159,52 +156,47 @@ imports.StaticClassifierImport
 
 @SuppressWarnings(featureWithoutSyntax) //defaultExtends is filled by post processor
 classifiers.Class
-	::=	annotationsAndModifiers*
-	    "class" name[] ("<" typeParameters ("," typeParameters)* ">")?
+    ::= annotationsAndModifiers*
+        "class" name[] ("<" typeParameters ("," typeParameters)* ">")?
         ("extends" extends)?
-        ("implements" (implements ("," implements)*))?
-        #1 "{" 
-        	(!1 members)* !0
-        "}"
-	;
+        ("implements" implements ("," implements)* )?
+        #1 "{"
+            (!1 members)*
+        !0 "}";
 
 @SuppressWarnings(featureWithoutSyntax) //defaultMembers is filled by post processor
 classifiers.AnonymousClass
-	::= #1 "{" 
-			(!1 members)* !0
-		"}"
-	;
+    ::= #1 "{"
+            (!1 members)*
+        !0 "}";
 
 @SuppressWarnings(featureWithoutSyntax) //defaultMembers is set during reference resolving
 classifiers.Interface
-	::=	annotationsAndModifiers*
-	    "interface" name[] ("<"  typeParameters ( "," typeParameters)*  ">")?
-		("extends" (extends ("," extends)*))? 
-	    #1 "{"
-        	(!1 members)* !0
-		"}"
-	;
+    ::= annotationsAndModifiers*
+        "interface" name[] ("<" typeParameters ("," typeParameters)* ">")?
+        ("extends" extends ("," extends)* )?
+        #1 "{"
+            (!1 members)*
+        !0 "}";
 
 @SuppressWarnings(featureWithoutSyntax) //defaultMembers is set during reference resolving
 @SuppressWarnings(optionalKeyword)
 classifiers.Enumeration
     ::= annotationsAndModifiers*
-        "enum" name[] 
-    	("implements" (implements ("," implements)*))? 
-    	#1 "{" 
-    		(!1 constants ("," !1 constants)*)? (",")? 
-    		(";" (!1 members)* !0)?
-    	"}"
-    ;
+        "enum" name[]
+        ("implements" implements ("," implements)* )? 
+        #1 "{"
+            (!1 constants ("," !1 constants)*)? (",")? 
+            (!1 ";" (!1 members)* )?
+    	!0 "}";
 
 @SuppressWarnings(featureWithoutSyntax) //defaultMembers is set during reference resolving
 classifiers.Annotation
-	::=	annotationsAndModifiers*
-	    "@" "interface" name[]
-	    #1 "{" 
-	    	(!1 members)* !0
-	    "}"
-	;
+    ::= annotationsAndModifiers*
+        "@" "interface" name[]
+        #1 "{"
+            (!1 members)*
+        !0 "}";
 
 @SuppressWarnings(featureWithoutSyntax) //typeArguments
 annotations.AnnotationInstance
@@ -355,13 +347,10 @@ arrays.ArraySelector
     ::= "[" position? "]";
 
 types.NamespaceClassifierReference
-	::= (namespaces[]  ".")* (classifierReferences ".")* classifierReferences
-	;
-	
+    ::= (namespaces[] ".")* (classifierReferences ".")* classifierReferences;
+
 types.ClassifierReference
-	::= target[] 
-		("<" typeArguments ("," typeArguments)* ">")?
-	;
+    ::= target[] ("<" typeArguments ("," typeArguments)* ">")? ;
 
 @SuppressWarnings(featureWithoutSyntax) //typeArguments
 references.MethodCall
@@ -576,10 +565,6 @@ expressions.SingleImplicitLambdaParameter
 
 expressions.LambdaExpression
     ::= parameters "->" body;
-
-
-
-
 
 operators.Assignment                   ::= "=";
 operators.AssignmentPlus               ::= "+=";
