@@ -318,7 +318,8 @@ instantiations.NewConstructorCallWithDiamondCallTypeArgument
 @SuppressWarnings(featureWithoutSyntax) //arraySelectors
 instantiations.ExplicitConstructorCall
     ::= ("<" typeArguments ("," typeArguments)* ">")?
-        callTarget "(" (arguments ("," arguments)* )? ")"
+        callTarget // Reference to Self necessary because this call refers to a constructor of this or the super class.
+        "(" (arguments ("," arguments)* )? ")"
         ("." next)? ;
 
 @SuppressWarnings(featureWithoutSyntax) //arrayDimensionsAfter
