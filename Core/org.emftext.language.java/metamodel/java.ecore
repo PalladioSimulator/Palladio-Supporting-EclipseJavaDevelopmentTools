@@ -52,7 +52,7 @@
       <eStructuralFeatures xsi:type="ecore:EReference" name="arrayDimensionsAfter"
           upperBound="-1" eType="#//arrays/ArrayDimension" containment="true"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="ArrayDimension" eSuperTypes="#//commons/Commentable"/>
+    <eClassifiers xsi:type="ecore:EClass" name="ArrayDimension" eSuperTypes="#//commons/Commentable #//annotations/Annotable"/>
     <eClassifiers xsi:type="ecore:EClass" name="ArrayInitializer" eSuperTypes="#//arrays/ArrayInitializationValue">
       <eStructuralFeatures xsi:type="ecore:EReference" name="initialValues" upperBound="-1"
           eType="#//arrays/ArrayInitializationValue" containment="true"/>
@@ -73,7 +73,7 @@
     <eClassifiers xsi:type="ecore:EClass" name="ArrayInstantiationByValuesUntyped"
         eSuperTypes="#//arrays/ArrayInstantiationByValues"/>
     <eClassifiers xsi:type="ecore:EClass" name="ArrayInstantiationByValuesTyped" eSuperTypes="#//arrays/ArrayInstantiationByValues #_Wo2ZP9z1Ed2bJ_pQViWxFg #//arrays/ArrayTypeable"/>
-    <eClassifiers xsi:type="ecore:EClass" name="ArraySelector" eSuperTypes="#//commons/Commentable">
+    <eClassifiers xsi:type="ecore:EClass" name="ArraySelector" eSuperTypes="#//commons/Commentable #//annotations/Annotable">
       <eStructuralFeatures xsi:type="ecore:EReference" name="position" eType="#_Wo2YDNz1Ed2bJ_pQViWxFg"
           containment="true"/>
     </eClassifiers>
@@ -457,7 +457,7 @@
         </eAnnotations>
       </eOperations>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="CompilationUnit" eSuperTypes="#//containers/JavaRoot">
+    <eClassifiers xsi:type="ecore:EClass" name="CompilationUnit" eSuperTypes="#//containers/JavaRoot #//annotations/Annotable">
       <eOperations name="getContainedClassifier" eType="#//classifiers/ConcreteClassifier">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="body" value="return org.emftext.language.java.extensions.containers.CompilationUnitExtension.getContainedClassifier((org.emftext.language.java.containers.CompilationUnit) this, name);"/>
@@ -781,12 +781,12 @@
       <eStructuralFeatures xsi:type="ecore:EReference" name="typeParameters" upperBound="-1"
           eType="#//generics/TypeParameter" containment="true"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="ExtendsTypeArgument" eSuperTypes="#//generics/TypeArgument">
+    <eClassifiers xsi:type="ecore:EClass" name="ExtendsTypeArgument" eSuperTypes="#//generics/TypeArgument #//annotations/Annotable">
       <eStructuralFeatures xsi:type="ecore:EReference" name="extendType" lowerBound="1"
           eType="#_Wo2ZPdz1Ed2bJ_pQViWxFg" containment="true"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="QualifiedTypeArgument" eSuperTypes="#//generics/TypeArgument #_Wo2ZP9z1Ed2bJ_pQViWxFg"/>
-    <eClassifiers xsi:type="ecore:EClass" name="SuperTypeArgument" eSuperTypes="#//generics/TypeArgument">
+    <eClassifiers xsi:type="ecore:EClass" name="SuperTypeArgument" eSuperTypes="#//generics/TypeArgument #//annotations/Annotable">
       <eStructuralFeatures xsi:type="ecore:EReference" name="superType" lowerBound="1"
           eType="#_Wo2ZPdz1Ed2bJ_pQViWxFg" containment="true"/>
     </eClassifiers>
@@ -815,7 +815,7 @@
       <eStructuralFeatures xsi:type="ecore:EReference" name="extendTypes" upperBound="-1"
           eType="#_Wo2ZPdz1Ed2bJ_pQViWxFg" containment="true"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="UnknownTypeArgument" eSuperTypes="#//generics/TypeArgument"/>
+    <eClassifiers xsi:type="ecore:EClass" name="UnknownTypeArgument" eSuperTypes="#//generics/TypeArgument #//annotations/Annotable"/>
   </eSubpackages>
   <eSubpackages name="imports" nsURI="http://www.emftext.org/java/imports" nsPrefix="imports">
     <eClassifiers xsi:type="ecore:EClass" name="Import" abstract="true" eSuperTypes="#//commons/NamespaceAwareElement">
@@ -1279,7 +1279,7 @@
           eType="#//parameters/Parameter" containment="true"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="OrdinaryParameter" eSuperTypes="#//parameters/Parameter"/>
-    <eClassifiers xsi:type="ecore:EClass" name="VariableLengthParameter" eSuperTypes="#//parameters/Parameter"/>
+    <eClassifiers xsi:type="ecore:EClass" name="VariableLengthParameter" eSuperTypes="#//parameters/Parameter #//annotations/Annotable"/>
     <eClassifiers xsi:type="ecore:EClass" name="CatchParameter" eSuperTypes="#//parameters/OrdinaryParameter">
       <eStructuralFeatures xsi:type="ecore:EReference" name="typeReferences" lowerBound="1"
           upperBound="-1" eType="#_Wo2ZPdz1Ed2bJ_pQViWxFg" containment="true"/>
@@ -1321,7 +1321,7 @@
       <eStructuralFeatures xsi:type="ecore:EReference" name="target" lowerBound="1"
           eType="#//references/ReferenceableElement"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="IdentifierReference" eSuperTypes="#//references/ElementReference"/>
+    <eClassifiers xsi:type="ecore:EClass" name="IdentifierReference" eSuperTypes="#//references/ElementReference #//annotations/Annotable"/>
     <eClassifiers xsi:type="ecore:EClass" name="MethodCall" eSuperTypes="#//references/ElementReference #//references/Argumentable #//generics/CallTypeArgumentable"/>
     <eClassifiers xsi:type="ecore:EClass" name="ReflectiveClassReference" eSuperTypes="#//references/Reference"/>
     <eClassifiers xsi:type="ecore:EClass" name="PrimitiveTypeReference" eSuperTypes="#//references/Reference">
@@ -1530,7 +1530,7 @@
         </eAnnotations>
       </eOperations>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="ClassifierReference" eSuperTypes="#_Wo2ZPdz1Ed2bJ_pQViWxFg #//generics/TypeArgumentable">
+    <eClassifiers xsi:type="ecore:EClass" name="ClassifierReference" eSuperTypes="#_Wo2ZPdz1Ed2bJ_pQViWxFg #//generics/TypeArgumentable #//annotations/Annotable">
       <eStructuralFeatures xsi:type="ecore:EReference" name="target" lowerBound="1"
           eType="#//classifiers/Classifier"/>
     </eClassifiers>
@@ -1541,7 +1541,7 @@
           containment="true"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" xmi:id="_Wo2ZR9z1Ed2bJ_pQViWxFg" name="PrimitiveType"
-        abstract="true" eSuperTypes="#_Wo2ZO9z1Ed2bJ_pQViWxFg #_Wo2ZPdz1Ed2bJ_pQViWxFg">
+        abstract="true" eSuperTypes="#_Wo2ZO9z1Ed2bJ_pQViWxFg #_Wo2ZPdz1Ed2bJ_pQViWxFg #//annotations/Annotable">
       <eOperations name="getAllMembers" upperBound="-1" eType="#//members/Member">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="body" value="return org.emftext.language.java.extensions.types.PrimitiveTypeExtension.getAllMembers((org.emftext.language.java.types.PrimitiveType) this, (org.emftext.language.java.commons.Commentable) context);"/>
