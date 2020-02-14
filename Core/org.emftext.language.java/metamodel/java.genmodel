@@ -33,6 +33,9 @@
       <genClasses ecoreClass="java.ecore#_Wosmv9z1Ed2bJ_pQViWxFg">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#_WosmwNz1Ed2bJ_pQViWxFg"/>
       </genClasses>
+      <genClasses ecoreClass="java.ecore#//annotations/AnnotationValueArrayInitializer">
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//annotations/AnnotationValueArrayInitializer/values"/>
+      </genClasses>
     </nestedGenPackages>
     <nestedGenPackages prefix="Arrays" basePackage="org.emftext.language.java" disposableProviderFactory="true"
         ecorePackage="java.ecore#//arrays">

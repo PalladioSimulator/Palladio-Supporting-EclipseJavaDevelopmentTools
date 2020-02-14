@@ -200,22 +200,21 @@ classifiers.Annotation
 
 @SuppressWarnings(featureWithoutSyntax) //typeArguments
 annotations.AnnotationInstance
-	::=	"@" (namespaces[]  "."  )* annotation[]
-		(parameter)? 
-	;
+    ::= "@" (namespaces[] ".")* annotation[]
+        (parameter)? ;
 
 annotations.SingleAnnotationParameter
-	::= "(" value:arrays.ArrayInitializer,expressions.ConditionalExpression ")"
-	;
+    ::= "(" value ")";
 
 annotations.AnnotationParameterList
-	::= "(" (settings ("," settings)*)? ")"
-	;
-	
+    ::= "(" (settings ("," settings)*)? ")";
+
 annotations.AnnotationAttributeSetting
-	::= attribute[] #1 "=" #1 
-	    value:arrays.ArrayInitializer,expressions.ConditionalExpression
-	;
+    ::= attribute[] #1 "=" #1 value;
+
+@SuppressWarnings(featureWithoutSyntax,optionalKeyword)
+annotations.AnnotationValueArrayInitializer
+    ::= "{" (values ("," values)*)? (",")? "}";
 
 generics.TypeParameter
     ::= name[] ("extends" extendTypes ("&" extendTypes)*)? ;
@@ -245,10 +244,9 @@ members.ClassMethod
         ("throws" exceptions ("," exceptions)*)? #1 "{" (!2 statements)* !1 "}";
 
 annotations.AnnotationAttribute
-	::=	annotationsAndModifiers* ("<" typeParameters ("," typeParameters)* ">")? (typeReference arrayDimensionsBefore*) name[]  
-	"(" (parameters ("," parameters)* )? ")" arrayDimensionsAfter*
-	("throws" exceptions ("," exceptions)*)? "default" defaultValue:expressions.AssignmentExpression ";"
-	;
+    ::= annotationsAndModifiers* ("<" typeParameters ("," typeParameters)* ">")? (typeReference arrayDimensionsBefore*) name[] 
+        "(" (parameters ("," parameters)* )? ")" arrayDimensionsAfter*
+        ("throws" exceptions ("," exceptions)*)? "default" defaultValue ";";
 
 parameters.OrdinaryParameter
     ::= annotationsAndModifiers* typeReference arrayDimensionsBefore* ("<" typeArguments ("," typeArguments)* ">")? name[] arrayDimensionsAfter* ;

@@ -9,7 +9,7 @@
           eType="#_Wosms9z1Ed2bJ_pQViWxFg" containment="true"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" xmi:id="_Wosms9z1Ed2bJ_pQViWxFg" name="AnnotationInstance"
-        eSuperTypes="#//references/Reference #//modifiers/AnnotationInstanceOrModifier #//commons/NamespaceAwareElement">
+        eSuperTypes="#//references/Reference #//modifiers/AnnotationInstanceOrModifier #//commons/NamespaceAwareElement #//annotations/AnnotationValue">
       <eStructuralFeatures xsi:type="ecore:EReference" name="annotation" lowerBound="1"
           eType="#//classifiers/Classifier"/>
       <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_Wosmttz1Ed2bJ_pQViWxFg"
@@ -36,7 +36,12 @@
     <eClassifiers xsi:type="ecore:EClass" xmi:id="_Wosmv9z1Ed2bJ_pQViWxFg" name="AnnotationAttribute"
         eSuperTypes="#//members/InterfaceMethod">
       <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_WosmwNz1Ed2bJ_pQViWxFg"
-          name="defaultValue" lowerBound="1" eType="#_Wo2YDNz1Ed2bJ_pQViWxFg" containment="true"/>
+          name="defaultValue" lowerBound="1" eType="#//annotations/AnnotationValue"
+          containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="AnnotationValueArrayInitializer" eSuperTypes="#//annotations/AnnotationValue #//arrays/ArrayInitializer">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="values" upperBound="-1"
+          eType="#//annotations/AnnotationValue" containment="true"/>
     </eClassifiers>
   </eSubpackages>
   <eSubpackages name="arrays" nsURI="http://www.emftext.org/java/arrays" nsPrefix="arrays">
@@ -48,7 +53,7 @@
           upperBound="-1" eType="#//arrays/ArrayDimension" containment="true"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="ArrayDimension" eSuperTypes="#//commons/Commentable"/>
-    <eClassifiers xsi:type="ecore:EClass" name="ArrayInitializer" eSuperTypes="#//arrays/ArrayInitializationValue #//annotations/AnnotationValue">
+    <eClassifiers xsi:type="ecore:EClass" name="ArrayInitializer" eSuperTypes="#//arrays/ArrayInitializationValue">
       <eStructuralFeatures xsi:type="ecore:EReference" name="initialValues" upperBound="-1"
           eType="#//arrays/ArrayInitializationValue" containment="true"/>
     </eClassifiers>
@@ -533,7 +538,7 @@
           name="expressions" upperBound="-1" eType="#_Wo2YDNz1Ed2bJ_pQViWxFg" containment="true"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" xmi:id="_Wo2YDNz1Ed2bJ_pQViWxFg" name="Expression"
-        abstract="true" eSuperTypes="#//arrays/ArrayInitializationValue #//annotations/AnnotationValue #//expressions/LambdaBody">
+        abstract="true" eSuperTypes="#//arrays/ArrayInitializationValue #//expressions/LambdaBody">
       <eOperations name="getType" eType="#_Wo2ZO9z1Ed2bJ_pQViWxFg">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="body" value="return org.emftext.language.java.extensions.expressions.ExpressionExtension.getType((org.emftext.language.java.expressions.Expression) this);"/>
@@ -571,7 +576,7 @@
     <eClassifiers xsi:type="ecore:EClass" name="AssignmentExpressionChild" abstract="true"
         eSuperTypes="#_Wo2YDNz1Ed2bJ_pQViWxFg"/>
     <eClassifiers xsi:type="ecore:EClass" xmi:id="_Wo2YIdz1Ed2bJ_pQViWxFg" name="ConditionalExpression"
-        eSuperTypes="#//expressions/AssignmentExpressionChild">
+        eSuperTypes="#//expressions/AssignmentExpressionChild #//annotations/AnnotationValue">
       <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_Wo2YI9z1Ed2bJ_pQViWxFg"
           name="child" eType="#//expressions/ConditionalExpressionChild" containment="true"/>
       <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_Wo2YJdz1Ed2bJ_pQViWxFg"
