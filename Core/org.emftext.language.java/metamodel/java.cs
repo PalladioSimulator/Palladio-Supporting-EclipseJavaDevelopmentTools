@@ -637,6 +637,7 @@ types.Int ::= annotations* "int";
 types.Long ::= annotations* "long";
 types.Float ::= annotations* "float";
 types.Double ::= annotations* "double";
+types.InferableType ::= "var";
 
 // do not change the order of the literals!
 literals.DecimalLongLiteral
