@@ -1085,6 +1085,7 @@
       </eOperations>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="InterfaceMethod" eSuperTypes="#//members/Method"/>
+    <eClassifiers xsi:type="ecore:EClass" name="DefaultInterfaceMethod" eSuperTypes="#//members/InterfaceMethod #//statements/StatementListContainer"/>
     <eClassifiers xsi:type="ecore:EClass" name="ClassMethod" eSuperTypes="#//members/Method #//statements/StatementListContainer"/>
     <eClassifiers xsi:type="ecore:EClass" name="EnumConstant" eSuperTypes="#//references/ReferenceableElement #//references/Argumentable #//annotations/Annotable">
       <eStructuralFeatures xsi:type="ecore:EReference" name="anonymousClass" eType="#//classifiers/AnonymousClass"
@@ -1224,6 +1225,7 @@
         eSuperTypes="#_Wo2Ys9z1Ed2bJ_pQViWxFg"/>
     <eClassifiers xsi:type="ecore:EClass" xmi:id="_Wo2Yx9z1Ed2bJ_pQViWxFg" name="Volatile"
         eSuperTypes="#_Wo2Ys9z1Ed2bJ_pQViWxFg"/>
+    <eClassifiers xsi:type="ecore:EClass" name="Default" eSuperTypes="#_Wo2Ys9z1Ed2bJ_pQViWxFg"/>
   </eSubpackages>
   <eSubpackages name="operators" nsURI="http://www.emftext.org/java/operators" nsPrefix="operators">
     <eClassifiers xsi:type="ecore:EClass" name="Operator" abstract="true" eSuperTypes="#//commons/Commentable"/>

@@ -609,6 +609,7 @@
             body="return org.emftext.language.java.extensions.members.MethodExtension.getArrayDimension((org.emftext.language.java.members.Method) this);"/>
       </genClasses>
       <genClasses ecoreClass="java.ecore#//members/InterfaceMethod"/>
+      <genClasses ecoreClass="java.ecore#//members/DefaultInterfaceMethod"/>
       <genClasses ecoreClass="java.ecore#//members/ClassMethod"/>
       <genClasses ecoreClass="java.ecore#//members/EnumConstant">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//members/EnumConstant/anonymousClass"/>
@@ -672,6 +673,7 @@
       <genClasses ecoreClass="java.ecore#_Wo2Yw9z1Ed2bJ_pQViWxFg"/>
       <genClasses ecoreClass="java.ecore#_Wo2Yxdz1Ed2bJ_pQViWxFg"/>
       <genClasses ecoreClass="java.ecore#_Wo2Yx9z1Ed2bJ_pQViWxFg"/>
+      <genClasses ecoreClass="java.ecore#//modifiers/Default"/>
     </nestedGenPackages>
     <nestedGenPackages prefix="Operators" basePackage="org.emftext.language.java"
         disposableProviderFactory="true" ecorePackage="java.ecore#//operators">

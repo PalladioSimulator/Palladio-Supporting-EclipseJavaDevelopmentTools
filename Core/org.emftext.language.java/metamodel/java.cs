@@ -235,8 +235,13 @@ members.Constructor
 
 members.InterfaceMethod
     ::= annotationsAndModifiers* ("<" typeParameters ("," typeParameters)* ">")? (typeReference arrayDimensionsBefore*) name[]
-        "("  (parameters ("," parameters)* )? ")" arrayDimensionsAfter*
+        "(" (parameters ("," parameters)* )? ")" arrayDimensionsAfter*
         ("throws" exceptions ("," exceptions)*)? ";";
+
+members.DefaultInterfaceMethod
+    ::= annotationsAndModifiers* ("<" typeParameters ("," typeParameters)* ">")? (typeReference arrayDimensionsBefore*) name[]
+        "(" (parameters ("," parameters)*)? ")" arrayDimensionsAfter*
+        ("throws" exceptions ("," exceptions)*)? #1 "{" (!2 statements)* !1 "}";
 
 members.ClassMethod
     ::= annotationsAndModifiers* ("<" typeParameters ("," typeParameters)* ">")? (typeReference arrayDimensionsBefore*) name[]
@@ -615,6 +620,7 @@ modifiers.Protected ::= "protected";
 modifiers.Private ::= "private";
 modifiers.Final ::= "final";
 modifiers.Static ::= "static";
+modifiers.Default ::= "default";
 
 modifiers.Native ::= "native";
 modifiers.Synchronized ::= "synchronized";
