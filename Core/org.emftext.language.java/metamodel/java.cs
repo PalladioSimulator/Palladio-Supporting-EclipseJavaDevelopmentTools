@@ -259,6 +259,10 @@ parameters.CatchParameter
 parameters.VariableLengthParameter
     ::= annotationsAndModifiers* typeReference arrayDimensionsBefore* ("<" typeArguments ("," typeArguments)* ">")? annotations* "..." name[];
 
+@SuppressWarnings(featureWithoutSyntax)
+parameters.ReceiverParameter
+    ::= annotations* typeReference arrayDimensionsBefore* ("<" typeArguments ("," typeArguments)* ">")? reference;
+
 variables.LocalVariable
     ::= annotationsAndModifiers* typeReference arrayDimensionsBefore* ("<" typeArguments ("," typeArguments)* ">")? name[]
         arrayDimensionsAfter* (#1 "=" #1 initialValue)?
