@@ -566,11 +566,11 @@ expressions.ExplicitlyTypedLambdaParameters
     ::= "(" (parameters ("," parameters)*)? ")";
 
 expressions.ImplicitlyTypedLambdaParameters
-    ::= "(" (identifierReferences ("," identifierReferences)*)? ")";
+    ::= "(" (identifiers[] ("," identifiers[])*)? ")";
 
 @SuppressWarnings(minOccurenceMismatch)
 expressions.SingleImplicitLambdaParameter
-    ::= identifierReferences;
+    ::= identifiers[];
 
 expressions.LambdaExpression
     ::= parameters "->" body;

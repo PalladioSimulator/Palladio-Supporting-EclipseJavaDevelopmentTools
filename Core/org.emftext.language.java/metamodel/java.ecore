@@ -763,8 +763,8 @@
         eSuperTypes="#//commons/Commentable"/>
     <eClassifiers xsi:type="ecore:EClass" name="ExplicitlyTypedLambdaParameters" eSuperTypes="#//expressions/LambdaParameters #//parameters/Parametrizable"/>
     <eClassifiers xsi:type="ecore:EClass" name="ImplicitlyTypedLambdaParameters" eSuperTypes="#//expressions/LambdaParameters">
-      <eStructuralFeatures xsi:type="ecore:EReference" name="identifierReferences"
-          upperBound="-1" eType="#//references/Reference" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="identifiers" upperBound="-1"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="SingleImplicitLambdaParameter" eSuperTypes="#//expressions/ImplicitlyTypedLambdaParameters"/>
   </eSubpackages>
