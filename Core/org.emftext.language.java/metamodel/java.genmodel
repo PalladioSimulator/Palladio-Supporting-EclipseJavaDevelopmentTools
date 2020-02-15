@@ -277,6 +277,9 @@
             body="return org.emftext.language.java.extensions.containers.PackageExtension.getClassifiersInSamePackage((org.emftext.language.java.containers.Package) this);"/>
       </genClasses>
       <genClasses ecoreClass="java.ecore#//containers/EmptyModel"/>
+      <genClasses image="false" ecoreClass="java.ecore#//containers/Module">
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//containers/Module/target"/>
+      </genClasses>
     </nestedGenPackages>
     <nestedGenPackages prefix="Expressions" basePackage="org.emftext.language.java"
         disposableProviderFactory="true" ecorePackage="java.ecore#_Wo2YC9z1Ed2bJ_pQViWxFg">
@@ -674,6 +677,8 @@
       <genClasses ecoreClass="java.ecore#_Wo2Yxdz1Ed2bJ_pQViWxFg"/>
       <genClasses ecoreClass="java.ecore#_Wo2Yx9z1Ed2bJ_pQViWxFg"/>
       <genClasses ecoreClass="java.ecore#//modifiers/Default"/>
+      <genClasses image="false" ecoreClass="java.ecore#//modifiers/RequiresModifier"/>
+      <genClasses ecoreClass="java.ecore#//modifiers/Transitive"/>
     </nestedGenPackages>
     <nestedGenPackages prefix="Operators" basePackage="org.emftext.language.java"
         disposableProviderFactory="true" ecorePackage="java.ecore#//operators">
@@ -929,6 +934,28 @@
       </genClasses>
       <genClasses image="false" ecoreClass="java.ecore#//variables/Resource"/>
       <genClasses ecoreClass="java.ecore#//variables/LocalResourceVariable"/>
+    </nestedGenPackages>
+    <nestedGenPackages prefix="Modules" disposableProviderFactory="true" ecorePackage="java.ecore#//modules">
+      <genClasses ecoreClass="java.ecore#//modules/OpenModule"/>
+      <genClasses ecoreClass="java.ecore#//modules/NormalModule"/>
+      <genClasses image="false" ecoreClass="java.ecore#//modules/ModuleDirective"/>
+      <genClasses ecoreClass="java.ecore#//modules/UsesModuleDirective"/>
+      <genClasses ecoreClass="java.ecore#//modules/ProvidesModuleDirective">
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//modules/ProvidesModuleDirective/serviceProviders"/>
+      </genClasses>
+      <genClasses image="false" ecoreClass="java.ecore#//modules/AccessProvidingModuleDirective">
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//modules/AccessProvidingModuleDirective/accessGrantedPackage"/>
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//modules/AccessProvidingModuleDirective/modules"/>
+      </genClasses>
+      <genClasses ecoreClass="java.ecore#//modules/RequiresModuleDirective">
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//modules/RequiresModuleDirective/modifier"/>
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//modules/RequiresModuleDirective/requiredModule"/>
+      </genClasses>
+      <genClasses ecoreClass="java.ecore#//modules/OpensModuleDirective"/>
+      <genClasses ecoreClass="java.ecore#//modules/ExportsModuleDirective"/>
+      <genClasses ecoreClass="java.ecore#//modules/ModuleReference">
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//modules/ModuleReference/target"/>
+      </genClasses>
     </nestedGenPackages>
   </genPackages>
 </genmodel:GenModel>

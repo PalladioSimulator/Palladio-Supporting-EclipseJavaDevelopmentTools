@@ -14,7 +14,7 @@
 
 SYNTAXDEF java
 FOR <http://www.emftext.org/java> <java.genmodel>
-START containers.CompilationUnit, containers.Package, containers.EmptyModel
+START containers.CompilationUnit, containers.Package, containers.EmptyModel, modules.OpenModule, modules.NormalModule
 
 IMPORTS {
     annotations : <http://www.emftext.org/java/annotations>
@@ -34,7 +34,8 @@ IMPORTS {
     references : <http://www.emftext.org/java/references>
     statements : <http://www.emftext.org/java/statements>
     types : <http://www.emftext.org/java/types>
-   variables : <http://www.emftext.org/java/variables>
+    variables : <http://www.emftext.org/java/variables>
+    modules : <http://www.emftext.org/java/modules>
 }
 
 OPTIONS {
@@ -628,6 +629,8 @@ modifiers.Transient ::= "transient";
 modifiers.Volatile ::= "volatile";
 modifiers.Strictfp ::= "strictfp";
 
+modifiers.Transitive ::= "transitive";
+
 types.Void ::= annotations* "void";
 types.Boolean ::= annotations* "boolean";
 types.Char ::= annotations* "char";
@@ -638,6 +641,41 @@ types.Long ::= annotations* "long";
 types.Float ::= annotations* "float";
 types.Double ::= annotations* "double";
 types.InferableType ::= "var";
+
+@SuppressWarnings(featureWithoutSyntax,minOccurenceMismatch)
+modules.NormalModule
+    ::= (imports !0)*
+        annotations* "module" namespaces[] ("." namespaces[])*
+        #1 "{"
+            (!1 target)*
+        !0 "}";
+
+@SuppressWarnings(featureWithoutSyntax,minOccurenceMismatch)
+modules.OpenModule
+    ::= (imports !0)*
+        annotations* "open" "module" namespaces[] ("." namespaces[])*
+        #1 "{"
+            (!1 target)*
+        !0 "}";
+
+modules.UsesModuleDirective
+    ::= "uses" typeReference;
+
+modules.ProvidesModuleDirective
+    ::= "provides" typeReference "with" serviceProviders ("," serviceProviders)*;
+
+modules.RequiresModuleDirective
+    ::= "requires" (modifier)* requiredModule;
+
+modules.OpensModuleDirective
+    ::= "opens" accessGrantedPackage ("to" modules ("," modules)*)?;
+
+modules.ExportsModuleDirective
+    ::= "exports" accessGrantedPackage ("to" modules ("," modules)*)?;
+
+@SuppressWarnings(featureWithoutSyntax,minOccurenceMismatch)
+modules.ModuleReference
+    ::= namespaces[] ("." namespaces[])*;
 
 // do not change the order of the literals!
 literals.DecimalLongLiteral
