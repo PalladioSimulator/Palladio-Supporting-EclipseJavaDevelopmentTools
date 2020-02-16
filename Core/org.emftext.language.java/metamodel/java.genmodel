@@ -309,9 +309,6 @@
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#_Wo2YJdz1Ed2bJ_pQViWxFg"/>
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//expressions/ConditionalExpression/expressionElse"/>
       </genClasses>
-      <genClasses ecoreClass="java.ecore#//expressions/ConditionalElseLambdaExpression">
-        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//expressions/ConditionalElseLambdaExpression/elseLambda"/>
-      </genClasses>
       <genClasses image="false" ecoreClass="java.ecore#//expressions/ConditionalExpressionChild"/>
       <genClasses ecoreClass="java.ecore#_Wo2YHdz1Ed2bJ_pQViWxFg">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#_Wo2YH9z1Ed2bJ_pQViWxFg"/>
@@ -377,9 +374,6 @@
       <genClasses ecoreClass="java.ecore#_Wo2YWdz1Ed2bJ_pQViWxFg">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//expressions/CastExpression/additionalBounds"/>
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#_Wo2YXdz1Ed2bJ_pQViWxFg"/>
-      </genClasses>
-      <genClasses ecoreClass="java.ecore#//expressions/CastLambdaExpression">
-        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//expressions/CastLambdaExpression/lambdaChild"/>
       </genClasses>
       <genClasses image="false" ecoreClass="java.ecore#//expressions/PrimaryExpression"/>
       <genClasses ecoreClass="java.ecore#//expressions/NestedExpression">
@@ -677,7 +671,6 @@
       <genClasses ecoreClass="java.ecore#_Wo2Yxdz1Ed2bJ_pQViWxFg"/>
       <genClasses ecoreClass="java.ecore#_Wo2Yx9z1Ed2bJ_pQViWxFg"/>
       <genClasses ecoreClass="java.ecore#//modifiers/Default"/>
-      <genClasses image="false" ecoreClass="java.ecore#//modifiers/RequiresModifier"/>
       <genClasses ecoreClass="java.ecore#//modifiers/Transitive"/>
     </nestedGenPackages>
     <nestedGenPackages prefix="Operators" basePackage="org.emftext.language.java"
@@ -948,7 +941,6 @@
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//modules/AccessProvidingModuleDirective/modules"/>
       </genClasses>
       <genClasses ecoreClass="java.ecore#//modules/RequiresModuleDirective">
-        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//modules/RequiresModuleDirective/modifier"/>
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//modules/RequiresModuleDirective/requiredModule"/>
       </genClasses>
       <genClasses ecoreClass="java.ecore#//modules/OpensModuleDirective"/>
