@@ -18,6 +18,7 @@ package org.emftext.language.java.resource.java.analysis;
 import static org.emftext.language.java.resource.java.analysis.helper.LiteralConstants.FLOAT_SUFFIX;
 import static org.emftext.language.java.resource.java.analysis.helper.LiteralConstants.HEX_EXPONENT;
 import static org.emftext.language.java.resource.java.analysis.helper.LiteralConstants.HEX_PREFIX;
+import static org.emftext.language.java.resource.java.analysis.helper.LiteralConstants.UNDER_SCORE;
 
 import java.util.Map;
 
@@ -42,6 +43,8 @@ public class JavaHEX_FLOAT_LITERALTokenResolver implements IJavaTokenResolver {
 		assert lexem.toLowerCase().endsWith(FLOAT_SUFFIX);
 
 		lexem = lexem.substring(0, lexem.length() - 1);
+		
+		lexem = lexem.replaceAll(UNDER_SCORE, "");
 
 		result.setResolvedToken(Float.parseFloat(lexem));
 	}

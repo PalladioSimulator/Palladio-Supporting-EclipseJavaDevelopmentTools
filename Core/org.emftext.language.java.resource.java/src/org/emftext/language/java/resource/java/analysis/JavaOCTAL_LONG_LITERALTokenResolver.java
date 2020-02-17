@@ -17,6 +17,7 @@ package org.emftext.language.java.resource.java.analysis;
 
 import static org.emftext.language.java.resource.java.analysis.helper.LiteralConstants.LONG_SUFFIX;
 import static org.emftext.language.java.resource.java.analysis.helper.LiteralConstants.OCT_PREFIX;
+import static org.emftext.language.java.resource.java.analysis.helper.LiteralConstants.UNDER_SCORE;
 
 import java.math.BigInteger;
 import java.util.Map;
@@ -40,6 +41,9 @@ public class JavaOCTAL_LONG_LITERALTokenResolver implements IJavaTokenResolver {
 		assert lexem.toLowerCase().endsWith(LONG_SUFFIX);
 
 		lexem = lexem.substring(0, lexem.length() - 1);
+		
+		lexem = lexem.replaceAll(UNDER_SCORE, "");
+		
 		JavaDECIMAL_LONG_LITERALTokenResolver.parseToLong(lexem, 8, result);
 	}
 

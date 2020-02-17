@@ -16,6 +16,7 @@
 package org.emftext.language.java.resource.java.analysis;
 
 import static org.emftext.language.java.resource.java.analysis.helper.LiteralConstants.OCT_PREFIX;
+import static org.emftext.language.java.resource.java.analysis.helper.LiteralConstants.UNDER_SCORE;
 
 import java.math.BigInteger;
 import java.util.Map;
@@ -37,6 +38,8 @@ public class JavaOCTAL_INTEGER_LITERALTokenResolver implements IJavaTokenResolve
 	public void resolve(java.lang.String lexem, org.eclipse.emf.ecore.EStructuralFeature feature, IJavaTokenResolveResult result) {
 		assert feature == null || feature.getEContainingClass().equals(LiteralsPackage.eINSTANCE.getOctalIntegerLiteral());
 
+		lexem = lexem.replaceAll(UNDER_SCORE, "");
+		
 		JavaDECIMAL_LONG_LITERALTokenResolver.parseToLong(lexem, 8, result);
 	}
 

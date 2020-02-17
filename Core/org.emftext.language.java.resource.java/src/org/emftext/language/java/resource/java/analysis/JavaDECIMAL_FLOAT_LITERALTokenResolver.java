@@ -16,6 +16,7 @@
 package org.emftext.language.java.resource.java.analysis;
 
 import static org.emftext.language.java.resource.java.analysis.helper.LiteralConstants.FLOAT_SUFFIX;
+import static org.emftext.language.java.resource.java.analysis.helper.LiteralConstants.UNDER_SCORE;
 
 import java.math.BigDecimal;
 import java.util.Map;
@@ -38,6 +39,9 @@ public class JavaDECIMAL_FLOAT_LITERALTokenResolver implements IJavaTokenResolve
 		assert lexem.toLowerCase().endsWith(FLOAT_SUFFIX);
 
 		lexem = lexem.substring(0, lexem.length() - 1);
+		
+		lexem = lexem.replaceAll(UNDER_SCORE, "");
+		
 		parseToFloat(lexem, result);
 	}
 

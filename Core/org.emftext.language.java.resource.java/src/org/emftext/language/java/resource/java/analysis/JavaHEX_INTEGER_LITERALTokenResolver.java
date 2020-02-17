@@ -16,6 +16,7 @@
 package org.emftext.language.java.resource.java.analysis;
 
 import static org.emftext.language.java.resource.java.analysis.helper.LiteralConstants.HEX_PREFIX;
+import static org.emftext.language.java.resource.java.analysis.helper.LiteralConstants.UNDER_SCORE;
 
 import java.math.BigInteger;
 import java.util.Map;
@@ -38,6 +39,8 @@ public class JavaHEX_INTEGER_LITERALTokenResolver implements IJavaTokenResolver 
 		assert lexem.toLowerCase().startsWith(HEX_PREFIX);
 
 		lexem = lexem.substring(2);
+		
+		lexem = lexem.replaceAll(UNDER_SCORE, "");
 
 		JavaDECIMAL_LONG_LITERALTokenResolver.parseToLong(lexem, 16, result);
 	}

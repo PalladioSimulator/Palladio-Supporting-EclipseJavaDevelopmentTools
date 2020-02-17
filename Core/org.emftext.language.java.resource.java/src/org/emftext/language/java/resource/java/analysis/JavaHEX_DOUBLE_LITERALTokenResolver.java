@@ -17,6 +17,7 @@ package org.emftext.language.java.resource.java.analysis;
 
 import static org.emftext.language.java.resource.java.analysis.helper.LiteralConstants.DOUBLE_SUFFIX;
 import static org.emftext.language.java.resource.java.analysis.helper.LiteralConstants.HEX_PREFIX;
+import static org.emftext.language.java.resource.java.analysis.helper.LiteralConstants.UNDER_SCORE;
 
 import java.util.Map;
 
@@ -41,6 +42,8 @@ public class JavaHEX_DOUBLE_LITERALTokenResolver implements IJavaTokenResolver {
 		if (lexem.toLowerCase().endsWith(DOUBLE_SUFFIX)) {
 			lexem = lexem.substring(0, lexem.length() - 1);
 		}
+		
+		lexem = lexem.replaceAll(UNDER_SCORE, "");
 
 		result.setResolvedToken(Double.parseDouble(lexem));
 	}
