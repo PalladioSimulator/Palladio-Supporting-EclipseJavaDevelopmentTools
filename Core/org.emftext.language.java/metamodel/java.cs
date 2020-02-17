@@ -205,17 +205,17 @@ annotations.AnnotationInstance
         (parameter)? ;
 
 annotations.SingleAnnotationParameter
-    ::= "(" value ")";
+    ::= "(" value:annotations.AnnotationInstance,expressions.ConditionalExpression,annotations.AnnotationValueArrayInitializer ")";
 
 annotations.AnnotationParameterList
     ::= "(" (settings ("," settings)*)? ")";
 
 annotations.AnnotationAttributeSetting
-    ::= attribute[] #1 "=" #1 value;
+    ::= attribute[] #1 "=" #1 value:annotations.AnnotationInstance,expressions.ConditionalExpression,annotations.AnnotationValueArrayInitializer;
 
 @SuppressWarnings(featureWithoutSyntax,optionalKeyword)
 annotations.AnnotationValueArrayInitializer
-    ::= "{" (values ("," values)*)? (",")? "}";
+    ::= "{" (values:annotations.AnnotationInstance,expressions.ConditionalExpression,annotations.AnnotationValueArrayInitializer ("," values:annotations.AnnotationInstance,expressions.ConditionalExpression,annotations.AnnotationValueArrayInitializer)*)? (",")? "}";
 
 generics.TypeParameter
     ::= name[] ("extends" extendTypes:types.ClassifierReference,types.NamespaceClassifierReference ("&" extendTypes:types.ClassifierReference,types.NamespaceClassifierReference)*)? ;
