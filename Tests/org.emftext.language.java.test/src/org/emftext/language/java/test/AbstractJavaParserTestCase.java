@@ -335,7 +335,7 @@ public abstract class AbstractJavaParserTestCase {
 		char[] charArray = readTextContents(inputStream).toCharArray();
 		jdtParser.setSource(charArray);
 
-		Map<String, Object> options = new HashMap<String, Object>();
+		Map<String, String> options = new HashMap<String, String>();
 		options.put(JavaCore.COMPILER_SOURCE, JavaCore.VERSION_1_5);
 		jdtParser.setCompilerOptions(options);
 

@@ -294,9 +294,7 @@ public class TypeParameterExtension {
 								}
 							}
 							if (arg instanceof ExtendsTypeArgument) {
-								for(TypeReference extendedType : ((ExtendsTypeArgument) arg).getExtendTypes()) {
-									resultList.add(0, extendedType.getBoundTarget(parentReference));
-								}
+								resultList.add(0, ((ExtendsTypeArgument) arg).getExtendType().getBoundTarget(parentReference));
 							}
 						}
 			
@@ -407,9 +405,7 @@ public class TypeParameterExtension {
 														resultList.add(0, ((QualifiedTypeArgument)argumentType.getTypeArguments().get(idx2)).getTypeReference().getTarget());
 													}
 													else if (argumentType.getTypeArguments().get(idx2) instanceof ExtendsTypeArgument) {
-														for(TypeReference extendedType : ((ExtendsTypeArgument) argumentType.getTypeArguments().get(idx2)).getExtendTypes()) {
-															resultList.add(0, extendedType.getTarget());
-														}
+														resultList.add(0, ((ExtendsTypeArgument) argumentType.getTypeArguments().get(idx2)).getExtendType().getTarget());
 													}
 												}
 											}

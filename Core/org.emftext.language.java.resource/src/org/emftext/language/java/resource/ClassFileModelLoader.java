@@ -230,7 +230,7 @@ public class ClassFileModelLoader {
 	protected Member constructMethod(org.apache.bcel6_2_0.classfile.Method method, ConcreteClassifier emfClassifier, boolean withVariableLength) {
 		Method emfMethod = null;
 		if (emfClassifier instanceof Annotation) {
-			emfMethod = annotationsFactory.createAnnotationAttribute();
+			emfMethod = membersFactory.createInterfaceMethod();
 		} else if(emfClassifier instanceof Interface) {
 			emfMethod = membersFactory.createInterfaceMethod();
 		} else {
