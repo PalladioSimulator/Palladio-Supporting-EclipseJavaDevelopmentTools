@@ -177,7 +177,7 @@ classifiers.Interface
         "interface" name[] ("<" typeParameters ("," typeParameters)* ">")?
         ("extends" extends:types.ClassifierReference,types.NamespaceClassifierReference ("," extends:types.ClassifierReference,types.NamespaceClassifierReference)* )?
         #1 "{"
-            (!1 members:classifiers.ConcreteClassifier,members.EmptyMember,members.Field,members.InterfaceMethod,members.DefaultInterfaceMethod)*
+            (!1 members:classifiers.ConcreteClassifier,members.EmptyMember,members.Field,members.InterfaceMethod)*
         !0 "}";
 
 @SuppressWarnings(featureWithoutSyntax) //defaultMembers is set during reference resolving
@@ -196,7 +196,7 @@ classifiers.Annotation
     ::= annotationsAndModifiers:annotations.AnnotationInstance,modifiers.Public,modifiers.Protected,modifiers.Private,modifiers.Abstract,modifiers.Static,modifiers.Strictfp*
         "@" "interface" name[]
         #1 "{"
-            (!1 members:classifiers.ConcreteClassifier,members.Field,members.EmptyMember,annotations.AnnotationAttribute)*
+            (!1 members:classifiers.ConcreteClassifier,members.Field,members.EmptyMember,members.InterfaceMethod)*
         !0 "}";
 
 @SuppressWarnings(featureWithoutSyntax) //typeArguments
@@ -238,18 +238,13 @@ members.Constructor
         "(" (parameters:parameters.ReceiverParameter,parameters.OrdinaryParameter,parameters.VariableLengthParameter ("," parameters:parameters.OrdinaryParameter,parameters.VariableLengthParameter)* )? ")"
         ("throws" exceptions ("," exceptions)*)? statements:statements.Block;
 
+@SuppressWarnings(minOccurenceMismatch)
 members.InterfaceMethod
-    ::= annotationsAndModifiers:annotations.AnnotationInstance,modifiers.Public,modifiers.Abstract,modifiers.Strictfp*
+    ::= annotationsAndModifiers:annotations.AnnotationInstance,modifiers.Public,modifiers.Abstract,modifiers.Strictfp,modifiers.Private,modifiers.Static,modifiers.Default*
         ("<" typeParameters ("," typeParameters)* ">")? (typeReference:types.PrimitiveType,types.ClassifierReference,types.NamespaceClassifierReference arrayDimensionsBefore*) name[]
         "(" (parameters:parameters.ReceiverParameter,parameters.OrdinaryParameter,parameters.VariableLengthParameter ("," parameters:parameters.OrdinaryParameter,parameters.VariableLengthParameter)* )? ")" arrayDimensionsAfter*
-        ("throws" exceptions ("," exceptions)*)? ";";
-
-@SuppressWarnings(minOccurenceMismatch)
-members.DefaultInterfaceMethod
-    ::= annotationsAndModifiers:annotations.AnnotationInstance,modifiers.Public,modifiers.Private,modifiers.Static,modifiers.Default,modifiers.Strictfp*
-        ("<" typeParameters ("," typeParameters)* ">")? (typeReference:types.PrimitiveType,types.ClassifierReference,types.NamespaceClassifierReference arrayDimensionsBefore*) name[]
-        "(" (parameters:parameters.ReceiverParameter,parameters.OrdinaryParameter,parameters.VariableLengthParameter ("," parameters:parameters.OrdinaryParameter,parameters.VariableLengthParameter)*)? ")" arrayDimensionsAfter*
-        ("throws" exceptions ("," exceptions)*)? statements:statements.Block;
+        ("throws" exceptions ("," exceptions)*)? ("default" defaultValue)?
+        statements:statements.EmptyStatement,statements.Block;
 
 @SuppressWarnings(minOccurenceMismatch)
 members.ClassMethod
@@ -257,13 +252,6 @@ members.ClassMethod
         ("<" typeParameters ("," typeParameters)* ">")? (typeReference:types.PrimitiveType,types.ClassifierReference,types.NamespaceClassifierReference arrayDimensionsBefore*) name[]
         "(" (parameters:parameters.ReceiverParameter,parameters.OrdinaryParameter,parameters.VariableLengthParameter ("," parameters:parameters.OrdinaryParameter,parameters.VariableLengthParameter)* )? ")" arrayDimensionsAfter*
         ("throws" exceptions ("," exceptions)*)? statements:statements.Block;
-
-@SuppressWarnings(featureWithoutSyntax)
-annotations.AnnotationAttribute
-    ::= annotationsAndModifiers:annotations.AnnotationInstance,modifiers.Public,modifiers.Abstract*
-        ("<" typeParameters ("," typeParameters)* ">")? (typeReference:types.PrimitiveType,types.ClassifierReference,types.NamespaceClassifierReference arrayDimensionsBefore*) name[] 
-        "(" ")" arrayDimensionsAfter*
-        ("default" defaultValue)? ";";
 
 parameters.OrdinaryParameter
     ::= annotationsAndModifiers:annotations.AnnotationInstance,modifiers.Final* typeReference arrayDimensionsBefore*
@@ -290,11 +278,6 @@ variables.LocalVariable
         arrayDimensionsAfter* (#1 "=" #1 initialValue:expressions.AssignmentExpression,expressions.LambdaExpression)?
         ("," additionalLocalVariables)* ;
 
-@SuppressWarnings(featureWithoutSyntax,minOccurenceMismatch)
-variables.LocalResourceVariable
-    ::= annotationsAndModifiers:annotations.AnnotationInstance,modifiers.Final* typeReference arrayDimensionsBefore* name[]
-        #1 "=" #1 initialValue:expressions.AssignmentExpression,expressions.LambdaExpression;
-
 statements.LocalVariableStatement
     ::= variable:variables.LocalVariable ";";
 
@@ -317,26 +300,14 @@ members.EmptyMember
     ::= ";";
 
 // INSTANTIATIONS
-@SuppressWarnings(featureWithoutSyntax) //arraySelectors
+@SuppressWarnings(featureWithoutSyntax,optionalKeyword) //arraySelectors
 instantiations.NewConstructorCall
     ::= "new"
         // these are the arguments for the constructor type parameters
         ("<" typeArguments ("," typeArguments)* ">")?
         typeReference:types.ClassifierReference
         // these are the arguments for the class type parameters
-        ("<" callTypeArguments ("," callTypeArguments)* ">")?
-        "(" (arguments:expressions.AssignmentExpression,expressions.LambdaExpression ("," arguments:expressions.AssignmentExpression,expressions.LambdaExpression)* )? ")"
-        anonymousClass?
-        ("." next)? ;
-
-@SuppressWarnings(featureWithoutSyntax)
-instantiations.NewConstructorCallWithDiamondCallTypeArgument
-    ::= "new"
-        // these are the arguments for the constructor type parameters
-        ("<" typeArguments ("," typeArguments)* ">")?
-        typeReference:types.ClassifierReference
-        // diamond for the class type parameters that are inferred
-        "<>"
+        ("<" (callTypeArguments ("," callTypeArguments)*)? ">")?
         "(" (arguments:expressions.AssignmentExpression,expressions.LambdaExpression ("," arguments:expressions.AssignmentExpression,expressions.LambdaExpression)* )? ")"
         anonymousClass?
         ("." next)? ;
