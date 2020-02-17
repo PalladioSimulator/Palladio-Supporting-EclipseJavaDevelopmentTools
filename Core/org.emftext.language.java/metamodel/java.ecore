@@ -9,7 +9,7 @@
           eType="#_Wosms9z1Ed2bJ_pQViWxFg" containment="true"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" xmi:id="_Wosms9z1Ed2bJ_pQViWxFg" name="AnnotationInstance"
-        eSuperTypes="#//references/Reference #//modifiers/AnnotationInstanceOrModifier #//commons/NamespaceAwareElement #//annotations/AnnotationValue">
+        eSuperTypes="#//modifiers/AnnotationInstanceOrModifier #//commons/NamespaceAwareElement #//annotations/AnnotationValue">
       <eStructuralFeatures xsi:type="ecore:EReference" name="annotation" lowerBound="1"
           eType="#//classifiers/Classifier"/>
       <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_Wosmttz1Ed2bJ_pQViWxFg"

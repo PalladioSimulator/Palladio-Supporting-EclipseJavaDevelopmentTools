@@ -227,13 +227,16 @@ members.EnumConstant
 
 @SuppressWarnings(featureWithoutSyntax) //name is set by JavaModelCompletion.setBlockName()
 statements.Block
-    ::= modifiers:modifiers.Static* #1 "{" (!1 statements)* !0 "}";
+    ::= modifiers:modifiers.Static* #1 "{"
+            (!1 statements)*
+        !0 "}";
 
+@SuppressWarnings(minOccurenceMismatch)
 members.Constructor
     ::= annotationsAndModifiers:annotations.AnnotationInstance,modifiers.Public,modifiers.Protected,modifiers.Private*
         ("<" typeParameters ("," typeParameters)* ">")? name[]
         "(" (parameters:parameters.ReceiverParameter,parameters.OrdinaryParameter,parameters.VariableLengthParameter ("," parameters:parameters.OrdinaryParameter,parameters.VariableLengthParameter)* )? ")"
-        ("throws" exceptions ("," exceptions)*)? #1 "{" (!2 statements)* !1 "}";
+        ("throws" exceptions ("," exceptions)*)? statements:statements.Block;
 
 members.InterfaceMethod
     ::= annotationsAndModifiers:annotations.AnnotationInstance,modifiers.Public,modifiers.Abstract,modifiers.Strictfp*
@@ -241,17 +244,19 @@ members.InterfaceMethod
         "(" (parameters:parameters.ReceiverParameter,parameters.OrdinaryParameter,parameters.VariableLengthParameter ("," parameters:parameters.OrdinaryParameter,parameters.VariableLengthParameter)* )? ")" arrayDimensionsAfter*
         ("throws" exceptions ("," exceptions)*)? ";";
 
+@SuppressWarnings(minOccurenceMismatch)
 members.DefaultInterfaceMethod
     ::= annotationsAndModifiers:annotations.AnnotationInstance,modifiers.Public,modifiers.Private,modifiers.Static,modifiers.Default,modifiers.Strictfp*
         ("<" typeParameters ("," typeParameters)* ">")? (typeReference:types.PrimitiveType,types.ClassifierReference,types.NamespaceClassifierReference arrayDimensionsBefore*) name[]
         "(" (parameters:parameters.ReceiverParameter,parameters.OrdinaryParameter,parameters.VariableLengthParameter ("," parameters:parameters.OrdinaryParameter,parameters.VariableLengthParameter)*)? ")" arrayDimensionsAfter*
-        ("throws" exceptions ("," exceptions)*)? #1 "{" (!2 statements)* !1 "}";
+        ("throws" exceptions ("," exceptions)*)? statements:statements.Block;
 
+@SuppressWarnings(minOccurenceMismatch)
 members.ClassMethod
     ::= annotationsAndModifiers:annotations.AnnotationInstance,modifiers.Public,modifiers.Protected,modifiers.Private,modifiers.Abstract,modifiers.Static,modifiers.Final,modifiers.Synchronized,modifiers.Native,modifiers.Strictfp*
         ("<" typeParameters ("," typeParameters)* ">")? (typeReference:types.PrimitiveType,types.ClassifierReference,types.NamespaceClassifierReference arrayDimensionsBefore*) name[]
         "(" (parameters:parameters.ReceiverParameter,parameters.OrdinaryParameter,parameters.VariableLengthParameter ("," parameters:parameters.OrdinaryParameter,parameters.VariableLengthParameter)* )? ")" arrayDimensionsAfter*
-        ("throws" exceptions ("," exceptions)*)? #1 "{" (!2 statements)* !1 "}";
+        ("throws" exceptions ("," exceptions)*)? statements:statements.Block;
 
 @SuppressWarnings(featureWithoutSyntax)
 annotations.AnnotationAttribute
@@ -277,7 +282,7 @@ parameters.VariableLengthParameter
 @SuppressWarnings(featureWithoutSyntax)
 parameters.ReceiverParameter
     ::= annotations* typeReference:types.PrimitiveType,types.ClassifierReference,types.NamespaceClassifierReference
-        arrayDimensionsBefore* ("<" typeArguments ("," typeArguments)* ">")? reference;
+        arrayDimensionsBefore* ("<" typeArguments ("," typeArguments)* ">")? reference:references.IdentifierReference,references.SelfReference;
 
 variables.LocalVariable
     ::= annotationsAndModifiers:annotations.AnnotationInstance,modifiers.Final* typeReference arrayDimensionsBefore*
@@ -340,8 +345,7 @@ instantiations.NewConstructorCallWithDiamondCallTypeArgument
 instantiations.ExplicitConstructorCall
     ::= ("<" typeArguments ("," typeArguments)* ">")?
         callTarget // Reference to Self necessary because this call refers to a constructor of this or the super class.
-        "(" (arguments:expressions.AssignmentExpression,expressions.LambdaExpression ("," arguments:expressions.AssignmentExpression,expressions.LambdaExpression)* )? ")"
-        ("." next)? ;
+        "(" (arguments:expressions.AssignmentExpression,expressions.LambdaExpression ("," arguments:expressions.AssignmentExpression,expressions.LambdaExpression)* )? ")";
 
 @SuppressWarnings(featureWithoutSyntax) //arrayDimensionsAfter
 @SuppressWarnings(minOccurenceMismatch) //arrayDimensionsBefore required here
@@ -425,38 +429,48 @@ generics.SuperTypeArgument
 
 @SuppressWarnings(minOccurenceMismatch) //condition can be empty in other cases
 statements.Assert
-    ::= "assert" condition:expressions.AssignmentExpression,expressions.LambdaExpression (":" errorMessage:expressions.AssignmentExpression,expressions.LambdaExpression)? ";";
+    ::= "assert" condition:expressions.AssignmentExpression,expressions.LambdaExpression
+        (":" errorMessage:expressions.AssignmentExpression,expressions.LambdaExpression)? ";";
 
 @SuppressWarnings(minOccurenceMismatch) //condition can be empty in other cases
 statements.Condition 
-    ::= "if" #1 "(" condition:expressions.AssignmentExpression,expressions.LambdaExpression ")" statement ("else" elseStatement)? ;
+    ::= "if" #1 "(" condition:expressions.AssignmentExpression,expressions.LambdaExpression ")"
+        statement:statements.JumpLabel,statements.Condition,statements.WhileLoop,statements.ForLoop,statements.ForEachLoop,statements.DoWhileLoop,statements.Block,statements.Break,statements.EmptyStatement,statements.Assert,statements.ExpressionStatement,statements.Switch,statements.Continue,statements.Return,statements.SynchronizedBlock,statements.TryBlock,statements.Throw
+        ("else" elseStatement:statements.JumpLabel,statements.Condition,statements.WhileLoop,statements.ForLoop,statements.ForEachLoop,statements.DoWhileLoop,statements.Block,statements.Break,statements.EmptyStatement,statements.Assert,statements.ExpressionStatement,statements.Switch,statements.Continue,statements.Return,statements.SynchronizedBlock,statements.TryBlock,statements.Throw)? ;
 
 statements.ForLoop
-    ::= "for" #1 "(" init? ";" condition:expressions.AssignmentExpression,expressions.LambdaExpression? ";" (updates:expressions.AssignmentExpression ("," updates:expressions.AssignmentExpression)* )? ")" statement;
+    ::= "for" #1 "(" init:expressions.ExpressionList,variables.LocalVariable? ";" condition:expressions.AssignmentExpression,expressions.LambdaExpression? ";" (updates:expressions.AssignmentExpression ("," updates:expressions.AssignmentExpression)* )? ")"
+        statement:statements.JumpLabel,statements.Condition,statements.WhileLoop,statements.ForLoop,statements.ForEachLoop,statements.DoWhileLoop,statements.Block,statements.Break,statements.EmptyStatement,statements.Assert,statements.ExpressionStatement,statements.Switch,statements.Continue,statements.Return,statements.SynchronizedBlock,statements.TryBlock,statements.Throw;
 
 statements.ForEachLoop
-    ::= "for" #1 "(" next:parameters.OrdinaryParameter ":" collection:expressions.AssignmentExpression,expressions.LambdaExpression ")" statement;
+    ::= "for" #1 "(" next:parameters.OrdinaryParameter ":" collection:expressions.AssignmentExpression,expressions.LambdaExpression ")"
+        statement:statements.JumpLabel,statements.Condition,statements.WhileLoop,statements.ForLoop,statements.ForEachLoop,statements.DoWhileLoop,statements.Block,statements.Break,statements.EmptyStatement,statements.Assert,statements.ExpressionStatement,statements.Switch,statements.Continue,statements.Return,statements.SynchronizedBlock,statements.TryBlock,statements.Throw;
 
 statements.WhileLoop
-    ::= "while" #1 "(" condition:expressions.AssignmentExpression,expressions.LambdaExpression ")" statement;
+    ::= "while" #1 "(" condition:expressions.AssignmentExpression,expressions.LambdaExpression ")"
+        statement:statements.JumpLabel,statements.Condition,statements.WhileLoop,statements.ForLoop,statements.ForEachLoop,statements.DoWhileLoop,statements.Block,statements.Break,statements.EmptyStatement,statements.Assert,statements.ExpressionStatement,statements.Switch,statements.Continue,statements.Return,statements.SynchronizedBlock,statements.TryBlock,statements.Throw;
 
 statements.DoWhileLoop	
-    ::= "do" statement "while" #1 "(" condition:expressions.AssignmentExpression,expressions.LambdaExpression ")" ";";
+    ::= "do" statement:statements.JumpLabel,statements.Condition,statements.WhileLoop,statements.ForLoop,statements.ForEachLoop,statements.DoWhileLoop,statements.Block,statements.Break,statements.EmptyStatement,statements.Assert,statements.ExpressionStatement,statements.Switch,statements.Continue,statements.Return,statements.SynchronizedBlock,statements.TryBlock,statements.Throw
+        "while" #1 "(" condition:expressions.AssignmentExpression,expressions.LambdaExpression ")" ";";
 
-statements.EmptyStatement	
+statements.EmptyStatement
     ::= ";";
 
+@SuppressWarnings(minOccurenceMismatch)
 statements.SynchronizedBlock
-    ::= "synchronized" #1 "(" lockProvider:expressions.AssignmentExpression,expressions.LambdaExpression ")" #1 "{" (!1 statements)* !0 "}";
+    ::= "synchronized" #1 "(" lockProvider:expressions.AssignmentExpression,expressions.LambdaExpression ")" statements:statements.Block;
 
+@SuppressWarnings(minOccurenceMismatch,optionalKeyword)
 statements.TryBlock
-    ::= "try" ("(" resources (";" resources)* (trailingSemicolon)? ")")?
-        #1 "{" (!1 statements)* !0 "}"
+    ::= "try" ("(" resources (";" resources)* (";")? ")")?
+        statements:statements.Block
         catchBlocks* 
         ("finally" finallyBlock)? ;
 
+@SuppressWarnings(minOccurenceMismatch)
 statements.CatchBlock
-    ::=	"catch" #1 "(" parameter ")" #1 "{" (!1 statements)* !0 "}";
+    ::= "catch" #1 "(" parameter ")" statements:statements.Block;
 
 statements.Switch
     ::= "switch" #1 "(" variable:expressions.AssignmentExpression,expressions.LambdaExpression ")" #1 "{" (cases*) "}";
@@ -481,7 +495,7 @@ statements.Continue
     ::= "continue" (target[])? ";";
 
 statements.JumpLabel
-    ::= name[] ":" statement;
+    ::= name[] ":" statement:statements.JumpLabel,statements.Condition,statements.WhileLoop,statements.ForLoop,statements.ForEachLoop,statements.DoWhileLoop,statements.Block,statements.Break,statements.EmptyStatement,statements.Assert,statements.ExpressionStatement,statements.Switch,statements.Continue,statements.Return,statements.SynchronizedBlock,statements.TryBlock,statements.Throw;
 
 statements.ExpressionStatement 
     ::= expression:expressions.AssignmentExpression ";";
@@ -553,7 +567,9 @@ expressions.PrefixUnaryModificationExpression
 
 @SuppressWarnings(featureWithoutSyntax)
 expressions.CastExpression
-    ::= "(" typeReference arrayDimensionsBefore* (#1 "&" #1 additionalBounds)* ")" #1 child:expressions.UnaryExpression,expressions.LambdaExpression;
+    ::= "(" typeReference:types.PrimitiveType,types.ClassifierReference,types.NamespaceClassifierReference arrayDimensionsBefore*
+        (#1 "&" #1 additionalBounds:types.ClassifierReference,types.NamespaceClassifierReference)* ")"
+        #1 child:expressions.UnaryExpression,expressions.LambdaExpression;
 
 @SuppressWarnings(featureWithoutSyntax) //typeArguments
 expressions.NestedExpression
@@ -563,11 +579,13 @@ expressions.PrimaryExpressionReferenceExpression
     ::= child ("::" ("<" callTypeArguments ("," callTypeArguments)* ">")? methodReference:references.IdentifierReference)? ;
 
 expressions.ClassTypeConstructorReferenceExpression
-    ::= typeReference "::" ("<" callTypeArguments ("," callTypeArguments)* ">")? "new";
+    ::= typeReference:types.PrimitiveType,types.ClassifierReference,types.NamespaceClassifierReference
+        "::" ("<" callTypeArguments ("," callTypeArguments)* ">")? "new";
 
 @SuppressWarnings(featureWithoutSyntax,minOccurenceMismatch)
 expressions.ArrayConstructorReferenceExpression
-    ::= typeReference arrayDimensionsBefore+ "::" "new";
+    ::= typeReference:types.PrimitiveType,types.ClassifierReference,types.NamespaceClassifierReference
+        arrayDimensionsBefore+ "::" "new";
 
 expressions.ExplicitlyTypedLambdaParameters
     ::= "(" (parameters:parameters.OrdinaryParameter,parameters.VariableLengthParameter ("," parameters:parameters.OrdinaryParameter,parameters.VariableLengthParameter)*)? ")";
