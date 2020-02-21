@@ -14,6 +14,6 @@ Require-Bundle: org.eclipse.core.runtime,
  org.emftext.language.java.resource.java,
  org.emftext.language.java.resource.bcel
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.emftext.language.java.resource
 
