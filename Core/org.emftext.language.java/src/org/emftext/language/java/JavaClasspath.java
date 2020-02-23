@@ -406,13 +406,54 @@ public class JavaClasspath extends AdapterImpl {
 
 		for (int idx = 0; idx < classpathEntries.length; idx++) {
 			String classpathEntry = classpathEntries[idx];
-			if (classpathEntry.endsWith(classesJarSuffix) || classpathEntry.endsWith(rtJarSuffix)
-					|| classpathEntry.endsWith(srcZipSuffix)) {
+			if (classpathEntry.endsWith(classesJarSuffix) || classpathEntry.endsWith(rtJarSuffix)) {
 				URI uri = URI.createFileURI(classpathEntry);
 				registerClassifierJar(uri);
+			} else if (classpathEntry.endsWith(srcZipSuffix)) {
+				internalRegisterJDK9AndUpSrcZip(URI.createFileURI(classpathEntry));
 			}
 		}
 	}
+	
+	/**
+	 * Registers the standard library and JDK classes for JDK 9+ based on the "<JAVA_HOME>/lib/src.zip" file.
+	 * 
+	 * @param zipURI URI pointing to the zip file containing the source files of the JDK.
+	 */
+	private void internalRegisterJDK9AndUpSrcZip(URI zipURI)
+	{
+		try(ZipFile zipFile = new ZipFile(zipURI.toFileString())) {
+			
+			zipFile.stream().filter(entry -> entry.getName().endsWith(JavaUniquePathConstructor.JAVA_FILE_EXTENSION))
+				.forEach(entry -> {
+					
+					String entryName = entry.getName();
+					String uri = "archive:" + zipURI.toString() + "!/" + entryName;
+					// The entry name has the form "<module name>/<package>/<file name>.java".
+					// Therefore, the module name is removed at first.
+					String fullName = entryName.substring(entryName.indexOf("/") + 1).replace("/", ".");
+					
+					String packageName = "";
+					String className = "";
+					int lastDotIndex = fullName.lastIndexOf(".");
+					int preLastDotIndex = fullName.substring(0, lastDotIndex).lastIndexOf(".");
+					
+					if (preLastDotIndex >= 0) {
+						packageName = fullName.substring(0, preLastDotIndex);
+						className = fullName.substring(preLastDotIndex + 1, lastDotIndex);
+					} else {
+						className = fullName.substring(0, lastDotIndex);
+					}
+					
+					registerClassifier(packageName, className, URI.createURI(uri));
+				});
+			
+		} catch (IOException e) {
+			System.err.println("Error in processing JDK 9+'s src.zip: " + zipURI.toFileString());
+		}
+	}
+	
+	
 
 	/**
 	 * Registers all class files contained in the jar file located at the given URI.
@@ -423,40 +464,40 @@ public class JavaClasspath extends AdapterImpl {
 	public void registerClassifierJar(URI jarURI) {
 		registerClassifierJar(jarURI, "");
 	}
+	
+	//// Multi-release jars include *.class files in META-INF/*
 
 	public void registerClassifierJar(URI jarURI, String prefix) {
-		ZipFile zipFile = null;
-		try {
-			zipFile = new ZipFile(jarURI.toFileString());
-		} catch (IOException e) {
-			System.out.println("Error in opening zip file: " + jarURI.toFileString());
-			return;
-		}
+		try(ZipFile zipFile = new ZipFile(jarURI.toFileString())) {
 
-		Enumeration<? extends ZipEntry> entries = zipFile.entries();
-		while (entries.hasMoreElements()) {
-			ZipEntry entry = entries.nextElement();
-
-			String entryName = entry.getName();
-			if (/*entryName.endsWith(JavaUniquePathConstructor.JAVA_CLASS_FILE_EXTENSION) && */entryName.startsWith(prefix)) {
-				String uri = "archive:" + jarURI.toString() + "!/" + entryName;
-
-				String fullName = entryName.substring(prefix.length());
-				fullName = fullName.replace("/", ".");
-
-				String packageName = "";
-				String className = "";
-
-				int idx = fullName.lastIndexOf(".");
-				idx = fullName.substring(0, idx).lastIndexOf(".");
-				if (idx >= 0) {
-					packageName = fullName.substring(0, idx);
-					className = fullName.substring(idx + 1, fullName.lastIndexOf("."));
-				} else {
-					className = fullName.substring(0, fullName.lastIndexOf("."));
+			Enumeration<? extends ZipEntry> entries = zipFile.entries();
+			while (entries.hasMoreElements()) {
+				ZipEntry entry = entries.nextElement();
+	
+				String entryName = entry.getName();
+				if (entryName.endsWith(JavaUniquePathConstructor.JAVA_CLASS_FILE_EXTENSION) && entryName.startsWith(prefix)) {
+					String uri = "archive:" + jarURI.toString() + "!/" + entryName;
+	
+					String fullName = entryName.substring(prefix.length());
+					fullName = fullName.replace("/", ".");
+	
+					String packageName = "";
+					String className = "";
+	
+					int idx = fullName.lastIndexOf(".");
+					idx = fullName.substring(0, idx).lastIndexOf(".");
+					if (idx >= 0) {
+						packageName = fullName.substring(0, idx);
+						className = fullName.substring(idx + 1, fullName.lastIndexOf("."));
+					} else {
+						className = fullName.substring(0, fullName.lastIndexOf("."));
+					}
+					registerClassifier(packageName, className, URI.createURI(uri));
 				}
-				registerClassifier(packageName, className, URI.createURI(uri));
 			}
+		
+		} catch (IOException e) {
+			System.err.println("Error in processing zip file: " + jarURI.toFileString());
 		}
 	}
 
