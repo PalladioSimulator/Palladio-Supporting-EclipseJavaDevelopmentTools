@@ -1,0 +1,9 @@
+epackage java.generics;
+
+eclass TypeParameter {
+	
+	@Deprecated
+	getExtendTypes() {
+		return org.emftext.language.java.extensions.generics.ExtendsTypeArgumentExtension.getExtendTypes((org.emftext.language.java.generics.ExtendsTypeArgument) this);
+	}
+}

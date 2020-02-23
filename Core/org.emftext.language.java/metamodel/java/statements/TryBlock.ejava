@@ -1,0 +1,9 @@
+epackage java.statements;
+
+eclass TryBlock {
+
+	@Deprecated
+	getCatcheBlocks() {
+		return org.emftext.language.java.extensions.statements.TryBlockExtension.getCatcheBlocks((org.emftext.language.java.statements.TryBlock) this);
+	}
+}

@@ -471,13 +471,11 @@ statements.ExpressionStatement
 expressions.ExpressionList
     ::= expressions:expressions.AssignmentExpression,expressions.LambdaExpression ("," expressions:expressions.AssignmentExpression,expressions.LambdaExpression)* ;
 
-@SuppressWarnings(minOccurenceMismatch) //the expression simplifier removes the cases where min occurrence does not match
 expressions.AssignmentExpression
     ::= child:expressions.ConditionalExpression (#1 assignmentOperator #1 value:expressions.AssignmentExpression,expressions.LambdaExpression)? ;
-
-@SuppressWarnings(minOccurenceMismatch) //the expression simplifier removes the cases where min occurrence does not match   	
+   	
 expressions.ConditionalExpression
-    ::= child:expressions.ConditionalOrExpression ("?" expressionIf:expressions.AssignmentExpression,expressions.LambdaExpression ":" expressionElse:expressions.ConditionalExpression,expressions.LambdaExpression)? ;
+    ::= child:expressions.ConditionalOrExpression ("?" expressionIf:expressions.AssignmentExpression,expressions.LambdaExpression ":" generalExpressionElse:expressions.ConditionalExpression,expressions.LambdaExpression)? ;
 
 expressions.ConditionalOrExpression
     ::= children:expressions.ConditionalAndExpression ("||" children:expressions.ConditionalAndExpression)* ;
@@ -536,7 +534,7 @@ expressions.PrefixUnaryModificationExpression
 expressions.CastExpression
     ::= "(" typeReference:types.PrimitiveType,types.ClassifierReference,types.NamespaceClassifierReference arrayDimensionsBefore*
         (#1 "&" #1 additionalBounds:types.ClassifierReference,types.NamespaceClassifierReference)* ")"
-        #1 child:expressions.UnaryExpression,expressions.LambdaExpression;
+        #1 generalChild:expressions.UnaryExpression,expressions.LambdaExpression;
 
 @SuppressWarnings(featureWithoutSyntax) //typeArguments
 expressions.NestedExpression

@@ -302,7 +302,13 @@
       <genClasses ecoreClass="java.ecore#_Wo2YIdz1Ed2bJ_pQViWxFg">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#_Wo2YI9z1Ed2bJ_pQViWxFg"/>
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#_Wo2YJdz1Ed2bJ_pQViWxFg"/>
-        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//expressions/ConditionalExpression/expressionElse"/>
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//expressions/ConditionalExpression/generalExpressionElse"/>
+        <genOperations ecoreOperation="java.ecore#//expressions/ConditionalExpression/getExpressionElse"
+            body="return org.emftext.language.java.extensions.expressions.ConditionalExpressionExtension.getExpressionElse((org.emftext.language.java.expressions.ConditionalExpression) this);"/>
+        <genOperations ecoreOperation="java.ecore#//expressions/ConditionalExpression/setExpressionChild"
+            body="org.emftext.language.java.extensions.expressions.ConditionalExpressionExtension.setExpressionElse((org.emftext.language.java.expressions.ConditionalExpression) this, newChild);">
+          <genParameters ecoreParameter="java.ecore#//expressions/ConditionalExpression/setExpressionChild/newChild"/>
+        </genOperations>
       </genClasses>
       <genClasses image="false" ecoreClass="java.ecore#//expressions/ConditionalExpressionChild"/>
       <genClasses ecoreClass="java.ecore#_Wo2YHdz1Ed2bJ_pQViWxFg">
@@ -369,6 +375,12 @@
       <genClasses ecoreClass="java.ecore#_Wo2YWdz1Ed2bJ_pQViWxFg">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//expressions/CastExpression/additionalBounds"/>
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#_Wo2YXdz1Ed2bJ_pQViWxFg"/>
+        <genOperations ecoreOperation="java.ecore#//expressions/CastExpression/getChild"
+            body="return org.emftext.language.java.extensions.expressions.CastExpressionExtension.getChild((org.emftext.language.java.expressions.CastExpression) this);"/>
+        <genOperations ecoreOperation="java.ecore#//expressions/CastExpression/setChild"
+            body="org.emftext.language.java.extensions.expressions.CastExpressionExtension.setChild((org.emftext.language.java.expressions.CastExpression) this, newChild);">
+          <genParameters ecoreParameter="java.ecore#//expressions/CastExpression/setChild/newChild"/>
+        </genOperations>
       </genClasses>
       <genClasses image="false" ecoreClass="java.ecore#//expressions/PrimaryExpression"/>
       <genClasses ecoreClass="java.ecore#//expressions/NestedExpression">
@@ -408,6 +420,8 @@
       </genClasses>
       <genClasses ecoreClass="java.ecore#//generics/ExtendsTypeArgument">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//generics/ExtendsTypeArgument/extendType"/>
+        <genOperations ecoreOperation="java.ecore#//generics/ExtendsTypeArgument/getExtendTypes"
+            body="return org.emftext.language.java.extensions.generics.ExtendsTypeArgumentExtension.getExtendTypes((org.emftext.language.java.generics.ExtendsTypeArgument) this);"/>
       </genClasses>
       <genClasses ecoreClass="java.ecore#//generics/QualifiedTypeArgument"/>
       <genClasses ecoreClass="java.ecore#//generics/SuperTypeArgument">
@@ -831,6 +845,8 @@
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//statements/TryBlock/resources"/>
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#_Wo2ZDtz1Ed2bJ_pQViWxFg"/>
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#_Wo2ZDNz1Ed2bJ_pQViWxFg"/>
+        <genOperations ecoreOperation="java.ecore#//statements/TryBlock/getCatcheBlocks"
+            body="return org.emftext.language.java.extensions.statements.TryBlockExtension.getCatcheBlocks((org.emftext.language.java.statements.TryBlock) this);"/>
       </genClasses>
       <genClasses ecoreClass="java.ecore#_Wo2ZANz1Ed2bJ_pQViWxFg">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#_Wo2ZAtz1Ed2bJ_pQViWxFg"/>
