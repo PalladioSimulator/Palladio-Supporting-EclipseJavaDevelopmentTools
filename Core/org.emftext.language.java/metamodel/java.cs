@@ -205,17 +205,13 @@ annotations.AnnotationInstance
         (parameter)? ;
 
 annotations.SingleAnnotationParameter
-    ::= "(" value:annotations.AnnotationInstance,expressions.ConditionalExpression,annotations.AnnotationValueArrayInitializer ")";
+    ::= "(" value:annotations.AnnotationInstance,expressions.ConditionalExpression,arrays.ArrayInitializer ")";
 
 annotations.AnnotationParameterList
     ::= "(" (settings ("," settings)*)? ")";
 
 annotations.AnnotationAttributeSetting
-    ::= attribute[] #1 "=" #1 value:annotations.AnnotationInstance,expressions.ConditionalExpression,annotations.AnnotationValueArrayInitializer;
-
-@SuppressWarnings(featureWithoutSyntax,optionalKeyword)
-annotations.AnnotationValueArrayInitializer
-    ::= "{" (values:annotations.AnnotationInstance,expressions.ConditionalExpression,annotations.AnnotationValueArrayInitializer ("," values:annotations.AnnotationInstance,expressions.ConditionalExpression,annotations.AnnotationValueArrayInitializer)*)? (",")? "}";
+    ::= attribute[] #1 "=" #1 value:annotations.AnnotationInstance,expressions.ConditionalExpression,arrays.ArrayInitializer;
 
 generics.TypeParameter
     ::= name[] ("extends" extendTypes:types.ClassifierReference,types.NamespaceClassifierReference ("&" extendTypes:types.ClassifierReference,types.NamespaceClassifierReference)*)? ;
@@ -243,7 +239,7 @@ members.InterfaceMethod
     ::= (annotationsAndModifiers:annotations.AnnotationInstance,modifiers.Public,modifiers.Abstract,modifiers.Strictfp,modifiers.Private,modifiers.Static,modifiers.Default)*
         ("<" typeParameters ("," typeParameters)* ">")? (typeReference:types.PrimitiveType,types.ClassifierReference,types.NamespaceClassifierReference arrayDimensionsBefore*) name[]
         "(" (parameters:parameters.ReceiverParameter,parameters.OrdinaryParameter,parameters.VariableLengthParameter ("," parameters:parameters.OrdinaryParameter,parameters.VariableLengthParameter)* )? ")" arrayDimensionsAfter*
-        ("throws" exceptions ("," exceptions)*)? ("default" defaultValue)?
+        ("throws" exceptions ("," exceptions)*)? ("default" defaultValue:expressions.ConditionalExpression,arrays.ArrayInstantiationByValuesUntyped,annotations.AnnotationInstance)?
         statements:statements.EmptyStatement,statements.Block;
 
 @SuppressWarnings(minOccurenceMismatch)
@@ -322,12 +318,12 @@ instantiations.ExplicitConstructorCall
 @SuppressWarnings(minOccurenceMismatch) //arrayDimensionsBefore required here
 arrays.ArrayInstantiationByValuesTyped
     ::= "new" typeReference:types.ClassifierReference,types.NamespaceClassifierReference
-        arrayDimensionsBefore+ arrayInitializer:arrays.ArrayInitializer
+        arrayDimensionsBefore+ arrayInitializer
         arraySelectors* ("." next)? ;
 
 @SuppressWarnings(featureWithoutSyntax) //typeArguments not applicable
 arrays.ArrayInstantiationByValuesUntyped
-    ::= arrayInitializer:arrays.ArrayInitializer
+    ::= arrayInitializer
         arraySelectors* ("." next)? ;
 
 @SuppressWarnings(featureWithoutSyntax)
@@ -339,8 +335,8 @@ arrays.ArrayInstantiationBySize
 
 @SuppressWarnings(optionalKeyword)
 arrays.ArrayInitializer
-    ::= #1 "{" (initialValues:arrays.ArrayInitializer,expressions.AssignmentExpression,expressions.LambdaExpression
-        ("," initialValues:arrays.ArrayInitializer,expressions.AssignmentExpression,expressions.LambdaExpression)*)? (",")? "}";
+    ::= #1 "{" (initialValues:arrays.ArrayInitializer,expressions.AssignmentExpression,expressions.LambdaExpression,annotations.AnnotationInstance
+        ("," initialValues:arrays.ArrayInitializer,expressions.AssignmentExpression,expressions.LambdaExpression,annotations.AnnotationInstance)*)? (",")? "}";
 
 arrays.ArraySelector
     ::= annotations* "[" position:expressions.AssignmentExpression,expressions.LambdaExpression? "]";
@@ -441,7 +437,7 @@ statements.TryBlock
 
 @SuppressWarnings(minOccurenceMismatch)
 statements.CatchBlock
-    ::= "catch" #1 "(" parameter ")" statements:statements.Block;
+    ::= "catch" #1 "(" parameter:parameters.CatchParameter ")" statements:statements.Block;
 
 statements.Switch
     ::= "switch" #1 "(" variable:expressions.AssignmentExpression,expressions.LambdaExpression ")" #1 "{" (cases*) "}";

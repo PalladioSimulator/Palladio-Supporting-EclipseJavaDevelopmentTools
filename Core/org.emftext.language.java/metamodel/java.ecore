@@ -9,7 +9,7 @@
           eType="#_Wosms9z1Ed2bJ_pQViWxFg" containment="true"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" xmi:id="_Wosms9z1Ed2bJ_pQViWxFg" name="AnnotationInstance"
-        eSuperTypes="#//modifiers/AnnotationInstanceOrModifier #//commons/NamespaceAwareElement #//annotations/AnnotationValue">
+        eSuperTypes="#//modifiers/AnnotationInstanceOrModifier #//commons/NamespaceAwareElement #//references/Reference">
       <eStructuralFeatures xsi:type="ecore:EReference" name="annotation" lowerBound="1"
           eType="#//classifiers/Classifier"/>
       <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_Wosmttz1Ed2bJ_pQViWxFg"
@@ -33,10 +33,7 @@
           name="value" lowerBound="1" eType="#//annotations/AnnotationValue" containment="true"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="AnnotationValue" abstract="true" eSuperTypes="#//commons/Commentable"/>
-    <eClassifiers xsi:type="ecore:EClass" name="AnnotationValueArrayInitializer" eSuperTypes="#//annotations/AnnotationValue #//arrays/ArrayInitializer">
-      <eStructuralFeatures xsi:type="ecore:EReference" name="values" upperBound="-1"
-          eType="#//annotations/AnnotationValue" containment="true"/>
-    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="AnnotationAttribute" eSuperTypes="#//members/InterfaceMethod"/>
   </eSubpackages>
   <eSubpackages name="arrays" nsURI="http://www.emftext.org/java/arrays" nsPrefix="arrays">
     <eClassifiers xsi:type="ecore:EClass" name="ArrayTypeable" abstract="true" eSuperTypes="#//commons/Commentable">
@@ -47,14 +44,14 @@
           upperBound="-1" eType="#//arrays/ArrayDimension" containment="true"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="ArrayDimension" eSuperTypes="#//commons/Commentable #//annotations/Annotable"/>
-    <eClassifiers xsi:type="ecore:EClass" name="ArrayInitializer" eSuperTypes="#//arrays/ArrayInitializationValue">
+    <eClassifiers xsi:type="ecore:EClass" name="ArrayInitializer" eSuperTypes="#//arrays/ArrayInitializationValue #//annotations/AnnotationValue">
       <eStructuralFeatures xsi:type="ecore:EReference" name="initialValues" upperBound="-1"
           eType="#//arrays/ArrayInitializationValue" containment="true"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="ArrayInitializationValue" abstract="true"
         eSuperTypes="#//commons/Commentable"/>
     <eClassifiers xsi:type="ecore:EClass" name="ArrayInstantiation" abstract="true"
-        eSuperTypes="#//references/Reference"/>
+        eSuperTypes="#//references/Reference #_Wo2YDNz1Ed2bJ_pQViWxFg"/>
     <eClassifiers xsi:type="ecore:EClass" name="ArrayInstantiationBySize" eSuperTypes="#//arrays/ArrayInstantiation #_Wo2ZP9z1Ed2bJ_pQViWxFg #//arrays/ArrayTypeable">
       <eStructuralFeatures xsi:type="ecore:EReference" name="sizes" lowerBound="1"
           upperBound="-1" eType="#_Wo2YDNz1Ed2bJ_pQViWxFg" containment="true"/>
@@ -1072,7 +1069,7 @@
       </eOperations>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="InterfaceMethod" eSuperTypes="#//members/Method">
-      <eStructuralFeatures xsi:type="ecore:EReference" name="defaultValue" eType="#//annotations/AnnotationValue"
+      <eStructuralFeatures xsi:type="ecore:EReference" name="defaultValue" eType="#_Wo2YDNz1Ed2bJ_pQViWxFg"
           containment="true"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="ClassMethod" eSuperTypes="#//members/Method"/>
@@ -1377,7 +1374,8 @@
     <eClassifiers xsi:type="ecore:EClass" xmi:id="_Wo2ZD9z1Ed2bJ_pQViWxFg" name="CatchBlock"
         eSuperTypes="#//statements/StatementListContainer">
       <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_Wo2ZEdz1Ed2bJ_pQViWxFg"
-          name="parameter" lowerBound="1" eType="#//parameters/CatchParameter" containment="true"/>
+          name="parameter" lowerBound="1" eType="#//parameters/OrdinaryParameter"
+          containment="true"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" xmi:id="_Wo2Y1Nz1Ed2bJ_pQViWxFg" name="Condition"
         eSuperTypes="#_Wo2YzNz1Ed2bJ_pQViWxFg #//statements/StatementContainer #//statements/Conditional">

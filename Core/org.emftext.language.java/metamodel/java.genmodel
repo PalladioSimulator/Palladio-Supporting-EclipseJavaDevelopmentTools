@@ -30,9 +30,7 @@
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#_Wosmudz1Ed2bJ_pQViWxFg"/>
       </genClasses>
       <genClasses image="false" ecoreClass="java.ecore#//annotations/AnnotationValue"/>
-      <genClasses ecoreClass="java.ecore#//annotations/AnnotationValueArrayInitializer">
-        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//annotations/AnnotationValueArrayInitializer/values"/>
-      </genClasses>
+      <genClasses ecoreClass="java.ecore#//annotations/AnnotationAttribute"/>
     </nestedGenPackages>
     <nestedGenPackages prefix="Arrays" basePackage="org.emftext.language.java" disposableProviderFactory="true"
         ecorePackage="java.ecore#//arrays">
