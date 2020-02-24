@@ -253,10 +253,9 @@ parameters.OrdinaryParameter
     ::= (annotationsAndModifiers:annotations.AnnotationInstance,modifiers.Final)* typeReference arrayDimensionsBefore*
         ("<" typeArguments ("," typeArguments)* ">")? name[] arrayDimensionsAfter* ;
 
-@SuppressWarnings(featureWithoutSyntax)
 parameters.CatchParameter
     ::= (annotationsAndModifiers:annotations.AnnotationInstance,modifiers.Final)*
-        typeReferences:types.ClassifierReference,types.NamespaceClassifierReference ("|" typeReferences:types.ClassifierReference,types.NamespaceClassifierReference)* name[];
+        typeReference:types.ClassifierReference,types.NamespaceClassifierReference ("|" typeReferences:types.ClassifierReference,types.NamespaceClassifierReference)* name[];
 
 @SuppressWarnings(featureWithoutSyntax)
 parameters.VariableLengthParameter
