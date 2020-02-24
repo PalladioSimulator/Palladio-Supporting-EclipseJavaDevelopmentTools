@@ -27,4 +27,12 @@ eclass Method {
 	getArrayDimension() {
 		return org.emftext.language.java.extensions.members.MethodExtension.getArrayDimension((org.emftext.language.java.members.Method) this);
 	}
+	
+	getStatements() {
+		return org.emftext.language.java.extensions.members.MethodExtension.getStatements((org.emftext.language.java.members.Method) this);
+	}
+	
+	getBlock() {
+		return org.emftext.language.java.extensions.members.MethodExtension.getBlock((org.emftext.language.java.members.Method) this);
+	}
 }

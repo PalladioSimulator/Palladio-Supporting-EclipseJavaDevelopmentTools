@@ -23,6 +23,8 @@ import org.emftext.language.java.members.Method;
 import org.emftext.language.java.parameters.Parameter;
 import org.emftext.language.java.parameters.VariableLengthParameter;
 import org.emftext.language.java.references.MethodCall;
+import org.emftext.language.java.statements.Block;
+import org.emftext.language.java.statements.Statement;
 import org.emftext.language.java.types.Type;
 import org.emftext.language.java.types.TypeReference;
 
@@ -165,5 +167,32 @@ public class MethodExtension {
 			size++;
 		}
 		return size;
+	}
+	
+	/**
+	 * Returns a list of all statements within the block of a method.
+	 * This is a legacy method to provide a stable and backwards-compatible API.
+	 * 
+	 * @param me the method for which the statements are obtained.
+	 * @return the list of all statements.
+	 * @deprecated Use getBlock().getStatements().
+	 */
+	@Deprecated
+	public static EList<Statement> getStatements(Method me) {
+		Block b = getBlock(me);
+		return b != null ? b.getStatements() : new BasicEList<>();
+	}
+	
+	/**
+	 * Returns a block representing the body of a method.
+	 * 
+	 * @param me the method for which the body is returned.
+	 * @return the block or null if the method has no implementation.
+	 */
+	public static Block getBlock(Method me) {
+		if (me.getStatement() instanceof Block) {
+			return (Block) me.getStatement();
+		}
+		return null;
 	}
 }

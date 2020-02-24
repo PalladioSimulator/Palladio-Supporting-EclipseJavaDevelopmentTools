@@ -590,7 +590,12 @@
         <genOperations ecoreOperation="java.ecore#//members/AdditionalField/getArrayDimension"
             body="return org.emftext.language.java.extensions.members.AdditionalFieldExtension.getArrayDimension((org.emftext.language.java.members.AdditionalField) this);"/>
       </genClasses>
-      <genClasses ecoreClass="java.ecore#//members/Constructor"/>
+      <genClasses ecoreClass="java.ecore#//members/Constructor">
+        <genOperations ecoreOperation="java.ecore#//members/Constructor/getBlock"
+            body="return org.emftext.language.java.extensions.members.ConstructorExtension.getBlock((org.emftext.language.java.members.Constructor) this);"/>
+        <genOperations ecoreOperation="java.ecore#//members/Constructor/getStatements"
+            body="return org.emftext.language.java.extensions.members.ConstructorExtension.getStatements((org.emftext.language.java.members.Constructor) this);"/>
+      </genClasses>
       <genClasses ecoreClass="java.ecore#//members/EmptyMember"/>
       <genClasses ecoreClass="java.ecore#//members/Field">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//members/Field/additionalFields"/>
@@ -612,6 +617,9 @@
         </genOperations>
         <genOperations ecoreOperation="java.ecore#//members/Method/getArrayDimension"
             body="return org.emftext.language.java.extensions.members.MethodExtension.getArrayDimension((org.emftext.language.java.members.Method) this);"/>
+        <genOperations ecoreOperation="java.ecore#//members/Method/getBlock" body="return org.emftext.language.java.extensions.members.MethodExtension.getBlock((org.emftext.language.java.members.Method) this);"/>
+        <genOperations ecoreOperation="java.ecore#//members/Method/getStatements"
+            body="return org.emftext.language.java.extensions.members.MethodExtension.getStatements((org.emftext.language.java.members.Method) this);"/>
       </genClasses>
       <genClasses ecoreClass="java.ecore#//members/InterfaceMethod">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//members/InterfaceMethod/defaultValue"/>

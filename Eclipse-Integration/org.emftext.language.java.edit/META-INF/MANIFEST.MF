@@ -34,6 +34,7 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.eclipse.core.runtime,
  org.emftext.language.java;visibility:=reexport,
  org.eclipse.emf.edit;visibility:=reexport,
+ org.emftext.commons.layout;visibility:=reexport,
  org.emftext.commons.layout.edit;visibility:=reexport
 Bundle-ActivationPolicy: lazy
 

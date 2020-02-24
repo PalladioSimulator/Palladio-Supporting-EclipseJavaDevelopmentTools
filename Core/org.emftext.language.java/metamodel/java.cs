@@ -232,7 +232,7 @@ members.Constructor
     ::= (annotationsAndModifiers:annotations.AnnotationInstance,modifiers.Public,modifiers.Protected,modifiers.Private)*
         ("<" typeParameters ("," typeParameters)* ">")? name[]
         "(" (parameters:parameters.ReceiverParameter,parameters.OrdinaryParameter,parameters.VariableLengthParameter ("," parameters:parameters.OrdinaryParameter,parameters.VariableLengthParameter)* )? ")"
-        ("throws" exceptions ("," exceptions)*)? statements:statements.Block;
+        ("throws" exceptions ("," exceptions)*)? statement:statements.Block;
 
 @SuppressWarnings(minOccurenceMismatch)
 members.InterfaceMethod
@@ -240,14 +240,14 @@ members.InterfaceMethod
         ("<" typeParameters ("," typeParameters)* ">")? (typeReference:types.PrimitiveType,types.ClassifierReference,types.NamespaceClassifierReference arrayDimensionsBefore*) name[]
         "(" (parameters:parameters.ReceiverParameter,parameters.OrdinaryParameter,parameters.VariableLengthParameter ("," parameters:parameters.OrdinaryParameter,parameters.VariableLengthParameter)* )? ")" arrayDimensionsAfter*
         ("throws" exceptions ("," exceptions)*)? ("default" defaultValue:expressions.ConditionalExpression,arrays.ArrayInstantiationByValuesUntyped,annotations.AnnotationInstance)?
-        statements:statements.EmptyStatement,statements.Block;
+        statement:statements.EmptyStatement,statements.Block;
 
 @SuppressWarnings(minOccurenceMismatch)
 members.ClassMethod
     ::= (annotationsAndModifiers:annotations.AnnotationInstance,modifiers.Public,modifiers.Protected,modifiers.Private,modifiers.Abstract,modifiers.Static,modifiers.Final,modifiers.Synchronized,modifiers.Native,modifiers.Strictfp)*
         ("<" typeParameters ("," typeParameters)* ">")? (typeReference:types.PrimitiveType,types.ClassifierReference,types.NamespaceClassifierReference arrayDimensionsBefore*) name[]
         "(" (parameters:parameters.ReceiverParameter,parameters.OrdinaryParameter,parameters.VariableLengthParameter ("," parameters:parameters.OrdinaryParameter,parameters.VariableLengthParameter)* )? ")" arrayDimensionsAfter*
-        ("throws" exceptions ("," exceptions)*)? statements:statements.Block;
+        ("throws" exceptions ("," exceptions)*)? statement:statements.Block;
 
 parameters.OrdinaryParameter
     ::= (annotationsAndModifiers:annotations.AnnotationInstance,modifiers.Final)* typeReference arrayDimensionsBefore*

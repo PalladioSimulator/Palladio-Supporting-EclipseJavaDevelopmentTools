@@ -24,6 +24,8 @@ import org.emftext.language.java.instantiations.NewConstructorCall;
 import org.emftext.language.java.members.Constructor;
 import org.emftext.language.java.parameters.Parameter;
 import org.emftext.language.java.parameters.VariableLengthParameter;
+import org.emftext.language.java.statements.Block;
+import org.emftext.language.java.statements.Statement;
 import org.emftext.language.java.types.Type;
 import org.emftext.language.java.types.TypeReference;
 
@@ -172,4 +174,26 @@ public class ConstructorExtension {
         return false;
     }
 
+    /**
+	 * Returns a list of all statements within the block of a constructor.
+	 * This is a legacy method to provide a stable and backwards-compatible API.
+	 * 
+	 * @param me the constructor for which the statements are obtained.
+	 * @return the list of all statements.
+	 * @deprecated Use getBlock().getStatements().
+	 */
+	@Deprecated
+	public static EList<Statement> getStatements(Constructor me) {
+		return getBlock(me).getStatements();
+	}
+	
+	/**
+	 * Returns a block representing the body of a constructor.
+	 * 
+	 * @param me the constructor for which the body is returned.
+	 * @return the block.
+	 */
+	public static Block getBlock(Constructor me) {
+		return (Block) me.getStatement();
+	}
 }
