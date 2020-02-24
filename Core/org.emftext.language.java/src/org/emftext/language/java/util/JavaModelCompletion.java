@@ -37,6 +37,7 @@ import org.emftext.language.java.members.Method;
 import org.emftext.language.java.parameters.Parameter;
 import org.emftext.language.java.parameters.ParametersFactory;
 import org.emftext.language.java.statements.Block;
+import org.emftext.language.java.statements.StatementsFactory;
 import org.emftext.language.java.types.ClassifierReference;
 import org.emftext.language.java.types.TypesFactory;
 
@@ -123,6 +124,7 @@ public class JavaModelCompletion {
 		if (valueMethod == null) {
 			valueMethod = MembersFactory.eINSTANCE.createInterfaceMethod();
 			valueMethod.setName(valueMethodName);
+			valueMethod.setStatement(StatementsFactory.eINSTANCE.createEmptyStatement());
 			ClassifierReference type = TypesFactory.eINSTANCE.createClassifierReference();
 			type.setTarget(annotation.getConcreteClassifierProxy("java.lang.String"));
 			valueMethod.setTypeReference(type);
@@ -146,6 +148,7 @@ public class JavaModelCompletion {
 		if (valuesMethod == null) {
 			valuesMethod = MembersFactory.eINSTANCE.createInterfaceMethod();
 			valuesMethod.setName(valuesMethodName);
+			valuesMethod.setStatement(StatementsFactory.eINSTANCE.createEmptyStatement());
 
 			ClassifierReference type = TypesFactory.eINSTANCE.createClassifierReference();
 			type.setTarget(enumeration);
@@ -160,6 +163,7 @@ public class JavaModelCompletion {
 		if (valueOfMethod == null) {
 			valueOfMethod = MembersFactory.eINSTANCE.createInterfaceMethod();
 			valueOfMethod.setName(valueOfMethodName);
+			valueOfMethod.setStatement(StatementsFactory.eINSTANCE.createEmptyStatement());
 
 			ClassifierReference type = TypesFactory.eINSTANCE.createClassifierReference();
 			type.setTarget(enumeration);
