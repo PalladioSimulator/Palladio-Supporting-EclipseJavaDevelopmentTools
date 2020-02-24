@@ -247,12 +247,13 @@ members.ClassMethod
     ::= (annotationsAndModifiers:annotations.AnnotationInstance,modifiers.Public,modifiers.Protected,modifiers.Private,modifiers.Abstract,modifiers.Static,modifiers.Final,modifiers.Synchronized,modifiers.Native,modifiers.Strictfp)*
         ("<" typeParameters ("," typeParameters)* ">")? (typeReference:types.PrimitiveType,types.ClassifierReference,types.NamespaceClassifierReference arrayDimensionsBefore*) name[]
         "(" (parameters:parameters.ReceiverParameter,parameters.OrdinaryParameter,parameters.VariableLengthParameter ("," parameters:parameters.OrdinaryParameter,parameters.VariableLengthParameter)* )? ")" arrayDimensionsAfter*
-        ("throws" exceptions ("," exceptions)*)? statement:statements.Block;
+        ("throws" exceptions ("," exceptions)*)? statement:statements.Block,statements.EmptyStatement;
 
 parameters.OrdinaryParameter
     ::= (annotationsAndModifiers:annotations.AnnotationInstance,modifiers.Final)* typeReference arrayDimensionsBefore*
         ("<" typeArguments ("," typeArguments)* ">")? name[] arrayDimensionsAfter* ;
 
+@SuppressWarnings(featureWithoutSyntax)
 parameters.CatchParameter
     ::= (annotationsAndModifiers:annotations.AnnotationInstance,modifiers.Final)*
         typeReference:types.ClassifierReference,types.NamespaceClassifierReference ("|" typeReferences:types.ClassifierReference,types.NamespaceClassifierReference)* name[];
