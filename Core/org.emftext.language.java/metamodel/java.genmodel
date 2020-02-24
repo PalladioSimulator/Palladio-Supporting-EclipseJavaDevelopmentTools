@@ -744,7 +744,8 @@
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//parameters/CatchParameter/typeReferences"/>
       </genClasses>
       <genClasses ecoreClass="java.ecore#//parameters/ReceiverParameter">
-        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//parameters/ReceiverParameter/reference"/>
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//parameters/ReceiverParameter/identifierReferences"/>
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//parameters/ReceiverParameter/thisReference"/>
       </genClasses>
     </nestedGenPackages>
     <nestedGenPackages prefix="References" basePackage="org.emftext.language.java"

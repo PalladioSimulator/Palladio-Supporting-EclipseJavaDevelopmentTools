@@ -266,7 +266,7 @@ parameters.VariableLengthParameter
 @SuppressWarnings(featureWithoutSyntax)
 parameters.ReceiverParameter
     ::= annotations* typeReference:types.PrimitiveType,types.ClassifierReference,types.NamespaceClassifierReference
-        arrayDimensionsBefore* ("<" typeArguments ("," typeArguments)* ">")? reference:references.IdentifierReference,references.SelfReference;
+        arrayDimensionsBefore* ("<" typeArguments ("," typeArguments)* ">")? identifierReferences* thisReference;
 
 variables.LocalVariable
     ::= annotationsAndModifiers:annotations.AnnotationInstance,modifiers.Final* typeReference arrayDimensionsBefore*
