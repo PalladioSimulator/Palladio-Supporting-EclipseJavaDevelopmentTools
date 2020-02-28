@@ -5,8 +5,4 @@ eclass Constructor {
 	getStatements() {
 		return org.emftext.language.java.extensions.members.ConstructorExtension.getStatements((org.emftext.language.java.members.Constructor) this);
 	}
-	
-	getBlock() {
-		return org.emftext.language.java.extensions.members.ConstructorExtension.getBlock((org.emftext.language.java.members.Constructor) this);
-	}
 }

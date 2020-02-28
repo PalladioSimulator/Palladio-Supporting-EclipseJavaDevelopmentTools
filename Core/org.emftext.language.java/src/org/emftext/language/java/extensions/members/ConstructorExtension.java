@@ -184,16 +184,6 @@ public class ConstructorExtension {
 	 */
 	@Deprecated
 	public static EList<Statement> getStatements(Constructor me) {
-		return getBlock(me).getStatements();
-	}
-	
-	/**
-	 * Returns a block representing the body of a constructor.
-	 * 
-	 * @param me the constructor for which the body is returned.
-	 * @return the block.
-	 */
-	public static Block getBlock(Constructor me) {
-		return (Block) me.getStatement();
+		return me.getBlock().getStatements();
 	}
 }

@@ -232,7 +232,7 @@ members.Constructor
     ::= (annotationsAndModifiers:annotations.AnnotationInstance,modifiers.Public,modifiers.Protected,modifiers.Private)*
         ("<" typeParameters ("," typeParameters)* ">")? name[]
         "(" (parameters:parameters.ReceiverParameter,parameters.OrdinaryParameter,parameters.VariableLengthParameter ("," parameters:parameters.OrdinaryParameter,parameters.VariableLengthParameter)* )? ")"
-        ("throws" exceptions ("," exceptions)*)? statement:statements.Block;
+        ("throws" exceptions ("," exceptions)*)? block;
 
 @SuppressWarnings(minOccurenceMismatch)
 members.InterfaceMethod
@@ -435,18 +435,18 @@ statements.EmptyStatement
 
 @SuppressWarnings(minOccurenceMismatch)
 statements.SynchronizedBlock
-    ::= "synchronized" #1 "(" lockProvider:expressions.AssignmentExpression,expressions.LambdaExpression ")" statements:statements.Block;
+    ::= "synchronized" #1 "(" lockProvider:expressions.AssignmentExpression,expressions.LambdaExpression ")" block;
 
 @SuppressWarnings(minOccurenceMismatch,optionalKeyword)
 statements.TryBlock
     ::= "try" ("(" resources (";" resources)* (";")? ")")?
-        statements:statements.Block
+        block
         catchBlocks* 
         ("finally" finallyBlock)? ;
 
 @SuppressWarnings(minOccurenceMismatch)
 statements.CatchBlock
-    ::= "catch" #1 "(" parameter:parameters.CatchParameter ")" statements:statements.Block;
+    ::= "catch" #1 "(" parameter:parameters.CatchParameter ")" block;
 
 statements.Switch
     ::= "switch" #1 "(" variable:expressions.AssignmentExpression,expressions.LambdaExpression ")" #1 "{" (cases*) "}";

@@ -6,4 +6,9 @@ eclass TryBlock {
 	getCatcheBlocks() {
 		return org.emftext.language.java.extensions.statements.TryBlockExtension.getCatcheBlocks((org.emftext.language.java.statements.TryBlock) this);
 	}
+	
+	@Deprecated
+	getStatements() {
+		return org.emftext.language.java.extensions.statements.TryBlockExtension.getStatements((org.emftext.language.java.statements.TryBlock) this);
+	}
 }

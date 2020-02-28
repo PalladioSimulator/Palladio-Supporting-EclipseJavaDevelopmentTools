@@ -591,8 +591,6 @@
             body="return org.emftext.language.java.extensions.members.AdditionalFieldExtension.getArrayDimension((org.emftext.language.java.members.AdditionalField) this);"/>
       </genClasses>
       <genClasses ecoreClass="java.ecore#//members/Constructor">
-        <genOperations ecoreOperation="java.ecore#//members/Constructor/getBlock"
-            body="return org.emftext.language.java.extensions.members.ConstructorExtension.getBlock((org.emftext.language.java.members.Constructor) this);"/>
         <genOperations ecoreOperation="java.ecore#//members/Constructor/getStatements"
             body="return org.emftext.language.java.extensions.members.ConstructorExtension.getStatements((org.emftext.language.java.members.Constructor) this);"/>
       </genClasses>
@@ -790,25 +788,31 @@
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//statements/StatementContainer/statement"/>
       </genClasses>
       <genClasses image="false" ecoreClass="java.ecore#//statements/StatementListContainer">
-        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//statements/StatementListContainer/statements"/>
         <genOperations ecoreOperation="java.ecore#//statements/StatementListContainer/getLocalVariable"
             body="return org.emftext.language.java.extensions.statements.StatementListContainerExtension.getLocalVariable((org.emftext.language.java.statements.StatementListContainer) this, name);">
           <genParameters ecoreParameter="java.ecore#//statements/StatementListContainer/getLocalVariable/name"/>
         </genOperations>
+        <genOperations ecoreOperation="java.ecore#//statements/StatementListContainer/getStatements"/>
       </genClasses>
       <genClasses image="false" ecoreClass="java.ecore#//statements/Conditional">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//statements/Conditional/condition"/>
       </genClasses>
       <genClasses image="false" ecoreClass="java.ecore#_Wo2Y9tz1Ed2bJ_pQViWxFg"/>
       <genClasses image="false" ecoreClass="java.ecore#_Wo2YzNz1Ed2bJ_pQViWxFg"/>
-      <genClasses image="false" ecoreClass="java.ecore#_Wo2Y4tz1Ed2bJ_pQViWxFg"/>
+      <genClasses image="false" ecoreClass="java.ecore#_Wo2Y4tz1Ed2bJ_pQViWxFg">
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//statements/SwitchCase/statements"/>
+      </genClasses>
       <genClasses ecoreClass="java.ecore#_Wo2Yztz1Ed2bJ_pQViWxFg">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#_Wo2Y0tz1Ed2bJ_pQViWxFg"/>
       </genClasses>
       <genClasses ecoreClass="java.ecore#_Wo2ZI9z1Ed2bJ_pQViWxFg"/>
-      <genClasses ecoreClass="java.ecore#//statements/Block"/>
+      <genClasses ecoreClass="java.ecore#//statements/Block">
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//statements/Block/statements"/>
+      </genClasses>
       <genClasses ecoreClass="java.ecore#_Wo2ZD9z1Ed2bJ_pQViWxFg">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#_Wo2ZEdz1Ed2bJ_pQViWxFg"/>
+        <genOperations ecoreOperation="java.ecore#//statements/CatchBlock/getStatements"
+            body="return org.emftext.language.java.extensions.statements.CatchBlockExtension.getStatements((org.emftext.language.java.statements.CatchBlock) this);"/>
       </genClasses>
       <genClasses ecoreClass="java.ecore#_Wo2Y1Nz1Ed2bJ_pQViWxFg">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#_Wo2Y2tz1Ed2bJ_pQViWxFg"/>
@@ -846,6 +850,8 @@
       </genClasses>
       <genClasses ecoreClass="java.ecore#_Wo2ZFdz1Ed2bJ_pQViWxFg">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#_Wo2ZF9z1Ed2bJ_pQViWxFg"/>
+        <genOperations ecoreOperation="java.ecore#//statements/SynchronizedBlock/getStatements"
+            body="return org.emftext.language.java.extensions.statements.SynchronizedBlockExtension.getStatements((org.emftext.language.java.statements.SynchronizedBlock) this);"/>
       </genClasses>
       <genClasses ecoreClass="java.ecore#_Wo2ZH9z1Ed2bJ_pQViWxFg">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#_Wo2ZIdz1Ed2bJ_pQViWxFg"/>
@@ -856,9 +862,14 @@
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#_Wo2ZDNz1Ed2bJ_pQViWxFg"/>
         <genOperations ecoreOperation="java.ecore#//statements/TryBlock/getCatcheBlocks"
             body="return org.emftext.language.java.extensions.statements.TryBlockExtension.getCatcheBlocks((org.emftext.language.java.statements.TryBlock) this);"/>
+        <genOperations ecoreOperation="java.ecore#//statements/TryBlock/getStatements"
+            body="return org.emftext.language.java.extensions.statements.TryBlockExtension.getStatements((org.emftext.language.java.statements.TryBlock) this);"/>
       </genClasses>
       <genClasses ecoreClass="java.ecore#_Wo2ZANz1Ed2bJ_pQViWxFg">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#_Wo2ZAtz1Ed2bJ_pQViWxFg"/>
+      </genClasses>
+      <genClasses image="false" ecoreClass="java.ecore#//statements/BlockContainer">
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//statements/BlockContainer/block"/>
       </genClasses>
     </nestedGenPackages>
     <nestedGenPackages prefix="Types" basePackage="org.emftext.language.java" disposableProviderFactory="true"

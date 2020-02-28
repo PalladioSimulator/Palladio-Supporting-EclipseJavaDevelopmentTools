@@ -66,7 +66,8 @@ public class LocalVariableDecider extends AbstractDecider {
 			if (StatementsPackage.Literals.STATEMENT_CONTAINER__STATEMENT.equals(element.eContainmentFeature())) {
 				return true;
 			}
-			if (StatementsPackage.Literals.STATEMENT_LIST_CONTAINER__STATEMENTS.equals(element.eContainmentFeature())) {
+			if (StatementsPackage.Literals.BLOCK__STATEMENTS.equals(element.eContainmentFeature())
+					|| StatementsPackage.Literals.SWITCH_CASE__STATEMENTS.equals(element.eContainmentFeature())) {
 				return true;
 			}
 		}

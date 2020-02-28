@@ -1,0 +1,9 @@
+epackage java.statements;
+
+eclass CatchBlock {
+
+	@Deprecated
+	getStatements() {
+		return org.emftext.language.java.extensions.statements.CatchBlockExtension.getStatements((org.emftext.language.java.statements.CatchBlock) this);
+	}
+}

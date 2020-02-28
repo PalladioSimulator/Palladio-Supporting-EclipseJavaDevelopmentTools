@@ -70,7 +70,8 @@ public class ConcreteClassifierDecider extends AbstractDecider {
 		if (StatementsPackage.Literals.STATEMENT_CONTAINER__STATEMENT.equals(containingReference)) {
 			return true;
 		}
-		if (StatementsPackage.Literals.STATEMENT_LIST_CONTAINER__STATEMENTS.equals(containingReference)) {
+		if (StatementsPackage.Literals.BLOCK__STATEMENTS.equals(containingReference)
+				|| StatementsPackage.Literals.SWITCH_CASE__STATEMENTS.equals(containingReference)) {
 			return true;
 		}
 		return false;
