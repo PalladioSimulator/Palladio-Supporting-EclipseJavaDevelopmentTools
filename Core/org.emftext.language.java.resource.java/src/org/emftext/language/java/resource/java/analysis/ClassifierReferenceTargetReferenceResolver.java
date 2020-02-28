@@ -26,6 +26,7 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.emftext.language.java.JavaClasspath;
 import org.emftext.language.java.classifiers.Classifier;
 import org.emftext.language.java.classifiers.ConcreteClassifier;
+import org.emftext.language.java.commons.NamedElement;
 import org.emftext.language.java.containers.CompilationUnit;
 import org.emftext.language.java.expressions.Expression;
 import org.emftext.language.java.expressions.NestedExpression;
@@ -42,6 +43,7 @@ import org.emftext.language.java.resource.java.analysis.helper.ScopedTreeWalker;
 import org.emftext.language.java.types.ClassifierReference;
 import org.emftext.language.java.types.NamespaceClassifierReference;
 import org.emftext.language.java.types.TypeReference;
+import org.emftext.language.java.types.TypesFactory;
 import org.emftext.language.java.util.TemporalFullNameHolder;
 
 public class ClassifierReferenceTargetReferenceResolver implements
@@ -189,6 +191,11 @@ public class ClassifierReferenceTargetReferenceResolver implements
 			if (!target.eIsProxy()) {
 				result.addMapping(identifier, (Classifier) target);
 			}
+		} else if (identifier.equals("var")) { // There is no classifier with name "var"
+												// so that it is assumed that "var" is used as a type for a local variable.
+			target = TypesFactory.eINSTANCE.createInferableType();
+			((NamedElement) target).setName("var");
+			result.addMapping(identifier, (Classifier) target);
 		}
 	}
 
