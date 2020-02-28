@@ -242,6 +242,12 @@ members.InterfaceMethod
         ("throws" exceptions ("," exceptions)*)? ("default" defaultValue:expressions.ConditionalExpression,arrays.ArrayInstantiationByValuesUntyped,annotations.AnnotationInstance)?
         statement:statements.EmptyStatement,statements.Block;
 
+annotations.AnnotationAttribute
+    ::= (annotationsAndModifiers:annotations.AnnotationInstance,modifiers.Public,modifiers.Abstract)*
+        (typeReference:types.PrimitiveType,types.ClassifierReference,types.NamespaceClassifierReference arrayDimensionsBefore*) name[]
+        "(" ")" arrayDimensionsAfter*
+        ("default" defaultValue:expressions.ConditionalExpression,arrays.ArrayInstantiationByValuesUntyped,annotations.AnnotationInstance)? ";";
+
 @SuppressWarnings(minOccurenceMismatch)
 members.ClassMethod
     ::= (annotationsAndModifiers:annotations.AnnotationInstance,modifiers.Public,modifiers.Protected,modifiers.Private,modifiers.Abstract,modifiers.Static,modifiers.Final,modifiers.Synchronized,modifiers.Native,modifiers.Strictfp)*
@@ -366,6 +372,9 @@ references.ReflectiveClassReference
 @SuppressWarnings(featureWithoutSyntax) //typeArguments
 references.SelfReference
     ::= self ("." next)? ;
+
+references.PackageReference
+    ::= name[] ("." subpackages)* ;
 
 @SuppressWarnings(featureWithoutSyntax) //typeArguments
 references.PrimitiveTypeReference
