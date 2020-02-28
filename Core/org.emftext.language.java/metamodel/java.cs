@@ -42,7 +42,7 @@ OPTIONS {
     licenceHeader ="../../org.dropsbox/licence.txt";
     defaultTokenName = "IDENTIFIER";
     generateCodeFromGeneratorModel = "false";
-    memoize = "true";
+    memoize = "false";
     usePredefinedTokens = "false";
     resolveProxyElementsAfterParsing = "false";
     disableLaunchSupport = "true";
