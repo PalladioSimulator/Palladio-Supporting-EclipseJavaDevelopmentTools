@@ -6,8 +6,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
-	<classpathentry kind="src" output="bin-module1" path="src-module1"/>
-	<classpathentry kind="src" output="bin-module2" path="src-module2"/>
-	<classpathentry kind="src" output="bin-module3" path="src-module3"/>
+	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
