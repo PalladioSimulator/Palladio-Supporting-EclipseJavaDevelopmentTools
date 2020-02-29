@@ -39,7 +39,7 @@ public class JDTConnector implements JavaClasspath.Initializer {
 	}
 	
 	public boolean requiresStdLib() {
-		return false;
+		return true;
 	}
 	
 	private void initializeResourceSet(ResourceSet resourceSet, URI resourceURI) {
@@ -53,6 +53,7 @@ public class JDTConnector implements JavaClasspath.Initializer {
 		if (uriConverter == null) {
 			return;
 		}
+		
 		URI normalizedURI = uriConverter.normalize(resourceURI);
 		if (!normalizedURI.isPlatformResource()) {
 			return;
