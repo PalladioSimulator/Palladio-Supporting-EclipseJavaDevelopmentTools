@@ -1,0 +1,3 @@
+module SimpleNormalModule {
+	exports simplepackage;
+}
