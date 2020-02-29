@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: JaMoPP+ M Tests for Java 7+
+Bundle-SymbolicName: org.emftext.language.java.tests.sevenup
+Bundle-Version: 0.0
+Bundle-Vendor: Martin Armbruster
+Automatic-Module-Name: org.emftext.language.java.tests.sevenup
+Bundle-RequiredExecutionEnvironment: JavaSE-12
