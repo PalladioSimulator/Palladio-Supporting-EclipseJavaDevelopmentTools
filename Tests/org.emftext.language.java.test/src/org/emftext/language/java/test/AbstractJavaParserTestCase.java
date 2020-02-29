@@ -330,13 +330,12 @@ public abstract class AbstractJavaParserTestCase {
 	private static org.eclipse.jdt.core.dom.CompilationUnit parseWithJDT(
 			InputStream inputStream) {
 
-		@SuppressWarnings("deprecation")
-		ASTParser jdtParser = ASTParser.newParser(AST.JLS3);
+		ASTParser jdtParser = ASTParser.newParser(AST.JLS12);
 		char[] charArray = readTextContents(inputStream).toCharArray();
 		jdtParser.setSource(charArray);
 
 		Map<String, String> options = new HashMap<String, String>();
-		options.put(JavaCore.COMPILER_SOURCE, JavaCore.VERSION_1_5);
+		options.put(JavaCore.COMPILER_SOURCE, JavaCore.VERSION_12);
 		jdtParser.setCompilerOptions(options);
 
 		org.eclipse.jdt.core.dom.CompilationUnit result1 =
