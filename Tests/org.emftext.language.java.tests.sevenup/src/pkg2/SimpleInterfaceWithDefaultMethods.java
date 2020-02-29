@@ -17,4 +17,20 @@ public interface SimpleInterfaceWithDefaultMethods<R> extends Runnable, Callable
 	static void doMore(int i) {
 		i++;
 	}
+	
+	class Implementation implements SimpleInterfaceWithDefaultMethods<Integer> {
+		@Override
+		public String getName() {
+			return "Test";
+		}
+		
+		@Override
+		public void run() {
+		}
+		
+		@Override
+		public Integer call() {
+			return -1;
+		}
+	}
 }
