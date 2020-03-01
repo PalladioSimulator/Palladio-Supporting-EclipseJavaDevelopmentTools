@@ -106,7 +106,7 @@ public abstract class AbstractJavaParserTestCase {
 	private static List<File> reprintedResources = new ArrayList<File>();
 
 	protected JavaRoot parseResource(String filename, String inputFolderName) throws Exception {
-		File inputFolder = new File("./" + inputFolderName);
+		File inputFolder = new File("." + File.separator + inputFolderName);
 		File file = new File(inputFolder, filename);
 		assertTrue("File " + file + " must exist.", file.exists());
 		
