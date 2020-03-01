@@ -28,10 +28,11 @@ public class JavaBINARY_LONG_LITERALTokenResolver implements org.emftext.languag
 	
 	public void resolve(String lexem, org.eclipse.emf.ecore.EStructuralFeature feature, org.emftext.language.java.resource.java.IJavaTokenResolveResult result) {
 		assert feature == null || feature.getEContainingClass().equals(LiteralsPackage.eINSTANCE.getBinaryLongLiteral());
-		assert lexem.startsWith(BIN_PREFIX) && lexem.endsWith(LONG_SUFFIX);
+		assert lexem.toLowerCase().startsWith(BIN_PREFIX) && lexem.toLowerCase().endsWith(LONG_SUFFIX);
 		
-		lexem = lexem.substring(0, lexem.length() - 1);
+		lexem = lexem.substring(BIN_PREFIX.length(), lexem.length() - 1);
 		lexem = lexem.replaceAll(UNDER_SCORE, "");
+		System.out.println(lexem);
 		
 		JavaDECIMAL_LONG_LITERALTokenResolver.parseToLong(lexem, 2, result);
 	}

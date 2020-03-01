@@ -27,8 +27,9 @@ public class JavaBINARY_INTEGER_LITERALTokenResolver implements org.emftext.lang
 	
 	public void resolve(String lexem, org.eclipse.emf.ecore.EStructuralFeature feature, org.emftext.language.java.resource.java.IJavaTokenResolveResult result) {
 		assert feature == null || feature.getEContainingClass().equals(LiteralsPackage.eINSTANCE.getBinaryIntegerLiteral());
-		assert lexem.startsWith(BIN_PREFIX);
+		assert lexem.toLowerCase().startsWith(BIN_PREFIX);
 		
+		lexem = lexem.substring(BIN_PREFIX.length());
 		lexem = lexem.replaceAll(UNDER_SCORE, "");
 		
 		JavaDECIMAL_LONG_LITERALTokenResolver.parseToLong(lexem, 2, result);
