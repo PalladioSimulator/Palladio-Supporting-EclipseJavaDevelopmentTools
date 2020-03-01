@@ -159,8 +159,8 @@ imports.StaticClassifierImport
 classifiers.Class
     ::= (annotationsAndModifiers:annotations.AnnotationInstance,modifiers.Public,modifiers.Protected,modifiers.Private,modifiers.Abstract,modifiers.Static,modifiers.Final,modifiers.Strictfp)*
         "class" name[] ("<" typeParameters ("," typeParameters)* ">")?
-        ("extends" extends:types.ClassifierReference,types.NamespaceClassifierReference)?
-        ("implements" implements:types.ClassifierReference,types.NamespaceClassifierReference ("," implements:types.ClassifierReference,types.NamespaceClassifierReference)* )?
+        ("extends" extends:types.NamespaceClassifierReference)?
+        ("implements" implements:types.NamespaceClassifierReference ("," implements:types.NamespaceClassifierReference)* )?
         #1 "{"
             (!1 members:classifiers.ConcreteClassifier,members.Constructor,members.EmptyMember,members.Field,members.ClassMethod,statements.Block)*
         !0 "}";
@@ -175,7 +175,7 @@ classifiers.AnonymousClass
 classifiers.Interface
     ::= (annotationsAndModifiers:annotations.AnnotationInstance,modifiers.Public,modifiers.Protected,modifiers.Private,modifiers.Abstract,modifiers.Static,modifiers.Strictfp)*
         "interface" name[] ("<" typeParameters ("," typeParameters)* ">")?
-        ("extends" extends:types.ClassifierReference,types.NamespaceClassifierReference ("," extends:types.ClassifierReference,types.NamespaceClassifierReference)* )?
+        ("extends" extends:types.NamespaceClassifierReference ("," extends:types.NamespaceClassifierReference)* )?
         #1 "{"
             (!1 members:classifiers.ConcreteClassifier,members.EmptyMember,members.Field,members.InterfaceMethod)*
         !0 "}";
@@ -185,7 +185,7 @@ classifiers.Interface
 classifiers.Enumeration
     ::= (annotationsAndModifiers:annotations.AnnotationInstance,modifiers.Public,modifiers.Protected,modifiers.Private,modifiers.Abstract,modifiers.Static,modifiers.Final,modifiers.Strictfp)*
         "enum" name[]
-        ("implements" implements:types.ClassifierReference,types.NamespaceClassifierReference ("," implements:types.ClassifierReference,types.NamespaceClassifierReference)* )? 
+        ("implements" implements:types.NamespaceClassifierReference ("," implements:types.NamespaceClassifierReference)* )? 
         #1 "{"
             (!1 constants ("," !1 constants)*)? (",")? 
             (!1 ";" (!1 members:classifiers.ConcreteClassifier,members.Constructor,members.EmptyMember,members.Field,members.ClassMethod,statements.Block)* )?
@@ -214,7 +214,7 @@ annotations.AnnotationAttributeSetting
     ::= attribute[] #1 "=" #1 value:annotations.AnnotationInstance,expressions.ConditionalExpression,arrays.ArrayInitializer;
 
 generics.TypeParameter
-    ::= name[] ("extends" extendTypes:types.ClassifierReference,types.NamespaceClassifierReference ("&" extendTypes:types.ClassifierReference,types.NamespaceClassifierReference)*)? ;
+    ::= name[] ("extends" extendTypes:types.NamespaceClassifierReference ("&" extendTypes:types.NamespaceClassifierReference)*)? ;
 
 @SuppressWarnings(optionalKeyword)
 members.EnumConstant
@@ -237,21 +237,21 @@ members.Constructor
 @SuppressWarnings(minOccurenceMismatch)
 members.InterfaceMethod
     ::= (annotationsAndModifiers:annotations.AnnotationInstance,modifiers.Public,modifiers.Abstract,modifiers.Strictfp,modifiers.Private,modifiers.Static,modifiers.Default)*
-        ("<" typeParameters ("," typeParameters)* ">")? (typeReference:types.PrimitiveType,types.ClassifierReference,types.NamespaceClassifierReference arrayDimensionsBefore*) name[]
+        ("<" typeParameters ("," typeParameters)* ">")? (typeReference:types.PrimitiveType,types.NamespaceClassifierReference arrayDimensionsBefore*) name[]
         "(" (parameters:parameters.ReceiverParameter,parameters.OrdinaryParameter,parameters.VariableLengthParameter ("," parameters:parameters.OrdinaryParameter,parameters.VariableLengthParameter)* )? ")" arrayDimensionsAfter*
         ("throws" exceptions ("," exceptions)*)? ("default" defaultValue:expressions.ConditionalExpression,arrays.ArrayInstantiationByValuesUntyped,annotations.AnnotationInstance)?
         statement:statements.EmptyStatement,statements.Block;
 
 annotations.AnnotationAttribute
     ::= (annotationsAndModifiers:annotations.AnnotationInstance,modifiers.Public,modifiers.Abstract)*
-        (typeReference:types.PrimitiveType,types.ClassifierReference,types.NamespaceClassifierReference arrayDimensionsBefore*) name[]
+        (typeReference:types.PrimitiveType,types.NamespaceClassifierReference arrayDimensionsBefore*) name[]
         "(" ")" arrayDimensionsAfter*
         ("default" defaultValue:expressions.ConditionalExpression,arrays.ArrayInstantiationByValuesUntyped,annotations.AnnotationInstance)? ";";
 
 @SuppressWarnings(minOccurenceMismatch)
 members.ClassMethod
     ::= (annotationsAndModifiers:annotations.AnnotationInstance,modifiers.Public,modifiers.Protected,modifiers.Private,modifiers.Abstract,modifiers.Static,modifiers.Final,modifiers.Synchronized,modifiers.Native,modifiers.Strictfp)*
-        ("<" typeParameters ("," typeParameters)* ">")? (typeReference:types.PrimitiveType,types.ClassifierReference,types.NamespaceClassifierReference arrayDimensionsBefore*) name[]
+        ("<" typeParameters ("," typeParameters)* ">")? (typeReference:types.PrimitiveType,types.NamespaceClassifierReference arrayDimensionsBefore*) name[]
         "(" (parameters:parameters.ReceiverParameter,parameters.OrdinaryParameter,parameters.VariableLengthParameter ("," parameters:parameters.OrdinaryParameter,parameters.VariableLengthParameter)* )? ")" arrayDimensionsAfter*
         ("throws" exceptions ("," exceptions)*)? statement:statements.Block,statements.EmptyStatement;
 
@@ -262,7 +262,7 @@ parameters.OrdinaryParameter
 @SuppressWarnings(featureWithoutSyntax)
 parameters.CatchParameter
     ::= (annotationsAndModifiers:annotations.AnnotationInstance,modifiers.Final)*
-        typeReference:types.ClassifierReference,types.NamespaceClassifierReference ("|" typeReferences:types.ClassifierReference,types.NamespaceClassifierReference)* name[];
+        typeReference:types.NamespaceClassifierReference ("|" typeReferences:types.NamespaceClassifierReference)* name[];
 
 @SuppressWarnings(featureWithoutSyntax)
 parameters.VariableLengthParameter
@@ -271,7 +271,7 @@ parameters.VariableLengthParameter
 
 @SuppressWarnings(featureWithoutSyntax)
 parameters.ReceiverParameter
-    ::= annotations* typeReference:types.PrimitiveType,types.ClassifierReference,types.NamespaceClassifierReference
+    ::= annotations* typeReference:types.PrimitiveType,types.NamespaceClassifierReference
         arrayDimensionsBefore* ("<" typeArguments ("," typeArguments)* ">")? identifierReferences* thisReference;
 
 variables.LocalVariable
@@ -289,7 +289,7 @@ variables.AdditionalLocalVariable
 
 members.Field
     ::= (annotationsAndModifiers:annotations.AnnotationInstance,modifiers.Public,modifiers.Protected,modifiers.Private,modifiers.Static,modifiers.Final,modifiers.Transient,modifiers.Volatile)*
-        typeReference:types.PrimitiveType,types.ClassifierReference,types.NamespaceClassifierReference arrayDimensionsBefore* ("<" typeArguments ("," typeArguments)* ">")?
+        typeReference:types.PrimitiveType,types.NamespaceClassifierReference arrayDimensionsBefore* ("<" typeArguments ("," typeArguments)* ">")?
         name[] arrayDimensionsAfter* (#1 "=" #1 initialValue:expressions.AssignmentExpression,expressions.LambdaExpression)?
         ("," additionalFields)* ";";
 
@@ -307,7 +307,7 @@ instantiations.NewConstructorCall
     ::= "new"
         // these are the arguments for the constructor type parameters
         ("<" typeArguments ("," typeArguments)* ">")?
-        typeReference:types.ClassifierReference
+        typeReference:types.NamespaceClassifierReference
         // these are the arguments for the class type parameters
         ("<" (callTypeArguments ("," callTypeArguments)*)? ">")?
         "(" (arguments:expressions.AssignmentExpression,expressions.LambdaExpression ("," arguments:expressions.AssignmentExpression,expressions.LambdaExpression)* )? ")"
@@ -323,7 +323,7 @@ instantiations.ExplicitConstructorCall
 @SuppressWarnings(featureWithoutSyntax) //arrayDimensionsAfter
 @SuppressWarnings(minOccurenceMismatch) //arrayDimensionsBefore required here
 arrays.ArrayInstantiationByValuesTyped
-    ::= "new" typeReference:types.ClassifierReference,types.NamespaceClassifierReference
+    ::= "new" typeReference:types.NamespaceClassifierReference
         arrayDimensionsBefore+ arrayInitializer
         arraySelectors* ("." next)? ;
 
@@ -334,7 +334,7 @@ arrays.ArrayInstantiationByValuesUntyped
 
 @SuppressWarnings(featureWithoutSyntax)
 arrays.ArrayInstantiationBySize 
-    ::= "new" typeReference:types.PrimitiveType,types.ClassifierReference,types.NamespaceClassifierReference
+    ::= "new" typeReference:types.PrimitiveType,types.NamespaceClassifierReference
         ("[" sizes:expressions.AssignmentExpression,expressions.LambdaExpression "]")+
         arrayDimensionsBefore*
         ("." next)? ;
@@ -389,7 +389,7 @@ references.StringReference
 
 @SuppressWarnings(featureWithoutSyntax)
 generics.QualifiedTypeArgument
-    ::= typeReference:types.ClassifierReference,types.NamespaceClassifierReference arrayDimensionsBefore* ;
+    ::= typeReference:types.NamespaceClassifierReference arrayDimensionsBefore* ;
 
 @SuppressWarnings(featureWithoutSyntax)
 generics.UnknownTypeArgument
@@ -397,11 +397,11 @@ generics.UnknownTypeArgument
 
 @SuppressWarnings(featureWithoutSyntax)
 generics.ExtendsTypeArgument
-    ::= annotations* "?" "extends" extendType:types.ClassifierReference,types.NamespaceClassifierReference arrayDimensionsBefore* ;
+    ::= annotations* "?" "extends" extendType:types.NamespaceClassifierReference arrayDimensionsBefore* ;
 
 @SuppressWarnings(featureWithoutSyntax)
 generics.SuperTypeArgument
-    ::= annotations* "?" "super" superType:types.ClassifierReference,types.NamespaceClassifierReference arrayDimensionsBefore* ;
+    ::= annotations* "?" "super" superType:types.NamespaceClassifierReference arrayDimensionsBefore* ;
 
 @SuppressWarnings(minOccurenceMismatch) //condition can be empty in other cases
 statements.Assert
@@ -508,7 +508,7 @@ expressions.EqualityExpression
 @SuppressWarnings(featureWithoutSyntax)
 @SuppressWarnings(minOccurenceMismatch) //the expression simplifier removes the cases where min occurrence does not match 
 expressions.InstanceOfExpression
-    ::= child:expressions.RelationExpression ("instanceof" typeReference:types.ClassifierReference,types.NamespaceClassifierReference arrayDimensionsBefore*)? ;
+    ::= child:expressions.RelationExpression ("instanceof" typeReference:types.NamespaceClassifierReference arrayDimensionsBefore*)? ;
 
 @SuppressWarnings(minOccurenceMismatch) //the expression simplifier removes the cases where min occurrence does not match   
 expressions.RelationExpression
@@ -541,8 +541,8 @@ expressions.PrefixUnaryModificationExpression
 
 @SuppressWarnings(featureWithoutSyntax)
 expressions.CastExpression
-    ::= "(" typeReference:types.PrimitiveType,types.ClassifierReference,types.NamespaceClassifierReference arrayDimensionsBefore*
-        (#1 "&" #1 additionalBounds:types.ClassifierReference,types.NamespaceClassifierReference)* ")"
+    ::= "(" typeReference:types.PrimitiveType,types.NamespaceClassifierReference arrayDimensionsBefore*
+        (#1 "&" #1 additionalBounds:types.NamespaceClassifierReference)* ")"
         #1 generalChild:expressions.UnaryExpression,expressions.LambdaExpression;
 
 @SuppressWarnings(featureWithoutSyntax) //typeArguments
@@ -553,12 +553,12 @@ expressions.PrimaryExpressionReferenceExpression
     ::= child ("::" ("<" callTypeArguments ("," callTypeArguments)* ">")? methodReference:references.IdentifierReference)? ;
 
 expressions.ClassTypeConstructorReferenceExpression
-    ::= typeReference:types.PrimitiveType,types.ClassifierReference,types.NamespaceClassifierReference
+    ::= typeReference:types.PrimitiveType,types.NamespaceClassifierReference
         "::" ("<" callTypeArguments ("," callTypeArguments)* ">")? "new";
 
 @SuppressWarnings(featureWithoutSyntax,minOccurenceMismatch)
 expressions.ArrayConstructorReferenceExpression
-    ::= typeReference:types.PrimitiveType,types.ClassifierReference,types.NamespaceClassifierReference
+    ::= typeReference:types.PrimitiveType,types.NamespaceClassifierReference
         arrayDimensionsBefore+ "::" "new";
 
 expressions.ExplicitlyTypedLambdaParameters
@@ -658,11 +658,11 @@ modules.OpenModule
         !0 "}";
 
 modules.UsesModuleDirective
-    ::= "uses" typeReference:types.ClassifierReference,types.NamespaceClassifierReference;
+    ::= "uses" typeReference:types.NamespaceClassifierReference;
 
 modules.ProvidesModuleDirective
-    ::= "provides" typeReference:types.ClassifierReference,types.NamespaceClassifierReference
-        "with" serviceProviders:types.ClassifierReference,types.NamespaceClassifierReference ("," serviceProviders:types.ClassifierReference,types.NamespaceClassifierReference)*;
+    ::= "provides" typeReference:types.NamespaceClassifierReference
+        "with" serviceProviders:types.NamespaceClassifierReference ("," serviceProviders:types.NamespaceClassifierReference)*;
 
 modules.RequiresModuleDirective
     ::= "requires" (modifiers:modifiers.Transitive,modifiers.Static)* requiredModule;
