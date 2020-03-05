@@ -256,7 +256,8 @@ members.ClassMethod
         ("throws" exceptions ("," exceptions)*)? statement:statements.Block,statements.EmptyStatement;
 
 parameters.OrdinaryParameter
-    ::= (annotationsAndModifiers:annotations.AnnotationInstance,modifiers.Final)* typeReference arrayDimensionsBefore*
+    ::= (annotationsAndModifiers:annotations.AnnotationInstance,modifiers.Final)*
+        typeReference:types.NamespaceClassifierReference,types.PrimitiveType arrayDimensionsBefore*
         ("<" typeArguments ("," typeArguments)* ">")? name[] arrayDimensionsAfter* ;
 
 @SuppressWarnings(featureWithoutSyntax)
@@ -266,7 +267,8 @@ parameters.CatchParameter
 
 @SuppressWarnings(featureWithoutSyntax)
 parameters.VariableLengthParameter
-    ::= (annotationsAndModifiers:annotations.AnnotationInstance,modifiers.Final)* typeReference arrayDimensionsBefore*
+    ::= (annotationsAndModifiers:annotations.AnnotationInstance,modifiers.Final)*
+        typeReference:types.NamespaceClassifierReference,types.PrimitiveType arrayDimensionsBefore*
         ("<" typeArguments ("," typeArguments)* ">")? annotations* "..." name[];
 
 @SuppressWarnings(featureWithoutSyntax)
@@ -275,7 +277,8 @@ parameters.ReceiverParameter
         arrayDimensionsBefore* ("<" typeArguments ("," typeArguments)* ">")? identifierReferences* thisReference;
 
 variables.LocalVariable
-    ::= annotationsAndModifiers:annotations.AnnotationInstance,modifiers.Final* typeReference arrayDimensionsBefore*
+    ::= (annotationsAndModifiers:annotations.AnnotationInstance,modifiers.Final)*
+        typeReference:types.NamespaceClassifierReference,types.PrimitiveType arrayDimensionsBefore*
         ("<" typeArguments ("," typeArguments)* ">")? name[]
         arrayDimensionsAfter* (#1 "=" #1 initialValue:expressions.AssignmentExpression,expressions.LambdaExpression)?
         ("," additionalLocalVariables)* ;
@@ -323,7 +326,7 @@ instantiations.ExplicitConstructorCall
 @SuppressWarnings(featureWithoutSyntax) //arrayDimensionsAfter
 @SuppressWarnings(minOccurenceMismatch) //arrayDimensionsBefore required here
 arrays.ArrayInstantiationByValuesTyped
-    ::= "new" typeReference:types.NamespaceClassifierReference
+    ::= "new" typeReference:types.NamespaceClassifierReference,types.PrimitiveType
         arrayDimensionsBefore+ arrayInitializer
         arraySelectors* ("." next)? ;
 
@@ -508,7 +511,8 @@ expressions.EqualityExpression
 @SuppressWarnings(featureWithoutSyntax)
 @SuppressWarnings(minOccurenceMismatch) //the expression simplifier removes the cases where min occurrence does not match 
 expressions.InstanceOfExpression
-    ::= child:expressions.RelationExpression ("instanceof" typeReference:types.NamespaceClassifierReference arrayDimensionsBefore*)? ;
+    ::= child:expressions.RelationExpression
+        ("instanceof" typeReference:types.NamespaceClassifierReference,types.PrimitiveType arrayDimensionsBefore*)? ;
 
 @SuppressWarnings(minOccurenceMismatch) //the expression simplifier removes the cases where min occurrence does not match   
 expressions.RelationExpression
