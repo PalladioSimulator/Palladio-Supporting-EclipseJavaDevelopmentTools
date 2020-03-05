@@ -662,20 +662,20 @@ modules.OpenModule
         !0 "}";
 
 modules.UsesModuleDirective
-    ::= "uses" typeReference:types.NamespaceClassifierReference;
+    ::= "uses" typeReference:types.NamespaceClassifierReference ";";
 
 modules.ProvidesModuleDirective
     ::= "provides" typeReference:types.NamespaceClassifierReference
-        "with" serviceProviders:types.NamespaceClassifierReference ("," serviceProviders:types.NamespaceClassifierReference)*;
+        "with" serviceProviders:types.NamespaceClassifierReference ("," serviceProviders:types.NamespaceClassifierReference)* ";";
 
 modules.RequiresModuleDirective
-    ::= "requires" (modifiers:modifiers.Transitive,modifiers.Static)* requiredModule;
+    ::= "requires" (modifiers:modifiers.Transitive,modifiers.Static)* requiredModule ";";
 
 modules.OpensModuleDirective
-    ::= "opens" accessGrantedPackage ("to" modules ("," modules)*)?;
+    ::= "opens" accessGrantedPackage ("to" modules ("," modules)*)? ";";
 
 modules.ExportsModuleDirective
-    ::= "exports" accessGrantedPackage ("to" modules ("," modules)*)?;
+    ::= "exports" accessGrantedPackage ("to" modules ("," modules)*)? ";";
 
 @SuppressWarnings(featureWithoutSyntax,minOccurenceMismatch)
 modules.ModuleReference
