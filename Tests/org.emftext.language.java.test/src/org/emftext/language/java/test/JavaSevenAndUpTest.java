@@ -176,7 +176,7 @@ public class JavaSevenAndUpTest extends AbstractJavaParserTestCase {
 			assertTrue(tryBlock.getFinallyBlock() == null);
 			tryBlock = (TryBlock) method.getBlock().getStatements().get(3);
 			assertEquals(1, tryBlock.getBlock().getStatements().size());
-			assertEquals(1, tryBlock.getResources().size());
+			assertEquals(0, tryBlock.getResources().size());
 			assertEquals(1, tryBlock.getCatchBlocks().size());
 			this.assertType(tryBlock.getCatchBlocks().get(0).getParameter(), CatchParameter.class);
 			CatchParameter catchParam = (CatchParameter) tryBlock.getCatchBlocks().get(0).getParameter();
