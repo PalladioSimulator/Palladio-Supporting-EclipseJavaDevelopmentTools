@@ -441,7 +441,9 @@
           <genParameters ecoreParameter="java.ecore#//generics/TypeParameter/getBoundType/reference"/>
         </genOperations>
       </genClasses>
-      <genClasses ecoreClass="java.ecore#//generics/UnknownTypeArgument"/>
+      <genClasses ecoreClass="java.ecore#//generics/UnknownTypeArgument">
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//generics/UnknownTypeArgument/extension"/>
+      </genClasses>
     </nestedGenPackages>
     <nestedGenPackages prefix="Imports" basePackage="org.emftext.language.java" disposableProviderFactory="true"
         ecorePackage="java.ecore#//imports">

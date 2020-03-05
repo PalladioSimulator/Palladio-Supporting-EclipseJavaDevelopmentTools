@@ -393,15 +393,15 @@ generics.QualifiedTypeArgument
 
 @SuppressWarnings(featureWithoutSyntax)
 generics.UnknownTypeArgument
-    ::= annotations* "?";
+    ::= annotations* "?" (extension:generics.ExtendsTypeArgument,generics.SuperTypeArgument)?;
 
 @SuppressWarnings(featureWithoutSyntax)
 generics.ExtendsTypeArgument
-    ::= annotations* "?" "extends" extendType:types.NamespaceClassifierReference arrayDimensionsBefore* ;
+    ::= "extends" extendType:types.NamespaceClassifierReference arrayDimensionsBefore* ;
 
 @SuppressWarnings(featureWithoutSyntax)
 generics.SuperTypeArgument
-    ::= annotations* "?" "super" superType:types.NamespaceClassifierReference arrayDimensionsBefore* ;
+    ::= "super" superType:types.NamespaceClassifierReference arrayDimensionsBefore* ;
 
 @SuppressWarnings(minOccurenceMismatch) //condition can be empty in other cases
 statements.Assert
