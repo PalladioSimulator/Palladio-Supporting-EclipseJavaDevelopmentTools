@@ -32,7 +32,6 @@ public class JavaBINARY_LONG_LITERALTokenResolver implements org.emftext.languag
 		
 		lexem = lexem.substring(BIN_PREFIX.length(), lexem.length() - 1);
 		lexem = lexem.replaceAll(UNDER_SCORE, "");
-		System.out.println(lexem);
 		
 		JavaDECIMAL_LONG_LITERALTokenResolver.parseToLong(lexem, 2, result);
 	}
