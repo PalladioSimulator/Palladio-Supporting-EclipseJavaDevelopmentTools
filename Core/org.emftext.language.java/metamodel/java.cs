@@ -380,9 +380,9 @@ references.SelfReference
 references.PackageReference
     ::= name[] ("." subpackages)* ;
 
-@SuppressWarnings(featureWithoutSyntax) //typeArguments
+@SuppressWarnings(featureWithoutSyntax,minOccurenceMismatch) //typeArguments
 references.PrimitiveTypeReference
-    ::= primitiveType arraySelectors* ("." next)? ;
+    ::= primitiveType arraySelectors* "." next;
 
 literals.This ::= "this";
 literals.Super ::= "super";
