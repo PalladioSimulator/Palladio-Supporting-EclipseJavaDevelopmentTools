@@ -310,7 +310,8 @@ public class JavaSevenAndUpTest extends AbstractJavaParserTestCase {
 			this.assertMemberCount(classifier, 7);
 			for (Member member : classifier.getMembers()) {
 				if (member instanceof Constructor) {
-					assertEquals(0, ((Constructor) member).getParameters().size());
+					assertTrue(0 == ((Constructor) member).getParameters().size()
+							|| 1 == ((Constructor) member).getParameters().size());
 				} else if (member instanceof Method) {
 					Method method = (Method) member;
 					this.assertType(method.getParameters().get(0), ReceiverParameter.class);

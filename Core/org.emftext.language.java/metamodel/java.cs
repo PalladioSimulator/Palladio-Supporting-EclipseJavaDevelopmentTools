@@ -274,7 +274,8 @@ parameters.VariableLengthParameter
 @SuppressWarnings(featureWithoutSyntax)
 parameters.ReceiverParameter
     ::= annotations* typeReference:types.PrimitiveType,types.NamespaceClassifierReference
-        arrayDimensionsBefore* ("<" typeArguments ("," typeArguments)* ">")? identifierReferences* thisReference;
+        arrayDimensionsBefore* ("<" typeArguments ("," typeArguments)* ">")?
+        (outerTypeReference:types.ClassifierReference ".")? thisReference;
 
 variables.LocalVariable
     ::= (annotationsAndModifiers:annotations.AnnotationInstance,modifiers.Final)*
@@ -462,7 +463,7 @@ statements.DefaultSwitchCase
     ::= "default" ":" (!1 statements)* !0;
 
 statements.Return
-    ::= "return" returnValue:expressions.AssignmentExpression,expressions.LambdaExpression? ";";
+    ::= "return" (returnValue:expressions.AssignmentExpression,expressions.LambdaExpression)? ";";
 
 statements.Throw
     ::= "throw" throwable:expressions.AssignmentExpression,expressions.LambdaExpression ";";
