@@ -1434,7 +1434,7 @@
     <eClassifiers xsi:type="ecore:EClass" xmi:id="_Wo2ZBtz1Ed2bJ_pQViWxFg" name="DoWhileLoop"
         eSuperTypes="#_Wo2ZANz1Ed2bJ_pQViWxFg"/>
     <eClassifiers xsi:type="ecore:EClass" xmi:id="_Wo2ZK9z1Ed2bJ_pQViWxFg" name="EmptyStatement"
-        eSuperTypes="#_Wo2YzNz1Ed2bJ_pQViWxFg"/>
+        eSuperTypes="#_Wo2YzNz1Ed2bJ_pQViWxFg #_Wo2Y9tz1Ed2bJ_pQViWxFg"/>
     <eClassifiers xsi:type="ecore:EClass" xmi:id="_Wo2ZMtz1Ed2bJ_pQViWxFg" name="ExpressionStatement"
         eSuperTypes="#_Wo2YzNz1Ed2bJ_pQViWxFg">
       <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_Wo2ZNNz1Ed2bJ_pQViWxFg"
@@ -1443,7 +1443,7 @@
     <eClassifiers xsi:type="ecore:EClass" xmi:id="_Wo2Y7dz1Ed2bJ_pQViWxFg" name="ForLoop"
         eSuperTypes="#_Wo2YzNz1Ed2bJ_pQViWxFg #//statements/StatementContainer #//statements/Conditional">
       <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_Wo2Y79z1Ed2bJ_pQViWxFg"
-          name="init" eType="#_Wo2Y9tz1Ed2bJ_pQViWxFg" containment="true"/>
+          name="init" lowerBound="1" eType="#_Wo2Y9tz1Ed2bJ_pQViWxFg" containment="true"/>
       <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_Wo2Y8tz1Ed2bJ_pQViWxFg"
           name="updates" upperBound="-1" eType="#_Wo2YDNz1Ed2bJ_pQViWxFg" containment="true"/>
     </eClassifiers>
@@ -1460,7 +1460,7 @@
     <eClassifiers xsi:type="ecore:EClass" xmi:id="_Wo2ZLdz1Ed2bJ_pQViWxFg" name="JumpLabel"
         eSuperTypes="#_Wo2YzNz1Ed2bJ_pQViWxFg #//statements/StatementContainer #//commons/NamedElement"/>
     <eClassifiers xsi:type="ecore:EClass" xmi:id="_Wo2ZNtz1Ed2bJ_pQViWxFg" name="LocalVariableStatement"
-        eSuperTypes="#_Wo2YzNz1Ed2bJ_pQViWxFg">
+        eSuperTypes="#_Wo2YzNz1Ed2bJ_pQViWxFg #_Wo2Y9tz1Ed2bJ_pQViWxFg">
       <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_Wo2ZONz1Ed2bJ_pQViWxFg"
           name="variable" lowerBound="1" eType="#//variables/LocalVariable" containment="true"/>
     </eClassifiers>

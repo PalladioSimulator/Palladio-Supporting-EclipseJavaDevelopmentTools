@@ -419,7 +419,9 @@ statements.Condition
         ("else" elseStatement:statements.JumpLabel,statements.Condition,statements.WhileLoop,statements.ForLoop,statements.ForEachLoop,statements.DoWhileLoop,statements.Block,statements.Break,statements.EmptyStatement,statements.Assert,statements.ExpressionStatement,statements.Switch,statements.Continue,statements.Return,statements.SynchronizedBlock,statements.TryBlock,statements.Throw)? ;
 
 statements.ForLoop
-    ::= "for" #1 "(" (init:expressions.ExpressionList,variables.LocalVariable)? ";" (condition:expressions.AssignmentExpression,expressions.LambdaExpression)? ";" (updates:expressions.AssignmentExpression ("," updates:expressions.AssignmentExpression)* )? ")"
+    ::= "for" #1 "(" init:expressions.ExpressionList,statements.LocalVariableStatement,statements.EmptyStatement
+        (condition:expressions.AssignmentExpression,expressions.LambdaExpression)? ";"
+        (updates:expressions.AssignmentExpression ("," updates:expressions.AssignmentExpression)* )? ")"
         statement:statements.JumpLabel,statements.Condition,statements.WhileLoop,statements.ForLoop,statements.ForEachLoop,statements.DoWhileLoop,statements.Block,statements.Break,statements.EmptyStatement,statements.Assert,statements.ExpressionStatement,statements.Switch,statements.Continue,statements.Return,statements.SynchronizedBlock,statements.TryBlock,statements.Throw;
 
 statements.ForEachLoop
@@ -482,7 +484,7 @@ statements.ExpressionStatement
 
 @SuppressWarnings(minOccurenceMismatch) //the expression simplifier removes the cases where min occurrence does not match
 expressions.ExpressionList
-    ::= expressions:expressions.AssignmentExpression,expressions.LambdaExpression ("," expressions:expressions.AssignmentExpression,expressions.LambdaExpression)* ;
+    ::= expressions:expressions.AssignmentExpression ("," expressions:expressions.AssignmentExpression)* ";" ;
 
 expressions.AssignmentExpression
     ::= child:expressions.ConditionalExpression (#1 assignmentOperator #1 value:expressions.AssignmentExpression,expressions.LambdaExpression)? ;
