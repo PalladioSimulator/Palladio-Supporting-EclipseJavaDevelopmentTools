@@ -84,7 +84,7 @@ public class JavaSevenAndUpTest extends AbstractJavaParserTestCase {
 			CompilationUnit unit = (CompilationUnit) root;
 			this.assertNumberOfClassifiers(unit, 1);
 			org.emftext.language.java.classifiers.Class classifier = unit.getContainedClass();
-			this.assertClassifierName(classifier, "SimeplClassWithLambdaExpressions");
+			this.assertClassifierName(classifier, "SimpleClassWithLambdaExpressions");
 			this.assertMemberCount(classifier, 2);
 			for (Member m : classifier.getMembers()) {
 				if (m instanceof Interface) {
@@ -98,8 +98,8 @@ public class JavaSevenAndUpTest extends AbstractJavaParserTestCase {
 						assertTrue(s instanceof ExpressionStatement || s instanceof LocalVariableStatement);
 						if (s instanceof ExpressionStatement) {
 							ExpressionStatement castedS = (ExpressionStatement) s;
-							this.assertType(castedS, AssignmentExpression.class);
-							AssignmentExpression expr = (AssignmentExpression) castedS;
+							this.assertType(castedS.getExpression(), AssignmentExpression.class);
+							AssignmentExpression expr = (AssignmentExpression) castedS.getExpression();
 							this.assertType(expr.getValue(), LambdaExpression.class);
 						} else if (s instanceof LocalVariableStatement) {
 							LocalVariableStatement castedS = (LocalVariableStatement) s;
