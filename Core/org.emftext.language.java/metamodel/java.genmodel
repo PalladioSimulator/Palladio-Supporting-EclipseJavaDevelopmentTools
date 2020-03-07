@@ -932,7 +932,12 @@
       <genClasses ecoreClass="java.ecore#_Wo2ZVdz1Ed2bJ_pQViWxFg"/>
       <genClasses ecoreClass="java.ecore#_Wo2ZUdz1Ed2bJ_pQViWxFg"/>
       <genClasses ecoreClass="java.ecore#//types/Void"/>
-      <genClasses ecoreClass="java.ecore#//types/InferableType"/>
+      <genClasses ecoreClass="java.ecore#//types/InferableType">
+        <genOperations ecoreOperation="java.ecore#//types/InferableType/getAllMembers"
+            body="return org.emftext.language.java.extensions.types.InferableTypeExtension.getAllMembers((org.emftext.language.java.types.InferableType) this, context);">
+          <genParameters ecoreParameter="java.ecore#//types/InferableType/getAllMembers/context"/>
+        </genOperations>
+      </genClasses>
     </nestedGenPackages>
     <nestedGenPackages prefix="Variables" basePackage="org.emftext.language.java"
         disposableProviderFactory="true" ecorePackage="java.ecore#//variables">
