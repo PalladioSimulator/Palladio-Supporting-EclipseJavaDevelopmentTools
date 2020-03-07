@@ -6,8 +6,8 @@ Bundle-Name: JaMoPP (Java Model Parser and Printer) Integrated Source
  and Class File Support
 Bundle-SymbolicName: org.emftext.language.java.resource; singleton:=tr
  ue
-Bundle-Version: 1.1.0.v200911130906
-Bundle-Vendor: Software Technology Group - TU Dresden Germany
+Bundle-Version: 1.5.0.SNAPSHOT
+Bundle-Vendor: Martin Armbruster
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.emf.ecore,
  org.emftext.language.java,

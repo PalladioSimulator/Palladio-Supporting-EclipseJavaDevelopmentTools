@@ -4,9 +4,9 @@ Created-By: 1.5.0_20-141 (Apple Inc.)
 Bundle-ManifestVersion: 2
 Bundle-Name: JaMoPP (Java Model Parser and Printer) Metamodel
 Bundle-SymbolicName: org.emftext.language.java;singleton:=true
-Bundle-Version: 1.1.0.v200911130906
+Bundle-Version: 1.5.0.SNAPSHOT
 Bundle-ClassPath: .
-Bundle-Vendor: Software Technology Group - TU Dresden Germany
+Bundle-Vendor: Martin Armbruster
 Bundle-Localization: plugin
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.emftext.language.java,

@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: EMFText Parser Plugin: java
+Bundle-Name: JaMoPP Parser Plugin
 Bundle-SymbolicName: org.emftext.language.java.resource.java;singleton:=true
-Bundle-Version: 1.0.0
-Bundle-Vendor: Software Technology Group - TU Dresden Germany
+Bundle-Version: 1.5.0.SNAPSHOT
+Bundle-Vendor: Martin Armbruster
 Require-Bundle: org.eclipse.core.runtime;resolution:=optional,
   org.eclipse.emf.ecore,
   org.eclipse.emf.ecore.change,
