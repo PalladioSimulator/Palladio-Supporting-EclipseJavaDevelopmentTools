@@ -44,7 +44,7 @@ OPTIONS {
     licenceHeader ="license_header.txt";
     defaultTokenName = "IDENTIFIER";
     generateCodeFromGeneratorModel = "false";
-    memoize = "false";
+    memoize = "true";
     usePredefinedTokens = "false";
     resolveProxyElementsAfterParsing = "false";
     disableLaunchSupport = "true";
