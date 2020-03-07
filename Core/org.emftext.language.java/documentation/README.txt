@@ -1,8 +1,3 @@
-- JaMoPP Requirements -
-* Eclipse Europa
-* EMFText
-* TBD ...
-
 - JaMoPP Project Structure -
 
 The EMFText JavaModelParser currently consists of the following plug-ins:
@@ -33,11 +28,3 @@ The EMFText JavaModelParser currently consists of the following plug-ins:
         }        
         
     *	Implement correctness checks for parsing results in test method.
-    
-
-- Getting Started with Parser Development -
-
-* Import all plug-ins to an Eclipse with EMFText installed. 
-* Generate EMF infrastructure from .genmodel (model, edit, editor).
-* Generate Parser from .cs specification
-* Run org.emftext.language.java.test as JUnit Plug-in Test.
