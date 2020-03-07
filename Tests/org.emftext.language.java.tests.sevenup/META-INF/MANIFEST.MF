@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: JaMoPP+ M Test Resources for Java 7+
+Bundle-Name: JaMoPP Test Resources for Java 7+
 Bundle-SymbolicName: org.emftext.language.java.tests.sevenup
 Bundle-Version: 0.0
 Bundle-Vendor: Martin Armbruster

@@ -13,6 +13,8 @@
  *   DevBoost GmbH - Berlin, Germany
  *   Benjamin Klatt
  *      - initial API and implementation
+ *   Martin Armbruster
+ *      - Extension with getStatements()
  ******************************************************************************/
 package org.emftext.language.java.extensions.members;
 
@@ -24,7 +26,6 @@ import org.emftext.language.java.instantiations.NewConstructorCall;
 import org.emftext.language.java.members.Constructor;
 import org.emftext.language.java.parameters.Parameter;
 import org.emftext.language.java.parameters.VariableLengthParameter;
-import org.emftext.language.java.statements.Block;
 import org.emftext.language.java.statements.Statement;
 import org.emftext.language.java.types.Type;
 import org.emftext.language.java.types.TypeReference;

@@ -12,6 +12,8 @@
  *   Software Technology Group - TU Dresden, Germany;
  *   DevBoost GmbH - Berlin, Germany
  *      - initial API and implementation
+ *   Martin Armbruster
+ *      - Extension with the treatment of "var"
  ******************************************************************************/
 package org.emftext.language.java.resource.java.analysis;
 

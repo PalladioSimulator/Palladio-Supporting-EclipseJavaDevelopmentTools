@@ -12,6 +12,8 @@
  *   Software Technology Group - TU Dresden, Germany;
  *   DevBoost GmbH - Berlin, Germany
  *      - initial API and implementation
+ *   Martin Armbruster
+ *      - Extension of getStatements()
  ******************************************************************************/
 package org.emftext.language.java.extensions.members;
 

@@ -10,6 +10,8 @@
 // Contributors:
 //   Software Technology Group - TU Dresden, Germany 
 //      - initial API and implementation
+//   Martin Armbruster
+//      - Extension for Java 7-13
 // ******************************************************************************/
 
 SYNTAXDEF java
@@ -39,7 +41,7 @@ IMPORTS {
 }
 
 OPTIONS {
-    licenceHeader ="../../org.dropsbox/licence.txt";
+    licenceHeader ="license_header.txt";
     defaultTokenName = "IDENTIFIER";
     generateCodeFromGeneratorModel = "false";
     memoize = "false";

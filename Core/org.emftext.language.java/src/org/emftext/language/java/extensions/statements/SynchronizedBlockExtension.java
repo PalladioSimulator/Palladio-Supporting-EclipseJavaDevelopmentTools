@@ -1,7 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006-2014
- * Software Technology Group, Dresden University of Technology
- * DevBoost GmbH, Berlin, Amtsgericht Charlottenburg, HRB 140026
+ * Copyright (c) 2019-2020, Martin Armbruster
  * 
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -9,10 +7,10 @@
  * http://www.eclipse.org/legal/epl-v10.html
  * 
  * Contributors:
- *   Software Technology Group - TU Dresden, Germany;
- *   DevBoost GmbH - Berlin, Germany
- *      - initial API and implementation
+ *   Martin Armbruster
+ *      - Initial implementation
  ******************************************************************************/
+
 package org.emftext.language.java.extensions.statements;
 
 import org.eclipse.emf.common.util.EList;

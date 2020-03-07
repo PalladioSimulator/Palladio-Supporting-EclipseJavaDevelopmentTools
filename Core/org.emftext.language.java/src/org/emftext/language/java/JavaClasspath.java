@@ -12,6 +12,8 @@
  *   Software Technology Group - TU Dresden, Germany;
  *   DevBoost GmbH - Dresden, Germany
  *      - initial API and implementation
+ *   Martin Armbruster
+ *      - Extension for loading the standard library in Java 9+
  ******************************************************************************/
 package org.emftext.language.java;
 

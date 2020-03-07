@@ -1,3 +1,16 @@
+/*******************************************************************************
+ * Copyright (c) 2019-2020, Martin Armbruster
+ * 
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors:
+ *   Martin Armbruster
+ *      - Initial implementation
+ ******************************************************************************/
+
 package org.emftext.language.java.test;
 
 import static org.junit.Assert.assertEquals;
@@ -36,6 +49,11 @@ import org.emftext.language.java.statements.TryBlock;
 import org.emftext.language.java.types.InferableType;
 import org.junit.Test;
 
+/**
+ * Test class for the features of Java 7+.
+ * 
+ * @author Martin Armbruster
+ */
 public class JavaSevenAndUpTest extends AbstractJavaParserTestCase {
 	@Override
 	public String getTestInputFolder() {
