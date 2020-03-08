@@ -383,4 +383,17 @@ public class JavaSevenAndUpTest extends AbstractJavaParserTestCase {
 			fail(e.getMessage());
 		}
 	}
+	
+	@Test
+	public void testSimpleClassWithRestrictedKeywords() {
+		try {
+			String file = "simplepackage" + File.separator + "SimpleClassWithRestrictedKeywords.java";
+			JavaRoot root = this.parseResource(file);
+			this.assertType(root, CompilationUnit.class);
+			this.assertResolveAllProxies(root);
+			this.parseAndReprint(file);
+		} catch (Exception e) {
+			fail(e.getMessage());
+		}
+	}
 }
