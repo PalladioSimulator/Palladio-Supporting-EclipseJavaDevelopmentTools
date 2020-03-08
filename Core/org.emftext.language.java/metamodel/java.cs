@@ -440,7 +440,7 @@ statements.Condition
 
 @SuppressWarnings(explicitSyntaxChoice)
 statements.ForLoop
-    ::= "for" #1 "(" init:expressions.ExpressionList,statements.LocalVariableStatement,statements.EmptyStatement
+    ::= "for" #1 "(" (init:variables.LocalVariable | init:expressions.ExpressionList)? ";"
         (condition:expressions.LambdaExpression | condition:expressions.AssignmentExpression)? ";"
         (updates:expressions.AssignmentExpression ("," updates:expressions.AssignmentExpression)* )? ")"
         statement:statements.JumpLabel,statements.Condition,statements.WhileLoop,statements.ForLoop,statements.ForEachLoop,statements.DoWhileLoop,statements.Block,statements.Break,statements.EmptyStatement,statements.Assert,statements.ExpressionStatement,statements.Switch,statements.Continue,statements.Return,statements.SynchronizedBlock,statements.TryBlock,statements.Throw;
@@ -513,7 +513,7 @@ statements.ExpressionStatement
 
 @SuppressWarnings(minOccurenceMismatch) //the expression simplifier removes the cases where min occurrence does not match
 expressions.ExpressionList
-    ::= expressions:expressions.AssignmentExpression ("," expressions:expressions.AssignmentExpression)* ";" ;
+    ::= expressions:expressions.AssignmentExpression ("," expressions:expressions.AssignmentExpression)* ;
 
 @SuppressWarnings(explicitSyntaxChoice)
 expressions.AssignmentExpression
