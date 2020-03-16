@@ -35,7 +35,7 @@ public class JDTConnector implements JavaClasspath.Initializer {
 	}
 	
 	public boolean requiresLocalClasspath() {
-		return true;
+		return false;
 	}
 	
 	public boolean requiresStdLib() {
