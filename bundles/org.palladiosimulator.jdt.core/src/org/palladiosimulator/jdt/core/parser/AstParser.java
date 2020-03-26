@@ -1,72 +1,60 @@
 package org.palladiosimulator.jdt.core.parser;
 
+import java.net.URI;
+import java.util.Map;
+
 import org.apache.log4j.Logger;
 import org.eclipse.jdt.core.dom.ASTParser;
-import org.palladiosimulator.jdt.core.node.AbstractSyntaxTree;
-import org.palladiosimulator.jdt.core.visitor.AstVisitor;
+import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.palladiosimulator.jdt.helper.FileHelper;
 
 public class AstParser {
 
+    private static final String JAVA_FILE_EXTENSION = "java";
+
     private static final Logger LOG = Logger.getLogger(AstParser.class);
 
-    private final Level level;
-    private final ASTParser parser;
-    private Kind kind;
-    private String source;
+    private static final String[] STANDRAD_ENCODINGS = new String[] { "utf-8" };
 
-    public AstParser(Level level) {
+    private final AstLevel level;
+
+    private final ASTParser parser;
+
+    private final AstRequestor requestor;
+
+    public AstParser(final AstLevel level) {
         this.level = level;
+        requestor = new AstRequestor();
         parser = ASTParser.newParser(level.getConstant());
+        parser.setKind(ASTParser.K_COMPILATION_UNIT);
         parser.setResolveBindings(true);
         parser.setStatementsRecovery(true);
+        // parser.setCompilerOptions(options); TODO Set the options for the given level
         LOG.info("Instantiation of a new parser for Java " + level.getConstant());
     }
 
-    public AstParser(Level level, Kind kind) {
-        this(level);
-        setKind(kind);
+    public boolean createAsts(final URI sourcePath) {
+        try {
+            final String[] sourceFilePaths = FileHelper.getRegularFiles(sourcePath, JAVA_FILE_EXTENSION);
+            parser.setEnvironment(null, new String[] { FileHelper.createPath(sourcePath).toString() },
+                    STANDRAD_ENCODINGS, true);
+            // TODO Determine the encoding of all files
+            parser.createASTs(sourceFilePaths, new String[sourceFilePaths.length], new String[0], requestor, null);
+
+        } catch (final IllegalArgumentException e) {
+            LOG.error("No files could be parsed for the specified path: " + String.valueOf(sourcePath), e);
+            return false;
+        }
+
+        return true;
     }
 
-    public AstParser(Level level, Kind kind, String source) {
-        this(level, kind);
-        setSource(source);
+    public Map<String, CompilationUnit> getCompilationUnits() {
+        return requestor.getCompilationUnits();
     }
 
-    public AstParser(Level level, String source) {
-        this(level);
-        setSource(source);
-    }
-
-    public AbstractSyntaxTree createAst() {
-        return new AbstractSyntaxTree(parser.createAST(new LoggerProgressMonitor()));
-    }
-
-    public AbstractSyntaxTree createAst(AstVisitor<?> visitor) {
-        final AbstractSyntaxTree ast = createAst();
-        ast.accept(visitor);
-        return ast;
-    }
-
-    public Kind getKind() {
-        return kind;
-    }
-
-    public Level getLevel() {
+    public AstLevel getLevel() {
         return level;
-    }
-
-    public String getSource() {
-        return source;
-    }
-
-    public void setKind(Kind kind) {
-        this.kind = kind;
-        parser.setKind(kind.getConstant());
-    }
-
-    public void setSource(String source) {
-        this.source = source;
-        parser.setSource(source.toCharArray());
     }
 
 }

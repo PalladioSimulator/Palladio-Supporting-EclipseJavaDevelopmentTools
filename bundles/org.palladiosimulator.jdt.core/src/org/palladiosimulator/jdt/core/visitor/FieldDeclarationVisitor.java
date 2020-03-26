@@ -8,12 +8,12 @@ public class FieldDeclarationVisitor extends AstVisitor<FieldDeclaration> {
         super();
     }
 
-    public FieldDeclarationVisitor(boolean visitDocTags, boolean visitChildren) {
+    public FieldDeclarationVisitor(final boolean visitDocTags, final boolean visitChildren) {
         super(visitDocTags, visitChildren);
     }
 
     @Override
-    public boolean visit(FieldDeclaration node) {
+    public boolean visit(final FieldDeclaration node) {
         if (containsVisitedNode(node)) {
             return false;
         }

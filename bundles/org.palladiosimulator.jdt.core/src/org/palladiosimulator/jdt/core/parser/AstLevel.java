@@ -2,7 +2,7 @@ package org.palladiosimulator.jdt.core.parser;
 
 import org.eclipse.jdt.core.dom.AST;
 
-public enum Level {
+public enum AstLevel {
 
     @Deprecated
     JLS2(AST.JLS2),
@@ -24,7 +24,7 @@ public enum Level {
 
     private final int constant;
 
-    private Level(int i) {
+    private AstLevel(final int i) {
         constant = i;
     }
 

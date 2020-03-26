@@ -8,12 +8,12 @@ public class MethodDeclarationVisitor extends AstVisitor<MethodDeclaration> {
         super();
     }
 
-    public MethodDeclarationVisitor(boolean visitDocTags, boolean visitChildren) {
+    public MethodDeclarationVisitor(final boolean visitDocTags, final boolean visitChildren) {
         super(visitDocTags, visitChildren);
     }
 
     @Override
-    public boolean visit(MethodDeclaration node) {
+    public boolean visit(final MethodDeclaration node) {
         if (containsVisitedNode(node)) {
             return false;
         }

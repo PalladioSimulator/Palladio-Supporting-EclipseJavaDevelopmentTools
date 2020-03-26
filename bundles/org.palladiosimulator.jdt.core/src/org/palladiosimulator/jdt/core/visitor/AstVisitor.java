@@ -8,25 +8,21 @@ import org.eclipse.jdt.core.dom.ASTVisitor;
 
 public abstract class AstVisitor<T> extends ASTVisitor {
 
-    private final Set<T> visitedNodes;
-
-    public Set<T> getVisitedNodes() {
-        return Collections.unmodifiableSet(visitedNodes);
-    }
-
     protected final boolean visitChildren;
+
+    private final Set<T> visitedNodes;
 
     protected AstVisitor() {
         this(true, true);
     }
 
-    protected AstVisitor(boolean visitDocTags, boolean visitChildren) {
+    protected AstVisitor(final boolean visitDocTags, final boolean visitChildren) {
         super(visitDocTags);
         this.visitChildren = visitChildren;
         visitedNodes = new HashSet<>();
     }
 
-    public boolean addVisitedNode(T node) {
+    public boolean addVisitedNode(final T node) {
         if (containsVisitedNode(node)) {
             return false;
         }
@@ -34,8 +30,12 @@ public abstract class AstVisitor<T> extends ASTVisitor {
         return visitedNodes.add(node);
     }
 
-    public boolean containsVisitedNode(T node) {
-        return (node == null) || visitedNodes.contains(node);
+    public boolean containsVisitedNode(final T node) {
+        return node == null || visitedNodes.contains(node);
+    }
+
+    public Set<T> getVisitedNodes() {
+        return Collections.unmodifiableSet(visitedNodes);
     }
 
 }

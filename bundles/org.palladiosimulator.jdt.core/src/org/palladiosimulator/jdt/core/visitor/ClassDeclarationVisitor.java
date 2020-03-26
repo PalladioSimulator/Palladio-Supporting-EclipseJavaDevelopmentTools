@@ -8,12 +8,12 @@ public class ClassDeclarationVisitor extends AstVisitor<TypeDeclaration> {
         super();
     }
 
-    public ClassDeclarationVisitor(boolean visitDocTags, boolean visitChildren) {
+    public ClassDeclarationVisitor(final boolean visitDocTags, final boolean visitChildren) {
         super(visitDocTags, visitChildren);
     }
 
     @Override
-    public boolean visit(TypeDeclaration node) {
+    public boolean visit(final TypeDeclaration node) {
         if (containsVisitedNode(node) || node.isInterface()) {
             return false;
         }
