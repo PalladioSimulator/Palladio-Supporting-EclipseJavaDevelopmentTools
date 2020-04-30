@@ -1,24 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<feature id="org.palladiosimulator.jdt.core.feature"
-   label="Palladio Supporting Eclipse Java Development Tools Core Feature"
-   version="0.1.0.qualifier"
-   plugin="org.palladiosimulator.branding"
-   license-feature="org.palladiosimulator.license"
-   license-feature-version="1.0.0">
+<feature
+      id="org.palladiosimulator.jdt.core.feature"
+      label="Palladio Supporting Eclipse Java Development Tools Core Feature"
+      version="0.1.0.qualifier"
+      provider-name="palladiosimulator.org"
+      plugin="org.palladiosimulator.branding"
+      license-feature="org.palladiosimulator.license"
+      license-feature-version="1.0.0">
 
    <requires>
-      <import plugin="org.eclipse.jdt.core"
-         version="3.10.0"
-         match="compatible" />
-      <import plugin="org.eclipse.core.runtime" />
-      <import plugin="org.eclipse.core.resources" />
-      <import plugin="org.apache.log4j" />
+      <import plugin="org.eclipse.jdt.core" version="3.10.0" match="compatible"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.apache.log4j"/>
    </requires>
 
-   <plugin id="org.palladiosimulator.jdt.core"
-      download-size="0"
-      install-size="0"
-      version="0.0.0"
-      unpack="false" />
+   <plugin
+         id="org.palladiosimulator.jdt.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
 
 </feature>
