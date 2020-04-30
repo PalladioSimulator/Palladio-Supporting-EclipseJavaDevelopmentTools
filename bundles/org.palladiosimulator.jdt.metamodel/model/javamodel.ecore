@@ -1,0 +1,1566 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmi:id="_IA_wgGznQ9zCZfKBgzSBuZ" name="javamodel" nsURI="http://www.palladiosimulator.org/javamodel"
+    nsPrefix="javamodel">
+  <eSubpackages xmi:id="_LwcdwGznQ9zCZfKBgzSBuZ" name="annotations" nsURI="http://www.palladiosimulator.org/javamodel/annotations"
+      nsPrefix="annotations">
+    <eClassifiers xsi:type="ecore:EClass" name="Annotable" abstract="true" eSuperTypes="#//commons/Commentable">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="annotations" upperBound="-1"
+          eType="#_LVDiQGznQ9zCZfKBgzSBuZ" containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_LVDiQGznQ9zCZfKBgzSBuZ" name="AnnotationInstance"
+        eSuperTypes="#//references/Reference #//modifiers/AnnotationInstanceOrModifier #//commons/NamespaceAwareElement">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="annotation" lowerBound="1"
+          eType="#//classifiers/Classifier"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_NvTXIGznQ9zCZfKBgzSBuZ"
+          name="parameter" eType="#//annotations/AnnotationParameter" containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="AnnotationParameter" abstract="true"
+        eSuperTypes="#//commons/Commentable"/>
+    <eClassifiers xsi:type="ecore:EClass" name="SingleAnnotationParameter" eSuperTypes="#//annotations/AnnotationParameter">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="value" lowerBound="1"
+          eType="#//annotations/AnnotationValue" containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="AnnotationParameterList" eSuperTypes="#//annotations/AnnotationParameter">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="settings" upperBound="-1"
+          eType="#_KX8ZwGznQ9zCZfKBgzSBuZ" containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_KX8ZwGznQ9zCZfKBgzSBuZ" name="AnnotationAttributeSetting"
+        eSuperTypes="#//commons/Commentable">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_NpitYGznQ9zCZfKBgzSBuZ"
+          name="attribute" lowerBound="1" eType="#//members/InterfaceMethod"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_LOV2QGznQ9zCZfKBgzSBuZ"
+          name="value" lowerBound="1" eType="#//annotations/AnnotationValue" containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="AnnotationValue" abstract="true" eSuperTypes="#//commons/Commentable"/>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_MUFWUGznQ9zCZfKBgzSBuZ" name="AnnotationAttribute"
+        eSuperTypes="#//members/InterfaceMethod">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_PMefwGznQ9zCZfKBgzSBuZ"
+          name="defaultValue" lowerBound="1" eType="#_OQUZgGznQ9zCZfKBgzSBuZ" containment="true"/>
+    </eClassifiers>
+  </eSubpackages>
+  <eSubpackages name="arrays" nsURI="http://www.palladiosimulator.org/javamodel/arrays"
+      nsPrefix="arrays">
+    <eClassifiers xsi:type="ecore:EClass" name="ArrayTypeable" abstract="true" eSuperTypes="#//commons/Commentable">
+      <eOperations name="getArrayDimension" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//ELong"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="arrayDimensionsBefore"
+          upperBound="-1" eType="#//arrays/ArrayDimension" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="arrayDimensionsAfter"
+          upperBound="-1" eType="#//arrays/ArrayDimension" containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="ArrayDimension" eSuperTypes="#//commons/Commentable"/>
+    <eClassifiers xsi:type="ecore:EClass" name="ArrayInitializer" eSuperTypes="#//arrays/ArrayInitializationValue #//annotations/AnnotationValue">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="initialValues" upperBound="-1"
+          eType="#//arrays/ArrayInitializationValue" containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="ArrayInitializationValue" abstract="true"
+        eSuperTypes="#//commons/Commentable"/>
+    <eClassifiers xsi:type="ecore:EClass" name="ArrayInstantiation" abstract="true"
+        eSuperTypes="#_OQUZgGznQ9zCZfKBgzSBuZ #//references/Reference"/>
+    <eClassifiers xsi:type="ecore:EClass" name="ArrayInstantiationBySize" eSuperTypes="#//arrays/ArrayInstantiation #_M_pb0GznQ9zCZfKBgzSBuZ #//arrays/ArrayTypeable">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="sizes" lowerBound="1"
+          upperBound="-1" eType="#_OQUZgGznQ9zCZfKBgzSBuZ" containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="ArrayInstantiationByValues" abstract="true"
+        eSuperTypes="#//arrays/ArrayInstantiation">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="arrayInitializer" lowerBound="1"
+          eType="#//arrays/ArrayInitializer" containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="ArrayInstantiationByValuesUntyped"
+        eSuperTypes="#//arrays/ArrayInstantiationByValues"/>
+    <eClassifiers xsi:type="ecore:EClass" name="ArrayInstantiationByValuesTyped" eSuperTypes="#//arrays/ArrayInstantiationByValues #_M_pb0GznQ9zCZfKBgzSBuZ #//arrays/ArrayTypeable"/>
+    <eClassifiers xsi:type="ecore:EClass" name="ArraySelector" eSuperTypes="#//commons/Commentable">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="position" eType="#_OQUZgGznQ9zCZfKBgzSBuZ"
+          containment="true"/>
+    </eClassifiers>
+  </eSubpackages>
+  <eSubpackages name="classifiers" nsURI="http://www.palladiosimulator.org/javamodel/classifiers"
+      nsPrefix="classifiers">
+    <eClassifiers xsi:type="ecore:EClass" name="Classifier" abstract="true" eSuperTypes="#_Jyaq0GznQ9zCZfKBgzSBuZ #//references/ReferenceableElement">
+      <eOperations name="getAllSuperClassifiers" upperBound="-1" eType="#//classifiers/ConcreteClassifier">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return null;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+      </eOperations>
+      <eOperations name="addImport">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+        <eParameters name="nameOfClassToImport" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      </eOperations>
+      <eOperations name="addPackageImport">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+        <eParameters name="packageName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      </eOperations>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="ConcreteClassifier" abstract="true"
+        eSuperTypes="#//classifiers/Classifier #//generics/TypeParametrizable #//members/MemberContainer #//members/Member #_QHjn8GznQ9zCZfKBgzSBuZ #//modifiers/AnnotableAndModifiable">
+      <eOperations name="getInnerClassifiers" upperBound="-1" eType="#//classifiers/ConcreteClassifier">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return null;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+      </eOperations>
+      <eOperations name="getAllInnerClassifiers" upperBound="-1" eType="#//classifiers/ConcreteClassifier">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return null;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+      </eOperations>
+      <eOperations name="getSuperTypeReferences" upperBound="-1" eType="#//types/ClassifierReference">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return null;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+      </eOperations>
+      <eOperations name="getAllMembers" upperBound="-1" eType="#//members/Member">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return null;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+        <eParameters name="context" eType="#//commons/Commentable"/>
+      </eOperations>
+      <eOperations name="getQualifiedName" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return null;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+      </eOperations>
+      <eOperations name="isJavaLangObject" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return false;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+        <eParameters name="clazz" lowerBound="1" eType="#//classifiers/ConcreteClassifier"/>
+      </eOperations>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="Implementor" abstract="true" eSuperTypes="#//commons/Commentable">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="implements" upperBound="-1"
+          eType="#_MtxBoGznQ9zCZfKBgzSBuZ" containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="Class" eSuperTypes="#//classifiers/ConcreteClassifier #//classifiers/Implementor">
+      <eOperations name="getAllSuperClassifiers" upperBound="-1" eType="#//classifiers/ConcreteClassifier">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return null;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+      </eOperations>
+      <eOperations name="getSuperClass" eType="#//classifiers/Class">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return null;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+      </eOperations>
+      <eOperations name="unWrapPrimitiveType" eType="#_JV5G4GznQ9zCZfKBgzSBuZ">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return null;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+      </eOperations>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="extends" eType="#_MtxBoGznQ9zCZfKBgzSBuZ"
+          containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="defaultExtends" eType="#_MtxBoGznQ9zCZfKBgzSBuZ"
+          containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="Interface" eSuperTypes="#//classifiers/ConcreteClassifier">
+      <eOperations name="getAllSuperClassifiers" upperBound="-1" eType="#//classifiers/ConcreteClassifier">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return null;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+      </eOperations>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="extends" upperBound="-1"
+          eType="#_MtxBoGznQ9zCZfKBgzSBuZ" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="defaultExtends" upperBound="-1"
+          eType="#_MtxBoGznQ9zCZfKBgzSBuZ" containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="Enumeration" eSuperTypes="#//classifiers/ConcreteClassifier #//classifiers/Implementor">
+      <eOperations name="getAllSuperClassifiers" upperBound="-1" eType="#//classifiers/ConcreteClassifier">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return null;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+      </eOperations>
+      <eOperations name="getContainedConstant" eType="#//members/EnumConstant">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return null;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+        <eParameters name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      </eOperations>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="constants" upperBound="-1"
+          eType="#//members/EnumConstant" containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="Annotation" eSuperTypes="#//classifiers/ConcreteClassifier">
+      <eOperations name="getAllSuperClassifiers" upperBound="-1" eType="#//classifiers/ConcreteClassifier">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return null;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+      </eOperations>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="AnonymousClass" eSuperTypes="#_Jyaq0GznQ9zCZfKBgzSBuZ #//members/MemberContainer">
+      <eOperations name="getAllSuperClassifiers" upperBound="-1" eType="#//classifiers/ConcreteClassifier">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return null;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+      </eOperations>
+      <eOperations name="getSuperClassifier" eType="#//classifiers/ConcreteClassifier">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return null;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+      </eOperations>
+      <eOperations name="getAllMembers" upperBound="-1" eType="#//members/Member">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return null;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+        <eParameters name="context" eType="#//commons/Commentable"/>
+      </eOperations>
+    </eClassifiers>
+  </eSubpackages>
+  <eSubpackages name="commons" nsURI="http://www.palladiosimulator.org/javamodel/commons"
+      nsPrefix="commons">
+    <eClassifiers xsi:type="ecore:EClass" name="Commentable" abstract="true">
+      <eOperations name="getConcreteClassifier" eType="#//classifiers/ConcreteClassifier">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return null;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+        <eParameters name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      </eOperations>
+      <eOperations name="getConcreteClassifierProxy" eType="#//classifiers/ConcreteClassifier">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return null;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+        <eParameters name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      </eOperations>
+      <eOperations name="getConcreteClassifiers" upperBound="-1" eType="#//classifiers/ConcreteClassifier">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return null;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+        <eParameters name="packageName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+        <eParameters name="classifierQuery" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      </eOperations>
+      <eOperations name="getConcreteClassifierProxies" upperBound="-1" eType="#//classifiers/ConcreteClassifier">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return null;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+        <eParameters name="packageName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+        <eParameters name="classifierQuery" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      </eOperations>
+      <eOperations name="getLibClass" eType="#//classifiers/Class">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return null;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+        <eParameters name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      </eOperations>
+      <eOperations name="getLibInterface" eType="#//classifiers/Interface">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return null;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+        <eParameters name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      </eOperations>
+      <eOperations name="getClassClass" eType="#//classifiers/Class">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return null;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+      </eOperations>
+      <eOperations name="getObjectClass" eType="#//classifiers/Class">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return null;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+      </eOperations>
+      <eOperations name="getStringClass" eType="#//classifiers/Class">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return null;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+      </eOperations>
+      <eOperations name="getAnnotationInterface" eType="#//classifiers/Interface">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return null;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+      </eOperations>
+      <eOperations name="getContainingAnnotationInstance" eType="#_LVDiQGznQ9zCZfKBgzSBuZ">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return null;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+      </eOperations>
+      <eOperations name="getContainingAnonymousClass" eType="#//classifiers/AnonymousClass">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return null;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+      </eOperations>
+      <eOperations name="getContainingConcreteClassifier" eType="#//classifiers/ConcreteClassifier">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return null;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+      </eOperations>
+      <eOperations name="getContainingCompilationUnit" eType="#//containers/CompilationUnit">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return null;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+      </eOperations>
+      <eOperations name="getContainingPackageName" upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return null;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+      </eOperations>
+      <eOperations name="getContainingContainerName" upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return null;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+      </eOperations>
+      <eOperations name="getParentConcreteClassifier" eType="#//classifiers/ConcreteClassifier">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return null;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+      </eOperations>
+      <eOperations name="getParentByEType" eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EObject">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return null;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+        <eParameters name="type" eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EClass"/>
+      </eOperations>
+      <eOperations name="getFirstChildByEType" eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EObject">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return null;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+        <eParameters name="type" eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EClass"/>
+      </eOperations>
+      <eOperations name="getParentByType">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return null;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+        <eGenericType eTypeParameter="#//commons/Commentable/getParentByType/T"/>
+        <eTypeParameters name="T"/>
+        <eParameters name="type">
+          <eGenericType eClassifier="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EJavaClass">
+            <eTypeArguments eTypeParameter="#//commons/Commentable/getParentByType/T"/>
+          </eGenericType>
+        </eParameters>
+      </eOperations>
+      <eOperations name="getFirstChildByType">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return null;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+        <eGenericType eTypeParameter="#//commons/Commentable/getFirstChildByType/T"/>
+        <eTypeParameters name="T"/>
+        <eParameters name="type">
+          <eGenericType eClassifier="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EJavaClass">
+            <eTypeArguments eTypeParameter="#//commons/Commentable/getFirstChildByType/T"/>
+          </eGenericType>
+        </eParameters>
+      </eOperations>
+      <eOperations name="getChildrenByEType" upperBound="-1" eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EObject">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return null;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+        <eParameters name="type" eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EClass"/>
+      </eOperations>
+      <eOperations name="getChildrenByType" upperBound="-1">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return null;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+        <eGenericType eTypeParameter="#//commons/Commentable/getChildrenByType/T"/>
+        <eTypeParameters name="T"/>
+        <eParameters name="type">
+          <eGenericType eClassifier="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EJavaClass">
+            <eTypeArguments eTypeParameter="#//commons/Commentable/getChildrenByType/T"/>
+          </eGenericType>
+        </eParameters>
+      </eOperations>
+      <eOperations name="getComments" upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return null;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+      </eOperations>
+      <eOperations name="addBeforeContainingStatement">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+        <eParameters name="statementToAdd" lowerBound="1" eType="#_QHjn8GznQ9zCZfKBgzSBuZ"/>
+      </eOperations>
+      <eOperations name="addAfterContainingStatement">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+        <eParameters name="statementToAdd" lowerBound="1" eType="#_QHjn8GznQ9zCZfKBgzSBuZ"/>
+      </eOperations>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="NamedElement" abstract="true" eSuperTypes="#//commons/Commentable">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" lowerBound="1"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="NamespaceAwareElement" abstract="true"
+        eSuperTypes="#//commons/Commentable">
+      <eOperations name="getNamespacesAsString" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return null;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+      </eOperations>
+      <eOperations name="getClassifierAtNamespaces" eType="#//classifiers/ConcreteClassifier">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return null;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+      </eOperations>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="namespaces" unique="false"
+          upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eClassifiers>
+  </eSubpackages>
+  <eSubpackages name="containers" nsURI="http://www.palladiosimulator.org/javamodel/containers"
+      nsPrefix="containers">
+    <eClassifiers xsi:type="ecore:EClass" name="JavaRoot" abstract="true" eSuperTypes="#//commons/NamedElement #//commons/NamespaceAwareElement #//imports/ImportingElement">
+      <eOperations name="getClassifiersInSamePackage" upperBound="-1" eType="#//classifiers/ConcreteClassifier">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return null;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+      </eOperations>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="CompilationUnit" eSuperTypes="#//containers/JavaRoot">
+      <eOperations name="getContainedClassifier" eType="#//classifiers/ConcreteClassifier">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return null;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+        <eParameters name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      </eOperations>
+      <eOperations name="getClassifiersInSamePackage" upperBound="-1" eType="#//classifiers/ConcreteClassifier">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return null;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+      </eOperations>
+      <eOperations name="getContainedClass" eType="#//classifiers/Class">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return null;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+      </eOperations>
+      <eOperations name="getContainedInterface" eType="#//classifiers/Interface">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return null;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+      </eOperations>
+      <eOperations name="getContainedAnnotation" eType="#//classifiers/Annotation">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return null;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+      </eOperations>
+      <eOperations name="getContainedEnumeration" eType="#//classifiers/Enumeration">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return null;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+      </eOperations>
+      <eOperations name="addImport">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+        <eParameters name="nameOfClassToImport" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      </eOperations>
+      <eOperations name="addPackageImport">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+        <eParameters name="packageName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      </eOperations>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="classifiers" lowerBound="1"
+          upperBound="-1" eType="#//classifiers/ConcreteClassifier" containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="Package" eSuperTypes="#//containers/JavaRoot #//annotations/Annotable">
+      <eOperations name="getNamespacesAsString" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return null;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+      </eOperations>
+      <eOperations name="getClassifiersInSamePackage" upperBound="-1" eType="#//classifiers/ConcreteClassifier">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return null;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+      </eOperations>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="compilationUnits" upperBound="-1"
+          eType="#//containers/CompilationUnit" containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="EmptyModel" eSuperTypes="#//containers/JavaRoot"/>
+    <eClassifiers xsi:type="ecore:EClass" name="ProjectRoot">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="packages" upperBound="-1"
+          eType="#//containers/Package" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="path" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+          defaultValueLiteral=""/>
+    </eClassifiers>
+  </eSubpackages>
+  <eSubpackages xmi:id="_Jp0vgGznQ9zCZfKBgzSBuZ" name="expressions" nsURI="http://www.palladiosimulator.org/javamodel/expressions"
+      nsPrefix="expressions">
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_LXVaMGznQ9zCZfKBgzSBuZ" name="ExpressionList"
+        eSuperTypes="#_Nl908GznQ9zCZfKBgzSBuZ">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_JaUT4GznQ9zCZfKBgzSBuZ"
+          name="expressions" upperBound="-1" eType="#_OQUZgGznQ9zCZfKBgzSBuZ" containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_OQUZgGznQ9zCZfKBgzSBuZ" name="Expression"
+        abstract="true" eSuperTypes="#//arrays/ArrayInitializationValue #//annotations/AnnotationValue">
+      <eOperations name="getType" eType="#_Jyaq0GznQ9zCZfKBgzSBuZ">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return null;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+      </eOperations>
+      <eOperations name="getAlternativeType" eType="#_Jyaq0GznQ9zCZfKBgzSBuZ">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return null;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+      </eOperations>
+      <eOperations name="getOneType" eType="#_Jyaq0GznQ9zCZfKBgzSBuZ">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return null;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+        <eParameters name="alternative" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+      </eOperations>
+      <eOperations name="getArrayDimension" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//ELong">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return 0;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+      </eOperations>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="AssignmentExpression" eSuperTypes="#_OQUZgGznQ9zCZfKBgzSBuZ">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="child" lowerBound="1"
+          eType="#//expressions/AssignmentExpressionChild" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="assignmentOperator" lowerBound="1"
+          eType="#//operators/AssignmentOperator" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="value" lowerBound="1"
+          eType="#_OQUZgGznQ9zCZfKBgzSBuZ" containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="AssignmentExpressionChild" abstract="true"
+        eSuperTypes="#_OQUZgGznQ9zCZfKBgzSBuZ"/>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_P5Wz4GznQ9zCZfKBgzSBuZ" name="ConditionalExpression"
+        eSuperTypes="#//expressions/AssignmentExpressionChild">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_KjsWwGznQ9zCZfKBgzSBuZ"
+          name="child" eType="#//expressions/ConditionalExpressionChild" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_IUQDsGznQ9zCZfKBgzSBuZ"
+          name="expressionIf" lowerBound="1" eType="#_OQUZgGznQ9zCZfKBgzSBuZ" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="expressionElse" lowerBound="1"
+          eType="#//expressions/AssignmentExpressionChild" containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="ConditionalExpressionChild" abstract="true"
+        eSuperTypes="#//expressions/AssignmentExpressionChild"/>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_LZ17oGznQ9zCZfKBgzSBuZ" name="ConditionalOrExpression"
+        eSuperTypes="#//expressions/ConditionalExpressionChild">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_KdMtMGznQ9zCZfKBgzSBuZ"
+          name="children" lowerBound="1" upperBound="-1" eType="#//expressions/ConditionalOrExpressionChild"
+          containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="ConditionalOrExpressionChild" abstract="true"
+        eSuperTypes="#//expressions/ConditionalExpressionChild"/>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_OG4wsGznQ9zCZfKBgzSBuZ" name="ConditionalAndExpression"
+        eSuperTypes="#//expressions/ConditionalOrExpressionChild">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_NWo_gGznQ9zCZfKBgzSBuZ"
+          name="children" lowerBound="1" upperBound="-1" eType="#//expressions/ConditionalAndExpressionChild"
+          containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="ConditionalAndExpressionChild" abstract="true"
+        eSuperTypes="#//expressions/ConditionalOrExpressionChild"/>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_IH30kGznQ9zCZfKBgzSBuZ" name="InclusiveOrExpression"
+        eSuperTypes="#//expressions/ConditionalAndExpressionChild">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_J2xmYGznQ9zCZfKBgzSBuZ"
+          name="children" lowerBound="1" upperBound="-1" eType="#//expressions/InclusiveOrExpressionChild"
+          containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="InclusiveOrExpressionChild" abstract="true"
+        eSuperTypes="#//expressions/ConditionalAndExpressionChild"/>
+    <eClassifiers xsi:type="ecore:EClass" name="ExclusiveOrExpression" eSuperTypes="#//expressions/InclusiveOrExpressionChild">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="children" lowerBound="1"
+          upperBound="-1" eType="#//expressions/ExclusiveOrExpressionChild" containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="ExclusiveOrExpressionChild" abstract="true"
+        eSuperTypes="#//expressions/InclusiveOrExpressionChild"/>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_KIEKsGznQ9zCZfKBgzSBuZ" name="AndExpression"
+        eSuperTypes="#//expressions/ExclusiveOrExpressionChild">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_KBawIGznQ9zCZfKBgzSBuZ"
+          name="children" lowerBound="1" upperBound="-1" eType="#//expressions/AndExpressionChild"
+          containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="AndExpressionChild" abstract="true"
+        eSuperTypes="#//expressions/ExclusiveOrExpressionChild"/>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_MAzN8GznQ9zCZfKBgzSBuZ" name="EqualityExpression"
+        eSuperTypes="#//expressions/AndExpressionChild">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_NLVucGznQ9zCZfKBgzSBuZ"
+          name="equalityOperators" lowerBound="1" upperBound="-1" eType="#//operators/EqualityOperator"
+          containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_KMqW0GznQ9zCZfKBgzSBuZ"
+          name="children" lowerBound="1" upperBound="-1" eType="#//expressions/EqualityExpressionChild"
+          containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="EqualityExpressionChild" abstract="true"
+        eSuperTypes="#//expressions/AndExpressionChild"/>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_P92SUGznQ9zCZfKBgzSBuZ" name="InstanceOfExpression"
+        eSuperTypes="#//arrays/ArrayTypeable #_M_pb0GznQ9zCZfKBgzSBuZ #//expressions/EqualityExpressionChild">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_NTfk4GznQ9zCZfKBgzSBuZ"
+          name="child" lowerBound="1" eType="#//expressions/InstanceOfExpressionChild"
+          containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="InstanceOfExpressionChild" abstract="true"
+        eSuperTypes="#//expressions/EqualityExpressionChild"/>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_QBomIGznQ9zCZfKBgzSBuZ" name="RelationExpression"
+        eSuperTypes="#//expressions/InstanceOfExpressionChild">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_KrqnAGznQ9zCZfKBgzSBuZ"
+          name="children" lowerBound="1" upperBound="-1" eType="#//expressions/RelationExpressionChild"
+          containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_OKcbAGznQ9zCZfKBgzSBuZ"
+          name="relationOperators" lowerBound="1" upperBound="-1" eType="#//operators/RelationOperator"
+          containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="RelationExpressionChild" abstract="true"
+        eSuperTypes="#//expressions/InstanceOfExpressionChild"/>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_NG-y4GznQ9zCZfKBgzSBuZ" name="ShiftExpression"
+        eSuperTypes="#//expressions/RelationExpressionChild">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_IpD2EGznQ9zCZfKBgzSBuZ"
+          name="children" lowerBound="1" upperBound="-1" eType="#//expressions/ShiftExpressionChild"
+          containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_J0j_4GznQ9zCZfKBgzSBuZ"
+          name="shiftOperators" lowerBound="1" upperBound="-1" eType="#//operators/ShiftOperator"
+          containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="ShiftExpressionChild" abstract="true"
+        eSuperTypes="#//expressions/RelationExpressionChild"/>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_H8oN4GznQ9zCZfKBgzSBuZ" name="AdditiveExpression"
+        eSuperTypes="#//expressions/ShiftExpressionChild">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_QWifIGznQ9zCZfKBgzSBuZ"
+          name="children" lowerBound="1" upperBound="-1" eType="#//expressions/AdditiveExpressionChild"
+          containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_ImS18GznQ9zCZfKBgzSBuZ"
+          name="additiveOperators" lowerBound="1" upperBound="-1" eType="#//operators/AdditiveOperator"
+          containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="AdditiveExpressionChild" abstract="true"
+        eSuperTypes="#//expressions/ShiftExpressionChild"/>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_I8kn8GznQ9zCZfKBgzSBuZ" name="MultiplicativeExpression"
+        eSuperTypes="#//expressions/AdditiveExpressionChild">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_LWE18GznQ9zCZfKBgzSBuZ"
+          name="children" lowerBound="1" upperBound="-1" eType="#//expressions/MultiplicativeExpressionChild"
+          containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_IuWlwGznQ9zCZfKBgzSBuZ"
+          name="multiplicativeOperators" lowerBound="1" upperBound="-1" eType="#//operators/MultiplicativeOperator"
+          containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="MultiplicativeExpressionChild" abstract="true"
+        eSuperTypes="#//expressions/AdditiveExpressionChild"/>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JuYfYGznQ9zCZfKBgzSBuZ" name="UnaryExpression"
+        eSuperTypes="#//expressions/MultiplicativeExpressionChild">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_MFF4EGznQ9zCZfKBgzSBuZ"
+          name="operators" lowerBound="1" upperBound="-1" eType="#//operators/UnaryOperator"
+          containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_NDVpAGznQ9zCZfKBgzSBuZ"
+          name="child" lowerBound="1" eType="#//expressions/UnaryExpressionChild"
+          containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="UnaryExpressionChild" abstract="true"
+        eSuperTypes="#//expressions/MultiplicativeExpressionChild"/>
+    <eClassifiers xsi:type="ecore:EClass" name="UnaryModificationExpression" abstract="true"
+        eSuperTypes="#//expressions/UnaryExpressionChild">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="child" lowerBound="1"
+          eType="#//expressions/UnaryModificationExpressionChild" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="operator" lowerBound="1"
+          eType="#//operators/UnaryModificationOperator" containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="PrefixUnaryModificationExpression"
+        eSuperTypes="#//expressions/UnaryModificationExpression"/>
+    <eClassifiers xsi:type="ecore:EClass" name="SuffixUnaryModificationExpression"
+        eSuperTypes="#//expressions/UnaryModificationExpression"/>
+    <eClassifiers xsi:type="ecore:EClass" name="UnaryModificationExpressionChild"
+        abstract="true" eSuperTypes="#//expressions/UnaryExpressionChild"/>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JJRnMGznQ9zCZfKBgzSBuZ" name="CastExpression"
+        eSuperTypes="#_M_pb0GznQ9zCZfKBgzSBuZ #//arrays/ArrayTypeable #//expressions/UnaryModificationExpressionChild">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_Ls7PsGznQ9zCZfKBgzSBuZ"
+          name="child" lowerBound="1" eType="#//expressions/MultiplicativeExpressionChild"
+          containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="PrimaryExpression" abstract="true"
+        eSuperTypes="#//expressions/UnaryModificationExpressionChild"/>
+    <eClassifiers xsi:type="ecore:EClass" name="NestedExpression" eSuperTypes="#//references/Reference">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="expression" lowerBound="1"
+          eType="#_OQUZgGznQ9zCZfKBgzSBuZ" containment="true"/>
+    </eClassifiers>
+  </eSubpackages>
+  <eSubpackages name="generics" nsURI="http://www.palladiosimulator.org/javamodel/generics"
+      nsPrefix="generics">
+    <eClassifiers xsi:type="ecore:EClass" name="TypeArgument" abstract="true" eSuperTypes="#//arrays/ArrayTypeable"/>
+    <eClassifiers xsi:type="ecore:EClass" name="TypeArgumentable" abstract="true"
+        eSuperTypes="#//commons/Commentable">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="typeArguments" upperBound="-1"
+          eType="#//generics/TypeArgument" containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="CallTypeArgumentable" abstract="true"
+        eSuperTypes="#//commons/Commentable">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="callTypeArguments" upperBound="-1"
+          eType="#//generics/TypeArgument" containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="TypeParametrizable" abstract="true"
+        eSuperTypes="#//commons/Commentable">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="typeParameters" upperBound="-1"
+          eType="#//generics/TypeParameter" containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="ExtendsTypeArgument" eSuperTypes="#//generics/TypeArgument">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="extendTypes" lowerBound="1"
+          upperBound="-1" eType="#_MtxBoGznQ9zCZfKBgzSBuZ" containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="QualifiedTypeArgument" eSuperTypes="#//generics/TypeArgument #_M_pb0GznQ9zCZfKBgzSBuZ"/>
+    <eClassifiers xsi:type="ecore:EClass" name="SuperTypeArgument" eSuperTypes="#//generics/TypeArgument">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="superType" lowerBound="1"
+          eType="#_MtxBoGznQ9zCZfKBgzSBuZ" containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="TypeParameter" eSuperTypes="#//classifiers/Classifier">
+      <eOperations name="getAllSuperClassifiers" upperBound="-1" eType="#//classifiers/ConcreteClassifier">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return null;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+      </eOperations>
+      <eOperations name="getAllMembers" upperBound="-1" eType="#//members/Member">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return null;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+        <eParameters name="context" eType="#//commons/Commentable"/>
+      </eOperations>
+      <eOperations name="getBoundType" eType="#_Jyaq0GznQ9zCZfKBgzSBuZ">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return null;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+        <eParameters name="typeReference" eType="#_MtxBoGznQ9zCZfKBgzSBuZ"/>
+        <eParameters name="reference" eType="#//references/Reference"/>
+      </eOperations>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="extendTypes" upperBound="-1"
+          eType="#_MtxBoGznQ9zCZfKBgzSBuZ" containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="UnknownTypeArgument" eSuperTypes="#//generics/TypeArgument"/>
+  </eSubpackages>
+  <eSubpackages name="imports" nsURI="http://www.palladiosimulator.org/javamodel/imports"
+      nsPrefix="imports">
+    <eClassifiers xsi:type="ecore:EClass" name="Import" abstract="true" eSuperTypes="#//commons/NamespaceAwareElement">
+      <eOperations name="getImportedClassifier" eType="#//classifiers/ConcreteClassifier">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return null;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+        <eParameters name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      </eOperations>
+      <eOperations name="getImportedClassifiers" upperBound="-1" eType="#//classifiers/ConcreteClassifier">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return null;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+      </eOperations>
+      <eOperations name="getImportedMembers" upperBound="-1" eType="#//commons/NamedElement">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return null;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+      </eOperations>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="ImportingElement" abstract="true"
+        eSuperTypes="#//commons/Commentable">
+      <eOperations name="getDefaultImports" upperBound="-1" eType="#//classifiers/ConcreteClassifier">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return null;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+      </eOperations>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="imports" upperBound="-1"
+          eType="#//imports/Import" containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="StaticImport" abstract="true" eSuperTypes="#//imports/Import">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="static" lowerBound="1"
+          eType="#_M63CcGznQ9zCZfKBgzSBuZ" containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="ClassifierImport" eSuperTypes="#//imports/Import">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="classifier" lowerBound="1"
+          eType="#//classifiers/ConcreteClassifier"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="PackageImport" eSuperTypes="#//imports/Import"/>
+    <eClassifiers xsi:type="ecore:EClass" name="StaticClassifierImport" eSuperTypes="#//imports/StaticImport"/>
+    <eClassifiers xsi:type="ecore:EClass" name="StaticMemberImport" eSuperTypes="#//imports/StaticImport">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="staticMembers" lowerBound="1"
+          upperBound="-1" eType="#//references/ReferenceableElement"/>
+    </eClassifiers>
+  </eSubpackages>
+  <eSubpackages name="instantiations" nsURI="http://www.palladiosimulator.org/javamodel/instantiations"
+      nsPrefix="instantiations">
+    <eClassifiers xsi:type="ecore:EClass" name="Initializable" abstract="true" eSuperTypes="#//commons/Commentable">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="initialValue" eType="#_OQUZgGznQ9zCZfKBgzSBuZ"
+          containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="Instantiation" abstract="true" eSuperTypes="#//references/Reference #//references/Argumentable"/>
+    <eClassifiers xsi:type="ecore:EClass" name="NewConstructorCall" eSuperTypes="#_M_pb0GznQ9zCZfKBgzSBuZ #//instantiations/Instantiation #//generics/CallTypeArgumentable">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="anonymousClass" eType="#//classifiers/AnonymousClass"
+          containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="ExplicitConstructorCall" eSuperTypes="#//instantiations/Instantiation">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="callTarget" lowerBound="1"
+          eType="#//literals/Self" containment="true"/>
+    </eClassifiers>
+  </eSubpackages>
+  <eSubpackages xmi:id="_NzpEkGznQ9zCZfKBgzSBuZ" name="literals" nsURI="http://www.palladiosimulator.org/javamodel/literals"
+      nsPrefix="literals">
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_PiNfMGznQ9zCZfKBgzSBuZ" name="Literal"
+        abstract="true" eSuperTypes="#//expressions/PrimaryExpression">
+      <eOperations name="getOneType" eType="#_Jyaq0GznQ9zCZfKBgzSBuZ">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return null;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+        <eParameters name="alternative" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+      </eOperations>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="Self" abstract="true" eSuperTypes="#//commons/Commentable"/>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_OZyekGznQ9zCZfKBgzSBuZ" name="BooleanLiteral"
+        eSuperTypes="#_PiNfMGznQ9zCZfKBgzSBuZ">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_QejysGznQ9zCZfKBgzSBuZ"
+          name="value" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_PbIm0GznQ9zCZfKBgzSBuZ" name="CharacterLiteral"
+        eSuperTypes="#_PiNfMGznQ9zCZfKBgzSBuZ">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_K2bFgGznQ9zCZfKBgzSBuZ"
+          name="value" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EChar"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="FloatLiteral" abstract="true" eSuperTypes="#_PiNfMGznQ9zCZfKBgzSBuZ"/>
+    <eClassifiers xsi:type="ecore:EClass" name="DecimalFloatLiteral" eSuperTypes="#//literals/FloatLiteral">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="decimalValue" lowerBound="1"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EFloat"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="HexFloatLiteral" eSuperTypes="#//literals/FloatLiteral">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="hexValue" lowerBound="1"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EFloat"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_ODwkMGznQ9zCZfKBgzSBuZ" name="DoubleLiteral"
+        abstract="true" eSuperTypes="#_PiNfMGznQ9zCZfKBgzSBuZ"/>
+    <eClassifiers xsi:type="ecore:EClass" name="DecimalDoubleLiteral" eSuperTypes="#_ODwkMGznQ9zCZfKBgzSBuZ">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="decimalValue" lowerBound="1"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="HexDoubleLiteral" eSuperTypes="#_ODwkMGznQ9zCZfKBgzSBuZ">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="hexValue" lowerBound="1"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_H6uJYGznQ9zCZfKBgzSBuZ" name="IntegerLiteral"
+        abstract="true" eSuperTypes="#_PiNfMGznQ9zCZfKBgzSBuZ"/>
+    <eClassifiers xsi:type="ecore:EClass" name="DecimalIntegerLiteral" eSuperTypes="#_H6uJYGznQ9zCZfKBgzSBuZ">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="decimalValue" lowerBound="1"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBigInteger"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="HexIntegerLiteral" eSuperTypes="#_H6uJYGznQ9zCZfKBgzSBuZ">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="hexValue" lowerBound="1"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBigInteger"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="OctalIntegerLiteral" eSuperTypes="#_H6uJYGznQ9zCZfKBgzSBuZ">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="octalValue" lowerBound="1"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBigInteger"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="LongLiteral" abstract="true" eSuperTypes="#_PiNfMGznQ9zCZfKBgzSBuZ"/>
+    <eClassifiers xsi:type="ecore:EClass" name="DecimalLongLiteral" eSuperTypes="#//literals/LongLiteral">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="decimalValue" lowerBound="1"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBigInteger"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="HexLongLiteral" eSuperTypes="#//literals/LongLiteral">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="hexValue" lowerBound="1"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBigInteger"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="OctalLongLiteral" eSuperTypes="#//literals/LongLiteral">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="octalValue" lowerBound="1"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBigInteger"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_MiXC4GznQ9zCZfKBgzSBuZ" name="NullLiteral"
+        eSuperTypes="#_PiNfMGznQ9zCZfKBgzSBuZ"/>
+    <eClassifiers xsi:type="ecore:EClass" name="Super" eSuperTypes="#//literals/Self"/>
+    <eClassifiers xsi:type="ecore:EClass" name="This" eSuperTypes="#//literals/Self"/>
+  </eSubpackages>
+  <eSubpackages name="members" nsURI="http://www.palladiosimulator.org/javamodel/members"
+      nsPrefix="members">
+    <eClassifiers xsi:type="ecore:EClass" name="ExceptionThrower" abstract="true"
+        eSuperTypes="#//commons/Commentable">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="exceptions" upperBound="-1"
+          eType="#_Om6UkGznQ9zCZfKBgzSBuZ" containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="Member" abstract="true" eSuperTypes="#//commons/NamedElement"/>
+    <eClassifiers xsi:type="ecore:EClass" name="MemberContainer" abstract="true" eSuperTypes="#//commons/Commentable">
+      <eOperations name="getContainedClassifier" eType="#//classifiers/ConcreteClassifier">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return null;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+        <eParameters name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      </eOperations>
+      <eOperations name="getContainedField" eType="#//members/Field">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return null;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+        <eParameters name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      </eOperations>
+      <eOperations name="getContainedMethod" eType="#//members/Method">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return null;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+        <eParameters name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      </eOperations>
+      <eOperations name="getMethods" upperBound="-1" eType="#//members/Method">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return null;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+      </eOperations>
+      <eOperations name="removeMethods">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+        <eParameters name="name" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      </eOperations>
+      <eOperations name="getMembersByName" upperBound="-1" eType="#//members/Member">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return null;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+        <eParameters name="name" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      </eOperations>
+      <eOperations name="createField" eType="#//members/Field">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return null;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+        <eParameters name="name" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+        <eParameters name="qualifiedTypeName" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      </eOperations>
+      <eOperations name="getFields" upperBound="-1" eType="#//members/Field">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return null;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+      </eOperations>
+      <eOperations name="getConstructors" upperBound="-1" eType="#//members/Constructor">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return null;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+      </eOperations>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="members" upperBound="-1"
+          eType="#//members/Member" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="defaultMembers" upperBound="-1"
+          eType="#//members/Member" containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="AdditionalField" eSuperTypes="#//references/ReferenceableElement #//arrays/ArrayTypeable #//instantiations/Initializable">
+      <eOperations name="getArrayDimension" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//ELong">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return 0;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+      </eOperations>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="Constructor" eSuperTypes="#//members/Member #//statements/StatementListContainer #//parameters/Parametrizable #//generics/TypeParametrizable #//members/ExceptionThrower #//modifiers/AnnotableAndModifiable"/>
+    <eClassifiers xsi:type="ecore:EClass" name="EmptyMember" eSuperTypes="#//members/Member"/>
+    <eClassifiers xsi:type="ecore:EClass" name="Field" eSuperTypes="#//members/Member #//instantiations/Initializable #//variables/Variable #//references/ReferenceableElement #//modifiers/AnnotableAndModifiable">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="additionalFields" upperBound="-1"
+          eType="#//members/AdditionalField" containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="Method" abstract="true" eSuperTypes="#//members/Member #_M_pb0GznQ9zCZfKBgzSBuZ #//arrays/ArrayTypeable #//generics/TypeParametrizable #//parameters/Parametrizable #//references/ReferenceableElement #//members/ExceptionThrower #//modifiers/AnnotableAndModifiable">
+      <eOperations name="isMethodForCall" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return false;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+        <eParameters name="methodCall" eType="#//references/MethodCall"/>
+        <eParameters name="needsPerfectMatch" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+      </eOperations>
+      <eOperations name="isSomeMethodForCall" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return false;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+        <eParameters name="methodCall" eType="#//references/MethodCall"/>
+      </eOperations>
+      <eOperations name="isBetterMethodForCall" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return false;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+        <eParameters name="otherMethod" eType="#//members/Method"/>
+        <eParameters name="methodCall" eType="#//references/MethodCall"/>
+      </eOperations>
+      <eOperations name="getArrayDimension" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//ELong">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return 0;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+      </eOperations>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="InterfaceMethod" eSuperTypes="#//members/Method"/>
+    <eClassifiers xsi:type="ecore:EClass" name="ClassMethod" eSuperTypes="#//members/Method #//statements/StatementListContainer"/>
+    <eClassifiers xsi:type="ecore:EClass" name="EnumConstant" eSuperTypes="#//references/ReferenceableElement #//references/Argumentable #//annotations/Annotable">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="anonymousClass" eType="#//classifiers/AnonymousClass"
+          containment="true"/>
+    </eClassifiers>
+  </eSubpackages>
+  <eSubpackages xmi:id="_M0pswGznQ9zCZfKBgzSBuZ" name="modifiers" nsURI="http://www.palladiosimulator.org/javamodel/modifiers"
+      nsPrefix="modifiers">
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_MJ-_IGznQ9zCZfKBgzSBuZ" name="Modifier"
+        abstract="true" eSuperTypes="#//modifiers/AnnotationInstanceOrModifier"/>
+    <eClassifiers xsi:type="ecore:EClass" name="AnnotationInstanceOrModifier" abstract="true"
+        eSuperTypes="#//commons/Commentable"/>
+    <eClassifiers xsi:type="ecore:EClass" name="AnnotableAndModifiable" abstract="true"
+        eSuperTypes="#//commons/Commentable">
+      <eOperations name="isHidden" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return false;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+        <eParameters name="context" eType="#//commons/Commentable"/>
+      </eOperations>
+      <eOperations name="isStatic" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return false;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+      </eOperations>
+      <eOperations name="removeModifier">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+        <eParameters name="modifierType">
+          <eGenericType eClassifier="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EJavaClass">
+            <eTypeArguments/>
+          </eGenericType>
+        </eParameters>
+      </eOperations>
+      <eOperations name="makePublic">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+      </eOperations>
+      <eOperations name="makePrivate">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+      </eOperations>
+      <eOperations name="makeProtected">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+      </eOperations>
+      <eOperations name="getModifiers" upperBound="-1" eType="#_MJ-_IGznQ9zCZfKBgzSBuZ">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return null;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+      </eOperations>
+      <eOperations name="removeAllModifiers">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+      </eOperations>
+      <eOperations name="hasModifier" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return false;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+        <eParameters name="type">
+          <eGenericType eClassifier="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EJavaClass">
+            <eTypeArguments/>
+          </eGenericType>
+        </eParameters>
+      </eOperations>
+      <eOperations name="isPublic" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return false;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+      </eOperations>
+      <eOperations name="isPrivate" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return false;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+      </eOperations>
+      <eOperations name="isProtected" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return false;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+      </eOperations>
+      <eOperations name="addModifier">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+        <eParameters name="newModifier" lowerBound="1" eType="#_MJ-_IGznQ9zCZfKBgzSBuZ"/>
+      </eOperations>
+      <eOperations name="getAnnotationInstances" upperBound="-1" eType="#_LVDiQGznQ9zCZfKBgzSBuZ">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return null;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+      </eOperations>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="annotationsAndModifiers"
+          upperBound="-1" eType="#//modifiers/AnnotationInstanceOrModifier" containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="Modifiable" abstract="true" eSuperTypes="#//commons/Commentable">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="modifiers" upperBound="-1"
+          eType="#_MJ-_IGznQ9zCZfKBgzSBuZ" containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JLFlEGznQ9zCZfKBgzSBuZ" name="Abstract"
+        eSuperTypes="#_MJ-_IGznQ9zCZfKBgzSBuZ"/>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_H0JAQGznQ9zCZfKBgzSBuZ" name="Final"
+        eSuperTypes="#_MJ-_IGznQ9zCZfKBgzSBuZ"/>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_PBfXwGznQ9zCZfKBgzSBuZ" name="Native"
+        eSuperTypes="#_MJ-_IGznQ9zCZfKBgzSBuZ"/>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_IctcIGznQ9zCZfKBgzSBuZ" name="Protected"
+        eSuperTypes="#_MJ-_IGznQ9zCZfKBgzSBuZ"/>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JP5MkGznQ9zCZfKBgzSBuZ" name="Public"
+        eSuperTypes="#_MJ-_IGznQ9zCZfKBgzSBuZ"/>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_IPDaoGznQ9zCZfKBgzSBuZ" name="Private"
+        eSuperTypes="#_MJ-_IGznQ9zCZfKBgzSBuZ"/>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_M63CcGznQ9zCZfKBgzSBuZ" name="Static"
+        eSuperTypes="#_MJ-_IGznQ9zCZfKBgzSBuZ"/>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_H_RSMGznQ9zCZfKBgzSBuZ" name="Strictfp"
+        eSuperTypes="#_MJ-_IGznQ9zCZfKBgzSBuZ"/>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_Qjc5wGznQ9zCZfKBgzSBuZ" name="Synchronized"
+        eSuperTypes="#_MJ-_IGznQ9zCZfKBgzSBuZ"/>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_Ivbj0GznQ9zCZfKBgzSBuZ" name="Transient"
+        eSuperTypes="#_MJ-_IGznQ9zCZfKBgzSBuZ"/>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_MmNBEGznQ9zCZfKBgzSBuZ" name="Volatile"
+        eSuperTypes="#_MJ-_IGznQ9zCZfKBgzSBuZ"/>
+  </eSubpackages>
+  <eSubpackages name="operators" nsURI="http://www.palladiosimulator.org/javamodel/operators"
+      nsPrefix="operators">
+    <eClassifiers xsi:type="ecore:EClass" name="Operator" abstract="true" eSuperTypes="#//commons/Commentable"/>
+    <eClassifiers xsi:type="ecore:EClass" name="AdditiveOperator" abstract="true"
+        eSuperTypes="#//operators/Operator"/>
+    <eClassifiers xsi:type="ecore:EClass" name="AssignmentOperator" abstract="true"
+        eSuperTypes="#//operators/Operator"/>
+    <eClassifiers xsi:type="ecore:EClass" name="EqualityOperator" abstract="true"
+        eSuperTypes="#//operators/Operator"/>
+    <eClassifiers xsi:type="ecore:EClass" name="MultiplicativeOperator" abstract="true"
+        eSuperTypes="#//operators/Operator"/>
+    <eClassifiers xsi:type="ecore:EClass" name="RelationOperator" abstract="true"
+        eSuperTypes="#//operators/Operator"/>
+    <eClassifiers xsi:type="ecore:EClass" name="ShiftOperator" abstract="true" eSuperTypes="#//operators/Operator"/>
+    <eClassifiers xsi:type="ecore:EClass" name="UnaryOperator" abstract="true" eSuperTypes="#//operators/Operator"/>
+    <eClassifiers xsi:type="ecore:EClass" name="UnaryModificationOperator" abstract="true"
+        eSuperTypes="#//operators/Operator"/>
+    <eClassifiers xsi:type="ecore:EClass" name="Assignment" eSuperTypes="#//operators/AssignmentOperator"/>
+    <eClassifiers xsi:type="ecore:EClass" name="AssignmentAnd" eSuperTypes="#//operators/AssignmentOperator"/>
+    <eClassifiers xsi:type="ecore:EClass" name="AssignmentDivision" eSuperTypes="#//operators/AssignmentOperator"/>
+    <eClassifiers xsi:type="ecore:EClass" name="AssignmentExclusiveOr" eSuperTypes="#//operators/AssignmentOperator"/>
+    <eClassifiers xsi:type="ecore:EClass" name="AssignmentMinus" eSuperTypes="#//operators/AssignmentOperator"/>
+    <eClassifiers xsi:type="ecore:EClass" name="AssignmentModulo" eSuperTypes="#//operators/AssignmentOperator"/>
+    <eClassifiers xsi:type="ecore:EClass" name="AssignmentMultiplication" eSuperTypes="#//operators/AssignmentOperator"/>
+    <eClassifiers xsi:type="ecore:EClass" name="AssignmentLeftShift" eSuperTypes="#//operators/AssignmentOperator"/>
+    <eClassifiers xsi:type="ecore:EClass" name="AssignmentOr" eSuperTypes="#//operators/AssignmentOperator"/>
+    <eClassifiers xsi:type="ecore:EClass" name="AssignmentPlus" eSuperTypes="#//operators/AssignmentOperator"/>
+    <eClassifiers xsi:type="ecore:EClass" name="AssignmentRightShift" eSuperTypes="#//operators/AssignmentOperator"/>
+    <eClassifiers xsi:type="ecore:EClass" name="AssignmentUnsignedRightShift" eSuperTypes="#//operators/AssignmentOperator"/>
+    <eClassifiers xsi:type="ecore:EClass" name="Equal" eSuperTypes="#//operators/EqualityOperator"/>
+    <eClassifiers xsi:type="ecore:EClass" name="NotEqual" eSuperTypes="#//operators/EqualityOperator"/>
+    <eClassifiers xsi:type="ecore:EClass" name="GreaterThan" eSuperTypes="#//operators/RelationOperator"/>
+    <eClassifiers xsi:type="ecore:EClass" name="GreaterThanOrEqual" eSuperTypes="#//operators/RelationOperator"/>
+    <eClassifiers xsi:type="ecore:EClass" name="LessThan" eSuperTypes="#//operators/RelationOperator"/>
+    <eClassifiers xsi:type="ecore:EClass" name="LessThanOrEqual" eSuperTypes="#//operators/RelationOperator"/>
+    <eClassifiers xsi:type="ecore:EClass" name="Addition" eSuperTypes="#//operators/AdditiveOperator #//operators/UnaryOperator"/>
+    <eClassifiers xsi:type="ecore:EClass" name="Subtraction" eSuperTypes="#//operators/AdditiveOperator #//operators/UnaryOperator"/>
+    <eClassifiers xsi:type="ecore:EClass" name="Division" eSuperTypes="#//operators/MultiplicativeOperator"/>
+    <eClassifiers xsi:type="ecore:EClass" name="Multiplication" eSuperTypes="#//operators/MultiplicativeOperator"/>
+    <eClassifiers xsi:type="ecore:EClass" name="Remainder" eSuperTypes="#//operators/MultiplicativeOperator"/>
+    <eClassifiers xsi:type="ecore:EClass" name="Complement" eSuperTypes="#//operators/UnaryOperator"/>
+    <eClassifiers xsi:type="ecore:EClass" name="MinusMinus" eSuperTypes="#//operators/UnaryModificationOperator"/>
+    <eClassifiers xsi:type="ecore:EClass" name="Negate" eSuperTypes="#//operators/UnaryOperator"/>
+    <eClassifiers xsi:type="ecore:EClass" name="PlusPlus" eSuperTypes="#//operators/UnaryModificationOperator"/>
+    <eClassifiers xsi:type="ecore:EClass" name="LeftShift" eSuperTypes="#//operators/ShiftOperator"/>
+    <eClassifiers xsi:type="ecore:EClass" name="RightShift" eSuperTypes="#//operators/ShiftOperator"/>
+    <eClassifiers xsi:type="ecore:EClass" name="UnsignedRightShift" eSuperTypes="#//operators/ShiftOperator"/>
+  </eSubpackages>
+  <eSubpackages name="parameters" nsURI="http://www.palladiosimulator.org/javamodel/parameters"
+      nsPrefix="parameters">
+    <eClassifiers xsi:type="ecore:EClass" name="Parameter" abstract="true" eSuperTypes="#//variables/Variable #//modifiers/AnnotableAndModifiable"/>
+    <eClassifiers xsi:type="ecore:EClass" name="Parametrizable" abstract="true" eSuperTypes="#//commons/Commentable">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="parameters" upperBound="-1"
+          eType="#//parameters/Parameter" containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="OrdinaryParameter" eSuperTypes="#//parameters/Parameter"/>
+    <eClassifiers xsi:type="ecore:EClass" name="VariableLengthParameter" eSuperTypes="#//parameters/Parameter"/>
+  </eSubpackages>
+  <eSubpackages name="references" nsURI="http://www.palladiosimulator.org/javamodel/references"
+      nsPrefix="references">
+    <eClassifiers xsi:type="ecore:EClass" name="Reference" abstract="true" eSuperTypes="#//expressions/PrimaryExpression #//generics/TypeArgumentable">
+      <eOperations name="getReferencedType" eType="#_Jyaq0GznQ9zCZfKBgzSBuZ">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return null;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+      </eOperations>
+      <eOperations name="getPrevious" eType="#//references/Reference">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return null;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+      </eOperations>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="next" eType="#//references/Reference"
+          containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="arraySelectors" upperBound="-1"
+          eType="#//arrays/ArraySelector" containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="Argumentable" abstract="true" eSuperTypes="#//commons/Commentable">
+      <eOperations name="getArgumentTypes" upperBound="-1" eType="#_Jyaq0GznQ9zCZfKBgzSBuZ">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return null;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+      </eOperations>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="arguments" upperBound="-1"
+          eType="#_OQUZgGznQ9zCZfKBgzSBuZ" containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="ReferenceableElement" abstract="true"
+        eSuperTypes="#//commons/NamedElement"/>
+    <eClassifiers xsi:type="ecore:EClass" name="ElementReference" abstract="true"
+        eSuperTypes="#//references/Reference">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="target" lowerBound="1"
+          eType="#//references/ReferenceableElement"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="IdentifierReference" eSuperTypes="#//references/ElementReference"/>
+    <eClassifiers xsi:type="ecore:EClass" name="MethodCall" eSuperTypes="#//references/ElementReference #//references/Argumentable #//generics/CallTypeArgumentable"/>
+    <eClassifiers xsi:type="ecore:EClass" name="ReflectiveClassReference" eSuperTypes="#//references/Reference"/>
+    <eClassifiers xsi:type="ecore:EClass" name="PrimitiveTypeReference" eSuperTypes="#//references/Reference">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="primitiveType" lowerBound="1"
+          eType="#_JV5G4GznQ9zCZfKBgzSBuZ" containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="StringReference" eSuperTypes="#//references/Reference">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" lowerBound="1"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="SelfReference" eSuperTypes="#//references/Reference">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="self" lowerBound="1"
+          eType="#//literals/Self" containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="PackageReference" eSuperTypes="#//references/ReferenceableElement">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="subpackages" upperBound="-1"
+          eType="#//references/PackageReference" containment="true"/>
+    </eClassifiers>
+  </eSubpackages>
+  <eSubpackages xmi:id="_Ocw6EGznQ9zCZfKBgzSBuZ" name="statements" nsURI="http://www.palladiosimulator.org/javamodel/statements"
+      nsPrefix="statements">
+    <eClassifiers xsi:type="ecore:EClass" name="StatementContainer" abstract="true"
+        eSuperTypes="#//commons/Commentable">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="statement" lowerBound="1"
+          eType="#_QHjn8GznQ9zCZfKBgzSBuZ" containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="StatementListContainer" abstract="true"
+        eSuperTypes="#//commons/Commentable">
+      <eOperations name="getLocalVariable" lowerBound="1" eType="#//variables/LocalVariable">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return null;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+        <eParameters name="name" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      </eOperations>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="statements" upperBound="-1"
+          eType="#_QHjn8GznQ9zCZfKBgzSBuZ" containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="Conditional" abstract="true" eSuperTypes="#//commons/Commentable">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="condition" eType="#_OQUZgGznQ9zCZfKBgzSBuZ"
+          containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_Nl908GznQ9zCZfKBgzSBuZ" name="ForLoopInitializer"
+        abstract="true" eSuperTypes="#//commons/Commentable"/>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_QHjn8GznQ9zCZfKBgzSBuZ" name="Statement"
+        abstract="true" eSuperTypes="#//commons/Commentable"/>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JEOvIGznQ9zCZfKBgzSBuZ" name="SwitchCase"
+        abstract="true" eSuperTypes="#//statements/StatementListContainer"/>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_I2TA0GznQ9zCZfKBgzSBuZ" name="Assert"
+        eSuperTypes="#_QHjn8GznQ9zCZfKBgzSBuZ #//statements/Conditional">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_LkByYGznQ9zCZfKBgzSBuZ"
+          name="errorMessage" eType="#_OQUZgGznQ9zCZfKBgzSBuZ" containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_PyaeYGznQ9zCZfKBgzSBuZ" name="Break"
+        eSuperTypes="#//statements/Jump"/>
+    <eClassifiers xsi:type="ecore:EClass" name="Block" eSuperTypes="#//members/Member #_QHjn8GznQ9zCZfKBgzSBuZ #//statements/StatementListContainer #//modifiers/Modifiable"/>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_O-VWEGznQ9zCZfKBgzSBuZ" name="CatchBlock"
+        eSuperTypes="#//statements/StatementListContainer">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_Qr0LkGznQ9zCZfKBgzSBuZ"
+          name="parameter" lowerBound="1" eType="#//parameters/OrdinaryParameter"
+          containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_LIQcYGznQ9zCZfKBgzSBuZ" name="Condition"
+        eSuperTypes="#_QHjn8GznQ9zCZfKBgzSBuZ #//statements/StatementContainer #//statements/Conditional">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_LnLNAGznQ9zCZfKBgzSBuZ"
+          name="elseStatement" eType="#_QHjn8GznQ9zCZfKBgzSBuZ" containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_N5vFgGznQ9zCZfKBgzSBuZ" name="Continue"
+        eSuperTypes="#//statements/Jump"/>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_LBtvgGznQ9zCZfKBgzSBuZ" name="DefaultSwitchCase"
+        eSuperTypes="#_JEOvIGznQ9zCZfKBgzSBuZ"/>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_MwGj8GznQ9zCZfKBgzSBuZ" name="DoWhileLoop"
+        eSuperTypes="#_PtbQsGznQ9zCZfKBgzSBuZ"/>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_H4AzoGznQ9zCZfKBgzSBuZ" name="EmptyStatement"
+        eSuperTypes="#_QHjn8GznQ9zCZfKBgzSBuZ"/>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_KSPaYGznQ9zCZfKBgzSBuZ" name="ExpressionStatement"
+        eSuperTypes="#_QHjn8GznQ9zCZfKBgzSBuZ">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_KOsXIGznQ9zCZfKBgzSBuZ"
+          name="expression" lowerBound="1" eType="#_OQUZgGznQ9zCZfKBgzSBuZ" containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_Q0b8EGznQ9zCZfKBgzSBuZ" name="ForLoop"
+        eSuperTypes="#_QHjn8GznQ9zCZfKBgzSBuZ #//statements/StatementContainer #//statements/Conditional">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_O3S58GznQ9zCZfKBgzSBuZ"
+          name="init" eType="#_Nl908GznQ9zCZfKBgzSBuZ" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_Pc3sMGznQ9zCZfKBgzSBuZ"
+          name="updates" upperBound="-1" eType="#_OQUZgGznQ9zCZfKBgzSBuZ" containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_PJT3AGznQ9zCZfKBgzSBuZ" name="ForEachLoop"
+        eSuperTypes="#_QHjn8GznQ9zCZfKBgzSBuZ #//statements/StatementContainer">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_Oig8wGznQ9zCZfKBgzSBuZ"
+          name="next" lowerBound="1" eType="#//parameters/OrdinaryParameter" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_OSKzoGznQ9zCZfKBgzSBuZ"
+          name="collection" lowerBound="1" eType="#_OQUZgGznQ9zCZfKBgzSBuZ" containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="Jump" abstract="true" eSuperTypes="#_QHjn8GznQ9zCZfKBgzSBuZ">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="#_PpMQ8GznQ9zCZfKBgzSBuZ"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_PpMQ8GznQ9zCZfKBgzSBuZ" name="JumpLabel"
+        eSuperTypes="#_QHjn8GznQ9zCZfKBgzSBuZ #//statements/StatementContainer #//commons/NamedElement"/>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_NgCMEGznQ9zCZfKBgzSBuZ" name="LocalVariableStatement"
+        eSuperTypes="#_QHjn8GznQ9zCZfKBgzSBuZ">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_NYrm4GznQ9zCZfKBgzSBuZ"
+          name="variable" lowerBound="1" eType="#//variables/LocalVariable" containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_Mc4tAGznQ9zCZfKBgzSBuZ" name="NormalSwitchCase"
+        eSuperTypes="#_JEOvIGznQ9zCZfKBgzSBuZ #//statements/Conditional"/>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_IFhrMGznQ9zCZfKBgzSBuZ" name="Return"
+        eSuperTypes="#_QHjn8GznQ9zCZfKBgzSBuZ">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_L0ug0GznQ9zCZfKBgzSBuZ"
+          name="returnValue" eType="#_OQUZgGznQ9zCZfKBgzSBuZ" containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_LfDLwGznQ9zCZfKBgzSBuZ" name="Switch"
+        eSuperTypes="#_QHjn8GznQ9zCZfKBgzSBuZ">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_J3WOIGznQ9zCZfKBgzSBuZ"
+          name="cases" upperBound="-1" eType="#_JEOvIGznQ9zCZfKBgzSBuZ" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_Ow5-EGznQ9zCZfKBgzSBuZ"
+          name="variable" lowerBound="1" eType="#_OQUZgGznQ9zCZfKBgzSBuZ" containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_K8lX4GznQ9zCZfKBgzSBuZ" name="SynchronizedBlock"
+        eSuperTypes="#_QHjn8GznQ9zCZfKBgzSBuZ #//statements/StatementListContainer">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_J7twwGznQ9zCZfKBgzSBuZ"
+          name="lockProvider" lowerBound="1" eType="#_OQUZgGznQ9zCZfKBgzSBuZ" containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_IgJKoGznQ9zCZfKBgzSBuZ" name="Throw"
+        eSuperTypes="#_QHjn8GznQ9zCZfKBgzSBuZ">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_N_fIMGznQ9zCZfKBgzSBuZ"
+          name="throwable" lowerBound="1" eType="#_OQUZgGznQ9zCZfKBgzSBuZ" containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_OtHqQGznQ9zCZfKBgzSBuZ" name="TryBlock"
+        eSuperTypes="#_QHjn8GznQ9zCZfKBgzSBuZ #//statements/StatementListContainer">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_PR_R4GznQ9zCZfKBgzSBuZ"
+          name="catcheBlocks" upperBound="-1" eType="#_O-VWEGznQ9zCZfKBgzSBuZ" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_IXsZQGznQ9zCZfKBgzSBuZ"
+          name="finallyBlock" eType="#//statements/Block" containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_PtbQsGznQ9zCZfKBgzSBuZ" name="WhileLoop"
+        eSuperTypes="#_QHjn8GznQ9zCZfKBgzSBuZ #//statements/StatementContainer">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_QqCp8GznQ9zCZfKBgzSBuZ"
+          name="condition" lowerBound="1" eType="#_OQUZgGznQ9zCZfKBgzSBuZ" containment="true"/>
+    </eClassifiers>
+  </eSubpackages>
+  <eSubpackages xmi:id="_QODRgGznQ9zCZfKBgzSBuZ" name="types" nsURI="http://www.palladiosimulator.org/javamodel/types"
+      nsPrefix="types">
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_Jyaq0GznQ9zCZfKBgzSBuZ" name="Type"
+        abstract="true" eSuperTypes="#//commons/Commentable">
+      <eOperations name="equalsType" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return false;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+        <eParameters name="arrayDimension" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//ELong"/>
+        <eParameters name="otherType" eType="#_Jyaq0GznQ9zCZfKBgzSBuZ"/>
+        <eParameters name="otherArrayDimension" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//ELong"/>
+      </eOperations>
+      <eOperations name="isSuperType" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return false;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+        <eParameters name="arrayDimension" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//ELong"/>
+        <eParameters name="otherType" eType="#_Jyaq0GznQ9zCZfKBgzSBuZ"/>
+        <eParameters name="otherArrayType" eType="#//arrays/ArrayTypeable"/>
+      </eOperations>
+      <eOperations name="getAllMembers" upperBound="-1" eType="#//members/Member">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="// method has to be specified in subclasses&#xA;throw new java.lang.UnsupportedOperationException();"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+        <eParameters name="context" eType="#//commons/Commentable"/>
+      </eOperations>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_M_pb0GznQ9zCZfKBgzSBuZ" name="TypedElement"
+        abstract="true" eSuperTypes="#//commons/Commentable">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_KC1FYGznQ9zCZfKBgzSBuZ"
+          name="typeReference" lowerBound="1" eType="#_MtxBoGznQ9zCZfKBgzSBuZ" containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_MtxBoGznQ9zCZfKBgzSBuZ" name="TypeReference"
+        abstract="true" eSuperTypes="#//commons/Commentable">
+      <eOperations name="getTarget" eType="#_Jyaq0GznQ9zCZfKBgzSBuZ">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return null;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+      </eOperations>
+      <eOperations name="setTarget">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+        <eParameters name="type" eType="#//classifiers/Classifier"/>
+      </eOperations>
+      <eOperations name="getBoundTarget" eType="#_Jyaq0GznQ9zCZfKBgzSBuZ">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return null;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+        <eParameters name="reference" eType="#//references/Reference"/>
+      </eOperations>
+      <eOperations name="getPureClassifierReference" eType="#//types/ClassifierReference">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return null;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+      </eOperations>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="ClassifierReference" eSuperTypes="#_MtxBoGznQ9zCZfKBgzSBuZ #//generics/TypeArgumentable">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="target" lowerBound="1"
+          eType="#//classifiers/Classifier"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_Om6UkGznQ9zCZfKBgzSBuZ" name="NamespaceClassifierReference"
+        eSuperTypes="#_MtxBoGznQ9zCZfKBgzSBuZ #//commons/NamespaceAwareElement">
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_KxpTMGznQ9zCZfKBgzSBuZ"
+          name="classifierReferences" lowerBound="1" upperBound="-1" eType="#//types/ClassifierReference"
+          containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JV5G4GznQ9zCZfKBgzSBuZ" name="PrimitiveType"
+        abstract="true" eSuperTypes="#_Jyaq0GznQ9zCZfKBgzSBuZ #_MtxBoGznQ9zCZfKBgzSBuZ">
+      <eOperations name="getAllMembers" upperBound="-1" eType="#//members/Member">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return null;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+        <eParameters name="context" eType="#//commons/Commentable"/>
+      </eOperations>
+      <eOperations name="wrapPrimitiveType" eType="#//classifiers/Class">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return null;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+      </eOperations>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_Mn8tgGznQ9zCZfKBgzSBuZ" name="Boolean"
+        eSuperTypes="#_JV5G4GznQ9zCZfKBgzSBuZ"/>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_L8CpwGznQ9zCZfKBgzSBuZ" name="Byte"
+        eSuperTypes="#_JV5G4GznQ9zCZfKBgzSBuZ"/>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_MOnngGznQ9zCZfKBgzSBuZ" name="Char"
+        eSuperTypes="#_JV5G4GznQ9zCZfKBgzSBuZ"/>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_PVVg0GznQ9zCZfKBgzSBuZ" name="Double"
+        eSuperTypes="#_JV5G4GznQ9zCZfKBgzSBuZ"/>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_N8hTwGznQ9zCZfKBgzSBuZ" name="Float"
+        eSuperTypes="#_JV5G4GznQ9zCZfKBgzSBuZ"/>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_QxOQAGznQ9zCZfKBgzSBuZ" name="Int"
+        eSuperTypes="#_JV5G4GznQ9zCZfKBgzSBuZ"/>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_JiZ44GznQ9zCZfKBgzSBuZ" name="Long"
+        eSuperTypes="#_JV5G4GznQ9zCZfKBgzSBuZ"/>
+    <eClassifiers xsi:type="ecore:EClass" xmi:id="_LD0BQGznQ9zCZfKBgzSBuZ" name="Short"
+        eSuperTypes="#_JV5G4GznQ9zCZfKBgzSBuZ"/>
+    <eClassifiers xsi:type="ecore:EClass" name="Void" eSuperTypes="#_JV5G4GznQ9zCZfKBgzSBuZ"/>
+  </eSubpackages>
+  <eSubpackages name="variables" nsURI="http://www.palladiosimulator.org/javamodel/variables"
+      nsPrefix="variables">
+    <eClassifiers xsi:type="ecore:EClass" name="Variable" abstract="true" eSuperTypes="#//commons/NamedElement #_M_pb0GznQ9zCZfKBgzSBuZ #//arrays/ArrayTypeable #//references/ReferenceableElement #//generics/TypeArgumentable">
+      <eOperations name="getArrayDimension" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//ELong">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return 0;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+      </eOperations>
+      <eOperations name="createMethodCallStatement" eType="#_QHjn8GznQ9zCZfKBgzSBuZ">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return null;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+        <eParameters name="methodName" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+        <eParameters name="arguments" upperBound="-1" eType="#_OQUZgGznQ9zCZfKBgzSBuZ"/>
+      </eOperations>
+      <eOperations name="createMethodCall" eType="#_OQUZgGznQ9zCZfKBgzSBuZ">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return null;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+        <eParameters name="methodName" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+        <eParameters name="arguments" upperBound="-1" eType="#_OQUZgGznQ9zCZfKBgzSBuZ"/>
+      </eOperations>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="LocalVariable" eSuperTypes="#//variables/Variable #//instantiations/Initializable #_Nl908GznQ9zCZfKBgzSBuZ #//modifiers/AnnotableAndModifiable">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="additionalLocalVariables"
+          upperBound="-1" eType="#//variables/AdditionalLocalVariable" containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="AdditionalLocalVariable" eSuperTypes="#//references/ReferenceableElement #//arrays/ArrayTypeable #//instantiations/Initializable">
+      <eOperations name="getArrayDimension" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//ELong">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return 0;"/>
+          <details key="documentation" value=""/>
+        </eAnnotations>
+      </eOperations>
+    </eClassifiers>
+  </eSubpackages>
+</ecore:EPackage>

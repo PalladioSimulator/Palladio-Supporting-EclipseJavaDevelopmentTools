@@ -1,0 +1,485 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+
+<!--
+-->
+
+<plugin>
+
+   <extension point="org.eclipse.ui.newWizards">
+      <!-- @generated javamodel -->
+      <category
+            id="org.eclipse.emf.ecore.Wizard.category.ID"
+            name="%_UI_Wizard_category"/>
+      <wizard
+            id="org.palladiosimulator.jdt.metamodel.javamodel.annotations.presentation.AnnotationsModelWizardID"
+            name="%_UI_AnnotationsModelWizard_label"
+            class="org.palladiosimulator.jdt.metamodel.javamodel.annotations.presentation.AnnotationsModelWizard"
+            category="org.eclipse.emf.ecore.Wizard.category.ID"
+            icon="icons/full/obj16/AnnotationsModelFile.gif">
+         <description>%_UI_AnnotationsModelWizard_description</description>
+         <selection class="org.eclipse.core.resources.IResource"/>
+      </wizard>
+   </extension>
+
+   <extension point="org.eclipse.ui.editors">
+      <!-- @generated javamodel -->
+      <editor
+            id="org.palladiosimulator.jdt.metamodel.javamodel.annotations.presentation.AnnotationsEditorID"
+            name="%_UI_AnnotationsEditor_label"
+            icon="icons/full/obj16/AnnotationsModelFile.gif"
+            extensions="annotations"
+            class="org.palladiosimulator.jdt.metamodel.javamodel.annotations.presentation.AnnotationsEditor"
+            contributorClass="org.palladiosimulator.jdt.metamodel.javamodel.annotations.presentation.AnnotationsActionBarContributor">
+      </editor>
+   </extension>
+
+   <extension point="org.eclipse.ui.newWizards">
+      <!-- @generated javamodel -->
+      <category
+            id="org.eclipse.emf.ecore.Wizard.category.ID"
+            name="%_UI_Wizard_category"/>
+      <wizard
+            id="org.palladiosimulator.jdt.metamodel.javamodel.arrays.presentation.ArraysModelWizardID"
+            name="%_UI_ArraysModelWizard_label"
+            class="org.palladiosimulator.jdt.metamodel.javamodel.arrays.presentation.ArraysModelWizard"
+            category="org.eclipse.emf.ecore.Wizard.category.ID"
+            icon="icons/full/obj16/ArraysModelFile.gif">
+         <description>%_UI_ArraysModelWizard_description</description>
+         <selection class="org.eclipse.core.resources.IResource"/>
+      </wizard>
+   </extension>
+
+   <extension point="org.eclipse.ui.editors">
+      <!-- @generated javamodel -->
+      <editor
+            id="org.palladiosimulator.jdt.metamodel.javamodel.arrays.presentation.ArraysEditorID"
+            name="%_UI_ArraysEditor_label"
+            icon="icons/full/obj16/ArraysModelFile.gif"
+            extensions="arrays"
+            class="org.palladiosimulator.jdt.metamodel.javamodel.arrays.presentation.ArraysEditor"
+            contributorClass="org.palladiosimulator.jdt.metamodel.javamodel.arrays.presentation.ArraysActionBarContributor">
+      </editor>
+   </extension>
+
+   <extension point="org.eclipse.ui.newWizards">
+      <!-- @generated javamodel -->
+      <category
+            id="org.eclipse.emf.ecore.Wizard.category.ID"
+            name="%_UI_Wizard_category"/>
+      <wizard
+            id="org.palladiosimulator.jdt.metamodel.javamodel.classifiers.presentation.ClassifiersModelWizardID"
+            name="%_UI_ClassifiersModelWizard_label"
+            class="org.palladiosimulator.jdt.metamodel.javamodel.classifiers.presentation.ClassifiersModelWizard"
+            category="org.eclipse.emf.ecore.Wizard.category.ID"
+            icon="icons/full/obj16/ClassifiersModelFile.gif">
+         <description>%_UI_ClassifiersModelWizard_description</description>
+         <selection class="org.eclipse.core.resources.IResource"/>
+      </wizard>
+   </extension>
+
+   <extension point="org.eclipse.ui.editors">
+      <!-- @generated javamodel -->
+      <editor
+            id="org.palladiosimulator.jdt.metamodel.javamodel.classifiers.presentation.ClassifiersEditorID"
+            name="%_UI_ClassifiersEditor_label"
+            icon="icons/full/obj16/ClassifiersModelFile.gif"
+            extensions="classifiers"
+            class="org.palladiosimulator.jdt.metamodel.javamodel.classifiers.presentation.ClassifiersEditor"
+            contributorClass="org.palladiosimulator.jdt.metamodel.javamodel.classifiers.presentation.ClassifiersActionBarContributor">
+      </editor>
+   </extension>
+
+   <extension point="org.eclipse.ui.newWizards">
+      <!-- @generated javamodel -->
+      <category
+            id="org.eclipse.emf.ecore.Wizard.category.ID"
+            name="%_UI_Wizard_category"/>
+      <wizard
+            id="org.palladiosimulator.jdt.metamodel.javamodel.containers.presentation.ContainersModelWizardID"
+            name="%_UI_ContainersModelWizard_label"
+            class="org.palladiosimulator.jdt.metamodel.javamodel.containers.presentation.ContainersModelWizard"
+            category="org.eclipse.emf.ecore.Wizard.category.ID"
+            icon="icons/full/obj16/ContainersModelFile.gif">
+         <description>%_UI_ContainersModelWizard_description</description>
+         <selection class="org.eclipse.core.resources.IResource"/>
+      </wizard>
+   </extension>
+
+   <extension point="org.eclipse.ui.editors">
+      <!-- @generated javamodel -->
+      <editor
+            id="org.palladiosimulator.jdt.metamodel.javamodel.containers.presentation.ContainersEditorID"
+            name="%_UI_ContainersEditor_label"
+            icon="icons/full/obj16/ContainersModelFile.gif"
+            extensions="containers"
+            class="org.palladiosimulator.jdt.metamodel.javamodel.containers.presentation.ContainersEditor"
+            contributorClass="org.palladiosimulator.jdt.metamodel.javamodel.containers.presentation.ContainersActionBarContributor">
+      </editor>
+   </extension>
+
+   <extension point="org.eclipse.ui.newWizards">
+      <!-- @generated javamodel -->
+      <category
+            id="org.eclipse.emf.ecore.Wizard.category.ID"
+            name="%_UI_Wizard_category"/>
+      <wizard
+            id="org.palladiosimulator.jdt.metamodel.javamodel.expressions.presentation.ExpressionsModelWizardID"
+            name="%_UI_ExpressionsModelWizard_label"
+            class="org.palladiosimulator.jdt.metamodel.javamodel.expressions.presentation.ExpressionsModelWizard"
+            category="org.eclipse.emf.ecore.Wizard.category.ID"
+            icon="icons/full/obj16/ExpressionsModelFile.gif">
+         <description>%_UI_ExpressionsModelWizard_description</description>
+         <selection class="org.eclipse.core.resources.IResource"/>
+      </wizard>
+   </extension>
+
+   <extension point="org.eclipse.ui.editors">
+      <!-- @generated javamodel -->
+      <editor
+            id="org.palladiosimulator.jdt.metamodel.javamodel.expressions.presentation.ExpressionsEditorID"
+            name="%_UI_ExpressionsEditor_label"
+            icon="icons/full/obj16/ExpressionsModelFile.gif"
+            extensions="expressions"
+            class="org.palladiosimulator.jdt.metamodel.javamodel.expressions.presentation.ExpressionsEditor"
+            contributorClass="org.palladiosimulator.jdt.metamodel.javamodel.expressions.presentation.ExpressionsActionBarContributor">
+      </editor>
+   </extension>
+
+   <extension point="org.eclipse.ui.newWizards">
+      <!-- @generated javamodel -->
+      <category
+            id="org.eclipse.emf.ecore.Wizard.category.ID"
+            name="%_UI_Wizard_category"/>
+      <wizard
+            id="org.palladiosimulator.jdt.metamodel.javamodel.generics.presentation.GenericsModelWizardID"
+            name="%_UI_GenericsModelWizard_label"
+            class="org.palladiosimulator.jdt.metamodel.javamodel.generics.presentation.GenericsModelWizard"
+            category="org.eclipse.emf.ecore.Wizard.category.ID"
+            icon="icons/full/obj16/GenericsModelFile.gif">
+         <description>%_UI_GenericsModelWizard_description</description>
+         <selection class="org.eclipse.core.resources.IResource"/>
+      </wizard>
+   </extension>
+
+   <extension point="org.eclipse.ui.editors">
+      <!-- @generated javamodel -->
+      <editor
+            id="org.palladiosimulator.jdt.metamodel.javamodel.generics.presentation.GenericsEditorID"
+            name="%_UI_GenericsEditor_label"
+            icon="icons/full/obj16/GenericsModelFile.gif"
+            extensions="generics"
+            class="org.palladiosimulator.jdt.metamodel.javamodel.generics.presentation.GenericsEditor"
+            contributorClass="org.palladiosimulator.jdt.metamodel.javamodel.generics.presentation.GenericsActionBarContributor">
+      </editor>
+   </extension>
+
+   <extension point="org.eclipse.ui.newWizards">
+      <!-- @generated javamodel -->
+      <category
+            id="org.eclipse.emf.ecore.Wizard.category.ID"
+            name="%_UI_Wizard_category"/>
+      <wizard
+            id="org.palladiosimulator.jdt.metamodel.javamodel.imports.presentation.ImportsModelWizardID"
+            name="%_UI_ImportsModelWizard_label"
+            class="org.palladiosimulator.jdt.metamodel.javamodel.imports.presentation.ImportsModelWizard"
+            category="org.eclipse.emf.ecore.Wizard.category.ID"
+            icon="icons/full/obj16/ImportsModelFile.gif">
+         <description>%_UI_ImportsModelWizard_description</description>
+         <selection class="org.eclipse.core.resources.IResource"/>
+      </wizard>
+   </extension>
+
+   <extension point="org.eclipse.ui.editors">
+      <!-- @generated javamodel -->
+      <editor
+            id="org.palladiosimulator.jdt.metamodel.javamodel.imports.presentation.ImportsEditorID"
+            name="%_UI_ImportsEditor_label"
+            icon="icons/full/obj16/ImportsModelFile.gif"
+            extensions="imports"
+            class="org.palladiosimulator.jdt.metamodel.javamodel.imports.presentation.ImportsEditor"
+            contributorClass="org.palladiosimulator.jdt.metamodel.javamodel.imports.presentation.ImportsActionBarContributor">
+      </editor>
+   </extension>
+
+   <extension point="org.eclipse.ui.newWizards">
+      <!-- @generated javamodel -->
+      <category
+            id="org.eclipse.emf.ecore.Wizard.category.ID"
+            name="%_UI_Wizard_category"/>
+      <wizard
+            id="org.palladiosimulator.jdt.metamodel.javamodel.instantiations.presentation.InstantiationsModelWizardID"
+            name="%_UI_InstantiationsModelWizard_label"
+            class="org.palladiosimulator.jdt.metamodel.javamodel.instantiations.presentation.InstantiationsModelWizard"
+            category="org.eclipse.emf.ecore.Wizard.category.ID"
+            icon="icons/full/obj16/InstantiationsModelFile.gif">
+         <description>%_UI_InstantiationsModelWizard_description</description>
+         <selection class="org.eclipse.core.resources.IResource"/>
+      </wizard>
+   </extension>
+
+   <extension point="org.eclipse.ui.editors">
+      <!-- @generated javamodel -->
+      <editor
+            id="org.palladiosimulator.jdt.metamodel.javamodel.instantiations.presentation.InstantiationsEditorID"
+            name="%_UI_InstantiationsEditor_label"
+            icon="icons/full/obj16/InstantiationsModelFile.gif"
+            extensions="instantiations"
+            class="org.palladiosimulator.jdt.metamodel.javamodel.instantiations.presentation.InstantiationsEditor"
+            contributorClass="org.palladiosimulator.jdt.metamodel.javamodel.instantiations.presentation.InstantiationsActionBarContributor">
+      </editor>
+   </extension>
+
+   <extension point="org.eclipse.ui.newWizards">
+      <!-- @generated javamodel -->
+      <category
+            id="org.eclipse.emf.ecore.Wizard.category.ID"
+            name="%_UI_Wizard_category"/>
+      <wizard
+            id="org.palladiosimulator.jdt.metamodel.javamodel.literals.presentation.LiteralsModelWizardID"
+            name="%_UI_LiteralsModelWizard_label"
+            class="org.palladiosimulator.jdt.metamodel.javamodel.literals.presentation.LiteralsModelWizard"
+            category="org.eclipse.emf.ecore.Wizard.category.ID"
+            icon="icons/full/obj16/LiteralsModelFile.gif">
+         <description>%_UI_LiteralsModelWizard_description</description>
+         <selection class="org.eclipse.core.resources.IResource"/>
+      </wizard>
+   </extension>
+
+   <extension point="org.eclipse.ui.editors">
+      <!-- @generated javamodel -->
+      <editor
+            id="org.palladiosimulator.jdt.metamodel.javamodel.literals.presentation.LiteralsEditorID"
+            name="%_UI_LiteralsEditor_label"
+            icon="icons/full/obj16/LiteralsModelFile.gif"
+            extensions="literals"
+            class="org.palladiosimulator.jdt.metamodel.javamodel.literals.presentation.LiteralsEditor"
+            contributorClass="org.palladiosimulator.jdt.metamodel.javamodel.literals.presentation.LiteralsActionBarContributor">
+      </editor>
+   </extension>
+
+   <extension point="org.eclipse.ui.newWizards">
+      <!-- @generated javamodel -->
+      <category
+            id="org.eclipse.emf.ecore.Wizard.category.ID"
+            name="%_UI_Wizard_category"/>
+      <wizard
+            id="org.palladiosimulator.jdt.metamodel.javamodel.members.presentation.MembersModelWizardID"
+            name="%_UI_MembersModelWizard_label"
+            class="org.palladiosimulator.jdt.metamodel.javamodel.members.presentation.MembersModelWizard"
+            category="org.eclipse.emf.ecore.Wizard.category.ID"
+            icon="icons/full/obj16/MembersModelFile.gif">
+         <description>%_UI_MembersModelWizard_description</description>
+         <selection class="org.eclipse.core.resources.IResource"/>
+      </wizard>
+   </extension>
+
+   <extension point="org.eclipse.ui.editors">
+      <!-- @generated javamodel -->
+      <editor
+            id="org.palladiosimulator.jdt.metamodel.javamodel.members.presentation.MembersEditorID"
+            name="%_UI_MembersEditor_label"
+            icon="icons/full/obj16/MembersModelFile.gif"
+            extensions="members"
+            class="org.palladiosimulator.jdt.metamodel.javamodel.members.presentation.MembersEditor"
+            contributorClass="org.palladiosimulator.jdt.metamodel.javamodel.members.presentation.MembersActionBarContributor">
+      </editor>
+   </extension>
+
+   <extension point="org.eclipse.ui.newWizards">
+      <!-- @generated javamodel -->
+      <category
+            id="org.eclipse.emf.ecore.Wizard.category.ID"
+            name="%_UI_Wizard_category"/>
+      <wizard
+            id="org.palladiosimulator.jdt.metamodel.javamodel.modifiers.presentation.ModifiersModelWizardID"
+            name="%_UI_ModifiersModelWizard_label"
+            class="org.palladiosimulator.jdt.metamodel.javamodel.modifiers.presentation.ModifiersModelWizard"
+            category="org.eclipse.emf.ecore.Wizard.category.ID"
+            icon="icons/full/obj16/ModifiersModelFile.gif">
+         <description>%_UI_ModifiersModelWizard_description</description>
+         <selection class="org.eclipse.core.resources.IResource"/>
+      </wizard>
+   </extension>
+
+   <extension point="org.eclipse.ui.editors">
+      <!-- @generated javamodel -->
+      <editor
+            id="org.palladiosimulator.jdt.metamodel.javamodel.modifiers.presentation.ModifiersEditorID"
+            name="%_UI_ModifiersEditor_label"
+            icon="icons/full/obj16/ModifiersModelFile.gif"
+            extensions="modifiers"
+            class="org.palladiosimulator.jdt.metamodel.javamodel.modifiers.presentation.ModifiersEditor"
+            contributorClass="org.palladiosimulator.jdt.metamodel.javamodel.modifiers.presentation.ModifiersActionBarContributor">
+      </editor>
+   </extension>
+
+   <extension point="org.eclipse.ui.newWizards">
+      <!-- @generated javamodel -->
+      <category
+            id="org.eclipse.emf.ecore.Wizard.category.ID"
+            name="%_UI_Wizard_category"/>
+      <wizard
+            id="org.palladiosimulator.jdt.metamodel.javamodel.operators.presentation.OperatorsModelWizardID"
+            name="%_UI_OperatorsModelWizard_label"
+            class="org.palladiosimulator.jdt.metamodel.javamodel.operators.presentation.OperatorsModelWizard"
+            category="org.eclipse.emf.ecore.Wizard.category.ID"
+            icon="icons/full/obj16/OperatorsModelFile.gif">
+         <description>%_UI_OperatorsModelWizard_description</description>
+         <selection class="org.eclipse.core.resources.IResource"/>
+      </wizard>
+   </extension>
+
+   <extension point="org.eclipse.ui.editors">
+      <!-- @generated javamodel -->
+      <editor
+            id="org.palladiosimulator.jdt.metamodel.javamodel.operators.presentation.OperatorsEditorID"
+            name="%_UI_OperatorsEditor_label"
+            icon="icons/full/obj16/OperatorsModelFile.gif"
+            extensions="operators"
+            class="org.palladiosimulator.jdt.metamodel.javamodel.operators.presentation.OperatorsEditor"
+            contributorClass="org.palladiosimulator.jdt.metamodel.javamodel.operators.presentation.OperatorsActionBarContributor">
+      </editor>
+   </extension>
+
+   <extension point="org.eclipse.ui.newWizards">
+      <!-- @generated javamodel -->
+      <category
+            id="org.eclipse.emf.ecore.Wizard.category.ID"
+            name="%_UI_Wizard_category"/>
+      <wizard
+            id="org.palladiosimulator.jdt.metamodel.javamodel.parameters.presentation.ParametersModelWizardID"
+            name="%_UI_ParametersModelWizard_label"
+            class="org.palladiosimulator.jdt.metamodel.javamodel.parameters.presentation.ParametersModelWizard"
+            category="org.eclipse.emf.ecore.Wizard.category.ID"
+            icon="icons/full/obj16/ParametersModelFile.gif">
+         <description>%_UI_ParametersModelWizard_description</description>
+         <selection class="org.eclipse.core.resources.IResource"/>
+      </wizard>
+   </extension>
+
+   <extension point="org.eclipse.ui.editors">
+      <!-- @generated javamodel -->
+      <editor
+            id="org.palladiosimulator.jdt.metamodel.javamodel.parameters.presentation.ParametersEditorID"
+            name="%_UI_ParametersEditor_label"
+            icon="icons/full/obj16/ParametersModelFile.gif"
+            extensions="parameters"
+            class="org.palladiosimulator.jdt.metamodel.javamodel.parameters.presentation.ParametersEditor"
+            contributorClass="org.palladiosimulator.jdt.metamodel.javamodel.parameters.presentation.ParametersActionBarContributor">
+      </editor>
+   </extension>
+
+   <extension point="org.eclipse.ui.newWizards">
+      <!-- @generated javamodel -->
+      <category
+            id="org.eclipse.emf.ecore.Wizard.category.ID"
+            name="%_UI_Wizard_category"/>
+      <wizard
+            id="org.palladiosimulator.jdt.metamodel.javamodel.references.presentation.ReferencesModelWizardID"
+            name="%_UI_ReferencesModelWizard_label"
+            class="org.palladiosimulator.jdt.metamodel.javamodel.references.presentation.ReferencesModelWizard"
+            category="org.eclipse.emf.ecore.Wizard.category.ID"
+            icon="icons/full/obj16/ReferencesModelFile.gif">
+         <description>%_UI_ReferencesModelWizard_description</description>
+         <selection class="org.eclipse.core.resources.IResource"/>
+      </wizard>
+   </extension>
+
+   <extension point="org.eclipse.ui.editors">
+      <!-- @generated javamodel -->
+      <editor
+            id="org.palladiosimulator.jdt.metamodel.javamodel.references.presentation.ReferencesEditorID"
+            name="%_UI_ReferencesEditor_label"
+            icon="icons/full/obj16/ReferencesModelFile.gif"
+            extensions="references"
+            class="org.palladiosimulator.jdt.metamodel.javamodel.references.presentation.ReferencesEditor"
+            contributorClass="org.palladiosimulator.jdt.metamodel.javamodel.references.presentation.ReferencesActionBarContributor">
+      </editor>
+   </extension>
+
+   <extension point="org.eclipse.ui.newWizards">
+      <!-- @generated javamodel -->
+      <category
+            id="org.eclipse.emf.ecore.Wizard.category.ID"
+            name="%_UI_Wizard_category"/>
+      <wizard
+            id="org.palladiosimulator.jdt.metamodel.javamodel.statements.presentation.StatementsModelWizardID"
+            name="%_UI_StatementsModelWizard_label"
+            class="org.palladiosimulator.jdt.metamodel.javamodel.statements.presentation.StatementsModelWizard"
+            category="org.eclipse.emf.ecore.Wizard.category.ID"
+            icon="icons/full/obj16/StatementsModelFile.gif">
+         <description>%_UI_StatementsModelWizard_description</description>
+         <selection class="org.eclipse.core.resources.IResource"/>
+      </wizard>
+   </extension>
+
+   <extension point="org.eclipse.ui.editors">
+      <!-- @generated javamodel -->
+      <editor
+            id="org.palladiosimulator.jdt.metamodel.javamodel.statements.presentation.StatementsEditorID"
+            name="%_UI_StatementsEditor_label"
+            icon="icons/full/obj16/StatementsModelFile.gif"
+            extensions="statements"
+            class="org.palladiosimulator.jdt.metamodel.javamodel.statements.presentation.StatementsEditor"
+            contributorClass="org.palladiosimulator.jdt.metamodel.javamodel.statements.presentation.StatementsActionBarContributor">
+      </editor>
+   </extension>
+
+   <extension point="org.eclipse.ui.newWizards">
+      <!-- @generated javamodel -->
+      <category
+            id="org.eclipse.emf.ecore.Wizard.category.ID"
+            name="%_UI_Wizard_category"/>
+      <wizard
+            id="org.palladiosimulator.jdt.metamodel.javamodel.types.presentation.TypesModelWizardID"
+            name="%_UI_TypesModelWizard_label"
+            class="org.palladiosimulator.jdt.metamodel.javamodel.types.presentation.TypesModelWizard"
+            category="org.eclipse.emf.ecore.Wizard.category.ID"
+            icon="icons/full/obj16/TypesModelFile.gif">
+         <description>%_UI_TypesModelWizard_description</description>
+         <selection class="org.eclipse.core.resources.IResource"/>
+      </wizard>
+   </extension>
+
+   <extension point="org.eclipse.ui.editors">
+      <!-- @generated javamodel -->
+      <editor
+            id="org.palladiosimulator.jdt.metamodel.javamodel.types.presentation.TypesEditorID"
+            name="%_UI_TypesEditor_label"
+            icon="icons/full/obj16/TypesModelFile.gif"
+            extensions="types"
+            class="org.palladiosimulator.jdt.metamodel.javamodel.types.presentation.TypesEditor"
+            contributorClass="org.palladiosimulator.jdt.metamodel.javamodel.types.presentation.TypesActionBarContributor">
+      </editor>
+   </extension>
+
+   <extension point="org.eclipse.ui.newWizards">
+      <!-- @generated javamodel -->
+      <category
+            id="org.eclipse.emf.ecore.Wizard.category.ID"
+            name="%_UI_Wizard_category"/>
+      <wizard
+            id="org.palladiosimulator.jdt.metamodel.javamodel.variables.presentation.VariablesModelWizardID"
+            name="%_UI_VariablesModelWizard_label"
+            class="org.palladiosimulator.jdt.metamodel.javamodel.variables.presentation.VariablesModelWizard"
+            category="org.eclipse.emf.ecore.Wizard.category.ID"
+            icon="icons/full/obj16/VariablesModelFile.gif">
+         <description>%_UI_VariablesModelWizard_description</description>
+         <selection class="org.eclipse.core.resources.IResource"/>
+      </wizard>
+   </extension>
+
+   <extension point="org.eclipse.ui.editors">
+      <!-- @generated javamodel -->
+      <editor
+            id="org.palladiosimulator.jdt.metamodel.javamodel.variables.presentation.VariablesEditorID"
+            name="%_UI_VariablesEditor_label"
+            icon="icons/full/obj16/VariablesModelFile.gif"
+            extensions="variables"
+            class="org.palladiosimulator.jdt.metamodel.javamodel.variables.presentation.VariablesEditor"
+            contributorClass="org.palladiosimulator.jdt.metamodel.javamodel.variables.presentation.VariablesActionBarContributor">
+      </editor>
+   </extension>
+
+</plugin>

@@ -1,13 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature id="org.palladiosimulator.jdt.feature">
+   <feature id="org.palladiosimulator.jdt.core.feature">
       <category name="org.palladiosimulator.jdt" />
    </feature>
-   <feature id="org.palladiosimulator.jdt.feature.source">
+   <feature id="org.palladiosimulator.jdt.core.feature.source">
       <category name="org.palladiosimulator.jdt.source" />
    </feature>
-   <category-def name="org.palladiosimulator.jdt"
-      label="Palladio Supporting Eclipse Java DevelopmentTools" />
-   <category-def name="org.palladiosimulator.jdt.source"
-      label="Palladio Supporting Eclipse Java DevelopmentTools Source" />
+   <category-def name="org.palladiosimulator.jdt.core"
+      label="Palladio Supporting Eclipse Java Development Tools" />
+   <category-def name="org.palladiosimulator.jdt.core.source"
+      label="Palladio Supporting Eclipse Java Development Tools Source" />
+
+   <feature id="org.palladiosimulator.jdt.metamodel.feature">
+      <category name="org.palladiosimulator.jdt" />
+   </feature>
+   <feature id="org.palladiosimulator.jdt.metamodel.feature.source">
+      <category name="org.palladiosimulator.jdt.source" />
+   </feature>
+   <category-def name="org.palladiosimulator.jdt.metamodel"
+      label="Palladio Supporting Eclipse Java Development Tools" />
+   <category-def name="org.palladiosimulator.jdt.metamodel.source"
+      label="Palladio Supporting Eclipse Java Development Tools Source" />
 </site>

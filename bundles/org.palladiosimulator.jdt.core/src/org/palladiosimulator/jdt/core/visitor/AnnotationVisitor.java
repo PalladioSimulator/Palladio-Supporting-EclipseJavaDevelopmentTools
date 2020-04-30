@@ -1,6 +1,6 @@
 package org.palladiosimulator.jdt.core.visitor;
 
-import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.eclipse.jdt.core.dom.Annotation;
@@ -12,9 +12,9 @@ import org.eclipse.jdt.core.dom.SingleMemberAnnotation;
 public class AnnotationVisitor extends AstVisitor<Annotation> {
 
     @SuppressWarnings("unchecked")
-    public static List<Annotation> getAnnotations(final BodyDeclaration node) {
-        return (List<Annotation>) node.modifiers().stream().filter(Annotation.class::isInstance)
-                .map(Annotation.class::cast).collect(Collectors.toList());
+    public static Set<Annotation> getAnnotations(final BodyDeclaration node) {
+        return (Set<Annotation>) node.modifiers().stream().filter(Annotation.class::isInstance)
+                .map(Annotation.class::cast).collect(Collectors.toUnmodifiableSet());
     }
 
     public AnnotationVisitor() {

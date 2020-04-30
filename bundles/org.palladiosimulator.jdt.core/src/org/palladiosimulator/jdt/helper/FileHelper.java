@@ -16,7 +16,7 @@ import java.util.stream.Stream;
 
 import org.apache.log4j.Logger;
 
-public class FileHelper {
+public final class FileHelper {
 
     private static final String EMPTY_STRING = "";
 
@@ -68,6 +68,18 @@ public class FileHelper {
     public static Stream<Path> findRegularFiles(final URI path, final String extension) {
         return findRegularFiles(path)
                 .filter(filePath -> filePath.getFileName().toString().toLowerCase().endsWith(extension.toLowerCase()));
+    }
+
+    public static String getFileName(final Path path) {
+        return path.getFileName().toString();
+    }
+
+    public static String getFileName(final String path) {
+        return getFileName(createPath(path));
+    }
+
+    public static String getFileName(final URI uri) {
+        return getFileName(createPath(uri));
     }
 
     public static String[] getRegularFiles(final URI path) {

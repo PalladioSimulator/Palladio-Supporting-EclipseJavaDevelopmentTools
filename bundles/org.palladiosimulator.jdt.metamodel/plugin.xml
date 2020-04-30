@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+
+<!--
+-->
+
+<plugin>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <!-- @generated javamodel -->
+      <package
+            uri="http://www.palladiosimulator.org/javamodel/annotations"
+            class="org.palladiosimulator.jdt.metamodel.javamodel.annotations.AnnotationsPackage"
+            genModel="model/javamodel.genmodel"/>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <!-- @generated javamodel -->
+      <package
+            uri="http://www.palladiosimulator.org/javamodel/arrays"
+            class="org.palladiosimulator.jdt.metamodel.javamodel.arrays.ArraysPackage"
+            genModel="model/javamodel.genmodel"/>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <!-- @generated javamodel -->
+      <package
+            uri="http://www.palladiosimulator.org/javamodel/classifiers"
+            class="org.palladiosimulator.jdt.metamodel.javamodel.classifiers.ClassifiersPackage"
+            genModel="model/javamodel.genmodel"/>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <!-- @generated javamodel -->
+      <package
+            uri="http://www.palladiosimulator.org/javamodel/commons"
+            class="org.palladiosimulator.jdt.metamodel.javamodel.commons.CommonsPackage"
+            genModel="model/javamodel.genmodel"/>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <!-- @generated javamodel -->
+      <package
+            uri="http://www.palladiosimulator.org/javamodel/containers"
+            class="org.palladiosimulator.jdt.metamodel.javamodel.containers.ContainersPackage"
+            genModel="model/javamodel.genmodel"/>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <!-- @generated javamodel -->
+      <package
+            uri="http://www.palladiosimulator.org/javamodel/expressions"
+            class="org.palladiosimulator.jdt.metamodel.javamodel.expressions.ExpressionsPackage"
+            genModel="model/javamodel.genmodel"/>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <!-- @generated javamodel -->
+      <package
+            uri="http://www.palladiosimulator.org/javamodel/generics"
+            class="org.palladiosimulator.jdt.metamodel.javamodel.generics.GenericsPackage"
+            genModel="model/javamodel.genmodel"/>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <!-- @generated javamodel -->
+      <package
+            uri="http://www.palladiosimulator.org/javamodel/imports"
+            class="org.palladiosimulator.jdt.metamodel.javamodel.imports.ImportsPackage"
+            genModel="model/javamodel.genmodel"/>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <!-- @generated javamodel -->
+      <package
+            uri="http://www.palladiosimulator.org/javamodel/instantiations"
+            class="org.palladiosimulator.jdt.metamodel.javamodel.instantiations.InstantiationsPackage"
+            genModel="model/javamodel.genmodel"/>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <!-- @generated javamodel -->
+      <package
+            uri="http://www.palladiosimulator.org/javamodel/literals"
+            class="org.palladiosimulator.jdt.metamodel.javamodel.literals.LiteralsPackage"
+            genModel="model/javamodel.genmodel"/>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <!-- @generated javamodel -->
+      <package
+            uri="http://www.palladiosimulator.org/javamodel/members"
+            class="org.palladiosimulator.jdt.metamodel.javamodel.members.MembersPackage"
+            genModel="model/javamodel.genmodel"/>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <!-- @generated javamodel -->
+      <package
+            uri="http://www.palladiosimulator.org/javamodel/modifiers"
+            class="org.palladiosimulator.jdt.metamodel.javamodel.modifiers.ModifiersPackage"
+            genModel="model/javamodel.genmodel"/>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <!-- @generated javamodel -->
+      <package
+            uri="http://www.palladiosimulator.org/javamodel/operators"
+            class="org.palladiosimulator.jdt.metamodel.javamodel.operators.OperatorsPackage"
+            genModel="model/javamodel.genmodel"/>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <!-- @generated javamodel -->
+      <package
+            uri="http://www.palladiosimulator.org/javamodel/parameters"
+            class="org.palladiosimulator.jdt.metamodel.javamodel.parameters.ParametersPackage"
+            genModel="model/javamodel.genmodel"/>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <!-- @generated javamodel -->
+      <package
+            uri="http://www.palladiosimulator.org/javamodel/references"
+            class="org.palladiosimulator.jdt.metamodel.javamodel.references.ReferencesPackage"
+            genModel="model/javamodel.genmodel"/>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <!-- @generated javamodel -->
+      <package
+            uri="http://www.palladiosimulator.org/javamodel/statements"
+            class="org.palladiosimulator.jdt.metamodel.javamodel.statements.StatementsPackage"
+            genModel="model/javamodel.genmodel"/>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <!-- @generated javamodel -->
+      <package
+            uri="http://www.palladiosimulator.org/javamodel/types"
+            class="org.palladiosimulator.jdt.metamodel.javamodel.types.TypesPackage"
+            genModel="model/javamodel.genmodel"/>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <!-- @generated javamodel -->
+      <package
+            uri="http://www.palladiosimulator.org/javamodel/variables"
+            class="org.palladiosimulator.jdt.metamodel.javamodel.variables.VariablesPackage"
+            genModel="model/javamodel.genmodel"/>
+   </extension>
+
+</plugin>
