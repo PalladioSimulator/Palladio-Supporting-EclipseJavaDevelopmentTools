@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: JaMoPP JDT-Parser Test
+Bundle-SymbolicName: org.emftext.language.java.parser
+Bundle-Version: 1.5.0.SNAPSHOT
+Bundle-Vendor: Martin Armbruster
+Automatic-Module-Name: org.emftext.language.java.parser
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
