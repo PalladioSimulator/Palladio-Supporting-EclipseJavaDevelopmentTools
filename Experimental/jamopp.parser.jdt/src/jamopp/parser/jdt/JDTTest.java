@@ -13,18 +13,23 @@
 
 package jamopp.parser.jdt;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTParser;
-import org.eclipse.jdt.core.dom.ASTVisitor;
+import org.junit.Test;
 
 /**
  * A simple class to test the capabilities of the JDT parser.
@@ -35,32 +40,56 @@ public class JDTTest {
 		parseDirectory(Paths.get("../../Tests/org.emftext.language.java.tests.sevenup/src"));
 	}
 	
-	private static void parseDirectory(Path directory) {
+	private static ASTNode parseFile(Path file) {
 		final String moduleInfoFileName = "module-info.java";
 		ASTParser parser = ASTParser.newParser(AST.JLS13);
+		if(file.endsWith(moduleInfoFileName)) {
+			parser.setUnitName(moduleInfoFileName);
+		}
+		Map<String, String> options = new HashMap<>();
+		options.put(JavaCore.COMPILER_SOURCE, JavaCore.VERSION_13);
+		options.put(JavaCore.COMPILER_COMPLIANCE, JavaCore.VERSION_13);
+		options.put(JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, JavaCore.VERSION_13);
+		parser.setCompilerOptions(options);
+		StringBuilder builder = new StringBuilder();
 		try {
-			Files.walk(directory).filter(path -> Files.isRegularFile(path)).forEach(path -> {
-				if(path.endsWith(moduleInfoFileName)) {
-					parser.setUnitName(moduleInfoFileName);
-				}
-				Map<String, String> options = new HashMap<>();
-				options.put(JavaCore.COMPILER_SOURCE, JavaCore.VERSION_13);
-				options.put(JavaCore.COMPILER_COMPLIANCE, JavaCore.VERSION_13);
-				options.put(JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, JavaCore.VERSION_13);
-				parser.setCompilerOptions(options);
-				StringBuilder builder = new StringBuilder();
-				try {
-					Files.readAllLines(path).forEach(line -> builder.append(line + System.getProperty("line.separator")));
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				parser.setSource(builder.toString().toCharArray());
-				ASTNode ast = parser.createAST(null); // ast is instanceof org.eclipse.jdt.core.dom.CompilationUnit
-				ASTVisitor visitor = new ASTVisitor() {};
-				ast.accept(visitor);
-			});
+			Files.readAllLines(file).forEach(line -> builder.append(line + System.getProperty("line.separator")));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		parser.setSource(builder.toString().toCharArray());
+		return parser.createAST(null); // ast is instanceof org.eclipse.jdt.core.dom.CompilationUnit
+	}
+	
+	private static List<ASTNode> parseDirectory(Path directory) {
+		ArrayList<ASTNode> results = new ArrayList<>();
+		try {
+			Files.walk(directory).filter(path -> Files.isRegularFile(path)).forEach(path -> results.add(parseFile(path)));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return results;
+	}
+	
+	@Test
+	public void testModuleConversion() {
+		ASTNode ast = parseFile(Paths.get("../../Tests/org.emftext.language.java.tests.sevenup/src/module-info.java"));
+		JDTASTVisitorAndConverter converter = new JDTASTVisitorAndConverter();
+		ast.accept(converter);
+		org.emftext.language.java.containers.JavaRoot root = converter.getConvertedElement();
+		assertTrue(root instanceof org.emftext.language.java.modules.NormalModule);
+		org.emftext.language.java.modules.NormalModule module = (org.emftext.language.java.modules.NormalModule) root;
+		assertEquals(0, module.getImports().size());
+		assertEquals(6, module.getTarget().size());
+		assertTrue(module.getTarget().get(0) instanceof org.emftext.language.java.modules.ExportsModuleDirective);
+		assertTrue(module.getTarget().get(1) instanceof org.emftext.language.java.modules.UsesModuleDirective);
+		assertTrue(module.getTarget().get(2) instanceof org.emftext.language.java.modules.ExportsModuleDirective);
+		assertTrue(module.getTarget().get(3) instanceof org.emftext.language.java.modules.RequiresModuleDirective);
+		org.emftext.language.java.modules.RequiresModuleDirective reqDirective = (org.emftext.language.java.modules.RequiresModuleDirective) module.getTarget().get(3);
+		assertEquals(1, reqDirective.getModifiers().size());
+		assertTrue(reqDirective.getModifiers().get(0) instanceof org.emftext.language.java.modifiers.Transitive);
+		assertTrue(reqDirective.getRequiredModule().getTarget().eIsProxy()); // Fails because proxy URI is set to null.
+		assertTrue(module.getTarget().get(4) instanceof org.emftext.language.java.modules.ProvidesModuleDirective);
+		assertTrue(module.getTarget().get(5) instanceof org.emftext.language.java.modules.OpensModuleDirective);
 	}
 }
