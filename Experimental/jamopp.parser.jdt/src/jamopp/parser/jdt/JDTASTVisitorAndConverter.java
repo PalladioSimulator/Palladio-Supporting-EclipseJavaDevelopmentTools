@@ -1,27 +1,51 @@
+/*******************************************************************************
+ * Copyright (c) 2020, Martin Armbruster
+ * 
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors:
+ *   Martin Armbruster
+ *      - Initial implementation
+ ******************************************************************************/
+
 package jamopp.parser.jdt;
 
 import org.eclipse.emf.ecore.InternalEObject;
+import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.ImportDeclaration;
 import org.eclipse.jdt.core.dom.ModuleDeclaration;
 import org.eclipse.jdt.core.dom.ModuleDirective;
+import org.eclipse.jdt.core.dom.ModuleModifier;
+import org.eclipse.jdt.core.dom.ModulePackageAccess;
 import org.eclipse.jdt.core.dom.Name;
+import org.eclipse.jdt.core.dom.ProvidesDirective;
 import org.eclipse.jdt.core.dom.QualifiedName;
+import org.eclipse.jdt.core.dom.RequiresDirective;
 import org.eclipse.jdt.core.dom.SimpleName;
+import org.eclipse.jdt.core.dom.UsesDirective;
 
 public class JDTASTVisitorAndConverter extends ASTVisitor {
+	private org.emftext.language.java.containers.JavaRoot convertedRootElement;
+	
+	public org.emftext.language.java.containers.JavaRoot getConvertedElement() {
+		return convertedRootElement;
+	}
+	
 	@Override
 	public boolean visit(CompilationUnit node) {
-		org.emftext.language.java.containers.JavaRoot root;
 		if (node.getModule() != null) {
-			root = convertToModule(node.getModule());
+			convertedRootElement = convertToModule(node.getModule());
 		} else {
-			root = org.emftext.language.java.containers.ContainersFactory.eINSTANCE.createEmptyModel();
+			convertedRootElement = org.emftext.language.java.containers.ContainersFactory.eINSTANCE.createEmptyModel();
 		}
 		node.imports().forEach(obj -> {
 			ImportDeclaration importDecl = (ImportDeclaration) obj;
-			root.getImports().add(convertToImport(importDecl));
+			convertedRootElement.getImports().add(convertToImport(importDecl));
 		});
 		return false;
 	}
@@ -43,7 +67,102 @@ public class JDTASTVisitorAndConverter extends ASTVisitor {
 	}
 	
 	private org.emftext.language.java.modules.ModuleDirective convertToDirective(ModuleDirective directive) {
+		if (directive.getNodeType() == ASTNode.REQUIRES_DIRECTIVE) {
+			RequiresDirective reqDir = (RequiresDirective) directive;
+			org.emftext.language.java.modules.RequiresModuleDirective result = org.emftext.language.java.modules.ModulesFactory.eINSTANCE.createRequiresModuleDirective();
+			reqDir.modifiers().forEach(obj -> {
+				ModuleModifier modifier = (ModuleModifier) obj;
+				if (modifier.isStatic()) {
+					result.getModifiers().add(org.emftext.language.java.modifiers.ModifiersFactory.eINSTANCE.createStatic());
+				} else if (modifier.isTransitive()) {
+					result.getModifiers().add(org.emftext.language.java.modifiers.ModifiersFactory.eINSTANCE.createTransitive());
+				}
+			});
+			result.setRequiredModule(convertToModuleReference(reqDir.getName()));
+			return result;
+		} else if (directive.getNodeType() == ASTNode.EXPORTS_DIRECTIVE || directive.getNodeType() == ASTNode.OPENS_DIRECTIVE) {
+			ModulePackageAccess accessDir = (ModulePackageAccess) directive;
+			org.emftext.language.java.modules.AccessProvidingModuleDirective convertedDir;
+			if (directive.getNodeType() == ASTNode.OPENS_DIRECTIVE) {
+				convertedDir = org.emftext.language.java.modules.ModulesFactory.eINSTANCE.createOpensModuleDirective();
+			} else { // directive.getNodeType() == ASTNode.EXPORTS_DIRECTIVE
+				convertedDir = org.emftext.language.java.modules.ModulesFactory.eINSTANCE.createExportsModuleDirective();
+			}
+			org.emftext.language.java.references.IdentifierReference idRef = org.emftext.language.java.references.ReferencesFactory.eINSTANCE.createIdentifierReference();
+			org.emftext.language.java.references.PackageReference target = org.emftext.language.java.references.ReferencesFactory.eINSTANCE.createPackageReference();
+			convertToPackageReference(accessDir.getName(), target);
+			idRef.setTarget(target);
+			convertedDir.setAccessGrantedPackage(idRef);
+			accessDir.modules().forEach(obj -> {
+				convertedDir.getModules().add(convertToModuleReference((Name) obj));
+			});
+			return convertedDir;
+		} else if (directive.getNodeType() == ASTNode.PROVIDES_DIRECTIVE) {
+			ProvidesDirective provDir = (ProvidesDirective) directive;
+			org.emftext.language.java.modules.ProvidesModuleDirective result = org.emftext.language.java.modules.ModulesFactory.eINSTANCE.createProvidesModuleDirective();
+			result.setTypeReference(convertToClassifierOrNamespaceClassifierReference(provDir.getName()));
+			provDir.implementations().forEach(obj -> {
+				result.getServiceProviders().add(convertToClassifierOrNamespaceClassifierReference((Name) obj));
+			});
+			return result;
+		} else { // directive.getNodeType() == ASTNode.USES_DIRECTIVE
+			UsesDirective usDir = (UsesDirective) directive;
+			org.emftext.language.java.modules.UsesModuleDirective result = org.emftext.language.java.modules.ModulesFactory.eINSTANCE.createUsesModuleDirective();
+			result.setTypeReference(convertToClassifierOrNamespaceClassifierReference(usDir.getName()));
+			return result;
+		}
+	}
+	
+	private org.emftext.language.java.modules.ModuleReference convertToModuleReference(Name name) {
+		org.emftext.language.java.modules.ModuleReference ref = org.emftext.language.java.modules.ModulesFactory.eINSTANCE.createModuleReference();
+		org.emftext.language.java.modules.NormalModule modProxy = org.emftext.language.java.modules.ModulesFactory.eINSTANCE.createNormalModule();
+		((InternalEObject) modProxy).eSetProxyURI(null);
+		ref.setTarget(modProxy);
+		convertToNamespacesAndSet(name, modProxy);
+		return ref;
+	}
+	
+	private org.emftext.language.java.references.PackageReference convertToPackageReference(Name name, org.emftext.language.java.references.PackageReference superPackage) {
+		if (name.isSimpleName()) {
+			SimpleName simpleName = (SimpleName) name;
+			superPackage.setName(simpleName.getIdentifier());
+			return superPackage;
+		} else if (name.isQualifiedName()) {
+			QualifiedName qualifiedName = (QualifiedName) name;
+			org.emftext.language.java.references.PackageReference superRef = convertToPackageReference(qualifiedName.getQualifier(), superPackage);
+			org.emftext.language.java.references.PackageReference subRef = org.emftext.language.java.references.ReferencesFactory.eINSTANCE.createPackageReference();
+			subRef.setName(qualifiedName.getName().getIdentifier());
+			superRef.getSubpackages().add(subRef);
+			return subRef;
+		}
 		return null;
+	}
+	
+	private org.emftext.language.java.types.TypeReference convertToClassifierOrNamespaceClassifierReference(Name name) {
+		if (name.isSimpleName()) {
+			return convertToClassifierReference((SimpleName) name);
+		} else { // name.isQualifiedName()
+			QualifiedName qualifiedName = (QualifiedName) name;
+			org.emftext.language.java.types.NamespaceClassifierReference ref = org.emftext.language.java.types.TypesFactory.eINSTANCE.createNamespaceClassifierReference();
+			ref.getClassifierReferences().add(0, convertToClassifierReference(qualifiedName.getName()));
+			Name qualifier = qualifiedName.getQualifier();
+			while(qualifier.isQualifiedName()) {
+				qualifiedName = (QualifiedName) qualifier;
+				ref.getClassifierReferences().add(0, convertToClassifierReference(qualifiedName.getName()));
+				qualifier = qualifiedName.getQualifier();
+			}
+			ref.getClassifierReferences().add(0, convertToClassifierReference((SimpleName) qualifier));
+			return ref;
+		}
+	}
+	
+	private org.emftext.language.java.types.ClassifierReference convertToClassifierReference(SimpleName simpleName) {
+		org.emftext.language.java.types.ClassifierReference ref = org.emftext.language.java.types.TypesFactory.eINSTANCE.createClassifierReference();
+		org.emftext.language.java.classifiers.Class proxy = org.emftext.language.java.classifiers.ClassifiersFactory.eINSTANCE.createClass();
+		((InternalEObject) proxy).eSetProxyURI(null);
+		proxy.setName(simpleName.getIdentifier());
+		ref.setTarget(proxy);
+		return ref;
 	}
 	
 	private org.emftext.language.java.imports.Import convertToImport(ImportDeclaration importDecl) {
