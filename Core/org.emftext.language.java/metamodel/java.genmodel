@@ -448,6 +448,8 @@
     <nestedGenPackages prefix="Imports" basePackage="org.emftext.language.java" disposableProviderFactory="true"
         ecorePackage="java.ecore#//imports">
       <genClasses image="false" ecoreClass="java.ecore#//imports/Import">
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference java.ecore#//imports/Import/classifier"/>
         <genOperations ecoreOperation="java.ecore#//imports/Import/getImportedClassifier"
             body="return org.emftext.language.java.extensions.imports.ImportExtension.getImportedClassifier((org.emftext.language.java.imports.Import) this, name);">
           <genParameters ecoreParameter="java.ecore#//imports/Import/getImportedClassifier/name"/>
@@ -465,10 +467,7 @@
       <genClasses image="false" ecoreClass="java.ecore#//imports/StaticImport">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//imports/StaticImport/static"/>
       </genClasses>
-      <genClasses ecoreClass="java.ecore#//imports/ClassifierImport">
-        <genFeatures notify="false" createChild="false" propertySortChoices="true"
-            ecoreFeature="ecore:EReference java.ecore#//imports/ClassifierImport/classifier"/>
-      </genClasses>
+      <genClasses ecoreClass="java.ecore#//imports/ClassifierImport"/>
       <genClasses ecoreClass="java.ecore#//imports/PackageImport"/>
       <genClasses ecoreClass="java.ecore#//imports/StaticClassifierImport"/>
       <genClasses ecoreClass="java.ecore#//imports/StaticMemberImport">

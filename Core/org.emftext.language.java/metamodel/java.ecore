@@ -841,6 +841,7 @@
           <details key="documentation" value=""/>
         </eAnnotations>
       </eOperations>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="classifier" eType="#//classifiers/ConcreteClassifier"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="ImportingElement" abstract="true"
         eSuperTypes="#//commons/Commentable">
@@ -857,10 +858,7 @@
       <eStructuralFeatures xsi:type="ecore:EReference" name="static" lowerBound="1"
           eType="#_Wo2Yv9z1Ed2bJ_pQViWxFg" containment="true"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="ClassifierImport" eSuperTypes="#//imports/Import">
-      <eStructuralFeatures xsi:type="ecore:EReference" name="classifier" lowerBound="1"
-          eType="#//classifiers/ConcreteClassifier"/>
-    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="ClassifierImport" eSuperTypes="#//imports/Import"/>
     <eClassifiers xsi:type="ecore:EClass" name="PackageImport" eSuperTypes="#//imports/Import"/>
     <eClassifiers xsi:type="ecore:EClass" name="StaticClassifierImport" eSuperTypes="#//imports/StaticImport"/>
     <eClassifiers xsi:type="ecore:EClass" name="StaticMemberImport" eSuperTypes="#//imports/StaticImport">
