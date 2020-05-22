@@ -9,7 +9,7 @@
           eType="#_Wosms9z1Ed2bJ_pQViWxFg" containment="true"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" xmi:id="_Wosms9z1Ed2bJ_pQViWxFg" name="AnnotationInstance"
-        eSuperTypes="#//modifiers/AnnotationInstanceOrModifier #//commons/NamespaceAwareElement #//references/Reference">
+        eSuperTypes="#//modifiers/AnnotationInstanceOrModifier #//commons/NamespaceAwareElement #//references/Reference #//annotations/AnnotationValue #//arrays/ArrayInitializationValue">
       <eStructuralFeatures xsi:type="ecore:EReference" name="annotation" lowerBound="1"
           eType="#//classifiers/Classifier"/>
       <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_Wosmttz1Ed2bJ_pQViWxFg"
@@ -33,7 +33,6 @@
           name="value" lowerBound="1" eType="#//annotations/AnnotationValue" containment="true"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="AnnotationValue" abstract="true" eSuperTypes="#//commons/Commentable"/>
-    <eClassifiers xsi:type="ecore:EClass" name="AnnotationAttribute" eSuperTypes="#//members/InterfaceMethod"/>
   </eSubpackages>
   <eSubpackages name="arrays" nsURI="http://www.emftext.org/java/arrays" nsPrefix="arrays">
     <eClassifiers xsi:type="ecore:EClass" name="ArrayTypeable" abstract="true" eSuperTypes="#//commons/Commentable">
@@ -51,7 +50,7 @@
     <eClassifiers xsi:type="ecore:EClass" name="ArrayInitializationValue" abstract="true"
         eSuperTypes="#//commons/Commentable"/>
     <eClassifiers xsi:type="ecore:EClass" name="ArrayInstantiation" abstract="true"
-        eSuperTypes="#//references/Reference #_Wo2YDNz1Ed2bJ_pQViWxFg"/>
+        eSuperTypes="#//references/Reference"/>
     <eClassifiers xsi:type="ecore:EClass" name="ArrayInstantiationBySize" eSuperTypes="#//arrays/ArrayInstantiation #_Wo2ZP9z1Ed2bJ_pQViWxFg #//arrays/ArrayTypeable">
       <eStructuralFeatures xsi:type="ecore:EReference" name="sizes" lowerBound="1"
           upperBound="-1" eType="#_Wo2YDNz1Ed2bJ_pQViWxFg" containment="true"/>
@@ -535,7 +534,7 @@
           name="expressions" upperBound="-1" eType="#_Wo2YDNz1Ed2bJ_pQViWxFg" containment="true"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" xmi:id="_Wo2YDNz1Ed2bJ_pQViWxFg" name="Expression"
-        abstract="true" eSuperTypes="#//arrays/ArrayInitializationValue #//expressions/LambdaBody #//annotations/AnnotationValue">
+        abstract="true" eSuperTypes="#//arrays/ArrayInitializationValue #//expressions/LambdaBody">
       <eOperations name="getType" eType="#_Wo2ZO9z1Ed2bJ_pQViWxFg">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="body" value="return org.emftext.language.java.extensions.expressions.ExpressionExtension.getType((org.emftext.language.java.expressions.Expression) this);"/>
@@ -573,7 +572,7 @@
     <eClassifiers xsi:type="ecore:EClass" name="AssignmentExpressionChild" abstract="true"
         eSuperTypes="#_Wo2YDNz1Ed2bJ_pQViWxFg"/>
     <eClassifiers xsi:type="ecore:EClass" xmi:id="_Wo2YIdz1Ed2bJ_pQViWxFg" name="ConditionalExpression"
-        eSuperTypes="#//expressions/AssignmentExpressionChild">
+        eSuperTypes="#//expressions/AssignmentExpressionChild #//annotations/AnnotationValue">
       <eOperations name="getExpressionElse" lowerBound="1" eType="#//expressions/AssignmentExpressionChild"/>
       <eOperations name="setExpressionChild" lowerBound="1">
         <eParameters name="newChild" lowerBound="1" eType="#//expressions/AssignmentExpressionChild"/>
@@ -1095,7 +1094,7 @@
       </eOperations>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="InterfaceMethod" eSuperTypes="#//members/Method">
-      <eStructuralFeatures xsi:type="ecore:EReference" name="defaultValue" eType="#_Wo2YDNz1Ed2bJ_pQViWxFg"
+      <eStructuralFeatures xsi:type="ecore:EReference" name="defaultValue" eType="#//annotations/AnnotationValue"
           containment="true"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="ClassMethod" eSuperTypes="#//members/Method #//statements/StatementListContainer"/>
