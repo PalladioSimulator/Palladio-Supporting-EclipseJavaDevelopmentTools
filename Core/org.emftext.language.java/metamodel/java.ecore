@@ -440,7 +440,7 @@
     </eClassifiers>
   </eSubpackages>
   <eSubpackages name="containers" nsURI="http://www.emftext.org/java/containers" nsPrefix="containers">
-    <eClassifiers xsi:type="ecore:EClass" name="JavaRoot" abstract="true" eSuperTypes="#//commons/NamedElement #//commons/NamespaceAwareElement #//imports/ImportingElement">
+    <eClassifiers xsi:type="ecore:EClass" name="JavaRoot" abstract="true" eSuperTypes="#//commons/NamedElement #//commons/NamespaceAwareElement #//imports/ImportingElement #//annotations/Annotable">
       <eOperations name="getClassifiersInSamePackage" upperBound="-1" eType="#//classifiers/ConcreteClassifier">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="body" value="return org.emftext.language.java.extensions.containers.JavaRootExtension.getClassifiersInSamePackage((org.emftext.language.java.containers.JavaRoot) this);"/>
@@ -448,7 +448,7 @@
         </eAnnotations>
       </eOperations>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="CompilationUnit" eSuperTypes="#//containers/JavaRoot #//annotations/Annotable">
+    <eClassifiers xsi:type="ecore:EClass" name="CompilationUnit" eSuperTypes="#//containers/JavaRoot">
       <eOperations name="getContainedClassifier" eType="#//classifiers/ConcreteClassifier">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="body" value="return org.emftext.language.java.extensions.containers.CompilationUnitExtension.getContainedClassifier((org.emftext.language.java.containers.CompilationUnit) this, name);"/>
@@ -503,7 +503,7 @@
       <eStructuralFeatures xsi:type="ecore:EReference" name="classifiers" lowerBound="1"
           upperBound="-1" eType="#//classifiers/ConcreteClassifier" containment="true"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="Package" eSuperTypes="#//containers/JavaRoot #//annotations/Annotable">
+    <eClassifiers xsi:type="ecore:EClass" name="Package" eSuperTypes="#//containers/JavaRoot">
       <eOperations name="getNamespacesAsString" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="body" value="return org.emftext.language.java.extensions.containers.PackageExtension.getNamespacesAsString((org.emftext.language.java.containers.Package) this);"/>
@@ -520,7 +520,7 @@
           eType="#//containers/CompilationUnit" containment="true"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="EmptyModel" eSuperTypes="#//containers/JavaRoot"/>
-    <eClassifiers xsi:type="ecore:EClass" name="Module" eSuperTypes="#//containers/JavaRoot #//annotations/Annotable">
+    <eClassifiers xsi:type="ecore:EClass" name="Module" eSuperTypes="#//containers/JavaRoot">
       <eStructuralFeatures xsi:type="ecore:EReference" name="open" eType="#//modifiers/Open"
           containment="true"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="target" upperBound="-1"
@@ -1633,7 +1633,7 @@
     <eClassifiers xsi:type="ecore:EClass" xmi:id="_Wo2ZUdz1Ed2bJ_pQViWxFg" name="Short"
         eSuperTypes="#_Wo2ZR9z1Ed2bJ_pQViWxFg"/>
     <eClassifiers xsi:type="ecore:EClass" name="Void" eSuperTypes="#_Wo2ZR9z1Ed2bJ_pQViWxFg"/>
-    <eClassifiers xsi:type="ecore:EClass" name="InferableType" eSuperTypes="#//commons/NamedElement #//classifiers/Classifier">
+    <eClassifiers xsi:type="ecore:EClass" name="InferableType" eSuperTypes="#//classifiers/Classifier">
       <eOperations name="getAllMembers" lowerBound="1">
         <eGenericType eClassifier="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EEList">
           <eTypeArguments eClassifier="#//members/Member"/>
