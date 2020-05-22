@@ -877,6 +877,11 @@
       <genClasses ecoreClass="java.ecore#//statements/YieldStatement">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//statements/YieldStatement/yieldExpression"/>
       </genClasses>
+      <genClasses image="false" ecoreClass="java.ecore#//statements/SwitchRule">
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//statements/SwitchRule/arrowOperator"/>
+      </genClasses>
+      <genClasses ecoreClass="java.ecore#//statements/DefaultSwitchRule"/>
+      <genClasses ecoreClass="java.ecore#//statements/NormalSwitchRule"/>
     </nestedGenPackages>
     <nestedGenPackages prefix="Types" basePackage="org.emftext.language.java" disposableProviderFactory="true"
         ecorePackage="java.ecore#_Wo2ZOtz1Ed2bJ_pQViWxFg">
