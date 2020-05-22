@@ -144,14 +144,8 @@ public class JDTASTVisitorAndConverter extends ASTVisitor {
 		} else { // name.isQualifiedName()
 			QualifiedName qualifiedName = (QualifiedName) name;
 			org.emftext.language.java.types.NamespaceClassifierReference ref = org.emftext.language.java.types.TypesFactory.eINSTANCE.createNamespaceClassifierReference();
-			ref.getClassifierReferences().add(0, convertToClassifierReference(qualifiedName.getName()));
-			Name qualifier = qualifiedName.getQualifier();
-			while(qualifier.isQualifiedName()) {
-				qualifiedName = (QualifiedName) qualifier;
-				ref.getClassifierReferences().add(0, convertToClassifierReference(qualifiedName.getName()));
-				qualifier = qualifiedName.getQualifier();
-			}
-			ref.getClassifierReferences().add(0, convertToClassifierReference((SimpleName) qualifier));
+			ref.getClassifierReferences().add(convertToClassifierReference(qualifiedName.getName()));
+			convertToNamespacesAndSet(qualifiedName.getQualifier(), ref);
 			return ref;
 		}
 	}
@@ -178,13 +172,10 @@ public class JDTASTVisitorAndConverter extends ASTVisitor {
 			org.emftext.language.java.imports.StaticMemberImport convertedImport =
 				org.emftext.language.java.imports.ImportsFactory.eINSTANCE.createStaticMemberImport();
 			convertedImport.setStatic(org.emftext.language.java.modifiers.ModifiersFactory.eINSTANCE.createStatic());
-			org.emftext.language.java.classifiers.Class proxyType = org.emftext.language.java.classifiers.ClassifiersFactory.eINSTANCE.createClass();
-			((InternalEObject) proxyType).eSetProxyURI(null);
 			org.emftext.language.java.members.Field proxyMember = org.emftext.language.java.members.MembersFactory.eINSTANCE.createField();
-			((InternalEObject) proxyType).eSetProxyURI(null);
-			convertedImport.getStaticMembers().add(proxyType);
+			((InternalEObject) proxyMember).eSetProxyURI(null);
 			convertedImport.getStaticMembers().add(proxyMember);
-			convertToMemberNameAndNamespacesAndSimpleNameAndSet(importDecl.getName(), proxyMember, proxyType, convertedImport);
+			convertToNamespacesAndSimpleNameAndSet(importDecl.getName(), convertedImport, proxyMember);
 			return convertedImport;
 		} else if (importDecl.isOnDemand() && !importDecl.isStatic()) {
 			org.emftext.language.java.imports.PackageImport convertedImport = org.emftext.language.java.imports.ImportsFactory.eINSTANCE.createPackageImport();
@@ -196,13 +187,6 @@ public class JDTASTVisitorAndConverter extends ASTVisitor {
 			convertToNamespacesAndSet(importDecl.getName(), convertedImport);
 			return convertedImport;
 		}
-	}
-	
-	private void convertToMemberNameAndNamespacesAndSimpleNameAndSet(Name name, org.emftext.language.java.commons.NamedElement memberReference,
-		org.emftext.language.java.commons.NamedElement memberContainer, org.emftext.language.java.commons.NamespaceAwareElement namespace) {
-		QualifiedName qualifiedName = (QualifiedName) name;
-		memberReference.setName(qualifiedName.getName().getIdentifier());
-		convertToNamespacesAndSimpleNameAndSet(qualifiedName.getQualifier(), namespace, memberContainer);
 	}
 	
 	private void convertToNamespacesAndSimpleNameAndSet(Name name, org.emftext.language.java.commons.NamespaceAwareElement namespaceElement,
