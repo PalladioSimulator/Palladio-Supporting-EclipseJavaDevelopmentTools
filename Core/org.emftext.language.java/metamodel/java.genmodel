@@ -396,6 +396,7 @@
       <genClasses image="false" ecoreClass="java.ecore#//expressions/MethodReferenceExpressionChild"/>
       <genClasses ecoreClass="java.ecore#//expressions/LambdaExpression">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//expressions/LambdaExpression/parameters"/>
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//expressions/LambdaExpression/arrowOperator"/>
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//expressions/LambdaExpression/body"/>
       </genClasses>
       <genClasses image="false" ecoreClass="java.ecore#//expressions/LambdaBody"/>
