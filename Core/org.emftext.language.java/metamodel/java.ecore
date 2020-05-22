@@ -1239,8 +1239,9 @@
         eSuperTypes="#_Wo2Ys9z1Ed2bJ_pQViWxFg"/>
     <eClassifiers xsi:type="ecore:EClass" name="Default" eSuperTypes="#_Wo2Ys9z1Ed2bJ_pQViWxFg"/>
     <eClassifiers xsi:type="ecore:EClass" name="Transitive" eSuperTypes="#//modifiers/ModuleRequiresModifier"/>
-    <eClassifiers xsi:type="ecore:EClass" name="ModuleRequiresModifier" abstract="true"/>
-    <eClassifiers xsi:type="ecore:EClass" name="Open"/>
+    <eClassifiers xsi:type="ecore:EClass" name="ModuleRequiresModifier" abstract="true"
+        eSuperTypes="#//commons/Commentable"/>
+    <eClassifiers xsi:type="ecore:EClass" name="Open" eSuperTypes="#//commons/Commentable"/>
   </eSubpackages>
   <eSubpackages name="operators" nsURI="http://www.emftext.org/java/operators" nsPrefix="operators">
     <eClassifiers xsi:type="ecore:EClass" name="Operator" abstract="true" eSuperTypes="#//commons/Commentable"/>
@@ -1288,6 +1289,7 @@
     <eClassifiers xsi:type="ecore:EClass" name="LeftShift" eSuperTypes="#//operators/ShiftOperator"/>
     <eClassifiers xsi:type="ecore:EClass" name="RightShift" eSuperTypes="#//operators/ShiftOperator"/>
     <eClassifiers xsi:type="ecore:EClass" name="UnsignedRightShift" eSuperTypes="#//operators/ShiftOperator"/>
+    <eClassifiers xsi:type="ecore:EClass" name="Arrow" eSuperTypes="#//operators/Operator"/>
   </eSubpackages>
   <eSubpackages name="parameters" nsURI="http://www.emftext.org/java/parameters" nsPrefix="parameters">
     <eClassifiers xsi:type="ecore:EClass" name="Parameter" abstract="true" eSuperTypes="#//variables/Variable #//modifiers/AnnotableAndModifiable"/>

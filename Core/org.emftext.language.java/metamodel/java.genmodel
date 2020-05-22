@@ -731,6 +731,7 @@
       <genClasses ecoreClass="java.ecore#//operators/LeftShift"/>
       <genClasses ecoreClass="java.ecore#//operators/RightShift"/>
       <genClasses ecoreClass="java.ecore#//operators/UnsignedRightShift"/>
+      <genClasses ecoreClass="java.ecore#//operators/Arrow"/>
     </nestedGenPackages>
     <nestedGenPackages prefix="Parameters" basePackage="org.emftext.language.java"
         disposableProviderFactory="true" ecorePackage="java.ecore#//parameters">
