@@ -1361,9 +1361,12 @@
       <eStructuralFeatures xsi:type="ecore:EReference" name="self" lowerBound="1"
           eType="#//literals/Self" containment="true"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="PackageReference" eSuperTypes="#//references/ReferenceableElement">
-      <eStructuralFeatures xsi:type="ecore:EReference" name="subpackages" upperBound="-1"
-          eType="#//references/PackageReference" containment="true"/>
+    <eClassifiers xsi:type="ecore:EClass" name="PackageReference" eSuperTypes="#//references/ReferenceableElement #//commons/NamespaceAwareElement">
+      <eOperations name="getSubpackages" lowerBound="1">
+        <eGenericType eClassifier="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EEList">
+          <eTypeArguments eClassifier="#//references/PackageReference"/>
+        </eGenericType>
+      </eOperations>
     </eClassifiers>
   </eSubpackages>
   <eSubpackages xmi:id="_Wo2Yy9z1Ed2bJ_pQViWxFg" name="statements" nsURI="http://www.emftext.org/java/statements"
