@@ -869,11 +869,12 @@
         <genOperations ecoreOperation="java.ecore#//statements/TryBlock/getStatements"
             body="return org.emftext.language.java.extensions.statements.TryBlockExtension.getStatements((org.emftext.language.java.statements.TryBlock) this);"/>
       </genClasses>
-      <genClasses ecoreClass="java.ecore#_Wo2ZANz1Ed2bJ_pQViWxFg">
-        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#_Wo2ZAtz1Ed2bJ_pQViWxFg"/>
-      </genClasses>
+      <genClasses ecoreClass="java.ecore#_Wo2ZANz1Ed2bJ_pQViWxFg"/>
       <genClasses image="false" ecoreClass="java.ecore#//statements/BlockContainer">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//statements/BlockContainer/block"/>
+      </genClasses>
+      <genClasses ecoreClass="java.ecore#//statements/YieldStatement">
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//statements/YieldStatement/yieldExpression"/>
       </genClasses>
     </nestedGenPackages>
     <nestedGenPackages prefix="Types" basePackage="org.emftext.language.java" disposableProviderFactory="true"

@@ -1517,13 +1517,14 @@
           name="finallyBlock" eType="#//statements/Block" containment="true"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" xmi:id="_Wo2ZANz1Ed2bJ_pQViWxFg" name="WhileLoop"
-        eSuperTypes="#_Wo2YzNz1Ed2bJ_pQViWxFg #//statements/StatementContainer">
-      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_Wo2ZAtz1Ed2bJ_pQViWxFg"
-          name="condition" lowerBound="1" eType="#_Wo2YDNz1Ed2bJ_pQViWxFg" containment="true"/>
-    </eClassifiers>
+        eSuperTypes="#_Wo2YzNz1Ed2bJ_pQViWxFg #//statements/StatementContainer #//statements/Conditional"/>
     <eClassifiers xsi:type="ecore:EClass" name="BlockContainer" abstract="true" eSuperTypes="#//commons/Commentable">
       <eStructuralFeatures xsi:type="ecore:EReference" name="block" lowerBound="1"
           eType="#//statements/Block" containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="YieldStatement" eSuperTypes="#_Wo2YzNz1Ed2bJ_pQViWxFg">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="yieldExpression" lowerBound="1"
+          eType="#_Wo2YDNz1Ed2bJ_pQViWxFg" containment="true"/>
     </eClassifiers>
   </eSubpackages>
   <eSubpackages xmi:id="_Wo2ZOtz1Ed2bJ_pQViWxFg" name="types" nsURI="http://www.emftext.org/java/types"
