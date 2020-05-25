@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: JaMoPP Printer Test
+Bundle-SymbolicName: jamopp.printer
+Bundle-Version: 1.5.0.SNAPSHOT
+Automatic-Module-Name: jamopp.printer
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-Vendor: Martin Armbruster
