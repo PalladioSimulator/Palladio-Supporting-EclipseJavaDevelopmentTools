@@ -18,5 +18,11 @@
     </genClasses>
     <genClasses ecoreClass="layout.ecore#//AttributeLayoutInformation"/>
     <genClasses ecoreClass="layout.ecore#//KeywordLayoutInformation"/>
+    <genClasses ecoreClass="layout.ecore#//MinimalLayoutInformation">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute layout.ecore#//MinimalLayoutInformation/length"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference layout.ecore#//MinimalLayoutInformation/rootLayout"/>
+      <genOperations ecoreOperation="layout.ecore#//MinimalLayoutInformation/getSourceString"
+          body="if (rootLayout != null) { String rootSource = rootLayout.getVisibleTokenText(); if (rootSource.length() >= getStartOffset() + getLength()) { return rootSource.substring(getStartOffset(), getStartOffset() + getLength()); } return &quot;&quot;; } else { return &quot;&quot;; }"/>
+    </genClasses>
   </genPackages>
 </genmodel:GenModel>
