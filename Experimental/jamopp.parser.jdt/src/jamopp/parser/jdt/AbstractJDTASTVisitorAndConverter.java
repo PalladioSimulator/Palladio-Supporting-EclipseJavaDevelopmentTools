@@ -17,6 +17,7 @@ import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.Annotation;
+import org.eclipse.jdt.core.dom.ArrayInitializer;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.IExtendedModifier;
@@ -222,10 +223,32 @@ class AbstractJDTASTVisitorAndConverter extends ASTVisitor {
 		if (expr instanceof Annotation) {
 			return this.convertToAnnotationInstance((Annotation) expr);
 		} else if (expr.getNodeType() == ASTNode.ARRAY_INITIALIZER) {
-			
+			return this.convertToArrayInitializer((ArrayInitializer) expr);
 		} else if (expr.getNodeType() == ASTNode.CONDITIONAL_EXPRESSION) {
 			
 		}
+		return null;
+	}
+	
+	org.emftext.language.java.arrays.ArrayInitializer convertToArrayInitializer(ArrayInitializer arr) {
+		org.emftext.language.java.arrays.ArrayInitializer result = org.emftext.language.java.arrays.ArraysFactory.eINSTANCE.createArrayInitializer();
+		arr.expressions().forEach(obj -> {
+			org.emftext.language.java.arrays.ArrayInitializationValue value = null;
+			Expression expr = (Expression) obj;
+			if (expr instanceof ArrayInitializer) {
+				value = this.convertToArrayInitializer((ArrayInitializer) expr);
+			} else if (expr instanceof Annotation) {
+				value = this.convertToAnnotationInstance((Annotation) expr);
+			} else {
+				value = this.convertToExpression(expr);
+			}
+			result.getInitialValues().add(value);
+		});
+		LayoutInformationConverter.convertToMinimalLayoutInformation(result, arr);
+		return result;
+	}
+	
+	org.emftext.language.java.expressions.Expression convertToExpression(Expression expr) {
 		return null;
 	}
 }
