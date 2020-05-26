@@ -77,7 +77,7 @@ public class JDTTest {
 	public static org.emftext.language.java.containers.JavaRoot parseFile(Path file) {
 		String src = readFile(file);
 		ASTNode ast = parseFileWithJDT(file, src);
-		JDTASTVisitorAndConverter converter = new JDTASTVisitorAndConverter();
+		ModuleJDTASTVisitorAndConverter converter = new ModuleJDTASTVisitorAndConverter();
 		converter.setSource(src);
 		ast.accept(converter);
 		return converter.getConvertedElement();
