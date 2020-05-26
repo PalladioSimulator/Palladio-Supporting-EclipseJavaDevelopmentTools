@@ -30,7 +30,6 @@
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#_Wosmudz1Ed2bJ_pQViWxFg"/>
       </genClasses>
       <genClasses image="false" ecoreClass="java.ecore#//annotations/AnnotationValue"/>
-      <genClasses ecoreClass="java.ecore#//annotations/AnnotationAttribute"/>
     </nestedGenPackages>
     <nestedGenPackages prefix="Arrays" basePackage="org.emftext.language.java" disposableProviderFactory="true"
         ecorePackage="java.ecore#//arrays">
@@ -273,6 +272,7 @@
       </genClasses>
       <genClasses ecoreClass="java.ecore#//containers/EmptyModel"/>
       <genClasses image="false" ecoreClass="java.ecore#//containers/Module">
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//containers/Module/open"/>
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//containers/Module/target"/>
       </genClasses>
     </nestedGenPackages>
@@ -396,6 +396,7 @@
       <genClasses image="false" ecoreClass="java.ecore#//expressions/MethodReferenceExpressionChild"/>
       <genClasses ecoreClass="java.ecore#//expressions/LambdaExpression">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//expressions/LambdaExpression/parameters"/>
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//expressions/LambdaExpression/arrowOperator"/>
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//expressions/LambdaExpression/body"/>
       </genClasses>
       <genClasses image="false" ecoreClass="java.ecore#//expressions/LambdaBody"/>
@@ -441,13 +442,13 @@
           <genParameters ecoreParameter="java.ecore#//generics/TypeParameter/getBoundType/reference"/>
         </genOperations>
       </genClasses>
-      <genClasses ecoreClass="java.ecore#//generics/UnknownTypeArgument">
-        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//generics/UnknownTypeArgument/extension"/>
-      </genClasses>
+      <genClasses ecoreClass="java.ecore#//generics/UnknownTypeArgument"/>
     </nestedGenPackages>
     <nestedGenPackages prefix="Imports" basePackage="org.emftext.language.java" disposableProviderFactory="true"
         ecorePackage="java.ecore#//imports">
       <genClasses image="false" ecoreClass="java.ecore#//imports/Import">
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference java.ecore#//imports/Import/classifier"/>
         <genOperations ecoreOperation="java.ecore#//imports/Import/getImportedClassifier"
             body="return org.emftext.language.java.extensions.imports.ImportExtension.getImportedClassifier((org.emftext.language.java.imports.Import) this, name);">
           <genParameters ecoreParameter="java.ecore#//imports/Import/getImportedClassifier/name"/>
@@ -465,10 +466,7 @@
       <genClasses image="false" ecoreClass="java.ecore#//imports/StaticImport">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//imports/StaticImport/static"/>
       </genClasses>
-      <genClasses ecoreClass="java.ecore#//imports/ClassifierImport">
-        <genFeatures notify="false" createChild="false" propertySortChoices="true"
-            ecoreFeature="ecore:EReference java.ecore#//imports/ClassifierImport/classifier"/>
-      </genClasses>
+      <genClasses ecoreClass="java.ecore#//imports/ClassifierImport"/>
       <genClasses ecoreClass="java.ecore#//imports/PackageImport"/>
       <genClasses ecoreClass="java.ecore#//imports/StaticClassifierImport"/>
       <genClasses ecoreClass="java.ecore#//imports/StaticMemberImport">
@@ -485,6 +483,7 @@
       <genClasses ecoreClass="java.ecore#//instantiations/NewConstructorCall">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//instantiations/NewConstructorCall/anonymousClass"/>
       </genClasses>
+      <genClasses ecoreClass="java.ecore#//instantiations/NewConstructorCallWithInferredTypeArguments"/>
       <genClasses ecoreClass="java.ecore#//instantiations/ExplicitConstructorCall">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//instantiations/ExplicitConstructorCall/callTarget"/>
       </genClasses>
@@ -689,6 +688,8 @@
       <genClasses ecoreClass="java.ecore#_Wo2Yx9z1Ed2bJ_pQViWxFg"/>
       <genClasses ecoreClass="java.ecore#//modifiers/Default"/>
       <genClasses ecoreClass="java.ecore#//modifiers/Transitive"/>
+      <genClasses image="false" ecoreClass="java.ecore#//modifiers/ModuleRequiresModifier"/>
+      <genClasses ecoreClass="java.ecore#//modifiers/Open"/>
     </nestedGenPackages>
     <nestedGenPackages prefix="Operators" basePackage="org.emftext.language.java"
         disposableProviderFactory="true" ecorePackage="java.ecore#//operators">
@@ -731,6 +732,7 @@
       <genClasses ecoreClass="java.ecore#//operators/LeftShift"/>
       <genClasses ecoreClass="java.ecore#//operators/RightShift"/>
       <genClasses ecoreClass="java.ecore#//operators/UnsignedRightShift"/>
+      <genClasses ecoreClass="java.ecore#//operators/Arrow"/>
     </nestedGenPackages>
     <nestedGenPackages prefix="Parameters" basePackage="org.emftext.language.java"
         disposableProviderFactory="true" ecorePackage="java.ecore#//parameters">
@@ -781,7 +783,8 @@
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//references/SelfReference/self"/>
       </genClasses>
       <genClasses ecoreClass="java.ecore#//references/PackageReference">
-        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//references/PackageReference/subpackages"/>
+        <genOperations ecoreOperation="java.ecore#//references/PackageReference/getSubpackages"
+            body="return org.emftext.language.java.extensions.references.PackageReferenceExtension.getSubpackages((org.emftext.language.java.references.PackageReference) this);"/>
       </genClasses>
     </nestedGenPackages>
     <nestedGenPackages prefix="Statements" basePackage="org.emftext.language.java"
@@ -867,12 +870,18 @@
         <genOperations ecoreOperation="java.ecore#//statements/TryBlock/getStatements"
             body="return org.emftext.language.java.extensions.statements.TryBlockExtension.getStatements((org.emftext.language.java.statements.TryBlock) this);"/>
       </genClasses>
-      <genClasses ecoreClass="java.ecore#_Wo2ZANz1Ed2bJ_pQViWxFg">
-        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#_Wo2ZAtz1Ed2bJ_pQViWxFg"/>
-      </genClasses>
+      <genClasses ecoreClass="java.ecore#_Wo2ZANz1Ed2bJ_pQViWxFg"/>
       <genClasses image="false" ecoreClass="java.ecore#//statements/BlockContainer">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//statements/BlockContainer/block"/>
       </genClasses>
+      <genClasses ecoreClass="java.ecore#//statements/YieldStatement">
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//statements/YieldStatement/yieldExpression"/>
+      </genClasses>
+      <genClasses image="false" ecoreClass="java.ecore#//statements/SwitchRule">
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//statements/SwitchRule/arrowOperator"/>
+      </genClasses>
+      <genClasses ecoreClass="java.ecore#//statements/DefaultSwitchRule"/>
+      <genClasses ecoreClass="java.ecore#//statements/NormalSwitchRule"/>
     </nestedGenPackages>
     <nestedGenPackages prefix="Types" basePackage="org.emftext.language.java" disposableProviderFactory="true"
         ecorePackage="java.ecore#_Wo2ZOtz1Ed2bJ_pQViWxFg">
@@ -965,18 +974,16 @@
       <genClasses image="false" ecoreClass="java.ecore#//variables/Resource"/>
     </nestedGenPackages>
     <nestedGenPackages prefix="Modules" disposableProviderFactory="true" ecorePackage="java.ecore#//modules">
-      <genClasses ecoreClass="java.ecore#//modules/OpenModule"/>
-      <genClasses ecoreClass="java.ecore#//modules/NormalModule"/>
       <genClasses image="false" ecoreClass="java.ecore#//modules/ModuleDirective"/>
       <genClasses ecoreClass="java.ecore#//modules/UsesModuleDirective"/>
       <genClasses ecoreClass="java.ecore#//modules/ProvidesModuleDirective">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//modules/ProvidesModuleDirective/serviceProviders"/>
       </genClasses>
       <genClasses image="false" ecoreClass="java.ecore#//modules/AccessProvidingModuleDirective">
-        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//modules/AccessProvidingModuleDirective/accessGrantedPackage"/>
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//modules/AccessProvidingModuleDirective/modules"/>
       </genClasses>
       <genClasses ecoreClass="java.ecore#//modules/RequiresModuleDirective">
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//modules/RequiresModuleDirective/modifier"/>
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//modules/RequiresModuleDirective/requiredModule"/>
       </genClasses>
       <genClasses ecoreClass="java.ecore#//modules/OpensModuleDirective"/>
