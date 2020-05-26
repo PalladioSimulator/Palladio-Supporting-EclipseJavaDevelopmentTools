@@ -40,7 +40,7 @@ public class JDTTest {
 		parseDirectory(Paths.get("../../Tests/org.emftext.language.java.tests.sevenup/src"));
 	}
 	
-	private static String readFile(Path file) {
+	public static String readFile(Path file) {
 		StringBuilder builder = new StringBuilder();
 		try {
 			Files.readAllLines(file).forEach(line -> builder.append(line + System.getProperty("line.separator")));
