@@ -160,32 +160,34 @@ class AbstractJDTASTVisitorAndConverter extends ASTVisitor {
 	}
 	
 	org.emftext.language.java.modifiers.Modifier convertToModifier(Modifier mod) {
+		org.emftext.language.java.modifiers.Modifier result = null;
 		if (mod.isAbstract()) {
-			return org.emftext.language.java.modifiers.ModifiersFactory.eINSTANCE.createAbstract();
+			result = org.emftext.language.java.modifiers.ModifiersFactory.eINSTANCE.createAbstract();
 		} else if (mod.isDefault()) {
-			return org.emftext.language.java.modifiers.ModifiersFactory.eINSTANCE.createDefault();
+			result = org.emftext.language.java.modifiers.ModifiersFactory.eINSTANCE.createDefault();
 		} else if (mod.isFinal()) {
-			return org.emftext.language.java.modifiers.ModifiersFactory.eINSTANCE.createFinal();
+			result = org.emftext.language.java.modifiers.ModifiersFactory.eINSTANCE.createFinal();
 		} else if (mod.isNative()) {
-			return org.emftext.language.java.modifiers.ModifiersFactory.eINSTANCE.createNative();
+			result = org.emftext.language.java.modifiers.ModifiersFactory.eINSTANCE.createNative();
 		} else if (mod.isPrivate()) {
-			return org.emftext.language.java.modifiers.ModifiersFactory.eINSTANCE.createPrivate();
+			result = org.emftext.language.java.modifiers.ModifiersFactory.eINSTANCE.createPrivate();
 		} else if (mod.isProtected()) {
-			return org.emftext.language.java.modifiers.ModifiersFactory.eINSTANCE.createProtected();
+			result = org.emftext.language.java.modifiers.ModifiersFactory.eINSTANCE.createProtected();
 		} else if (mod.isPublic()) {
-			return org.emftext.language.java.modifiers.ModifiersFactory.eINSTANCE.createPublic();
+			result = org.emftext.language.java.modifiers.ModifiersFactory.eINSTANCE.createPublic();
 		} else if (mod.isStatic()) {
-			return org.emftext.language.java.modifiers.ModifiersFactory.eINSTANCE.createStatic();
+			result = org.emftext.language.java.modifiers.ModifiersFactory.eINSTANCE.createStatic();
 		} else if (mod.isStrictfp()) {
-			return org.emftext.language.java.modifiers.ModifiersFactory.eINSTANCE.createStrictfp();
+			result = org.emftext.language.java.modifiers.ModifiersFactory.eINSTANCE.createStrictfp();
 		} else if (mod.isSynchronized()) {
-			return org.emftext.language.java.modifiers.ModifiersFactory.eINSTANCE.createSynchronized();
+			result = org.emftext.language.java.modifiers.ModifiersFactory.eINSTANCE.createSynchronized();
 		} else if (mod.isTransient()) {
-			return org.emftext.language.java.modifiers.ModifiersFactory.eINSTANCE.createTransient();
-		} else if (mod.isVolatile()) {
-			return org.emftext.language.java.modifiers.ModifiersFactory.eINSTANCE.createVolatile();
+			result = org.emftext.language.java.modifiers.ModifiersFactory.eINSTANCE.createTransient();
+		} else { // mod.isVolatile()
+			result = org.emftext.language.java.modifiers.ModifiersFactory.eINSTANCE.createVolatile();
 		}
-		return null;
+		LayoutInformationConverter.convertToMinimalLayoutInformation(result, mod);
+		return result;
 	}
 	
 	org.emftext.language.java.annotations.AnnotationInstance convertToAnnotationInstance(Annotation annot) {
@@ -213,9 +215,11 @@ class AbstractJDTASTVisitorAndConverter extends ASTVisitor {
 				this.convertToSimpleNameOnlyAndSet(memVal.getName(), methodProxy);
 				attrSet.setAttribute(methodProxy);
 				attrSet.setValue(this.convertToAnnotationValue(memVal.getValue()));
+				LayoutInformationConverter.convertToMinimalLayoutInformation(attrSet, memVal);
 				param.getSettings().add(attrSet);
 			});
 		}
+		LayoutInformationConverter.convertToMinimalLayoutInformation(result, annot);
 		return result;
 	}
 	
