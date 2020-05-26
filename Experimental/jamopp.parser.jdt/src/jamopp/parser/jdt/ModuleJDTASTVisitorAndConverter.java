@@ -15,6 +15,7 @@ package jamopp.parser.jdt;
 
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.jdt.core.dom.ASTNode;
+import org.eclipse.jdt.core.dom.Annotation;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.ImportDeclaration;
 import org.eclipse.jdt.core.dom.ModuleDeclaration;
@@ -46,7 +47,7 @@ class ModuleJDTASTVisitorAndConverter extends AbstractJDTASTVisitorAndConverter 
 		}
 		LayoutInformationConverter.convertJavaRootLayoutInformation(module, node, this.getSource());
 		this.convertToNamespacesAndSet(node.getName(), module);
-		node.annotations();
+		node.annotations().forEach(obj -> module.getAnnotations().add(this.convertToAnnotationInstance((Annotation) obj)));
 		node.moduleStatements().forEach(obj -> module.getTarget().add(this.convertToDirective((ModuleDirective) obj)));
 		return module;
 	}

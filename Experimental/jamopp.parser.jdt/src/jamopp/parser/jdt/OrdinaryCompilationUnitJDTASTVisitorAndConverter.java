@@ -20,6 +20,7 @@ import org.eclipse.jdt.core.dom.BodyDeclaration;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.EnumDeclaration;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
+import org.eclipse.jdt.core.dom.IExtendedModifier;
 import org.eclipse.jdt.core.dom.Initializer;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
@@ -57,13 +58,18 @@ public class OrdinaryCompilationUnitJDTASTVisitorAndConverter extends AbstractJD
 	}
 	
 	private org.emftext.language.java.classifiers.ConcreteClassifier convertToConcreteClassifier(AbstractTypeDeclaration typeDecl) {
+		org.emftext.language.java.classifiers.ConcreteClassifier result = null;
 		if (typeDecl.getNodeType() == ASTNode.TYPE_DECLARATION) {
-			return this.convertToClassOrInterface((TypeDeclaration) typeDecl);
+			result = this.convertToClassOrInterface((TypeDeclaration) typeDecl);
 		} else if (typeDecl.getNodeType() == ASTNode.ANNOTATION_TYPE_DECLARATION) {
-			return this.convertToAnnotation((AnnotationTypeDeclaration) typeDecl);
+			result = this.convertToAnnotation((AnnotationTypeDeclaration) typeDecl);
 		} else { // typeDecl.getNodeType() == ASTNode.ENUM_DECLARATION
-			return this.convertToEnum((EnumDeclaration) typeDecl);
+			result = this.convertToEnum((EnumDeclaration) typeDecl);
 		}
+		org.emftext.language.java.classifiers.ConcreteClassifier finalResult = result;
+		typeDecl.modifiers().forEach(obj -> finalResult.getAnnotationsAndModifiers().add(
+			this.converToModifierOrAnnotationInstance((IExtendedModifier) obj)));
+		return result;
 	}
 	
 	private org.emftext.language.java.classifiers.ConcreteClassifier convertToClassOrInterface(TypeDeclaration typeDecl) {
