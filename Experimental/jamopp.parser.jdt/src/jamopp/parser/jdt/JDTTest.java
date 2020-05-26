@@ -15,6 +15,7 @@ package jamopp.parser.jdt;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -86,10 +87,10 @@ public class JDTTest {
 	public void testModuleConversion() {
 		Path moduleFile = Paths.get("../../Tests/org.emftext.language.java.tests.sevenup/src/module-info.java");
 		org.emftext.language.java.containers.JavaRoot root = parseFile(moduleFile);
-		assertTrue(root instanceof org.emftext.language.java.modules.NormalModule);
+		assertTrue(root instanceof org.emftext.language.java.containers.Module);
 		assertEquals(1, root.getLayoutInformations().size());
 		assertEquals(readFile(moduleFile), root.getLayoutInformations().get(0).getVisibleTokenText());
-		org.emftext.language.java.modules.NormalModule module = (org.emftext.language.java.modules.NormalModule) root;
+		org.emftext.language.java.containers.Module module = (org.emftext.language.java.containers.Module) root;
 		assertEquals(0, module.getImports().size());
 		assertEquals(6, module.getTarget().size());
 		assertTrue(module.getTarget().get(0) instanceof org.emftext.language.java.modules.ExportsModuleDirective);
@@ -101,8 +102,8 @@ public class JDTTest {
 		assertTrue(module.getTarget().get(3) instanceof org.emftext.language.java.modules.RequiresModuleDirective);
 		org.emftext.language.java.modules.RequiresModuleDirective reqDirective = (org.emftext.language.java.modules.RequiresModuleDirective) module.getTarget().get(3);
 		assertEquals(1, reqDirective.getLayoutInformations().size());
-		assertEquals(1, reqDirective.getModifiers().size());
-		assertTrue(reqDirective.getModifiers().get(0) instanceof org.emftext.language.java.modifiers.Transitive);
+		assertNotNull(reqDirective.getModifier());
+		assertTrue(reqDirective.getModifier() instanceof org.emftext.language.java.modifiers.Transitive);
 		assertTrue(reqDirective.getRequiredModule().getTarget().eIsProxy()); // Fails because proxy URI is set to null.
 		assertTrue(module.getTarget().get(4) instanceof org.emftext.language.java.modules.ProvidesModuleDirective);
 		assertEquals(1, module.getTarget().get(4).getLayoutInformations().size());
