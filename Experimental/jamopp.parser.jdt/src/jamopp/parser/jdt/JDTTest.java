@@ -35,14 +35,21 @@ import org.junit.Test;
  * A simple class to test the capabilities of the JDT parser.
  */
 public class JDTTest {
-	private static String currentSrc;
-	
 	public static void main(String[] args) {
 		parseDirectory(Paths.get("../../Tests/org.emftext.language.java.test/src-input"));
 		parseDirectory(Paths.get("../../Tests/org.emftext.language.java.tests.sevenup/src"));
 	}
 	
-	private static ASTNode parseFile(Path file) {
+	private static String readFile(Path file) {
+		StringBuilder builder = new StringBuilder();
+		try {
+			Files.readAllLines(file).forEach(line -> builder.append(line + System.getProperty("line.separator")));
+		} catch (IOException e) {
+		}
+		return builder.toString();
+	}
+	
+	private static ASTNode parseFileWithJDT(Path file, String fileContent) {
 		final String moduleInfoFileName = "module-info.java";
 		ASTParser parser = ASTParser.newParser(AST.JLS13);
 		if(file.endsWith(moduleInfoFileName)) {
@@ -53,37 +60,35 @@ public class JDTTest {
 		options.put(JavaCore.COMPILER_COMPLIANCE, JavaCore.VERSION_13);
 		options.put(JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, JavaCore.VERSION_13);
 		parser.setCompilerOptions(options);
-		StringBuilder builder = new StringBuilder();
-		try {
-			Files.readAllLines(file).forEach(line -> builder.append(line + System.getProperty("line.separator")));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		currentSrc = builder.toString();
-		parser.setSource(currentSrc.toCharArray());
+		parser.setSource(fileContent.toCharArray());
 		return parser.createAST(null); // ast is instanceof org.eclipse.jdt.core.dom.CompilationUnit
 	}
 	
-	private static List<ASTNode> parseDirectory(Path directory) {
-		ArrayList<ASTNode> results = new ArrayList<>();
+	public static List<org.emftext.language.java.containers.JavaRoot> parseDirectory(Path directory) {
+		ArrayList<org.emftext.language.java.containers.JavaRoot> results = new ArrayList<>();
 		try {
 			Files.walk(directory).filter(path -> Files.isRegularFile(path)).forEach(path -> results.add(parseFile(path)));
 		} catch (IOException e) {
-			e.printStackTrace();
 		}
 		return results;
 	}
 	
+	public static org.emftext.language.java.containers.JavaRoot parseFile(Path file) {
+		String src = readFile(file);
+		ASTNode ast = parseFileWithJDT(file, src);
+		JDTASTVisitorAndConverter converter = new JDTASTVisitorAndConverter();
+		converter.setSource(src);
+		ast.accept(converter);
+		return converter.getConvertedElement();
+	}
+	
 	@Test
 	public void testModuleConversion() {
-		ASTNode ast = parseFile(Paths.get("../../Tests/org.emftext.language.java.tests.sevenup/src/module-info.java"));
-		JDTASTVisitorAndConverter converter = new JDTASTVisitorAndConverter();
-		converter.setSource(currentSrc);
-		ast.accept(converter);
-		org.emftext.language.java.containers.JavaRoot root = converter.getConvertedElement();
+		Path moduleFile = Paths.get("../../Tests/org.emftext.language.java.tests.sevenup/src/module-info.java");
+		org.emftext.language.java.containers.JavaRoot root = parseFile(moduleFile);
 		assertTrue(root instanceof org.emftext.language.java.modules.NormalModule);
 		assertEquals(1, root.getLayoutInformations().size());
-		assertEquals(currentSrc, root.getLayoutInformations().get(0).getVisibleTokenText());
+		assertEquals(readFile(moduleFile), root.getLayoutInformations().get(0).getVisibleTokenText());
 		org.emftext.language.java.modules.NormalModule module = (org.emftext.language.java.modules.NormalModule) root;
 		assertEquals(0, module.getImports().size());
 		assertEquals(6, module.getTarget().size());
