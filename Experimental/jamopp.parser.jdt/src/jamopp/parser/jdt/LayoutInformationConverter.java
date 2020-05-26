@@ -29,6 +29,7 @@ class LayoutInformationConverter
 		currentRootLayout.setStartOffset(rootSource.getStartPosition());
 		currentRootLayout.setLength(rootSource.getLength());
 		currentRootLayout.setObject(root);
+		currentRootLayout.setRootLayout(currentRootLayout);
 		root.getLayoutInformations().add(currentRootLayout);
 	}
 	
