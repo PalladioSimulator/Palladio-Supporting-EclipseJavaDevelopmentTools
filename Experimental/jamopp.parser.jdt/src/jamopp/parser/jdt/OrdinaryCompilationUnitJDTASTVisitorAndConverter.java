@@ -15,6 +15,7 @@ package jamopp.parser.jdt;
 
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
+import org.eclipse.jdt.core.dom.Annotation;
 import org.eclipse.jdt.core.dom.BodyDeclaration;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.EnumConstantDeclaration;
@@ -122,7 +123,7 @@ public class OrdinaryCompilationUnitJDTASTVisitorAndConverter extends ModuleJDTA
 	@SuppressWarnings("unchecked")
 	private org.emftext.language.java.generics.TypeParameter convertToTypeParameter(TypeParameter param) {
 		org.emftext.language.java.generics.TypeParameter result = org.emftext.language.java.generics.GenericsFactory.eINSTANCE.createTypeParameter();
-		param.modifiers();
+		param.modifiers().forEach(obj -> result.getAnnotations().add(this.convertToAnnotationInstance((Annotation) obj)));
 		this.convertToSimpleNameOnlyAndSet(param.getName(), result);
 		param.typeBounds().forEach(obj -> result.getExtendTypes().add(this.convertToTypeReference((Type) obj)));
 		LayoutInformationConverter.convertToMinimalLayoutInformation(result, param);
