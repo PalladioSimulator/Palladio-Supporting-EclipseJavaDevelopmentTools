@@ -17,7 +17,6 @@ import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.Annotation;
 import org.eclipse.jdt.core.dom.CompilationUnit;
-import org.eclipse.jdt.core.dom.ImportDeclaration;
 import org.eclipse.jdt.core.dom.ModuleDeclaration;
 import org.eclipse.jdt.core.dom.ModuleDirective;
 import org.eclipse.jdt.core.dom.ModuleModifier;
@@ -27,16 +26,14 @@ import org.eclipse.jdt.core.dom.ProvidesDirective;
 import org.eclipse.jdt.core.dom.RequiresDirective;
 import org.eclipse.jdt.core.dom.UsesDirective;
 
-class ModuleJDTASTVisitorAndConverter extends AbstractJDTASTVisitorAndConverter {
+class ModuleJDTASTVisitorAndConverter extends AbstractAndEmptyModelJDTASTVisitorAndConverter {
 	@Override
 	public boolean visit(CompilationUnit node) {
 		if (node.getModule() != null) {
 			org.emftext.language.java.containers.Module module = this.convertToModule(node.getModule());
-			node.imports().forEach(obj -> module.getImports().add(this.convertToImport((ImportDeclaration) obj)));
 			this.setConvertedElement(module);
-		} else {
-			super.visit(node);
 		}
+		super.visit(node);
 		return false;
 	}
 	

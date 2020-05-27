@@ -25,14 +25,13 @@ import org.eclipse.jdt.core.dom.Initializer;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 
-public class OrdinaryCompilationUnitJDTASTVisitorAndConverter extends AbstractJDTASTVisitorAndConverter {
+public class OrdinaryCompilationUnitJDTASTVisitorAndConverter extends AbstractAndEmptyModelJDTASTVisitorAndConverter {
 	@Override
 	public boolean visit(CompilationUnit node) {
 		if (node.types().size() > 0) {
 			this.setConvertedElement(this.convertToCompilationUnit(node));
-		} else {
-			super.visit(node);
 		}
+		super.visit(node);
 		return false;
 	}
 	

@@ -43,7 +43,7 @@ import org.eclipse.jdt.core.dom.SingleMemberAnnotation;
 import org.eclipse.jdt.core.dom.SuperMethodReference;
 import org.eclipse.jdt.core.dom.TypeMethodReference;
 
-class AbstractJDTASTVisitorAndConverter extends ASTVisitor {
+class AbstractAndEmptyModelJDTASTVisitorAndConverter extends ASTVisitor {
 	private org.emftext.language.java.containers.JavaRoot convertedRootElement;
 	private String originalSource;
 	
@@ -65,7 +65,10 @@ class AbstractJDTASTVisitorAndConverter extends ASTVisitor {
 	
 	@Override
 	public boolean visit(CompilationUnit node) {
-		this.convertedRootElement = org.emftext.language.java.containers.ContainersFactory.eINSTANCE.createEmptyModel();
+		if (this.convertedRootElement == null) {
+			this.convertedRootElement = org.emftext.language.java.containers.ContainersFactory.eINSTANCE.createEmptyModel();
+		}
+		node.imports().forEach(obj -> this.convertedRootElement.getImports().add(this.convertToImport((ImportDeclaration) obj)));
 		return false;
 	}
 	
@@ -90,7 +93,7 @@ class AbstractJDTASTVisitorAndConverter extends ASTVisitor {
 		return ref;
 	}
 	
-	org.emftext.language.java.imports.Import convertToImport(ImportDeclaration importDecl) {
+	private org.emftext.language.java.imports.Import convertToImport(ImportDeclaration importDecl) {
 		if (!importDecl.isOnDemand() && !importDecl.isStatic()) {
 			org.emftext.language.java.imports.ClassifierImport convertedImport =
 				org.emftext.language.java.imports.ImportsFactory.eINSTANCE.createClassifierImport();
