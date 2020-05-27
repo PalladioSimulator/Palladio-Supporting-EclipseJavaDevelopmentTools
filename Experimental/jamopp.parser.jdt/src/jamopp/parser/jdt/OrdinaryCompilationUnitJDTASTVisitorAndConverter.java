@@ -18,6 +18,7 @@ import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.jdt.core.dom.AnnotationTypeDeclaration;
 import org.eclipse.jdt.core.dom.BodyDeclaration;
 import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.eclipse.jdt.core.dom.EnumConstantDeclaration;
 import org.eclipse.jdt.core.dom.EnumDeclaration;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.IExtendedModifier;
@@ -42,6 +43,48 @@ public class OrdinaryCompilationUnitJDTASTVisitorAndConverter extends ModuleJDTA
 		return result;
 	}
 	
+	private org.emftext.language.java.classifiers.ConcreteClassifier convertToConcreteClassifier(AbstractTypeDeclaration typeDecl) {
+		org.emftext.language.java.classifiers.ConcreteClassifier result = null;
+		if (typeDecl.getNodeType() == ASTNode.TYPE_DECLARATION) {
+			result = this.convertToClassOrInterface((TypeDeclaration) typeDecl);
+		} else if (typeDecl.getNodeType() == ASTNode.ANNOTATION_TYPE_DECLARATION) {
+			result = org.emftext.language.java.classifiers.ClassifiersFactory.eINSTANCE.createAnnotation();
+		} else { // typeDecl.getNodeType() == ASTNode.ENUM_DECLARATION
+			result = this.convertToEnum((EnumDeclaration) typeDecl);
+		}
+		org.emftext.language.java.classifiers.ConcreteClassifier finalResult = result;
+		typeDecl.modifiers().forEach(obj -> finalResult.getAnnotationsAndModifiers().add(this.converToModifierOrAnnotationInstance((IExtendedModifier) obj)));
+		this.convertToSimpleNameOnlyAndSet(typeDecl.getName(), result);
+		typeDecl.bodyDeclarations().forEach(obj -> finalResult.getMembers().add(this.convertToMember((BodyDeclaration) obj)));
+		LayoutInformationConverter.convertToMinimalLayoutInformation(result, typeDecl);
+		return result;
+	}
+	
+	private org.emftext.language.java.classifiers.ConcreteClassifier convertToClassOrInterface(TypeDeclaration typeDecl) {
+		org.emftext.language.java.classifiers.ConcreteClassifier result;
+		if (typeDecl.isInterface()) {
+			org.emftext.language.java.classifiers.Interface interfaceObj = org.emftext.language.java.classifiers.ClassifiersFactory.eINSTANCE.createInterface();
+			typeDecl.superInterfaceTypes().forEach(obj -> interfaceObj.getExtends().add(null));
+			result = interfaceObj;
+		} else {
+			org.emftext.language.java.classifiers.Class classObj = org.emftext.language.java.classifiers.ClassifiersFactory.eINSTANCE.createClass();
+			if (typeDecl.getSuperclassType() != null) {
+				typeDecl.getSuperclassType();
+			}
+			typeDecl.superInterfaceTypes().forEach(obj -> classObj.getImplements().add(null));
+			result = classObj;
+		}
+		typeDecl.typeParameters().forEach(obj -> result.getTypeParameters().add(null));
+		return result;
+	}
+	
+	private org.emftext.language.java.classifiers.Enumeration convertToEnum(EnumDeclaration enumDecl) {
+		org.emftext.language.java.classifiers.Enumeration result = org.emftext.language.java.classifiers.ClassifiersFactory.eINSTANCE.createEnumeration();
+		enumDecl.superInterfaceTypes().forEach(obj -> result.getImplements().add(null));
+		enumDecl.enumConstants().forEach(obj -> result.getConstants().add(this.convertToEnumConstant((EnumConstantDeclaration) obj)));
+		return result;
+	}
+	
 	private org.emftext.language.java.members.Member convertToMember(BodyDeclaration body) {
 		if (body instanceof AbstractTypeDeclaration) {
 			return this.convertToConcreteClassifier((AbstractTypeDeclaration) body);
@@ -55,33 +98,6 @@ public class OrdinaryCompilationUnitJDTASTVisitorAndConverter extends ModuleJDTA
 		return null;
 	}
 	
-	private org.emftext.language.java.classifiers.ConcreteClassifier convertToConcreteClassifier(AbstractTypeDeclaration typeDecl) {
-		org.emftext.language.java.classifiers.ConcreteClassifier result = null;
-		if (typeDecl.getNodeType() == ASTNode.TYPE_DECLARATION) {
-			result = this.convertToClassOrInterface((TypeDeclaration) typeDecl);
-		} else if (typeDecl.getNodeType() == ASTNode.ANNOTATION_TYPE_DECLARATION) {
-			result = this.convertToAnnotation((AnnotationTypeDeclaration) typeDecl);
-		} else { // typeDecl.getNodeType() == ASTNode.ENUM_DECLARATION
-			result = this.convertToEnum((EnumDeclaration) typeDecl);
-		}
-		org.emftext.language.java.classifiers.ConcreteClassifier finalResult = result;
-		typeDecl.modifiers().forEach(obj -> finalResult.getAnnotationsAndModifiers().add(
-			this.converToModifierOrAnnotationInstance((IExtendedModifier) obj)));
-		return result;
-	}
-	
-	private org.emftext.language.java.classifiers.ConcreteClassifier convertToClassOrInterface(TypeDeclaration typeDecl) {
-		return null;
-	}
-	
-	private org.emftext.language.java.classifiers.Annotation convertToAnnotation(AnnotationTypeDeclaration typeDecl) {
-		return null;
-	}
-	
-	private org.emftext.language.java.classifiers.Enumeration convertToEnum(EnumDeclaration enumDecl) {
-		return null;
-	}
-	
 	private org.emftext.language.java.statements.Block convertToBlock(Initializer init) {
 		return null;
 	}
@@ -91,6 +107,10 @@ public class OrdinaryCompilationUnitJDTASTVisitorAndConverter extends ModuleJDTA
 	}
 	
 	private org.emftext.language.java.members.Member convertToMethodOrConstructor(MethodDeclaration methodDecl) {
+		return null;
+	}
+	
+	private org.emftext.language.java.members.EnumConstant convertToEnumConstant(EnumConstantDeclaration enDecl) {
 		return null;
 	}
 }
