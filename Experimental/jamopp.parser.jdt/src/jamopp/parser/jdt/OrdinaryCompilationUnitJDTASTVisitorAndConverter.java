@@ -25,7 +25,7 @@ import org.eclipse.jdt.core.dom.Initializer;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 
-public class OrdinaryCompilationUnitJDTASTVisitorAndConverter extends AbstractAndEmptyModelJDTASTVisitorAndConverter {
+public class OrdinaryCompilationUnitJDTASTVisitorAndConverter extends ModuleJDTASTVisitorAndConverter {
 	@Override
 	public boolean visit(CompilationUnit node) {
 		if (node.types().size() > 0) {

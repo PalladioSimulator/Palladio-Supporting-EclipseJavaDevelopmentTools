@@ -26,7 +26,7 @@ import org.eclipse.jdt.core.dom.ProvidesDirective;
 import org.eclipse.jdt.core.dom.RequiresDirective;
 import org.eclipse.jdt.core.dom.UsesDirective;
 
-class ModuleJDTASTVisitorAndConverter extends AbstractAndEmptyModelJDTASTVisitorAndConverter {
+class ModuleJDTASTVisitorAndConverter extends PackageJDTASTVisitorAndConverter {
 	@Override
 	public boolean visit(CompilationUnit node) {
 		if (node.getModule() != null) {

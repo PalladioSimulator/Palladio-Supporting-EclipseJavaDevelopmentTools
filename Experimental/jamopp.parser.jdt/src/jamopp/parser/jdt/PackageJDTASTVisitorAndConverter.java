@@ -44,6 +44,8 @@ public class PackageJDTASTVisitorAndConverter extends AbstractAndEmptyModelJDTAS
 		org.emftext.language.java.containers.JavaRoot root = this.getConvertedElement();
 		if (root == null && node.getPackage() != null) {
 			root = org.emftext.language.java.containers.ContainersFactory.eINSTANCE.createPackage();
+			LayoutInformationConverter.convertJavaRootLayoutInformation(root, node, this.getSource());
+			this.setConvertedElement(root);
 		}
 		org.emftext.language.java.containers.JavaRoot finalRoot = root;
 		if (node.getPackage() != null) {
