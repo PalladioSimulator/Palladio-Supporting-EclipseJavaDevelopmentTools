@@ -15,7 +15,6 @@ package jamopp.parser.jdt;
 
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
-import org.eclipse.jdt.core.dom.AnnotationTypeDeclaration;
 import org.eclipse.jdt.core.dom.BodyDeclaration;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.EnumConstantDeclaration;
@@ -24,7 +23,9 @@ import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.IExtendedModifier;
 import org.eclipse.jdt.core.dom.Initializer;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
+import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
+import org.eclipse.jdt.core.dom.TypeParameter;
 
 public class OrdinaryCompilationUnitJDTASTVisitorAndConverter extends ModuleJDTASTVisitorAndConverter {
 	@Override
@@ -36,6 +37,7 @@ public class OrdinaryCompilationUnitJDTASTVisitorAndConverter extends ModuleJDTA
 		return false;
 	}
 	
+	@SuppressWarnings("unchecked")
 	private org.emftext.language.java.containers.CompilationUnit convertToCompilationUnit(CompilationUnit cu) {
 		org.emftext.language.java.containers.CompilationUnit result = org.emftext.language.java.containers.ContainersFactory.eINSTANCE.createCompilationUnit();
 		LayoutInformationConverter.convertJavaRootLayoutInformation(result, cu, getSource());
@@ -43,6 +45,7 @@ public class OrdinaryCompilationUnitJDTASTVisitorAndConverter extends ModuleJDTA
 		return result;
 	}
 	
+	@SuppressWarnings("unchecked")
 	private org.emftext.language.java.classifiers.ConcreteClassifier convertToConcreteClassifier(AbstractTypeDeclaration typeDecl) {
 		org.emftext.language.java.classifiers.ConcreteClassifier result = null;
 		if (typeDecl.getNodeType() == ASTNode.TYPE_DECLARATION) {
@@ -60,27 +63,29 @@ public class OrdinaryCompilationUnitJDTASTVisitorAndConverter extends ModuleJDTA
 		return result;
 	}
 	
+	@SuppressWarnings("unchecked")
 	private org.emftext.language.java.classifiers.ConcreteClassifier convertToClassOrInterface(TypeDeclaration typeDecl) {
 		org.emftext.language.java.classifiers.ConcreteClassifier result;
 		if (typeDecl.isInterface()) {
 			org.emftext.language.java.classifiers.Interface interfaceObj = org.emftext.language.java.classifiers.ClassifiersFactory.eINSTANCE.createInterface();
-			typeDecl.superInterfaceTypes().forEach(obj -> interfaceObj.getExtends().add(null));
+			typeDecl.superInterfaceTypes().forEach(obj -> interfaceObj.getExtends().add(this.convertToTypeReference((Type) obj)));
 			result = interfaceObj;
 		} else {
 			org.emftext.language.java.classifiers.Class classObj = org.emftext.language.java.classifiers.ClassifiersFactory.eINSTANCE.createClass();
 			if (typeDecl.getSuperclassType() != null) {
-				typeDecl.getSuperclassType();
+				classObj.setExtends(this.convertToTypeReference(typeDecl.getSuperclassType()));
 			}
-			typeDecl.superInterfaceTypes().forEach(obj -> classObj.getImplements().add(null));
+			typeDecl.superInterfaceTypes().forEach(obj -> classObj.getImplements().add(this.convertToTypeReference((Type) obj)));
 			result = classObj;
 		}
-		typeDecl.typeParameters().forEach(obj -> result.getTypeParameters().add(null));
+		typeDecl.typeParameters().forEach(obj -> result.getTypeParameters().add(this.convertToTypeParameter((TypeParameter) obj)));
 		return result;
 	}
 	
+	@SuppressWarnings("unchecked")
 	private org.emftext.language.java.classifiers.Enumeration convertToEnum(EnumDeclaration enumDecl) {
 		org.emftext.language.java.classifiers.Enumeration result = org.emftext.language.java.classifiers.ClassifiersFactory.eINSTANCE.createEnumeration();
-		enumDecl.superInterfaceTypes().forEach(obj -> result.getImplements().add(null));
+		enumDecl.superInterfaceTypes().forEach(obj -> result.getImplements().add(this.convertToTypeReference((Type) obj)));
 		enumDecl.enumConstants().forEach(obj -> result.getConstants().add(this.convertToEnumConstant((EnumConstantDeclaration) obj)));
 		return result;
 	}
@@ -112,5 +117,15 @@ public class OrdinaryCompilationUnitJDTASTVisitorAndConverter extends ModuleJDTA
 	
 	private org.emftext.language.java.members.EnumConstant convertToEnumConstant(EnumConstantDeclaration enDecl) {
 		return null;
+	}
+	
+	@SuppressWarnings("unchecked")
+	private org.emftext.language.java.generics.TypeParameter convertToTypeParameter(TypeParameter param) {
+		org.emftext.language.java.generics.TypeParameter result = org.emftext.language.java.generics.GenericsFactory.eINSTANCE.createTypeParameter();
+		param.modifiers();
+		this.convertToSimpleNameOnlyAndSet(param.getName(), result);
+		param.typeBounds().forEach(obj -> result.getExtendTypes().add(this.convertToTypeReference((Type) obj)));
+		LayoutInformationConverter.convertToMinimalLayoutInformation(result, param);
+		return result;
 	}
 }
