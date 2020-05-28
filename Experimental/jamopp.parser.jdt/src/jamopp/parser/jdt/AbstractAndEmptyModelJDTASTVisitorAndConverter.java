@@ -17,9 +17,7 @@ import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.ImportDeclaration;
-import org.eclipse.jdt.core.dom.Name;
 import org.eclipse.jdt.core.dom.QualifiedName;
-import org.eclipse.jdt.core.dom.SimpleName;
 
 class AbstractAndEmptyModelJDTASTVisitorAndConverter extends ASTVisitor {
 	private org.emftext.language.java.containers.JavaRoot convertedRootElement;
@@ -41,6 +39,7 @@ class AbstractAndEmptyModelJDTASTVisitorAndConverter extends ASTVisitor {
 		return this.convertedRootElement;
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public boolean visit(CompilationUnit node) {
 		if (this.convertedRootElement == null) {
@@ -50,27 +49,6 @@ class AbstractAndEmptyModelJDTASTVisitorAndConverter extends ASTVisitor {
 		return false;
 	}
 	
-	org.emftext.language.java.types.TypeReference convertToClassifierOrNamespaceClassifierReference(Name name) {
-		if (name.isSimpleName()) {
-			return this.convertToClassifierReference((SimpleName) name);
-		} else { // name.isQualifiedName()
-			QualifiedName qualifiedName = (QualifiedName) name;
-			org.emftext.language.java.types.NamespaceClassifierReference ref = org.emftext.language.java.types.TypesFactory.eINSTANCE.createNamespaceClassifierReference();
-			ref.getClassifierReferences().add(this.convertToClassifierReference(qualifiedName.getName()));
-			this.convertToNamespacesAndSet(qualifiedName.getQualifier(), ref);
-			return ref;
-		}
-	}
-	
-	org.emftext.language.java.types.ClassifierReference convertToClassifierReference(SimpleName simpleName) {
-		org.emftext.language.java.types.ClassifierReference ref = org.emftext.language.java.types.TypesFactory.eINSTANCE.createClassifierReference();
-		org.emftext.language.java.classifiers.Class proxy = org.emftext.language.java.classifiers.ClassifiersFactory.eINSTANCE.createClass();
-		((InternalEObject) proxy).eSetProxyURI(null);
-		proxy.setName(simpleName.getIdentifier());
-		ref.setTarget(proxy);
-		return ref;
-	}
-	
 	private org.emftext.language.java.imports.Import convertToImport(ImportDeclaration importDecl) {
 		if (!importDecl.isOnDemand() && !importDecl.isStatic()) {
 			org.emftext.language.java.imports.ClassifierImport convertedImport =
@@ -78,7 +56,7 @@ class AbstractAndEmptyModelJDTASTVisitorAndConverter extends ASTVisitor {
 			org.emftext.language.java.classifiers.Class proxy = org.emftext.language.java.classifiers.ClassifiersFactory.eINSTANCE.createClass();
 			((InternalEObject) proxy).eSetProxyURI(null);
 			convertedImport.setClassifier(proxy);
-			this.convertToNamespacesAndSimpleNameAndSet(importDecl.getName(), convertedImport, proxy);
+			BaseConverterUtility.convertToNamespacesAndSimpleNameAndSet(importDecl.getName(), convertedImport, proxy);
 			LayoutInformationConverter.convertToMinimalLayoutInformation(convertedImport, importDecl);
 			return convertedImport;
 		} else if (!importDecl.isOnDemand() && importDecl.isStatic()) {
@@ -93,12 +71,12 @@ class AbstractAndEmptyModelJDTASTVisitorAndConverter extends ASTVisitor {
 			org.emftext.language.java.classifiers.Class proxyClass = org.emftext.language.java.classifiers.ClassifiersFactory.eINSTANCE.createClass();
 			((InternalEObject) proxyClass).eSetProxyURI(null);
 			convertedImport.setClassifier(proxyClass);
-			this.convertToNamespacesAndSimpleNameAndSet(qualifiedName.getQualifier(), convertedImport, proxyClass);
+			BaseConverterUtility.convertToNamespacesAndSimpleNameAndSet(qualifiedName.getQualifier(), convertedImport, proxyClass);
 			LayoutInformationConverter.convertToMinimalLayoutInformation(convertedImport, importDecl);
 			return convertedImport;
 		} else if (importDecl.isOnDemand() && !importDecl.isStatic()) {
 			org.emftext.language.java.imports.PackageImport convertedImport = org.emftext.language.java.imports.ImportsFactory.eINSTANCE.createPackageImport();
-			this.convertToNamespacesAndSet(importDecl.getName(), convertedImport);
+			BaseConverterUtility.convertToNamespacesAndSet(importDecl.getName(), convertedImport);
 			LayoutInformationConverter.convertToMinimalLayoutInformation(convertedImport, importDecl);
 			return convertedImport;
 		} else { // importDecl.isOnDemand() && importDecl.isStatic()
@@ -107,41 +85,9 @@ class AbstractAndEmptyModelJDTASTVisitorAndConverter extends ASTVisitor {
 			org.emftext.language.java.classifiers.Class proxyClass = org.emftext.language.java.classifiers.ClassifiersFactory.eINSTANCE.createClass();
 			((InternalEObject) proxyClass).eSetProxyURI(null);
 			convertedImport.setClassifier(proxyClass);
-			this.convertToNamespacesAndSimpleNameAndSet(importDecl.getName(), convertedImport, proxyClass);
+			BaseConverterUtility.convertToNamespacesAndSimpleNameAndSet(importDecl.getName(), convertedImport, proxyClass);
 			LayoutInformationConverter.convertToMinimalLayoutInformation(convertedImport, importDecl);
 			return convertedImport;
-		}
-	}
-	
-	void convertToNamespacesAndSimpleNameAndSet(Name name, org.emftext.language.java.commons.NamespaceAwareElement namespaceElement,
-		org.emftext.language.java.commons.NamedElement namedElement) {
-		if (name.isSimpleName()) {
-			namedElement.setName(((SimpleName) name).getIdentifier());
-		} else if (name.isQualifiedName()) {
-			QualifiedName qualifiedName = (QualifiedName) name;
-			namedElement.setName(qualifiedName.getName().getIdentifier());
-			this.convertToNamespacesAndSet(qualifiedName.getQualifier(), namespaceElement);
-		}
-	}
-	
-	void convertToNamespacesAndSet(Name name, org.emftext.language.java.commons.NamespaceAwareElement namespaceElement) {
-		if (name.isSimpleName()) {
-			SimpleName simpleName = (SimpleName) name;
-			namespaceElement.getNamespaces().add(0, simpleName.getIdentifier());
-		} else if (name.isQualifiedName()) {
-			QualifiedName qualifiedName = (QualifiedName) name;
-			namespaceElement.getNamespaces().add(0, qualifiedName.getName().getIdentifier());
-			convertToNamespacesAndSet(qualifiedName.getQualifier(), namespaceElement);
-		}
-	}
-	
-	void convertToSimpleNameOnlyAndSet(Name name, org.emftext.language.java.commons.NamedElement namedElement) {
-		if (name.isSimpleName()) {
-			SimpleName simpleName = (SimpleName) name;
-			namedElement.setName(simpleName.getIdentifier());
-		} else { // name.isQualifiedName()
-			QualifiedName qualifiedName = (QualifiedName) name;
-			namedElement.setName(qualifiedName.getName().getIdentifier());
 		}
 	}
 }

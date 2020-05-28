@@ -37,18 +37,21 @@ class ModuleJDTASTVisitorAndConverter extends PackageJDTASTVisitorAndConverter {
 		return false;
 	}
 	
+	@SuppressWarnings("unchecked")
 	private org.emftext.language.java.containers.Module convertToModule(ModuleDeclaration node) {
 		org.emftext.language.java.containers.Module module = org.emftext.language.java.containers.ContainersFactory.eINSTANCE.createModule();
 		if (node.isOpen()) {
 			module.setOpen(org.emftext.language.java.modifiers.ModifiersFactory.eINSTANCE.createOpen());
 		}
 		LayoutInformationConverter.convertJavaRootLayoutInformation(module, node, this.getSource());
-		this.convertToNamespacesAndSet(node.getName(), module);
-		node.annotations().forEach(obj -> module.getAnnotations().add(this.convertToAnnotationInstance((Annotation) obj)));
+		BaseConverterUtility.convertToNamespacesAndSet(node.getName(), module);
+		node.annotations().forEach(obj -> module.getAnnotations().add(AnnotationInstanceOrModifierConverterUtility
+			.convertToAnnotationInstance((Annotation) obj)));
 		node.moduleStatements().forEach(obj -> module.getTarget().add(this.convertToDirective((ModuleDirective) obj)));
 		return module;
 	}
 	
+	@SuppressWarnings("unchecked")
 	private org.emftext.language.java.modules.ModuleDirective convertToDirective(ModuleDirective directive) {
 		if (directive.getNodeType() == ASTNode.REQUIRES_DIRECTIVE) {
 			RequiresDirective reqDir = (RequiresDirective) directive;
@@ -72,21 +75,21 @@ class ModuleJDTASTVisitorAndConverter extends PackageJDTASTVisitorAndConverter {
 			} else { // directive.getNodeType() == ASTNode.EXPORTS_DIRECTIVE
 				convertedDir = org.emftext.language.java.modules.ModulesFactory.eINSTANCE.createExportsModuleDirective();
 			}
-			this.convertToNamespacesAndSet(accessDir.getName(), convertedDir);
+			BaseConverterUtility.convertToNamespacesAndSet(accessDir.getName(), convertedDir);
 			accessDir.modules().forEach(obj -> convertedDir.getModules().add(this.convertToModuleReference((Name) obj)));
 			LayoutInformationConverter.convertToMinimalLayoutInformation(convertedDir, directive);
 			return convertedDir;
 		} else if (directive.getNodeType() == ASTNode.PROVIDES_DIRECTIVE) {
 			ProvidesDirective provDir = (ProvidesDirective) directive;
 			org.emftext.language.java.modules.ProvidesModuleDirective result = org.emftext.language.java.modules.ModulesFactory.eINSTANCE.createProvidesModuleDirective();
-			result.setTypeReference(convertToClassifierOrNamespaceClassifierReference(provDir.getName()));
-			provDir.implementations().forEach(obj -> result.getServiceProviders().add(this.convertToClassifierOrNamespaceClassifierReference((Name) obj)));
+			result.setTypeReference(BaseConverterUtility.convertToClassifierOrNamespaceClassifierReference(provDir.getName()));
+			provDir.implementations().forEach(obj -> result.getServiceProviders().add(BaseConverterUtility.convertToClassifierOrNamespaceClassifierReference((Name) obj)));
 			LayoutInformationConverter.convertToMinimalLayoutInformation(result, directive);
 			return result;
 		} else { // directive.getNodeType() == ASTNode.USES_DIRECTIVE
 			UsesDirective usDir = (UsesDirective) directive;
 			org.emftext.language.java.modules.UsesModuleDirective result = org.emftext.language.java.modules.ModulesFactory.eINSTANCE.createUsesModuleDirective();
-			result.setTypeReference(this.convertToClassifierOrNamespaceClassifierReference(usDir.getName()));
+			result.setTypeReference(BaseConverterUtility.convertToClassifierOrNamespaceClassifierReference(usDir.getName()));
 			LayoutInformationConverter.convertToMinimalLayoutInformation(result, directive);
 			return result;
 		}
@@ -97,7 +100,7 @@ class ModuleJDTASTVisitorAndConverter extends PackageJDTASTVisitorAndConverter {
 		org.emftext.language.java.containers.Module modProxy = org.emftext.language.java.containers.ContainersFactory.eINSTANCE.createModule();
 		((InternalEObject) modProxy).eSetProxyURI(null);
 		ref.setTarget(modProxy);
-		this.convertToNamespacesAndSet(name, modProxy);
+		BaseConverterUtility.convertToNamespacesAndSet(name, modProxy);
 		return ref;
 	}
 }

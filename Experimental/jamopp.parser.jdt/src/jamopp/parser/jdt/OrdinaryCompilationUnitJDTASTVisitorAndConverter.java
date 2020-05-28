@@ -57,8 +57,9 @@ public class OrdinaryCompilationUnitJDTASTVisitorAndConverter extends ModuleJDTA
 			result = this.convertToEnum((EnumDeclaration) typeDecl);
 		}
 		org.emftext.language.java.classifiers.ConcreteClassifier finalResult = result;
-		typeDecl.modifiers().forEach(obj -> finalResult.getAnnotationsAndModifiers().add(this.converToModifierOrAnnotationInstance((IExtendedModifier) obj)));
-		this.convertToSimpleNameOnlyAndSet(typeDecl.getName(), result);
+		typeDecl.modifiers().forEach(obj -> finalResult.getAnnotationsAndModifiers().add(AnnotationInstanceOrModifierConverterUtility
+			.converToModifierOrAnnotationInstance((IExtendedModifier) obj)));
+		BaseConverterUtility.convertToSimpleNameOnlyAndSet(typeDecl.getName(), result);
 		typeDecl.bodyDeclarations().forEach(obj -> finalResult.getMembers().add(this.convertToMember((BodyDeclaration) obj)));
 		LayoutInformationConverter.convertToMinimalLayoutInformation(result, typeDecl);
 		return result;
@@ -69,14 +70,14 @@ public class OrdinaryCompilationUnitJDTASTVisitorAndConverter extends ModuleJDTA
 		org.emftext.language.java.classifiers.ConcreteClassifier result;
 		if (typeDecl.isInterface()) {
 			org.emftext.language.java.classifiers.Interface interfaceObj = org.emftext.language.java.classifiers.ClassifiersFactory.eINSTANCE.createInterface();
-			typeDecl.superInterfaceTypes().forEach(obj -> interfaceObj.getExtends().add(this.convertToTypeReference((Type) obj)));
+			typeDecl.superInterfaceTypes().forEach(obj -> interfaceObj.getExtends().add(BaseConverterUtility.convertToTypeReference((Type) obj)));
 			result = interfaceObj;
 		} else {
 			org.emftext.language.java.classifiers.Class classObj = org.emftext.language.java.classifiers.ClassifiersFactory.eINSTANCE.createClass();
 			if (typeDecl.getSuperclassType() != null) {
-				classObj.setExtends(this.convertToTypeReference(typeDecl.getSuperclassType()));
+				classObj.setExtends(BaseConverterUtility.convertToTypeReference(typeDecl.getSuperclassType()));
 			}
-			typeDecl.superInterfaceTypes().forEach(obj -> classObj.getImplements().add(this.convertToTypeReference((Type) obj)));
+			typeDecl.superInterfaceTypes().forEach(obj -> classObj.getImplements().add(BaseConverterUtility.convertToTypeReference((Type) obj)));
 			result = classObj;
 		}
 		typeDecl.typeParameters().forEach(obj -> result.getTypeParameters().add(this.convertToTypeParameter((TypeParameter) obj)));
@@ -86,7 +87,7 @@ public class OrdinaryCompilationUnitJDTASTVisitorAndConverter extends ModuleJDTA
 	@SuppressWarnings("unchecked")
 	private org.emftext.language.java.classifiers.Enumeration convertToEnum(EnumDeclaration enumDecl) {
 		org.emftext.language.java.classifiers.Enumeration result = org.emftext.language.java.classifiers.ClassifiersFactory.eINSTANCE.createEnumeration();
-		enumDecl.superInterfaceTypes().forEach(obj -> result.getImplements().add(this.convertToTypeReference((Type) obj)));
+		enumDecl.superInterfaceTypes().forEach(obj -> result.getImplements().add(BaseConverterUtility.convertToTypeReference((Type) obj)));
 		enumDecl.enumConstants().forEach(obj -> result.getConstants().add(this.convertToEnumConstant((EnumConstantDeclaration) obj)));
 		return result;
 	}
@@ -123,9 +124,9 @@ public class OrdinaryCompilationUnitJDTASTVisitorAndConverter extends ModuleJDTA
 	@SuppressWarnings("unchecked")
 	private org.emftext.language.java.generics.TypeParameter convertToTypeParameter(TypeParameter param) {
 		org.emftext.language.java.generics.TypeParameter result = org.emftext.language.java.generics.GenericsFactory.eINSTANCE.createTypeParameter();
-		param.modifiers().forEach(obj -> result.getAnnotations().add(this.convertToAnnotationInstance((Annotation) obj)));
-		this.convertToSimpleNameOnlyAndSet(param.getName(), result);
-		param.typeBounds().forEach(obj -> result.getExtendTypes().add(this.convertToTypeReference((Type) obj)));
+		param.modifiers().forEach(obj -> result.getAnnotations().add(AnnotationInstanceOrModifierConverterUtility.convertToAnnotationInstance((Annotation) obj)));
+		BaseConverterUtility.convertToSimpleNameOnlyAndSet(param.getName(), result);
+		param.typeBounds().forEach(obj -> result.getExtendTypes().add(BaseConverterUtility.convertToTypeReference((Type) obj)));
 		LayoutInformationConverter.convertToMinimalLayoutInformation(result, param);
 		return result;
 	}
