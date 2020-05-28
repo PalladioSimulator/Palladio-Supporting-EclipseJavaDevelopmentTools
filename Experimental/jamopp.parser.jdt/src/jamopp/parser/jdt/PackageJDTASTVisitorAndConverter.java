@@ -932,7 +932,7 @@ public class PackageJDTASTVisitorAndConverter extends AbstractAndEmptyModelJDTAS
 //			normalRule.setCondition(this.convertToExpression((Expression) switchCase.expressions().get(0)));
 //			for (int index = 1; index < switchCase.expressions().size(); index++) {
 //				Expression expr = (Expression) switchCase.expressions().get(index);
-//				this.convertToExpression(expr);
+//				normalRule.getAdditionalConditions().add(this.convertToExpression(expr));
 //			}
 //			result = normalRule;
 //		} else if (!switchCase.isSwitchLabeledRule() && switchCase.isDefault()) {
@@ -942,7 +942,7 @@ public class PackageJDTASTVisitorAndConverter extends AbstractAndEmptyModelJDTAS
 //			normalCase.setCondition(this.convertToExpression((Expression) switchCase.expressions().get(0)));
 //			for (int index = 1; index < switchCase.expressions().size(); index++) {
 //				Expression expr = (Expression) switchCase.expressions().get(index);
-//				this.convertToExpression(expr);
+//				normalCase.getAdditionalConditions().add(this.convertToExpression(expr));
 //			}
 //			result = normalCase;
 //		}

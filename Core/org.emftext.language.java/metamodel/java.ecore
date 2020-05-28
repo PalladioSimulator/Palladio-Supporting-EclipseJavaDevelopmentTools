@@ -746,8 +746,6 @@
     <eClassifiers xsi:type="ecore:EClass" name="LambdaExpression" eSuperTypes="#_Wo2YDNz1Ed2bJ_pQViWxFg">
       <eStructuralFeatures xsi:type="ecore:EReference" name="parameters" lowerBound="1"
           eType="#//expressions/LambdaParameters" containment="true"/>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="arrowOperator" lowerBound="1"
-          eType="#//operators/Arrow" containment="true"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="body" lowerBound="1"
           eType="#//expressions/LambdaBody" containment="true"/>
     </eClassifiers>
@@ -1291,7 +1289,6 @@
     <eClassifiers xsi:type="ecore:EClass" name="LeftShift" eSuperTypes="#//operators/ShiftOperator"/>
     <eClassifiers xsi:type="ecore:EClass" name="RightShift" eSuperTypes="#//operators/ShiftOperator"/>
     <eClassifiers xsi:type="ecore:EClass" name="UnsignedRightShift" eSuperTypes="#//operators/ShiftOperator"/>
-    <eClassifiers xsi:type="ecore:EClass" name="Arrow" eSuperTypes="#//operators/Operator"/>
   </eSubpackages>
   <eSubpackages name="parameters" nsURI="http://www.emftext.org/java/parameters" nsPrefix="parameters">
     <eClassifiers xsi:type="ecore:EClass" name="Parameter" abstract="true" eSuperTypes="#//variables/Variable #//modifiers/AnnotableAndModifiable"/>
@@ -1471,7 +1468,10 @@
           name="variable" lowerBound="1" eType="#//variables/LocalVariable" containment="true"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" xmi:id="_Wo2Y6dz1Ed2bJ_pQViWxFg" name="NormalSwitchCase"
-        eSuperTypes="#_Wo2Y4tz1Ed2bJ_pQViWxFg #//statements/Conditional"/>
+        eSuperTypes="#_Wo2Y4tz1Ed2bJ_pQViWxFg #//statements/Conditional">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="additionalConditions"
+          upperBound="-1" eType="#_Wo2YDNz1Ed2bJ_pQViWxFg" containment="true"/>
+    </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" xmi:id="_Wo2ZG9z1Ed2bJ_pQViWxFg" name="Return"
         eSuperTypes="#_Wo2YzNz1Ed2bJ_pQViWxFg">
       <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_Wo2ZHdz1Ed2bJ_pQViWxFg"
@@ -1528,12 +1528,12 @@
       <eStructuralFeatures xsi:type="ecore:EReference" name="yieldExpression" lowerBound="1"
           eType="#_Wo2YDNz1Ed2bJ_pQViWxFg" containment="true"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="SwitchRule" abstract="true" eSuperTypes="#_Wo2Y4tz1Ed2bJ_pQViWxFg">
-      <eStructuralFeatures xsi:type="ecore:EReference" name="arrowOperator" lowerBound="1"
-          eType="#//operators/Arrow" containment="true"/>
-    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="SwitchRule" abstract="true" eSuperTypes="#_Wo2Y4tz1Ed2bJ_pQViWxFg"/>
     <eClassifiers xsi:type="ecore:EClass" name="DefaultSwitchRule" eSuperTypes="#//statements/SwitchRule"/>
-    <eClassifiers xsi:type="ecore:EClass" name="NormalSwitchRule" eSuperTypes="#_Wo2Y4tz1Ed2bJ_pQViWxFg #//statements/Conditional"/>
+    <eClassifiers xsi:type="ecore:EClass" name="NormalSwitchRule" eSuperTypes="#//statements/Conditional #//statements/SwitchRule">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="additionalConditions"
+          upperBound="-1" eType="#_Wo2YDNz1Ed2bJ_pQViWxFg" containment="true"/>
+    </eClassifiers>
   </eSubpackages>
   <eSubpackages xmi:id="_Wo2ZOtz1Ed2bJ_pQViWxFg" name="types" nsURI="http://www.emftext.org/java/types"
       nsPrefix="types">
