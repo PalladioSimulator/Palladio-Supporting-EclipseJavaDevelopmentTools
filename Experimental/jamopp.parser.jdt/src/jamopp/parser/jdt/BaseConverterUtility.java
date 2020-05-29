@@ -213,14 +213,20 @@ class BaseConverterUtility {
 	static void convertToArrayDimensionsAndSet(Type t, org.emftext.language.java.arrays.ArrayTypeable arrDimContainer) {
 		if (t.isArrayType()) {
 			ArrayType arrT = (ArrayType) t;
-			arrT.dimensions().forEach(obj -> {
-				Dimension dim = (Dimension) obj;
-				org.emftext.language.java.arrays.ArrayDimension convertedDim = org.emftext.language.java.arrays.ArraysFactory.eINSTANCE.createArrayDimension();
-				dim.annotations().forEach(annot -> convertedDim.getAnnotations().add(AnnotationInstanceOrModifierConverterUtility
-					.convertToAnnotationInstance((Annotation) annot)));
-				LayoutInformationConverter.convertToMinimalLayoutInformation(convertedDim, dim);
-				arrDimContainer.getArrayDimensionsBefore().add(convertedDim);
-			});
+			arrT.dimensions().forEach(obj -> arrDimContainer.getArrayDimensionsBefore().add(convertToArrayDimension((Dimension) obj)));
 		}
+	}
+	
+	static void convertToArrayDimensionAfterAndSet(Dimension dim, org.emftext.language.java.arrays.ArrayTypeable arrDimContainer) {
+		arrDimContainer.getArrayDimensionsAfter().add(convertToArrayDimension(dim));
+	}
+	
+	@SuppressWarnings("unchecked")
+	private static org.emftext.language.java.arrays.ArrayDimension convertToArrayDimension(Dimension dim) {
+		org.emftext.language.java.arrays.ArrayDimension result = org.emftext.language.java.arrays.ArraysFactory.eINSTANCE.createArrayDimension();
+		dim.annotations().forEach(annot -> result.getAnnotations().add(AnnotationInstanceOrModifierConverterUtility
+			.convertToAnnotationInstance((Annotation) annot)));
+		LayoutInformationConverter.convertToMinimalLayoutInformation(result, dim);
+		return result;
 	}
 }
