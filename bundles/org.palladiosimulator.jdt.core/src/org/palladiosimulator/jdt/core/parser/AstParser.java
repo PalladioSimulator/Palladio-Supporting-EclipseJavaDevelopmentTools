@@ -33,10 +33,15 @@ public class AstParser {
         LOG.info("Instantiation of a new parser for Java " + level.getConstant());
     }
 
-    public boolean createAsts(final URI sourcePath) {
+    public boolean createAsts(final URI sourcePath, String[] classpathEntries) {
         try {
             final String[] sourceFilePaths = FileHelper.getRegularFiles(sourcePath, JAVA_FILE_EXTENSION);
-            parser.setEnvironment(null, new String[] { FileHelper.createPath(sourcePath).toString() },
+            
+            for(int i = 0; i < classpathEntries.length; i++) {
+            	classpathEntries[i] = FileHelper.createPath(classpathEntries[i]).toString();
+            }
+            
+            parser.setEnvironment(classpathEntries, new String[] { FileHelper.createPath(sourcePath).toString() },
                     STANDRAD_ENCODINGS, true);
             // TODO Determine the encoding of all files
             parser.createASTs(sourceFilePaths, new String[sourceFilePaths.length], new String[0], requestor, null);
