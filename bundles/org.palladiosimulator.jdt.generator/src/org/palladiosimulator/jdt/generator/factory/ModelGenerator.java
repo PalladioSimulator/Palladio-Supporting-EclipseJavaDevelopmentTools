@@ -107,19 +107,16 @@ public class ModelGenerator {
 				String className = namespaces[namespaces.length-1];
 				//String[] namespaces = getNamespacesFromQualifiedName(v.getName().toString());
 				//String className = getClassnameFromQualifiedName(v.getName().toString());
-				System.out.println(className);
 				IBinding binding = v.resolveBinding();
 				if(binding!=null) {
 					if(binding.getKind() == IBinding.TYPE) {
 							
 						if(((ITypeBinding) binding).isClass()) {
 								if(classGenerator.containsInternalClass(className)) {
-									System.out.println(className+" already in internals!");
 									newImport.setClassifier(classGenerator.getInternalClass(className));
 									entry.getValue().getImports().add(newImport);				
 									}
 								else if(classGenerator.containsExternalClass(v.getName().toString())) {
-									System.out.println(className+" already in externals!");
 									newImport.setClassifier(classGenerator.getExternalClass(v.getName().toString()));
 									entry.getValue().getImports().add(newImport);
 								}

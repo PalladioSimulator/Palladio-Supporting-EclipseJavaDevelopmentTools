@@ -123,7 +123,12 @@ public class MemberGenerator {
     			else if(m.getReturnType2().isSimpleType()) {
     				newMethod.setTypeReference(classGenerator.createClassifierReference(m.getReturnType2().resolveBinding()));
     			}
-    			
+    			else if(m.getReturnType2().isArrayType()) {
+    				//TODO
+    			}
+    			else if(m.getReturnType2().isParameterizedType()) {
+    				//TODO
+    			}
     			
     			// parameters
     			m.parameters().forEach(p -> {
@@ -136,6 +141,12 @@ public class MemberGenerator {
     				}
     				else if(dec.getType().isSimpleType()){
     					param.setTypeReference(classGenerator.createClassifierReference(dec.getType().resolveBinding()));
+    				}
+    				else if(dec.getType().isArrayType()) {
+    					//TODO
+    				}
+    				else if(dec.getType().isParameterizedType()) {
+    					//TODO
     				}
     				newMethod.getParameters().add(param);
     			});
