@@ -62,7 +62,7 @@ public class ModelGenerator {
 		units.entrySet().stream().forEach(u -> {
 				addNamespaces(u.getValue(), u.getKey().getPackage().resolveBinding().getNameComponents());
 				allunits.add(u.getValue());
-        });        
+        });
 	}
 	
 	private void createClassifiers() {
@@ -107,33 +107,39 @@ public class ModelGenerator {
 				String className = namespaces[namespaces.length-1];
 				//String[] namespaces = getNamespacesFromQualifiedName(v.getName().toString());
 				//String className = getClassnameFromQualifiedName(v.getName().toString());
-				
+				System.out.println(className);
 				IBinding binding = v.resolveBinding();
 				if(binding!=null) {
 					if(binding.getKind() == IBinding.TYPE) {
 							
 						if(((ITypeBinding) binding).isClass()) {
 								if(classGenerator.containsInternalClass(className)) {
+									System.out.println(className+" already in internals!");
 									newImport.setClassifier(classGenerator.getInternalClass(className));
 									entry.getValue().getImports().add(newImport);				
 									}
 								else if(classGenerator.containsExternalClass(v.getName().toString())) {
+									System.out.println(className+" already in externals!");
 									newImport.setClassifier(classGenerator.getExternalClass(v.getName().toString()));
 									entry.getValue().getImports().add(newImport);
 								}
-    					// 	create class
-							//	PackageImpl newPackage = createPackage(v.getName().toString());
-								CompilationUnitImpl newCompUnit = createCompilationUnit(v.getName().toString()+".java");
-							//	newPackage.getCompilationUnits().add(newCompUnit);
-								ClassImpl newClass = classGenerator.createExternalClass(binding.getName());
-								newCompUnit.getClassifiers().add(newClass);
-							//	addPackage(newPackage);
-								addNamespaces(newCompUnit, Arrays.copyOf(namespaces, namespaces.length-1));
-								newImport.setClassifier(newClass);
-								entry.getValue().getImports().add(newImport);
+								else {
+									// 	create class
+									
+									//	PackageImpl newPackage = createPackage(v.getName().toString());
+									CompilationUnitImpl newCompUnit = createCompilationUnit(v.getName().toString()+".java");
+									//	newPackage.getCompilationUnits().add(newCompUnit);
+									ClassImpl newClass = classGenerator.createExternalClass(binding.getName());
+									newCompUnit.getClassifiers().add(newClass);
+									//	addPackage(newPackage);
+									addNamespaces(newCompUnit, Arrays.copyOf(namespaces, namespaces.length-1));
+									newImport.setClassifier(newClass);
+									entry.getValue().getImports().add(newImport);
+								}
 						}
 						else if(((ITypeBinding) binding).isInterface() && !(((ITypeBinding) binding).isAnnotation())) {
-    					// 	create interface
+							//TODO: Check for duplicates
+							// 	create interface
 							//PackageImpl newPackage = createPackage(v.getName().toString());
 							CompilationUnitImpl newCompUnit = createCompilationUnit(v.getName().toString()+".java");
 							//newPackage.getCompilationUnits().add(newCompUnit);
@@ -145,7 +151,8 @@ public class ModelGenerator {
 							entry.getValue().getImports().add(newImport);
 						}
 						else if((((ITypeBinding) binding).isAnnotation())) {
-    					// 	create Annotation
+							//TODO: Check for duplicates
+							// 	create Annotation
 							//PackageImpl newPackage = createPackage(v.getName().toString());
 							CompilationUnitImpl newCompUnit = createCompilationUnit(v.getName().toString()+".java");
 							//newPackage.getCompilationUnits().add(newCompUnit);

@@ -8,7 +8,7 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.SingleMemberAnnotation;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.palladiosimulator.jdt.core.visitor.AnnotationVisitor;
-import org.palladiosimulator.jdt.core.visitor.ClassDeclarationVisitor;
+import org.palladiosimulator.jdt.core.visitor.TypeDeclarationVisitor;
 import org.palladiosimulator.jdt.metamodel.javamodel.annotations.AnnotationsFactory;
 import org.palladiosimulator.jdt.metamodel.javamodel.annotations.impl.AnnotationInstanceImpl;
 import org.palladiosimulator.jdt.metamodel.javamodel.annotations.impl.SingleAnnotationParameterImpl;
@@ -31,7 +31,7 @@ public class ClassifierGenerator {
 	static Map<String, ClassImpl> externals = new HashMap<String, ClassImpl>();
 	static Map<String, AnnotationImpl> resolvedAnnotations = new HashMap<String, AnnotationImpl>();
     static Map<String, InterfaceImpl> interfaces = new HashMap<String, InterfaceImpl>();
-      
+    
 	
 	public ClassifierGenerator(ModelGenerator modelGenerator) {
 		this.modelGenerator = modelGenerator;
@@ -39,14 +39,27 @@ public class ClassifierGenerator {
 	}
 
 	public void addClassifiersToCompUnit(Entry<CompilationUnit, CompilationUnitImpl> entry) {
-		final ClassDeclarationVisitor visitor = new ClassDeclarationVisitor();
-        entry.getKey().accept(visitor);
-        visitor.getVisitedNodes().stream().forEach(n -> {
-        	ClassImpl newClass = createClass(n.getName());
+
+		final TypeDeclarationVisitor visitor = new TypeDeclarationVisitor();
+		entry.getKey().accept(visitor);
+		
+		// create class
+		visitor.getClassDeclarations().forEach(c -> {
+			ClassImpl newClass = createClass(c.getName());
             entry.getValue().getClassifiers().add(newClass);                
-            classes.put(n, newClass);
+            classes.put(c, newClass);
             internals.put(newClass.getName(), newClass);
-        });
+		});
+		
+		// create interface
+		visitor.getInterfaceDeclarations().forEach(i -> {
+			InterfaceImpl newInterface = createInterface(i.getName());
+			entry.getValue().getClassifiers().add(newInterface);
+		});		
+		
+		visitor.getEnumDeclarations().forEach(e -> {
+			// TODO: create enums
+		});
 	}
 	
 	
