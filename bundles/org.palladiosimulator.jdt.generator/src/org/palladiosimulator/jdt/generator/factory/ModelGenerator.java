@@ -51,7 +51,7 @@ public class ModelGenerator {
         
         // create imports (units and classifiers) and add them
         addImports();
-        
+                
         // add fields, methods and annotation instances
         classGenerator.completeClassifiers();
         

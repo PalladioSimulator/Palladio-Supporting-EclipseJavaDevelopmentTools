@@ -98,11 +98,8 @@ public class MemberGenerator {
         			newInstantiation.setTypeReference(inst_ref);
         			
         			newField.setInitialValue(newInstantiation);            			
-    			}
-    			
-    			
-    		}
-    		
+    			}    			
+    		}    		
     		entry.getValue().getMembers().add(newField);
     		fields.put(f, newField);
     	});
@@ -115,13 +112,14 @@ public class MemberGenerator {
     	methodVisitor.getVisitedNodes().stream().forEach(m -> {
     		if(!m.isConstructor()) {
     			MethodImpl newMethod = createClassMethod(m.getName());
-    			
+    			ClassifierReferenceImpl ref;
     			// return type
     			if(m.getReturnType2().isPrimitiveType()) {
     				newMethod.setTypeReference(createPrimitiveType(m.getReturnType2()));
     			}
     			else if(m.getReturnType2().isSimpleType()) {
-    				newMethod.setTypeReference(classGenerator.createClassifierReference(m.getReturnType2().resolveBinding()));
+    				ref = classGenerator.createClassifierReference(m.getReturnType2().resolveBinding());
+    				newMethod.setTypeReference(ref);
     			}
     			else if(m.getReturnType2().isArrayType()) {
     				//TODO
