@@ -310,7 +310,7 @@ public class ClassifierGenerator {
 			
 			modelGenerator.addPackage(newPackage);			
 		}
-		// TODO KLASSE WEITER AUFLÖSEN?
+		// TODO resolve classes further
 		return ref;
     	
     }*/
