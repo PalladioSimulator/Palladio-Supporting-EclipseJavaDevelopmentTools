@@ -29,7 +29,7 @@ import org.palladiosimulator.jdt.metamodel.javamodel.containers.impl.Compilation
 public class Factory {
 
     private static final String IN = "C:\\Users\\Fabian\\git\\masterarbeit\\Workspace\\innereclipse\\demo\\src";
-    private static final Logger LOG = Logger.getLogger(TestFactory.class);
+    private static final Logger LOG = Logger.getLogger(Factory.class);
     private static final String OUT = "./file.containers";
     
 
