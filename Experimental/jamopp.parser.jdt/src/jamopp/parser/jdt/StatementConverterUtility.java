@@ -105,10 +105,14 @@ class StatementConverterUtility {
 			return result;
 		} else if (statement.getNodeType() == ASTNode.EXPRESSION_STATEMENT) {
 			ExpressionStatement exprSt = (ExpressionStatement) statement;
-			org.emftext.language.java.statements.ExpressionStatement result = org.emftext.language.java.statements.StatementsFactory.eINSTANCE.createExpressionStatement();
-			result.setExpression(ExpressionConverterUtility.convertToExpression(exprSt.getExpression()));
-			LayoutInformationConverter.convertToMinimalLayoutInformation(result, exprSt);
-			return result;
+			if (exprSt.getExpression().getNodeType() == ASTNode.VARIABLE_DECLARATION_EXPRESSION) {
+				
+			} else {
+				org.emftext.language.java.statements.ExpressionStatement result = org.emftext.language.java.statements.StatementsFactory.eINSTANCE.createExpressionStatement();
+				result.setExpression(ExpressionConverterUtility.convertToExpression(exprSt.getExpression()));
+				LayoutInformationConverter.convertToMinimalLayoutInformation(result, exprSt);
+				return result;
+			}
 		} else if (statement.getNodeType() == ASTNode.FOR_STATEMENT) {
 			ForStatement forSt = (ForStatement) statement;
 			org.emftext.language.java.statements.ForLoop result = org.emftext.language.java.statements.StatementsFactory.eINSTANCE.createForLoop();

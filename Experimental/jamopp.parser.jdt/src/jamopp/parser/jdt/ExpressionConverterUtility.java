@@ -485,11 +485,7 @@ class ExpressionConverterUtility {
 		} else if (expr.getNodeType() == ASTNode.NUMBER_LITERAL) {
 			return NumberLiteralConverterUtility.convertToLiteral((NumberLiteral) expr);
 		} else {
-			return convertToReference(expr);
+			return ReferenceConverterUtility.convertToReference(expr);
 		}
-	}
-	
-	private static org.emftext.language.java.references.Reference convertToReference(Expression expr) {
-		return null;
 	}
 }
