@@ -303,15 +303,21 @@ class ClassifierConverterUtility {
 			LayoutInformationConverter.convertToMinimalLayoutInformation(result, decl);
 			return result;
 		} else {
-			org.emftext.language.java.parameters.OrdinaryParameter result = org.emftext.language.java.parameters.ParametersFactory.eINSTANCE.createOrdinaryParameter();
-			decl.modifiers().forEach(obj -> result.getAnnotationsAndModifiers().add(AnnotationInstanceOrModifierConverterUtility
-				.converToModifierOrAnnotationInstance((IExtendedModifier) obj)));
-			result.setTypeReference(BaseConverterUtility.convertToTypeReference(decl.getType()));
-			BaseConverterUtility.convertToArrayDimensionsAndSet(decl.getType(), result);
-			BaseConverterUtility.convertToSimpleNameOnlyAndSet(decl.getName(), result);
-			decl.extraDimensions().forEach(obj -> BaseConverterUtility.convertToArrayDimensionAfterAndSet((Dimension) obj, result));
-			LayoutInformationConverter.convertToMinimalLayoutInformation(result, decl);
-			return result;
+			return convertToOrdinaryParameter(decl);
 		}
 	}
+	
+	@SuppressWarnings("unchecked")
+	static org.emftext.language.java.parameters.OrdinaryParameter convertToOrdinaryParameter(SingleVariableDeclaration decl) {
+		org.emftext.language.java.parameters.OrdinaryParameter result = org.emftext.language.java.parameters.ParametersFactory.eINSTANCE.createOrdinaryParameter();
+		decl.modifiers().forEach(obj -> result.getAnnotationsAndModifiers().add(AnnotationInstanceOrModifierConverterUtility
+			.converToModifierOrAnnotationInstance((IExtendedModifier) obj)));
+		result.setTypeReference(BaseConverterUtility.convertToTypeReference(decl.getType()));
+		BaseConverterUtility.convertToArrayDimensionsAndSet(decl.getType(), result);
+		BaseConverterUtility.convertToSimpleNameOnlyAndSet(decl.getName(), result);
+		decl.extraDimensions().forEach(obj -> BaseConverterUtility.convertToArrayDimensionAfterAndSet((Dimension) obj, result));
+		LayoutInformationConverter.convertToMinimalLayoutInformation(result, decl);
+		return result;
+	}
+	
 }
