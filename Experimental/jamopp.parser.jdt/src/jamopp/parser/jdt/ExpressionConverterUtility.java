@@ -15,6 +15,7 @@ package jamopp.parser.jdt;
 
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.Assignment;
+import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.BooleanLiteral;
 import org.eclipse.jdt.core.dom.CastExpression;
 import org.eclipse.jdt.core.dom.CharacterLiteral;
@@ -30,9 +31,11 @@ import org.eclipse.jdt.core.dom.MethodReference;
 import org.eclipse.jdt.core.dom.NumberLiteral;
 import org.eclipse.jdt.core.dom.PostfixExpression;
 import org.eclipse.jdt.core.dom.PrefixExpression;
+import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.SuperMethodReference;
 import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeMethodReference;
+import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 
 class ExpressionConverterUtility {
 	@SuppressWarnings("unchecked")
@@ -170,11 +173,29 @@ class ExpressionConverterUtility {
 			LambdaExpression lambda = (LambdaExpression) expr;
 			org.emftext.language.java.expressions.LambdaExpression result = org.emftext.language.java.expressions.ExpressionsFactory
 				.eINSTANCE.createLambdaExpression();
-			lambda.parameters();
+			if (lambda.parameters().size() > 0 && lambda.parameters().get(0) instanceof VariableDeclarationFragment) {
+				org.emftext.language.java.expressions.ImplicitlyTypedLambdaParameters param;
+				if (!lambda.hasParentheses()) {
+					param = org.emftext.language.java.expressions.ExpressionsFactory.eINSTANCE.createSingleImplicitLambdaParameter();
+				} else {
+					param = org.emftext.language.java.expressions.ExpressionsFactory.eINSTANCE.createImplicitlyTypedLambdaParameters();
+				}
+				lambda.parameters().forEach(obj -> {
+					VariableDeclarationFragment frag = (VariableDeclarationFragment) obj;
+					param.getIdentifiers().add(frag.getName().getIdentifier());
+				});
+				result.setParameters(param);
+			} else {
+				org.emftext.language.java.expressions.ExplicitlyTypedLambdaParameters param = org.emftext.language.java.expressions.ExpressionsFactory
+					.eINSTANCE.createExplicitlyTypedLambdaParameters();
+				lambda.parameters().forEach(obj -> param.getParameters().add(
+					ClassifierConverterUtility.convertToOrdinaryParameter((SingleVariableDeclaration) obj)));
+				result.setParameters(param);
+			}
 			if (lambda.getBody() instanceof Expression) {
 				result.setBody(convertToExpression((Expression) lambda.getBody()));
 			} else {
-				
+				result.setBody(StatementConverterUtility.convertToBlock((Block) lambda.getBody()));
 			}
 			LayoutInformationConverter.convertToMinimalLayoutInformation(result, lambda);
 			return result;
@@ -446,19 +467,35 @@ class ExpressionConverterUtility {
 				.eINSTANCE.createPrimaryExpressionReferenceExpression();
 			if (ref.getNodeType() == ASTNode.TYPE_METHOD_REFERENCE) {
 				TypeMethodReference typeRef = (TypeMethodReference) ref;
-				typeRef.getType();
+				result.setChild(ReferenceConverterUtility.convertToReference(typeRef.getType()));
 				typeRef.typeArguments().forEach(obj -> result.getCallTypeArguments().add(BaseConverterUtility.convertToTypeArgument((Type) obj)));
-				typeRef.getName();
+				result.setMethodReference(ReferenceConverterUtility.convertToReference(typeRef.getName()));
 			} else if (ref.getNodeType() == ASTNode.SUPER_METHOD_REFERENCE) {
 				SuperMethodReference superRef = (SuperMethodReference) ref;
-				superRef.getQualifier();
+				if (superRef.getQualifier() != null) {
+					org.emftext.language.java.references.Reference child = ReferenceConverterUtility.convertToReference(superRef.getQualifier());
+					org.emftext.language.java.references.SelfReference lastPart = org.emftext.language.java.references.ReferencesFactory.eINSTANCE.createSelfReference();
+					lastPart.setSelf(org.emftext.language.java.literals.LiteralsFactory.eINSTANCE.createSuper());
+					org.emftext.language.java.references.Reference part = child;
+					org.emftext.language.java.references.Reference next = child.getNext();
+					while (next != null) {
+						part = next;
+						next = part.getNext();
+					}
+					part.setNext(lastPart);
+					result.setChild(child);
+				} else {
+					org.emftext.language.java.references.SelfReference child = org.emftext.language.java.references.ReferencesFactory.eINSTANCE.createSelfReference();
+					child.setSelf(org.emftext.language.java.literals.LiteralsFactory.eINSTANCE.createSuper());
+					result.setChild(child);
+				}
 				superRef.typeArguments().forEach(obj -> result.getCallTypeArguments().add(BaseConverterUtility.convertToTypeArgument((Type) obj)));
-				superRef.getName();
+				result.setMethodReference(ReferenceConverterUtility.convertToReference(superRef.getName()));
 			} else if (ref.getNodeType() == ASTNode.EXPRESSION_METHOD_REFERENCE) {
 				ExpressionMethodReference exprRef = (ExpressionMethodReference) ref;
 				result.setChild((org.emftext.language.java.expressions.MethodReferenceExpressionChild) convertToExpression(exprRef.getExpression()));
 				exprRef.typeArguments().forEach(obj -> result.getCallTypeArguments().add(BaseConverterUtility.convertToTypeArgument((Type) obj)));
-				exprRef.getName();
+				result.setMethodReference(ReferenceConverterUtility.convertToReference(exprRef.getName()));
 			}
 			LayoutInformationConverter.convertToMinimalLayoutInformation(result, ref);
 			return result;

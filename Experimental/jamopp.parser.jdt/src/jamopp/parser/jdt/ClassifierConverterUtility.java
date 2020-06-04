@@ -319,5 +319,4 @@ class ClassifierConverterUtility {
 		LayoutInformationConverter.convertToMinimalLayoutInformation(result, decl);
 		return result;
 	}
-	
 }

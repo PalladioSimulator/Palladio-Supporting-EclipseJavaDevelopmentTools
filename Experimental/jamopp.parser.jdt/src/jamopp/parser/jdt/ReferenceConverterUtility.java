@@ -189,35 +189,8 @@ class ReferenceConverterUtility {
 		} else if (expr.getNodeType() == ASTNode.TYPE_LITERAL) {
 			TypeLiteral arr = (TypeLiteral) expr;
 			org.emftext.language.java.references.ReflectiveClassReference result = org.emftext.language.java.references.ReferencesFactory.eINSTANCE.createReflectiveClassReference();
-			org.emftext.language.java.types.TypeReference typeRef = BaseConverterUtility.convertToTypeReference(arr.getType());
-			org.emftext.language.java.references.Reference parent;
-			if (typeRef instanceof org.emftext.language.java.types.PrimitiveType) {
-				org.emftext.language.java.references.PrimitiveTypeReference temp = org.emftext.language.java.references.ReferencesFactory.eINSTANCE.createPrimitiveTypeReference();
-				temp.setPrimitiveType((org.emftext.language.java.types.PrimitiveType) typeRef);
-				parent = temp;
-			} else if (typeRef instanceof org.emftext.language.java.types.ClassifierReference) {
-				parent = convertToIdentifierReference((org.emftext.language.java.types.ClassifierReference) typeRef);
-			} else { // typeRef instanceof org.emftext.language.java.types.NamespaceClassifierReference
-				org.emftext.language.java.types.NamespaceClassifierReference ref = (org.emftext.language.java.types.NamespaceClassifierReference) typeRef;
-				org.emftext.language.java.references.IdentifierReference currentResult = null;
-				for (String namespace : ref.getNamespaces()) {
-					org.emftext.language.java.references.IdentifierReference iterRef = createProxyIdentifierReference(namespace);
-					if (currentResult != null) {
-						currentResult.setNext(iterRef);
-					}
-					currentResult = iterRef;
-				}
-				for (org.emftext.language.java.types.ClassifierReference iterRef : ref.getClassifierReferences()) {
-					org.emftext.language.java.references.IdentifierReference iterIdRef = convertToIdentifierReference(iterRef);
-					if (currentResult != null) {
-						currentResult.setNext(iterIdRef);
-					}
-					currentResult = iterIdRef;
-				}
-				parent = currentResult;
-			}
+			org.emftext.language.java.references.Reference parent = internalConvertToReference(arr.getType());
 			parent.setNext(result);
-			parent.getLayoutInformations().addAll(typeRef.getLayoutInformations());
 			LayoutInformationConverter.convertToMinimalLayoutInformation(result, arr);
 			return result;
 		}
@@ -245,6 +218,42 @@ class ReferenceConverterUtility {
 		temp.getTypeArguments().addAll(ref.getTypeArguments());
 		temp.getAnnotations().addAll(ref.getAnnotations());
 		return temp;
+	}
+	
+	static org.emftext.language.java.references.Reference convertToReference(Type t) {
+		return walkUp(internalConvertToReference(t));
+	}
+	
+	private static org.emftext.language.java.references.Reference internalConvertToReference(Type t) {
+		org.emftext.language.java.types.TypeReference typeRef = BaseConverterUtility.convertToTypeReference(t);
+		org.emftext.language.java.references.Reference parent;
+		if (typeRef instanceof org.emftext.language.java.types.PrimitiveType) {
+			org.emftext.language.java.references.PrimitiveTypeReference temp = org.emftext.language.java.references.ReferencesFactory.eINSTANCE.createPrimitiveTypeReference();
+			temp.setPrimitiveType((org.emftext.language.java.types.PrimitiveType) typeRef);
+			parent = temp;
+		} else if (typeRef instanceof org.emftext.language.java.types.ClassifierReference) {
+			parent = convertToIdentifierReference((org.emftext.language.java.types.ClassifierReference) typeRef);
+		} else { // typeRef instanceof org.emftext.language.java.types.NamespaceClassifierReference
+			org.emftext.language.java.types.NamespaceClassifierReference ref = (org.emftext.language.java.types.NamespaceClassifierReference) typeRef;
+			org.emftext.language.java.references.IdentifierReference currentResult = null;
+			for (String namespace : ref.getNamespaces()) {
+				org.emftext.language.java.references.IdentifierReference iterRef = createProxyIdentifierReference(namespace);
+				if (currentResult != null) {
+					currentResult.setNext(iterRef);
+				}
+				currentResult = iterRef;
+			}
+			for (org.emftext.language.java.types.ClassifierReference iterRef : ref.getClassifierReferences()) {
+				org.emftext.language.java.references.IdentifierReference iterIdRef = convertToIdentifierReference(iterRef);
+				if (currentResult != null) {
+					currentResult.setNext(iterIdRef);
+				}
+				currentResult = iterIdRef;
+			}
+			parent = currentResult;
+		}
+		parent.getLayoutInformations().addAll(typeRef.getLayoutInformations());
+		return parent;
 	}
 	
 	static org.emftext.language.java.references.Reference convertToReference(Statement st) {
