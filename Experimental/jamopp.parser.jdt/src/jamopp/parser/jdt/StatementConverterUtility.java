@@ -224,8 +224,11 @@ class StatementConverterUtility {
 			result.setStatement(convertToStatement(whileSt.getBody()));
 			LayoutInformationConverter.convertToMinimalLayoutInformation(result, whileSt);
 			return result;
+		} else {
+			org.emftext.language.java.statements.ExpressionStatement result = org.emftext.language.java.statements.StatementsFactory.eINSTANCE.createExpressionStatement();
+			result.setExpression(ReferenceConverterUtility.convertToReference(statement));
+			return result;
 		}
-		return null;
 	}
 	
 	private static org.emftext.language.java.statements.Switch convertToSwitch(SwitchStatement switchSt) {

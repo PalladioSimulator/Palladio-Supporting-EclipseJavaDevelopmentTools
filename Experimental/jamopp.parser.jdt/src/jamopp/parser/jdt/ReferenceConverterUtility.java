@@ -20,6 +20,7 @@ import org.eclipse.jdt.core.dom.ArrayAccess;
 import org.eclipse.jdt.core.dom.ArrayCreation;
 import org.eclipse.jdt.core.dom.ArrayInitializer;
 import org.eclipse.jdt.core.dom.ClassInstanceCreation;
+import org.eclipse.jdt.core.dom.ConstructorInvocation;
 import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.FieldAccess;
 import org.eclipse.jdt.core.dom.MethodInvocation;
@@ -27,7 +28,9 @@ import org.eclipse.jdt.core.dom.ParameterizedType;
 import org.eclipse.jdt.core.dom.ParenthesizedExpression;
 import org.eclipse.jdt.core.dom.QualifiedName;
 import org.eclipse.jdt.core.dom.SimpleName;
+import org.eclipse.jdt.core.dom.Statement;
 import org.eclipse.jdt.core.dom.StringLiteral;
+import org.eclipse.jdt.core.dom.SuperConstructorInvocation;
 import org.eclipse.jdt.core.dom.SuperFieldAccess;
 import org.eclipse.jdt.core.dom.SuperMethodInvocation;
 import org.eclipse.jdt.core.dom.ThisExpression;
@@ -36,7 +39,11 @@ import org.eclipse.jdt.core.dom.TypeLiteral;
 
 class ReferenceConverterUtility {
 	static org.emftext.language.java.references.Reference convertToReference(Expression expr) {
-		org.emftext.language.java.references.Reference result = internalConvertToReference(expr);
+		return walkUp(internalConvertToReference(expr));
+	}
+	
+	private static org.emftext.language.java.references.Reference walkUp(org.emftext.language.java.references.Reference ref) {
+		org.emftext.language.java.references.Reference result = ref;
 		org.emftext.language.java.references.Reference parent = result.getPrevious();
 		while (parent != null) {
 			result = parent;
@@ -238,5 +245,35 @@ class ReferenceConverterUtility {
 		temp.getTypeArguments().addAll(ref.getTypeArguments());
 		temp.getAnnotations().addAll(ref.getAnnotations());
 		return temp;
+	}
+	
+	static org.emftext.language.java.references.Reference convertToReference(Statement st) {
+		return walkUp(internalConvertToReference(st));
+	}
+	
+	@SuppressWarnings("unchecked")
+	private static org.emftext.language.java.references.Reference internalConvertToReference(Statement st) {
+		if (st.getNodeType() == ASTNode.CONSTRUCTOR_INVOCATION) {
+			ConstructorInvocation invoc = (ConstructorInvocation) st;
+			org.emftext.language.java.instantiations.ExplicitConstructorCall result = org.emftext.language.java.instantiations.InstantiationsFactory.eINSTANCE.createExplicitConstructorCall();
+			invoc.typeArguments().forEach(obj -> result.getCallTypeArguments().add(BaseConverterUtility.convertToTypeArgument((Type) obj)));
+			result.setCallTarget(org.emftext.language.java.literals.LiteralsFactory.eINSTANCE.createThis());
+			invoc.arguments().forEach(obj -> result.getArguments().add(ExpressionConverterUtility.convertToExpression((Expression) obj)));
+			LayoutInformationConverter.convertToMinimalLayoutInformation(result, invoc);
+			return result;
+		} else if (st.getNodeType() == ASTNode.SUPER_CONSTRUCTOR_INVOCATION) {
+			SuperConstructorInvocation invoc = (SuperConstructorInvocation) st;
+			org.emftext.language.java.instantiations.ExplicitConstructorCall result = org.emftext.language.java.instantiations.InstantiationsFactory.eINSTANCE.createExplicitConstructorCall();
+			invoc.typeArguments().forEach(obj -> result.getCallTypeArguments().add(BaseConverterUtility.convertToTypeArgument((Type) obj)));
+			result.setCallTarget(org.emftext.language.java.literals.LiteralsFactory.eINSTANCE.createSuper());
+			invoc.arguments().forEach(obj -> result.getArguments().add(ExpressionConverterUtility.convertToExpression((Expression) obj)));
+			LayoutInformationConverter.convertToMinimalLayoutInformation(result, invoc);
+			if (invoc.getExpression() != null) {
+				org.emftext.language.java.references.Reference parent = internalConvertToReference(invoc.getExpression());
+				parent.setNext(result);
+			}
+			return result;
+		}
+		return null;
 	}
 }
