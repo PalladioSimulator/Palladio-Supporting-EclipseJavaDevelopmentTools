@@ -68,7 +68,7 @@ class NumberLiteralConverterUtility {
 			org.emftext.language.java.literals.DecimalFloatLiteral lit = org.emftext.language.java.literals.LiteralsFactory.eINSTANCE.createDecimalFloatLiteral();
 			lit.setDecimalValue(Float.parseFloat(string.substring(0, string.length() - FLOAT_SUFFIX.length())));
 			result = lit;
-		} else if (string.contains(".") || string.contains(DECIMAL_EXPONENT)) {
+		} else if (string.contains(".") || string.contains(DECIMAL_EXPONENT) || string.endsWith(DOUBLE_SUFFIX)) {
 			if (string.endsWith(DOUBLE_SUFFIX)) {
 				string = string.substring(0, string.length() - DOUBLE_SUFFIX.length());
 			}

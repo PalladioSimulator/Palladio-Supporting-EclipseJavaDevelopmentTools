@@ -29,7 +29,6 @@ import org.eclipse.jdt.core.dom.ForStatement;
 import org.eclipse.jdt.core.dom.IExtendedModifier;
 import org.eclipse.jdt.core.dom.IfStatement;
 import org.eclipse.jdt.core.dom.LabeledStatement;
-import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.core.dom.ReturnStatement;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.Statement;
@@ -50,7 +49,7 @@ class StatementConverterUtility {
 	@SuppressWarnings("unchecked")
 	static org.emftext.language.java.statements.Block convertToBlock(Block block) {
 		org.emftext.language.java.statements.Block result = org.emftext.language.java.statements.StatementsFactory.eINSTANCE.createBlock();
-		block.statements().forEach(obj -> result.getStatements().add(null));
+		block.statements().forEach(obj -> result.getStatements().add(convertToStatement((Statement) obj)));
 		LayoutInformationConverter.convertToMinimalLayoutInformation(result, block);
 		return result;
 	}
@@ -132,7 +131,9 @@ class StatementConverterUtility {
 				forSt.initializers().forEach(obj -> ini.getExpressions().add(ExpressionConverterUtility.convertToExpression((Expression) obj)));
 				result.setInit(ini);
 			}
-			result.setCondition(ExpressionConverterUtility.convertToExpression(forSt.getExpression()));
+			if (forSt.getExpression() != null) {
+				result.setCondition(ExpressionConverterUtility.convertToExpression(forSt.getExpression()));
+			}
 			forSt.updaters().forEach(obj -> result.getUpdates().add(ExpressionConverterUtility.convertToExpression((Expression) obj)));
 			result.setStatement(convertToStatement(forSt.getBody()));
 			LayoutInformationConverter.convertToMinimalLayoutInformation(result, forSt);
@@ -203,7 +204,7 @@ class StatementConverterUtility {
 			org.emftext.language.java.statements.LocalVariableStatement result = org.emftext.language.java.statements.StatementsFactory.eINSTANCE.createLocalVariableStatement();
 			org.emftext.language.java.variables.LocalVariable locVar = org.emftext.language.java.variables.VariablesFactory.eINSTANCE.createLocalVariable();
 			varSt.modifiers().forEach(obj -> locVar.getAnnotationsAndModifiers().add(AnnotationInstanceOrModifierConverterUtility
-				.convertToModifier((Modifier) obj)));
+				.converToModifierOrAnnotationInstance((IExtendedModifier) obj)));
 			locVar.setTypeReference(BaseConverterUtility.convertToTypeReference(varSt.getType()));
 			VariableDeclarationFragment frag = (VariableDeclarationFragment) varSt.fragments().get(0);
 			BaseConverterUtility.convertToSimpleNameOnlyAndSet(frag.getName(), locVar);
@@ -271,7 +272,14 @@ class StatementConverterUtility {
 //			}
 //			result = normalCase;
 //		}
-//		LayoutInformationConverter.convertToMinimalLayoutInformation(result, switchCase);
+		if (switchCase.isDefault()) {
+			result = org.emftext.language.java.statements.StatementsFactory.eINSTANCE.createDefaultSwitchCase();
+		} else { // !switchCase.isDefault()
+			org.emftext.language.java.statements.NormalSwitchCase normalCase = org.emftext.language.java.statements.StatementsFactory.eINSTANCE.createNormalSwitchCase();
+			normalCase.setCondition(ExpressionConverterUtility.convertToExpression(switchCase.getExpression()));
+			result = normalCase;
+		}
+		LayoutInformationConverter.convertToMinimalLayoutInformation(result, switchCase);
 		return result;
 	}
 	

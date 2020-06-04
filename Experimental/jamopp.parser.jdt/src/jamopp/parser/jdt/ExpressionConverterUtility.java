@@ -406,7 +406,7 @@ class ExpressionConverterUtility {
 	}
 	
 	private static void mergeMultiplicativeExpressionAndExpression(org.emftext.language.java.expressions.MultiplicativeExpression mulExpr, org.emftext.language.java.expressions.Expression potChild) {
-		if (potChild instanceof org.emftext.language.java.expressions.MultiplicativeExpression) {
+		if (potChild instanceof org.emftext.language.java.expressions.MultiplicativeExpressionChild) {
 			mulExpr.getChildren().add((org.emftext.language.java.expressions.MultiplicativeExpressionChild) potChild);
 		} else {
 			org.emftext.language.java.expressions.MultiplicativeExpression expr = (org.emftext.language.java.expressions.MultiplicativeExpression) potChild;
