@@ -58,34 +58,22 @@ public class MemberGenerator {
     	fieldVisitor.getVisitedNodes().stream().forEach(f -> {
     		VariableDeclarationFragment fragment = (VariableDeclarationFragment) f.fragments().get(0);
     		FieldImpl newField = createField(fragment.getName());
-    		ClassifierReferenceImpl ref;
     		
     		if(f.getType().isPrimitiveType()) {
     			newField.setTypeReference(createPrimitiveType(f.getType()));
     		}
-    		else if(f.getType().isSimpleType()) {        			       			
-    			ref = classGenerator.createClassifierReference(f.getType().resolveBinding());        			        	    	
-    			newField.setTypeReference(ref);
+    		else if(f.getType().isSimpleType()) {    	    	
+    			newField.setTypeReference(classGenerator.createClassifierReference(f.getType().resolveBinding()));
     		}
     		else if(f.getType().isArrayType()) {
-    			ref = classGenerator.createClassifierReference(f.getType().resolveBinding().getElementType());
-    			newField.setTypeReference(ref);
+    			newField.setTypeReference(classGenerator.createClassifierReference(f.getType().resolveBinding().getElementType()));
     			
     			ArrayDimensionImpl dim = (ArrayDimensionImpl) ArraysFactory.eINSTANCE.createArrayDimension();
     			newField.getArrayDimensionsBefore().add(dim);
     		}
     		else if(f.getType().isParameterizedType()) {
-    			ref = classGenerator.createClassifierReference(f.getType().resolveBinding().getTypeDeclaration());
+    			ClassifierReferenceImpl ref = classGenerator.createClassifierReference(f.getType().resolveBinding().getTypeDeclaration());
     			
-    			/*ITypeBinding[] bindings = f.getType().resolveBinding().getTypeArguments();
-    			for(int i = 0; i < bindings.length; i++) {
-    				ClassifierReferenceImpl argref = (ClassifierReferenceImpl) TypesFactory.eINSTANCE.createClassifierReference();
-        			argref = createClassifierReference(bindings[i]);
-        			
-        			QualifiedTypeArgumentImpl arg = (QualifiedTypeArgumentImpl) GenericsFactory.eINSTANCE.createQualifiedTypeArgument();
-        			arg.setTypeReference(argref);
-        			ref.getTypeArguments().add(arg);
-    			}*/
     			resolveTypeArguments(f.getType().resolveBinding().getTypeArguments()).forEach(arg -> ref.getTypeArguments().add(arg));
     			newField.setTypeReference(ref);
     			
@@ -112,20 +100,25 @@ public class MemberGenerator {
     	methodVisitor.getVisitedNodes().stream().forEach(m -> {
     		if(!m.isConstructor()) {
     			MethodImpl newMethod = createClassMethod(m.getName());
-    			ClassifierReferenceImpl ref;
+    			
     			// return type
     			if(m.getReturnType2().isPrimitiveType()) {
     				newMethod.setTypeReference(createPrimitiveType(m.getReturnType2()));
     			}
     			else if(m.getReturnType2().isSimpleType()) {
-    				ref = classGenerator.createClassifierReference(m.getReturnType2().resolveBinding());
-    				newMethod.setTypeReference(ref);
+    				newMethod.setTypeReference(classGenerator.createClassifierReference(m.getReturnType2().resolveBinding()));
     			}
     			else if(m.getReturnType2().isArrayType()) {
-    				//TODO
+        			newMethod.setTypeReference(classGenerator.createClassifierReference(m.getReturnType2().resolveBinding().getElementType()));
+        			
+        			ArrayDimensionImpl dim = (ArrayDimensionImpl) ArraysFactory.eINSTANCE.createArrayDimension();
+        			newMethod.getArrayDimensionsBefore().add(dim);
     			}
     			else if(m.getReturnType2().isParameterizedType()) {
-    				//TODO
+    				ClassifierReferenceImpl ref = classGenerator.createClassifierReference(m.getReturnType2().resolveBinding().getTypeDeclaration());
+        			
+        			resolveTypeArguments(m.getReturnType2().resolveBinding().getTypeArguments()).forEach(arg -> ref.getTypeArguments().add(arg));
+        			newMethod.setTypeReference(ref);
     			}
     			
     			// parameters
@@ -141,10 +134,16 @@ public class MemberGenerator {
     					param.setTypeReference(classGenerator.createClassifierReference(dec.getType().resolveBinding()));
     				}
     				else if(dec.getType().isArrayType()) {
-    					//TODO
+            			param.setTypeReference(classGenerator.createClassifierReference(dec.getType().resolveBinding().getElementType()));
+            			
+            			ArrayDimensionImpl dim = (ArrayDimensionImpl) ArraysFactory.eINSTANCE.createArrayDimension();
+            			param.getArrayDimensionsBefore().add(dim);
     				}
     				else if(dec.getType().isParameterizedType()) {
-    					//TODO
+    					ClassifierReferenceImpl ref = classGenerator.createClassifierReference(dec.getType().resolveBinding().getTypeDeclaration());
+            			
+            			resolveTypeArguments(dec.getType().resolveBinding().getTypeArguments()).forEach(arg -> ref.getTypeArguments().add(arg));
+            			param.setTypeReference(ref);
     				}
     				newMethod.getParameters().add(param);
     			});
