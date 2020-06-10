@@ -17,6 +17,7 @@ import org.palladiosimulator.jdt.metamodel.javamodel.containers.ContainersFactor
 import org.palladiosimulator.jdt.metamodel.javamodel.containers.impl.CompilationUnitImpl;
 import org.palladiosimulator.jdt.metamodel.javamodel.imports.ImportsFactory;
 import org.palladiosimulator.jdt.metamodel.javamodel.imports.impl.ClassifierImportImpl;
+import org.palladiosimulator.jdt.metamodel.javamodel.imports.impl.PackageImportImpl;
 
 public class ModelGenerator {
 	
@@ -98,27 +99,45 @@ public class ModelGenerator {
 			entry.getKey().accept(importVisitor);
 			importVisitor.getVisitedNodes().stream().forEach(v -> {
 				
-				ClassifierImportImpl newImport = createImport();
+//				ClassifierImportImpl newImport = createClassifierImport();
 				
 				String[] namespaces = v.getName().toString().split("\\.");
-				for(int i = 0; i<namespaces.length-1; i++) {
-					newImport.getNamespaces().add(namespaces[i]);
-				}
+//				for(int i = 0; i<namespaces.length-1; i++) {
+//					newImport.getNamespaces().add(namespaces[i]);
+//				}
 				String className = namespaces[namespaces.length-1];
-				//String[] namespaces = getNamespacesFromQualifiedName(v.getName().toString());
-				//String className = getClassnameFromQualifiedName(v.getName().toString());
+
 				IBinding binding = v.resolveBinding();
+				
+				// check if binding could be resolved
 				if(binding!=null) {
-					if(binding.getKind() == IBinding.TYPE) {
+					
+					// add PackageImport to CompilationUnit
+					if(binding.getKind() == IBinding.PACKAGE) {
+						PackageImportImpl packageImport = createPackageImport();
+						for(String component : namespaces) {
+							packageImport.getNamespaces().add(component);
+						}
+						entry.getValue().getImports().add(packageImport);
+						
+					}
+					
+					// add ClassifierImport to CompilationUnit
+					else if(binding.getKind() == IBinding.TYPE) {
+						
+						ClassifierImportImpl classImport = createClassifierImport();
+						for(int i = 0; i<namespaces.length-1; i++) {
+							classImport.getNamespaces().add(namespaces[i]);
+						}
 							
 						if(((ITypeBinding) binding).isClass()) {
 								if(classGenerator.containsInternalClass(className)) {
-									newImport.setClassifier(classGenerator.getInternalClass(className));
-									entry.getValue().getImports().add(newImport);				
+									classImport.setClassifier(classGenerator.getInternalClass(className));
+									entry.getValue().getImports().add(classImport);				
 									}
 								else if(classGenerator.containsExternalClass(v.getName().toString())) {
-									newImport.setClassifier(classGenerator.getExternalClass(v.getName().toString()));
-									entry.getValue().getImports().add(newImport);
+									classImport.setClassifier(classGenerator.getExternalClass(v.getName().toString()));
+									entry.getValue().getImports().add(classImport);
 								}
 								else {
 									// 	create class
@@ -130,8 +149,8 @@ public class ModelGenerator {
 									newCompUnit.getClassifiers().add(newClass);
 									//	addPackage(newPackage);
 									addNamespaces(newCompUnit, Arrays.copyOf(namespaces, namespaces.length-1));
-									newImport.setClassifier(newClass);
-									entry.getValue().getImports().add(newImport);
+									classImport.setClassifier(newClass);
+									entry.getValue().getImports().add(classImport);
 								}
 						}
 						else if(((ITypeBinding) binding).isInterface() && !(((ITypeBinding) binding).isAnnotation())) {
@@ -144,8 +163,8 @@ public class ModelGenerator {
 							newCompUnit.getClassifiers().add(newInterface);
 							//addPackage(newPackage);
 							addNamespaces(newCompUnit, Arrays.copyOf(namespaces, namespaces.length-1));
-							newImport.setClassifier(newInterface);
-							entry.getValue().getImports().add(newImport);
+							classImport.setClassifier(newInterface);
+							entry.getValue().getImports().add(classImport);
 						}
 						else if((((ITypeBinding) binding).isAnnotation())) {
 							//TODO: Check for duplicates
@@ -157,12 +176,13 @@ public class ModelGenerator {
 							newCompUnit.getClassifiers().add(newAnno);
 							//addPackage(newPackage);
 							addNamespaces(newCompUnit, Arrays.copyOf(namespaces, namespaces.length-1));
-							newImport.setClassifier(newAnno);
-							entry.getValue().getImports().add(newImport);
+							classImport.setClassifier(newAnno);
+							entry.getValue().getImports().add(classImport);
 						}
 					}
 				}
 				else {
+					// binding could not be resolved
 					System.out.println("Binding ("+className+") could not be resolved! Missing .jar file...");
 				}        
 				
@@ -199,9 +219,14 @@ public class ModelGenerator {
 		return extPackage.containsKey(name);
 	}*/
 	
-
-    private static ClassifierImportImpl createImport() {
+	
+    private static ClassifierImportImpl createClassifierImport() {
     	ClassifierImportImpl newImport = (ClassifierImportImpl) ImportsFactory.eINSTANCE.createClassifierImport();
+    	return newImport;
+    }
+    
+    private static PackageImportImpl createPackageImport() {
+    	PackageImportImpl newImport = (PackageImportImpl) ImportsFactory.eINSTANCE.createPackageImport();
     	return newImport;
     }
 
