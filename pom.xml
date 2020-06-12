@@ -10,11 +10,13 @@
 	<properties>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.build.outputTimestamp>2020-06-12T00:00:00Z</project.build.outputTimestamp>
 	</properties>
 
 	<modules>
 		<module>Experimental</module>
+		<module>Core</module>
 	</modules>
 
 	<dependencyManagement>
@@ -88,6 +90,11 @@
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>exec-maven-plugin</artifactId>
 					<version>1.6.0</version>
+				</plugin>
+				<plugin>
+				    <groupId>org.codehaus.mojo</groupId>
+				    <artifactId>build-helper-maven-plugin</artifactId>
+				    <version>3.1.0</version>
 				</plugin>
 				<plugin>
 				    <groupId>biz.aQute.bnd</groupId>

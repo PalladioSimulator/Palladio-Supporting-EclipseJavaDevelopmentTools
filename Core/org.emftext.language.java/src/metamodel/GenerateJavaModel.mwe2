@@ -1,0 +1,31 @@
+module GenerateModel
+
+import org.eclipse.emf.mwe2.ecore.EcoreGenerator
+import org.eclipse.emf.mwe.utils.StandaloneSetup
+
+Workflow {
+	bean = StandaloneSetup {
+		scanClassPath = false
+		platformUri = "."
+		projectMapping = {
+			projectName = "org.emftext.language.java"
+			path = "Core/org.emftext.language.java"
+		}
+		projectMapping = {
+			projectName = "org.emftext.language.java.edit"
+			path = "Core/org.emftext.language.java.edit"
+		}
+		projectMapping = {
+			projectName = "org.emftext.commons.layout"
+			path = "Experimental/org.emftext.commons.layout"
+		}
+		registerEcoreFile = "platform:/resource/org.emftext.commons.layout/src/metamodel/layout.ecore"
+		registerGenModelFile = "platform:/resource/org.emftext.language.java/src/metamodel/java.genmodel"
+	}
+	
+	component = EcoreGenerator {
+		genModel = "platform:/resource/org.emftext.language.java/src/metamodel/java.genmodel"
+		srcPath = "platform:/resource/org.emftext.language.java/src/main/generated"
+		generateEdit = true
+	}
+}

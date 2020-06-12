@@ -1,9 +1,0 @@
-epackage java.statements;
-
-eclass SynchronizedBlock {
-
-	@Deprecated
-	getStatements() {
-		return org.emftext.language.java.extensions.statements.SynchronizedBlockExtension.getStatements((org.emftext.language.java.statements.SynchronizedBlock) this);
-	}
-}
