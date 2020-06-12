@@ -9,11 +9,11 @@ Workflow {
 		platformUri = "."
 		projectMapping = {
 			projectName = "org.emftext.commons.layout"
-			path = "org.emftext.commons.layout"
+			path = "Experimental/org.emftext.commons.layout"
 		}
 		projectMapping = {
 			projectName = "org.emftext.commons.layout.edit"
-			path = "org.emftext.commons.layout"
+			path = "Experimental/org.emftext.commons.layout"
 		}
 		registerGenModelFile = "platform:/resource/org.emftext.commons.layout/src/metamodel/layout.genmodel"
 	}

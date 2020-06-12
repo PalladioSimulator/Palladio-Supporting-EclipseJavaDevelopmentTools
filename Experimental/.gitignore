@@ -1,7 +1,0 @@
-*.DS_Store
-bin/
-src-gen/
-target
-.settings/
-.project
-.classpath
