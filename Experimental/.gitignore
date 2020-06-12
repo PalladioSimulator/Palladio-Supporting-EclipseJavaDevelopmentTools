@@ -1,4 +1,7 @@
 *.DS_Store
 bin/
-!src-gen/
+src-gen/
 target
+.settings/
+.project
+.classpath
