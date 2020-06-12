@@ -36,64 +36,6 @@
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-resources-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>mwe2CopyEditClasses</id>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>copy-resources</goal>
-						</goals>
-						<configuration>
-							<resources>
-								<resource>
-									<directory>${project.basedir}/src/main/java/org/emftext/commons/layout/provider</directory>
-								</resource>
-							</resources>
-							<outputDirectory>${project.basedir}/../org.emftext.commons.layout.edit/src/main/java/org/emftext/commons/layout/provider</outputDirectory>
-						</configuration>
-					</execution>
-					<execution>
-						<id>mwe2CopyEditProperties</id>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>copy-resources</goal>
-						</goals>
-						<configuration>
-							<resources>
-								<resource>
-									<directory>${project.basedir}</directory>
-									<includes>
-										<include>plugin.properties</include>
-										<include>plugin.xml</include>
-									</includes>
-								</resource>
-							</resources>
-							<outputDirectory>${project.basedir}/../org.emftext.commons.layout.edit/src/main/resources</outputDirectory>
-						</configuration>
-					</execution>
-					<execution>
-						<id>mwe2CopyEditIcons</id>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>copy-resources</goal>
-						</goals>
-						<configuration>
-							<resources>
-								<resource>
-									<directory>${project.basedir}/icons</directory>
-									<includes>
-										<include>**/*</include>
-									</includes>
-								</resource>
-							</resources>
-							<outputDirectory>${project.basedir}/../org.emftext.commons.layout.edit/src/main/resources/icons</outputDirectory>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-clean-plugin</artifactId>
 				<executions>
 					<execution>
@@ -122,9 +64,6 @@
 							<excludeDefaultDirectories>true</excludeDefaultDirectories>
 							<filesets>
 								<fileset>
-									<directory>${project.basedir}/src/main/java/org/emftext/commons/layout/provider</directory>
-								</fileset>
-								<fileset>
 									<directory>${project.basedir}</directory>
 									<includes>
 										<include>plugin.xml</include>
@@ -132,9 +71,6 @@
 										<include>build.properties</include>
 									</includes>
 								</fileset>
-								<filset>
-									<directory>${project.basedir}/icons</directory>
-								</filset>
 							</filesets>
 						</configuration>
 					</execution>

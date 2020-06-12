@@ -13,7 +13,7 @@ Workflow {
 		}
 		projectMapping = {
 			projectName = "org.emftext.commons.layout.edit"
-			path = "Experimental/org.emftext.commons.layout"
+			path = "Experimental/org.emftext.commons.layout.edit"
 		}
 		registerGenModelFile = "platform:/resource/org.emftext.commons.layout/src/metamodel/layout.genmodel"
 	}
