@@ -1,4 +1,4 @@
-Automatic-Module-Name: org.emftext.commons.layout.edit
+Automatic-Module-Name: org.emftext.language.java.edit
 Bundle-Name: JaMoPP (Java Model Parser and Printer) Metamodel Edit Support
 Bundle-Vendor: Martin Armbruster
 Bundle-Activator: org.emftext.language.java.annotations.provider.JavaEditPlugin$Implementation

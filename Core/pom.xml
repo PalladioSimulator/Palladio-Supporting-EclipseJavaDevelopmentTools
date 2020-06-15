@@ -13,5 +13,7 @@
 	<modules>
 		<module>org.emftext.language.java</module>
 		<module>org.emftext.language.java.edit</module>
+		<module>org.emftext.language.java.resource</module>
+		<module>org.emftext.language.java.resource.java</module>
 	</modules>
 </project>
