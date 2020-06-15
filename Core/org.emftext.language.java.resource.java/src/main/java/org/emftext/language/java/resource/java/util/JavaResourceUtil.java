@@ -93,7 +93,6 @@ public class JavaResourceUtil {
 	}
 	
 	public static org.emftext.language.java.resource.java.mopp.JavaResource getResource(org.eclipse.emf.common.util.URI uri, java.util.Map<?,?> options) {
-		new org.emftext.language.java.resource.java.mopp.JavaMetaInformation().registerResourceFactory();
 		org.eclipse.emf.ecore.resource.ResourceSet rs = new org.eclipse.emf.ecore.resource.impl.ResourceSetImpl();
 		if (options != null) {
 			rs.getLoadOptions().putAll(options);
@@ -185,12 +184,11 @@ public class JavaResourceUtil {
 			resource = (org.emftext.language.java.resource.java.IJavaTextResource) rs.createResource(uri);
 		}
 		java.io.ByteArrayOutputStream outputStream = new java.io.ByteArrayOutputStream();
-		org.emftext.language.java.resource.java.IJavaTextPrinter printer = metaInformation.createPrinter(outputStream, resource);
-		try {
-			printer.print(eObject);
-		} catch (java.io.IOException e) {
-			return null;
-		}
+//		try {
+			// TO-DO: Print here.
+//		} catch (java.io.IOException e) {
+//			return null;
+//		}
 		return outputStream.toString();
 	}
 	

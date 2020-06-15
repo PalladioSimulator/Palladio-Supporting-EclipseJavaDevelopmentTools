@@ -29,9 +29,6 @@ public class JavaResourceFactoryDelegator implements org.eclipse.emf.ecore.resou
 		if (factories == null) {
 			factories = new java.util.LinkedHashMap<String, org.eclipse.emf.ecore.resource.Resource.Factory>();
 		}
-		if (new org.emftext.language.java.resource.java.util.JavaRuntimeUtil().isEclipsePlatformAvailable()) {
-			new org.emftext.language.java.resource.java.util.JavaEclipseProxy().getResourceFactoryExtensions(factories);
-		}
 		if (factories.get("") == null) {
 			factories.put("", new org.emftext.language.java.resource.java.mopp.JavaResourceFactory());
 		}

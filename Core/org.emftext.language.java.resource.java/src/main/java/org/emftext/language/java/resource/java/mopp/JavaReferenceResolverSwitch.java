@@ -33,7 +33,7 @@ public class JavaReferenceResolverSwitch implements org.emftext.language.java.re
 	protected org.emftext.language.java.resource.java.analysis.JumpTargetReferenceResolver jumpTargetReferenceResolver = new org.emftext.language.java.resource.java.analysis.JumpTargetReferenceResolver();
 	
 	public org.emftext.language.java.resource.java.IJavaReferenceResolver<org.emftext.language.java.imports.ClassifierImport, org.emftext.language.java.classifiers.ConcreteClassifier> getClassifierImportClassifierReferenceResolver() {
-		return getResolverChain(org.emftext.language.java.imports.ImportsPackage.eINSTANCE.getClassifierImport_Classifier(), classifierImportClassifierReferenceResolver);
+		return getResolverChain(org.emftext.language.java.imports.ImportsPackage.eINSTANCE.getImport_Classifier(), classifierImportClassifierReferenceResolver);
 	}
 	
 	public org.emftext.language.java.resource.java.IJavaReferenceResolver<org.emftext.language.java.imports.StaticMemberImport, org.emftext.language.java.references.ReferenceableElement> getStaticMemberImportStaticMembersReferenceResolver() {
@@ -137,7 +137,7 @@ public class JavaReferenceResolverSwitch implements org.emftext.language.java.re
 	}
 	
 	public org.emftext.language.java.resource.java.IJavaReferenceResolver<? extends org.eclipse.emf.ecore.EObject, ? extends org.eclipse.emf.ecore.EObject> getResolver(org.eclipse.emf.ecore.EStructuralFeature reference) {
-		if (reference == org.emftext.language.java.imports.ImportsPackage.eINSTANCE.getClassifierImport_Classifier()) {
+		if (reference == org.emftext.language.java.imports.ImportsPackage.eINSTANCE.getImport_Classifier()) {
 			return getResolverChain(reference, classifierImportClassifierReferenceResolver);
 		}
 		if (reference == org.emftext.language.java.imports.ImportsPackage.eINSTANCE.getStaticMemberImport_StaticMembers()) {
@@ -160,55 +160,8 @@ public class JavaReferenceResolverSwitch implements org.emftext.language.java.re
 		}
 		return null;
 	}
-	
-	@SuppressWarnings({"rawtypes", "unchecked"})	
+		
 	public <ContainerType extends org.eclipse.emf.ecore.EObject, ReferenceType extends org.eclipse.emf.ecore.EObject> org.emftext.language.java.resource.java.IJavaReferenceResolver<ContainerType, ReferenceType> getResolverChain(org.eclipse.emf.ecore.EStructuralFeature reference, org.emftext.language.java.resource.java.IJavaReferenceResolver<ContainerType, ReferenceType> originalResolver) {
-		if (options == null) {
-			return originalResolver;
-		}
-		Object value = options.get(org.emftext.language.java.resource.java.IJavaOptions.ADDITIONAL_REFERENCE_RESOLVERS);
-		if (value == null) {
-			return originalResolver;
-		}
-		if (!(value instanceof java.util.Map)) {
-			// send this to the error log
-			new org.emftext.language.java.resource.java.util.JavaRuntimeUtil().logWarning("Found value with invalid type for option " + org.emftext.language.java.resource.java.IJavaOptions.ADDITIONAL_REFERENCE_RESOLVERS + " (expected " + java.util.Map.class.getName() + ", but was " + value.getClass().getName() + ")", null);
-			return originalResolver;
-		}
-		java.util.Map<?,?> resolverMap = (java.util.Map<?,?>) value;
-		Object resolverValue = resolverMap.get(reference);
-		if (resolverValue == null) {
-			return originalResolver;
-		}
-		if (resolverValue instanceof org.emftext.language.java.resource.java.IJavaReferenceResolver) {
-			org.emftext.language.java.resource.java.IJavaReferenceResolver replacingResolver = (org.emftext.language.java.resource.java.IJavaReferenceResolver) resolverValue;
-			if (replacingResolver instanceof org.emftext.language.java.resource.java.IJavaDelegatingReferenceResolver) {
-				// pass original resolver to the replacing one
-				((org.emftext.language.java.resource.java.IJavaDelegatingReferenceResolver) replacingResolver).setDelegate(originalResolver);
-			}
-			return replacingResolver;
-		} else if (resolverValue instanceof java.util.Collection) {
-			java.util.Collection replacingResolvers = (java.util.Collection) resolverValue;
-			org.emftext.language.java.resource.java.IJavaReferenceResolver replacingResolver = originalResolver;
-			for (Object next : replacingResolvers) {
-				if (next instanceof org.emftext.language.java.resource.java.IJavaReferenceCache) {
-					org.emftext.language.java.resource.java.IJavaReferenceResolver nextResolver = (org.emftext.language.java.resource.java.IJavaReferenceResolver) next;
-					if (nextResolver instanceof org.emftext.language.java.resource.java.IJavaDelegatingReferenceResolver) {
-						// pass original resolver to the replacing one
-						((org.emftext.language.java.resource.java.IJavaDelegatingReferenceResolver) nextResolver).setDelegate(replacingResolver);
-					}
-					replacingResolver = nextResolver;
-				} else {
-					// The collection contains a non-resolver. Send a warning to the error log.
-					new org.emftext.language.java.resource.java.util.JavaRuntimeUtil().logWarning("Found value with invalid type in value map for option " + org.emftext.language.java.resource.java.IJavaOptions.ADDITIONAL_REFERENCE_RESOLVERS + " (expected " + org.emftext.language.java.resource.java.IJavaDelegatingReferenceResolver.class.getName() + ", but was " + next.getClass().getName() + ")", null);
-				}
-			}
-			return replacingResolver;
-		} else {
-			// The value for the option ADDITIONAL_REFERENCE_RESOLVERS has an unknown type.
-			new org.emftext.language.java.resource.java.util.JavaRuntimeUtil().logWarning("Found value with invalid type in value map for option " + org.emftext.language.java.resource.java.IJavaOptions.ADDITIONAL_REFERENCE_RESOLVERS + " (expected " + org.emftext.language.java.resource.java.IJavaDelegatingReferenceResolver.class.getName() + ", but was " + resolverValue.getClass().getName() + ")", null);
-			return originalResolver;
-		}
+		return originalResolver;
 	}
-	
 }

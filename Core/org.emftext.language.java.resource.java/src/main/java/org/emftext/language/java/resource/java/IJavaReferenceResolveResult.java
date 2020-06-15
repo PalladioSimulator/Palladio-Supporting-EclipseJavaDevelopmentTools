@@ -36,18 +36,6 @@ public interface IJavaReferenceResolveResult<ReferenceType> {
 	public String getErrorMessage();
 	
 	/**
-	 * Returns an unmodifiable collection of the quick fixes that can be used to
-	 * resolve the resolving error.
-	 */
-	public java.util.Collection<org.emftext.language.java.resource.java.IJavaQuickFix> getQuickFixes();
-	
-	/**
-	 * Adds a quick fix to the set of quick fixes that can be used to resolve the
-	 * resolving error.
-	 */
-	public void addQuickFix(org.emftext.language.java.resource.java.IJavaQuickFix quickFix);
-	
-	/**
 	 * Sets the error message that describes what went wrong while resolving a
 	 * reference. If a mapping for the reference was already found (i.e., addMapping()
 	 * was called before), the call to this method is ignored. If addMapping() is

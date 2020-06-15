@@ -21,7 +21,7 @@ package org.emftext.language.java.resource.java;
  * A IJavaReferenceResolverSwitch holds references to multiple other reference
  * resolvers and delegates requests to the appropriate resolver.
  */
-public interface IJavaReferenceResolverSwitch extends org.emftext.language.java.resource.java.IJavaConfigurable {
+public interface IJavaReferenceResolverSwitch {
 	
 	/**
 	 * Attempts to resolve a reference string fuzzy (returning objects that do not

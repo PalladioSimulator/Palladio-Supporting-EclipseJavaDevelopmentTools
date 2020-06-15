@@ -26,7 +26,7 @@ package org.emftext.language.java.resource.java;
  * @param <ReferenceType> the type of the reference that is resolved by this
  * resolver
  */
-public interface IJavaReferenceResolver<ContainerType extends org.eclipse.emf.ecore.EObject, ReferenceType extends org.eclipse.emf.ecore.EObject> extends org.emftext.language.java.resource.java.IJavaConfigurable {
+public interface IJavaReferenceResolver<ContainerType extends org.eclipse.emf.ecore.EObject, ReferenceType extends org.eclipse.emf.ecore.EObject> {
 	
 	/**
 	 * Attempts to resolve a reference string.

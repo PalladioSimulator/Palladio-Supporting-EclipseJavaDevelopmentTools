@@ -264,7 +264,6 @@ public class JavaDefaultResolverDelegate<ContainerType extends org.eclipse.emf.e
 				} else {
 					oldTarget = (org.eclipse.emf.ecore.EObject) container.eGet(reference, false);
 				}
-				result.addQuickFix(new org.emftext.language.java.resource.java.mopp.JavaChangeReferenceQuickFix("Replace with " + similarMatch, "IMG_TOOL_FORWARD", container, reference, oldTarget, element));
 			}
 			return true;
 		}

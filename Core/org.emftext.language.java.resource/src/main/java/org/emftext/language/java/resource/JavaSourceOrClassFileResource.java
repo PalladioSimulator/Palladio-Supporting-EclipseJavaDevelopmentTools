@@ -46,15 +46,8 @@ import org.emftext.language.java.members.MemberContainer;
 import org.emftext.language.java.members.MembersPackage;
 import org.emftext.language.java.resource.java.IJavaContextDependentURIFragment;
 import org.emftext.language.java.resource.java.IJavaContextDependentURIFragmentFactory;
-import org.emftext.language.java.resource.java.IJavaInputStreamProcessorProvider;
-import org.emftext.language.java.resource.java.IJavaOptions;
 import org.emftext.language.java.resource.java.IJavaReferenceResolverSwitch;
-import org.emftext.language.java.resource.java.IJavaTextPrinter;
-import org.emftext.language.java.resource.java.mopp.JavaInputStreamProcessor;
-import org.emftext.language.java.resource.java.mopp.JavaParser;
 import org.emftext.language.java.resource.java.mopp.JavaResource;
-import org.emftext.language.java.resource.java.util.JavaLayoutUtil;
-import org.emftext.language.java.resource.java.util.JavaUnicodeConverter;
 import org.emftext.language.java.util.JavaModelCompletion;
 
 /**
@@ -63,8 +56,6 @@ import org.emftext.language.java.util.JavaModelCompletion;
  * the resource's URI.
  */
 public class JavaSourceOrClassFileResource extends JavaResource {
-
-	private final JavaLayoutUtil layoutUtil = new JavaLayoutUtil();
 	
 	public JavaSourceOrClassFileResource(URI uri) {
 		super(uri);
@@ -116,16 +107,6 @@ public class JavaSourceOrClassFileResource extends JavaResource {
 			Map<Object, Object> optionsWithUnicodeConverter = new LinkedHashMap<Object, Object>();
 			if (options != null) {
 				optionsWithUnicodeConverter.putAll(options);
-			}
-			if (!optionsWithUnicodeConverter.containsKey(IJavaOptions.INPUT_STREAM_PREPROCESSOR_PROVIDER)) {
-				optionsWithUnicodeConverter.put(
-						IJavaOptions.INPUT_STREAM_PREPROCESSOR_PROVIDER, 
-						new IJavaInputStreamProcessorProvider() {
-							
-							public JavaInputStreamProcessor getInputStreamProcessor(InputStream inputStream) {
-								return new JavaUnicodeConverter(inputStream);	
-							}
-				});
 			}
 			super.doLoad(inputStream, optionsWithUnicodeConverter);
 			if (getContentsInternal().isEmpty() && getErrors().isEmpty()) {
@@ -180,12 +161,6 @@ public class JavaSourceOrClassFileResource extends JavaResource {
 	@Override
 	public EObject getEObject(String id) {
 		EObject result = null;
-		
-		// check whether proxy resolving is turned off
-		Object disableProxyResolvingValue = getResourceSet().getLoadOptions().get(IExtendedJavaOptions.DISABLE_ON_DEMAND_PROXY_RESOLVING);
-		if (Boolean.TRUE.equals(disableProxyResolvingValue)) {
-			return null;
-		}
 		
 		if ((isClassFile() || isPackage()) &&
 				id.startsWith("//" + JavaUniquePathConstructor.CLASSIFIERS_ROOT_PATH_PREFIX)) {
@@ -416,19 +391,9 @@ public class JavaSourceOrClassFileResource extends JavaResource {
 					addPackageDeclaration(cu);
 				}
 				//super.doSave(outputStream, options);
-				IJavaTextPrinter printer = getMetaInformation().createPrinter(outputStream, this);
 				IJavaReferenceResolverSwitch referenceResolverSwitch = getReferenceResolverSwitch();
-				printer.setEncoding(getEncoding(options));
-				printer.setOptions(options);
-				referenceResolverSwitch.setOptions(options);
 				EObject root = getContentsInternal().get(0); //only print the single CU or Package
-				if (isLayoutInformationRecordingEnabled()) {
-					layoutUtil.transferAllLayoutInformationFromModel(root);
-				}
-				printer.print(root);
-				if (isLayoutInformationRecordingEnabled()) {
-					layoutUtil.transferAllLayoutInformationToModel(root);
-				}
+				// TO-DO: Print here.
 			}
 		}
 	}

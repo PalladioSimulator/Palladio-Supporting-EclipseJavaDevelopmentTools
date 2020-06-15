@@ -43,7 +43,6 @@ public class JavaRuntimeUtil {
 	 */
 	public void logError(String message, Throwable exception) {
 		if (isEclipsePlatformAvailable()) {
-			org.emftext.language.java.resource.java.mopp.JavaPlugin.logError(message, exception);
 			return;
 		}
 		System.err.println(message);
@@ -58,7 +57,6 @@ public class JavaRuntimeUtil {
 	 */
 	public void logWarning(String message, Throwable exception) {
 		if (isEclipsePlatformAvailable()) {
-			org.emftext.language.java.resource.java.mopp.JavaPlugin.logWarning(message, exception);
 			return;
 		}
 		System.err.println(message);
