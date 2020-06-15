@@ -1,0 +1,6 @@
+Automatic-Module-Name: jamopp.parser
+Bundle-Name: JaMoPP Parser API
+Bundle-Vendor: Martin Armbruster
+Bundle-ActivationPolicy: lazy
+-noextraheaders: true
+-snapshot: SNAPSHOT
