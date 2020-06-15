@@ -1,0 +1,7 @@
+Automatic-Module-Name: jamopp.parser.jdt
+Bundle-Name: JaMoPP JDT-based Parser
+Bundle-Vendor: Martin Armbruster
+Bundle-ActivationPolicy: lazy
+Export-Package: jamopp.parser.jdt.*
+-noextraheaders: true
+-snapshot: SNAPSHOT
