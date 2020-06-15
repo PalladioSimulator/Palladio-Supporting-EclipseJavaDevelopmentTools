@@ -27,12 +27,29 @@ import org.emftext.language.java.containers.JavaRoot;
  */
 public interface JaMoPPParserAPI {
 	/**
+	 * File name of a module declaration.
+	 */
+	static final String MODULE_DECLARATION_FILE_NAME = "module-info.java";
+	
+	/**
 	 * Reads an InputStream and parses its content into a Java model instance.
+	 * 
+	 * @param input the InputStream to read.
+	 * @param isModule true if the InputStream corresponds to a module declaration. false otherwise.
+	 * @return the created Java model instance or null if the InputStream could not be read.
+	 */
+	JavaRoot parse(InputStream input, boolean isModule);
+	
+	/**
+	 * Reads an InputStream and parses its content into a Java model instance. It is assumed that the InputStream does not
+	 * correspond to a module declaration.
 	 * 
 	 * @param input the InputStream to read.
 	 * @return the created Java model instance or null if the InputStream could not be read.
 	 */
-	JavaRoot parse(InputStream input);
+	default JavaRoot parse(InputStream input) {
+		return parse(input, false);
+	}
 	
 	/**
 	 * Reads a file and parses its content into a Java model instance.
@@ -44,7 +61,7 @@ public interface JaMoPPParserAPI {
 		JavaRoot result = null;
 		try {
 			InputStream input = Files.newInputStream(file);
-			result = parse(input);
+			result = parse(input, file.endsWith(MODULE_DECLARATION_FILE_NAME));
 			input.close();
 		} catch (IOException e) {
 		}
