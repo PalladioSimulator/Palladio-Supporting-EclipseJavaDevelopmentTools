@@ -17,6 +17,9 @@
 	<modules>
 		<module>Experimental</module>
 		<module>Core</module>
+		<module>
+			Eclipse-Integration/org.emftext.language.java.resource.jdt
+		</module>
 	</modules>
 
 	<dependencyManagement>
