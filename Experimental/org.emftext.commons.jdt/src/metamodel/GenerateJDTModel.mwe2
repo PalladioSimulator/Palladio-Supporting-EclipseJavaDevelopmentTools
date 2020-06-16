@@ -1,0 +1,21 @@
+module GenerateModel
+
+import org.eclipse.emf.mwe2.ecore.EcoreGenerator
+import org.eclipse.emf.mwe.utils.StandaloneSetup
+
+Workflow {
+	bean = StandaloneSetup {
+		scanClassPath = false
+		platformUri = "."
+		projectMapping = {
+			projectName = "org.emftext.commons.jdt"
+			path = "Experimental/org.emftext.commons.jdt"
+		}
+		registerGenModelFile = "platform:/resource/org.emftext.commons.jdt/src/metamodel/jdt.genmodel"
+	}
+	
+	component = EcoreGenerator {
+		genModel = "platform:/resource/org.emftext.commons.jdt/src/metamodel/jdt.genmodel"
+		srcPath = "platform:/resource/org.emftext.commons.jdt/src/main/generated"
+	}
+}

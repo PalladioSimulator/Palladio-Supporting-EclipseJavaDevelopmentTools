@@ -13,5 +13,8 @@
 	<modules>
 		<module>org.emftext.commons.layout</module>
 		<module>org.emftext.commons.layout.edit</module>
+		<module>jamopp.parser.jdt</module>
+		<module>jamopp.printer</module>
+		<module>org.emftext.commons.jdt</module>
 	</modules>
 </project>
