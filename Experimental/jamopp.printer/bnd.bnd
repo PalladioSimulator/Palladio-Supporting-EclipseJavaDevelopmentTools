@@ -1,0 +1,7 @@
+Automatic-Module-Name: jamopp.printer
+Bundle-Name: JaMoPP Printer
+Bundle-Vendor: Martin Armbruster
+Bundle-ActivationPolicy: lazy
+Export-Package: jamopp.printer.*
+-noextraheaders: true
+-snapshot: SNAPSHOT
