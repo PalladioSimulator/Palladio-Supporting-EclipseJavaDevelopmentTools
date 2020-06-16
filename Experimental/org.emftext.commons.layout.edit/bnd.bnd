@@ -1,7 +1,0 @@
-Automatic-Module-Name: org.emftext.commons.layout.edit
-Bundle-Name: EMFText LayoutInformation Meta-model Edit Support
-Bundle-Vendor: Martin Armbruster
-Bundle-ActivationPolicy: lazy
-Export-Package: org.emftext.commons.layout.provider
--noextraheaders: true
--snapshot: SNAPSHOT

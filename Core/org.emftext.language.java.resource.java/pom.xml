@@ -42,24 +42,26 @@
 	<build>
 		<plugins>
 			<plugin>
-			    <groupId>biz.aQute.bnd</groupId>
-			    <artifactId>bnd-maven-plugin</artifactId>
-			    <executions>
-			        <execution>
-			            <goals>
-			                <goal>bnd-process</goal>
-			            </goals>
-			        </execution>
-			    </executions>
-			</plugin>
-			<plugin>
-			    <groupId>org.apache.maven.plugins</groupId>
-			    <artifactId>maven-jar-plugin</artifactId>
-			    <configuration>
-			        <archive>
-			            <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
-			        </archive>
-			    </configuration>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>bundle</goal>
+						</goals>
+						<configuration>
+							<instructions>
+								<Automatic-Module-Name>org.emftext.language.java.resource.java</Automatic-Module-Name>
+								<Export-Package>org.emftext.language.java.resource.java.*</Export-Package>
+								<Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy>
+								<Bundle-Activator>org.emftext.language.java.resource.java.mopp.JavaPlugin</Bundle-Activator>
+								<Bundle-Vendor>Martin Armbruster</Bundle-Vendor>
+								<_noextraheaders>true</_noextraheaders>
+								<snapshot>SNAPSHOT</snapshot>
+							</instructions>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>

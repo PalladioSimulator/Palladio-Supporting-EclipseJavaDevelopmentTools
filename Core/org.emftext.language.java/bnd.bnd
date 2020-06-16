@@ -1,7 +1,0 @@
-Automatic-Module-Name: org.emftext.language.java
-Bundle-Name: JaMoPP (Java Model Parser and Printer) Metamodel
-Bundle-Vendor: Martin Armbruster
-Bundle-ActivationPolicy: lazy
-Export-Package: org.emftext.language.java.*
--noextraheaders: true
--snapshot: SNAPSHOT

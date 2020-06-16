@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?eclipse version="3.4"?>
+<?eclipse version="3.2"?>
 
 <!--
- Copyright (c) 2006-2012
+ Copyright (c) 2006-2014
  Software Technology Group, Dresden University of Technology
  DevBoost GmbH, Berlin, Amtsgericht Charlottenburg, HRB 140026
  
@@ -20,10 +20,17 @@
 
 <plugin>
    <extension
-         point="org.emftext.language.java.java_classpath_initializer">
-      <initializer
-            class="org.emftext.language.java.resource.jdt.JDTConnector">
-      </initializer>
+         point="org.eclipse.emf.ecore.extension_parser">
+      <parser
+            class="org.emftext.language.java.resource.JavaSourceOrClassFileResourceFactoryImpl"
+            type="class">
+      </parser>
    </extension>
 
+   <extension
+         point="org.emftext.language.java.resource.java.additional_extension_parser">
+      <parser
+            class="org.emftext.language.java.resource.JavaSourceOrClassFileResourceFactoryImpl">
+      </parser>
+   </extension>
 </plugin>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?eclipse version="3.4"?>
+<?eclipse version="3.0"?>
 
 <!--
  Copyright (c) 2006-2012
@@ -19,11 +19,12 @@
 -->
 
 <plugin>
-   <extension
-         point="org.emftext.language.java.java_classpath_initializer">
-      <initializer
-            class="org.emftext.language.java.resource.jdt.JDTConnector">
-      </initializer>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <package
+            uri="http://www.emftext.org/commons/layout"
+            class="org.emftext.commons.layout.LayoutPackage"
+            genModel="metamodel/layout.genmodel"/>
    </extension>
 
 </plugin>

@@ -1,7 +1,0 @@
-Automatic-Module-Name: org.emftext.language.java.resource
-Bundle-Name: JaMoPP (Java Model Parser and Printer) Integrated Source and Class File Support
-Bundle-Vendor: Martin Armbruster
-Bundle-ActivationPolicy: lazy
-Export-Package: org.emftext.language.java.resource.*
--noextraheaders: true
--snapshot: SNAPSHOT

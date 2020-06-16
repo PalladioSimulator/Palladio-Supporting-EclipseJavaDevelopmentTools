@@ -8,6 +8,7 @@
 		<artifactId>jamopp.parent.experimental</artifactId>
 		<version>2.0.0-SNAPSHOT</version>
 	</parent>
+	<name>JaMoPP Printer</name>
 	
 	<dependencies>
 		<dependency>
@@ -20,24 +21,25 @@
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>biz.aQute.bnd</groupId>
-				<artifactId>bnd-maven-plugin</artifactId>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
 				<executions>
 					<execution>
 						<goals>
-							<goal>bnd-process</goal>
+							<goal>bundle</goal>
 						</goals>
+						<configuration>
+							<instructions>
+								<Automatic-Module-Name>jamopp.printer</Automatic-Module-Name>
+								<Export-Package>jamopp.printer.*</Export-Package>
+								<Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy>
+								<Bundle-Vendor>Martin Armbruster</Bundle-Vendor>
+								<_noextraheaders>true</_noextraheaders>
+								<snapshot>SNAPSHOT</snapshot>
+							</instructions>
+						</configuration>
 					</execution>
 				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<configuration>
-					<archive>
-						<manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
-					</archive>
-				</configuration>
 			</plugin>
 		</plugins>
 	</build>
