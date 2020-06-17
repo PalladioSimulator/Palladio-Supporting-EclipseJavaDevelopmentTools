@@ -17,5 +17,6 @@
 		<module>jamopp.parser.jdt</module>
 		<module>jamopp.printer</module>
 		<module>org.emftext.commons.jdt</module>
+		<module>jamopp.resource.resolve</module>
 	</modules>
 </project>
