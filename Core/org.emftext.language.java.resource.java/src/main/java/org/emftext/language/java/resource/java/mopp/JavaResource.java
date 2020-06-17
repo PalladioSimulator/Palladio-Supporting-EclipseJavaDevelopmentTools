@@ -17,6 +17,13 @@
  ******************************************************************************/
 package org.emftext.language.java.resource.java.mopp;
 
+import org.eclipse.emf.ecore.util.EcoreUtil;
+import org.emftext.language.java.containers.JavaRoot;
+
+import jamopp.parser.api.JaMoPPParserAPI;
+import jamopp.parser.jdt.JaMoPPJDTParser;
+import jamopp.printer.JaMoPPPrinter;
+
 public class JavaResource extends org.eclipse.emf.ecore.resource.impl.ResourceImpl implements org.emftext.language.java.resource.java.IJavaTextResource {
 	
 	public class ElementBasedTextDiagnostic  {
@@ -128,10 +135,11 @@ public class JavaResource extends org.eclipse.emf.ecore.resource.impl.ResourceIm
 			String encoding = getEncoding(options);
 			java.io.InputStream actualInputStream = inputStream;
 			Object inputStreamPreProcessorProvider = null;
-			
-			// TO-DO: Parse here.
+			JaMoPPParserAPI parser = new JaMoPPJDTParser();
+			JavaRoot result = parser.parse(actualInputStream, this.uri.toString().contains(JaMoPPParserAPI.MODULE_DECLARATION_FILE_NAME));
 			
 			org.emftext.language.java.resource.java.IJavaReferenceResolverSwitch referenceResolverSwitch = getReferenceResolverSwitch();
+			EcoreUtil.resolveAll(result);
 			
 			if (processTerminationRequested()) {
 				// do nothing if reload was already restarted
@@ -140,7 +148,7 @@ public class JavaResource extends org.eclipse.emf.ecore.resource.impl.ResourceIm
 			
 			clearState();
 			getContentsInternal().clear();
-			org.eclipse.emf.ecore.EObject root = null;
+			org.eclipse.emf.ecore.EObject root = result;
 			if (root != null) {
 				if (processTerminationRequested()) {
 					// the next reload will add new content
@@ -215,7 +223,7 @@ public class JavaResource extends org.eclipse.emf.ecore.resource.impl.ResourceIm
 	protected void doSave(java.io.OutputStream outputStream, java.util.Map<?,?> options) throws java.io.IOException {
 		org.emftext.language.java.resource.java.IJavaReferenceResolverSwitch referenceResolverSwitch = getReferenceResolverSwitch();
 		for (org.eclipse.emf.ecore.EObject root : getContentsInternal()) {
-			// TO-DO: Print here.
+			JaMoPPPrinter.print((JavaRoot) root, outputStream);
 		}
 	}
 	
