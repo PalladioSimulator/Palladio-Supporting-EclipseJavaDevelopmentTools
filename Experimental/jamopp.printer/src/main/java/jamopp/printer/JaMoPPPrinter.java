@@ -12,7 +12,13 @@ import org.emftext.language.java.containers.JavaRoot;
 /**
  * This class provides methods to print JaMoPP model instances.
  */
-public class PrinterTest {
+public final class JaMoPPPrinter {
+	/**
+	 * Private constructor to avoid instantiation.
+	 */
+	private JaMoPPPrinter() {
+	}
+	
 	/**
 	 * Prints a model instance into an OutputStream.
 	 * 
