@@ -25,7 +25,6 @@ import java.util.Map;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.emftext.language.java.resource.java.IJavaOptions;
 import org.junit.Ignore;
 
 public class Bug1834Test extends AbstractTestCase {
@@ -57,7 +56,6 @@ public class Bug1834Test extends AbstractTestCase {
 	@Override
 	protected Map<?, ?> getLoadOptions() {
 		Map<Object, Object> loadOptions = new LinkedHashMap<Object, Object>();
-		loadOptions.put(IJavaOptions.DISABLE_LAYOUT_INFORMATION_RECORDING, Boolean.TRUE);
 		return loadOptions;
 	}
 }

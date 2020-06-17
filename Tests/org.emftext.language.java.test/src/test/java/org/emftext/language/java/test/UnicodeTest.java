@@ -23,7 +23,6 @@ import java.util.Collections;
 import java.util.Map;
 
 import org.eclipse.emf.common.util.URI;
-import org.emftext.language.java.resource.java.IJavaOptions;
 import org.emftext.language.java.resource.java.mopp.JavaResource;
 import org.junit.Test;
 
@@ -46,8 +45,7 @@ public class UnicodeTest extends AbstractJavaParserTestCase {
 	@Test
 	public void testUnicodeConverterDeactivated() {
 		try {
-			Map<String, Object> loadOptions = Collections.singletonMap(
-					IJavaOptions.INPUT_STREAM_PREPROCESSOR_PROVIDER, null);
+			Map<String, Object> loadOptions = Collections.emptyMap();
 			
 			assertParsesWithErrorsClass("ControlZ", loadOptions);
 			assertParsesWithErrorsClass("Unicode", loadOptions);

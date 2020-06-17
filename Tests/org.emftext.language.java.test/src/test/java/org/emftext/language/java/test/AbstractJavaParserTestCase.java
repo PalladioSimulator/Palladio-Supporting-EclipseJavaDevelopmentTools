@@ -70,10 +70,8 @@ import org.emftext.language.java.modifiers.AnnotationInstanceOrModifier;
 import org.emftext.language.java.modifiers.Modifier;
 import org.emftext.language.java.modifiers.Public;
 import org.emftext.language.java.resource.JavaSourceOrClassFileResourceFactoryImpl;
-import org.emftext.language.java.resource.java.IJavaTextDiagnostic;
 import org.emftext.language.java.resource.java.mopp.JavaResource;
 import org.emftext.language.java.resource.java.util.JavaResourceUtil;
-import org.emftext.language.java.resource.java.util.JavaUnicodeConverter;
 import org.emftext.language.java.types.NamespaceClassifierReference;
 
 /**
@@ -81,7 +79,7 @@ import org.emftext.language.java.types.NamespaceClassifierReference;
  */
 public abstract class AbstractJavaParserTestCase {
 
-	protected static final String TEST_OUTPUT_FOLDER = "output";
+	protected static final String TEST_OUTPUT_FOLDER = "target" + File.separator + "output";
 
 	public AbstractJavaParserTestCase() {
 		Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap().put(
@@ -191,15 +189,7 @@ public abstract class AbstractJavaParserTestCase {
 		buffer.append(diagnosticType + " while parsing resource '" + filename
 				+ "':\n");
 		for (Diagnostic diagnostic : errors) {
-			String text;
-			if (diagnostic instanceof IJavaTextDiagnostic) {
-				IJavaTextDiagnostic textDiagnostic = (IJavaTextDiagnostic) diagnostic;
-				text = textDiagnostic.getMessage() + " at ("
-						+ textDiagnostic.getLine() + ","
-						+ textDiagnostic.getColumn() + ")";
-			} else {
-				text = diagnostic.getMessage();
-			}
+			String text = diagnostic.getMessage();
 			buffer.append("\t" + text + "\n");
 		}
 		System.out.println(buffer.toString());
@@ -306,10 +296,6 @@ public abstract class AbstractJavaParserTestCase {
 	private static boolean compareTextContents(InputStream inputStream,
 			InputStream inputStream2) throws MalformedTreeException,
 			BadLocationException, IOException {
-
-		//converter unicode
-		inputStream = new JavaUnicodeConverter(inputStream);
-		inputStream2 = new JavaUnicodeConverter(inputStream2);
 		
 		org.eclipse.jdt.core.dom.CompilationUnit unit1 = parseWithJDT(inputStream);
 		removeJavadoc(unit1);

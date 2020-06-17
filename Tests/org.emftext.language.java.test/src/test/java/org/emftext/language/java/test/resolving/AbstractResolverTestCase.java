@@ -40,7 +40,8 @@ import org.emftext.language.java.variables.LocalVariable;
  */
 public abstract class AbstractResolverTestCase extends AbstractJavaParserTestCase {
 
-	protected static final String TEST_INPUT_FOLDER_RESOLVING = "src-input" + File.separator + "resolving" + File.separator;
+	protected static final String TEST_INPUT_FOLDER_RESOLVING = "src" + File.separator + "test" + File.separator
+		+ "resources" + File.separator + "resolving" + File.separator;
 
 	protected org.emftext.language.java.classifiers.Class assertParsesToClass(String typename) throws Exception {
 		return assertParsesToType(typename, org.emftext.language.java.classifiers.Class.class);

@@ -75,7 +75,6 @@ import org.emftext.language.java.references.IdentifierReference;
 import org.emftext.language.java.references.MethodCall;
 import org.emftext.language.java.references.PackageReference;
 import org.emftext.language.java.references.StringReference;
-import org.emftext.language.java.resource.java.IJavaOptions;
 import org.emftext.language.java.statements.Block;
 import org.emftext.language.java.statements.ExpressionStatement;
 import org.emftext.language.java.statements.ForEachLoop;
@@ -104,12 +103,11 @@ public class JavaLanguageFeatureTest extends AbstractJavaParserTestCase {
 
 	private static final String JAVA_FILE_EXTENSION = ".java";
 
-	protected static final String TEST_INPUT_FOLDER = "src-input";
+	protected static final String TEST_INPUT_FOLDER = "src" + File.separator + "test" + File.separator + "resources";
 
 	@Override
 	protected Map<Object, Object> getLoadOptions() {
 		Map<Object, Object> map = new LinkedHashMap<Object, Object>();
-		map.put(IJavaOptions.DISABLE_LOCATION_MAP, Boolean.TRUE);
 		return map;
 	}
 

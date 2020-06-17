@@ -16,7 +16,6 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.emftext.language.java.resource.JaMoPPUtil;
-import org.emftext.language.java.resource.java.IJavaOptions;
 import org.junit.Test;
 
 public class PrintCommentsInEmptyMethodTest {
@@ -30,8 +29,6 @@ public class PrintCommentsInEmptyMethodTest {
 		InputStream inputStream = new ByteArrayInputStream("public class C1 {public void m1() {\n/*comment*/\n//another\n}}".getBytes());
 		
 		Map<Object, Object> options = new LinkedHashMap<Object, Object>();
-		options.put(IJavaOptions.DISABLE_LAYOUT_INFORMATION_RECORDING, false);
-		options.put(IJavaOptions.DISABLE_LOCATION_MAP, false);
 		try {
 			resource.load(inputStream, options);
 		} catch (IOException e) {

@@ -37,7 +37,7 @@ import org.junit.Test;
 
 public class Bug1415Test extends AbstractTestCase {
 
-	private static String OUT_FOLDER = "./output";
+	private static String OUT_FOLDER = "target" + File.separator + "output";
 	
 	public Bug1415Test() {
 		super();

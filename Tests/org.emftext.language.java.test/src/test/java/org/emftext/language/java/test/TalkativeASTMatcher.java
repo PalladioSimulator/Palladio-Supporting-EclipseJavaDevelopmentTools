@@ -102,14 +102,6 @@ import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.jdt.core.dom.VariableDeclarationStatement;
 import org.eclipse.jdt.core.dom.WhileStatement;
 import org.eclipse.jdt.core.dom.WildcardType;
-import org.emftext.language.java.resource.java.IJavaTokenResolveResult;
-import org.emftext.language.java.resource.java.analysis.JavaDECIMAL_DOUBLE_LITERALTokenResolver;
-import org.emftext.language.java.resource.java.analysis.JavaDECIMAL_FLOAT_LITERALTokenResolver;
-import org.emftext.language.java.resource.java.analysis.JavaHEX_DOUBLE_LITERALTokenResolver;
-import org.emftext.language.java.resource.java.analysis.JavaHEX_FLOAT_LITERALTokenResolver;
-import org.emftext.language.java.resource.java.analysis.JavaHEX_INTEGER_LITERALTokenResolver;
-import org.emftext.language.java.resource.java.analysis.JavaHEX_LONG_LITERALTokenResolver;
-import org.emftext.language.java.resource.java.mopp.JavaTokenResolveResult;
 import org.emftext.language.java.util.CharacterEscaper;
 /**
  * An extension of the JDT ASTMatcher that prints information
@@ -476,20 +468,7 @@ public class TalkativeASTMatcher extends ASTMatcher {
 				token.toLowerCase().contains("p") ||
 				token.toLowerCase().contains(".")) {
 
-			if (token.toLowerCase().endsWith("f")) {
-				token = token.substring(0, token.length() - 1);
-				IJavaTokenResolveResult result = new JavaTokenResolveResult();
-				JavaDECIMAL_FLOAT_LITERALTokenResolver.parseToFloat(token, result);
-				token = "" + result.getResolvedToken();
-			} else {
-				// ends with 'd' or has no suffix
-				if (token.toLowerCase().endsWith("d")) {
-					token = token.substring(0, token.length() - 1);
-				}
-				IJavaTokenResolveResult result = new JavaTokenResolveResult();
-				JavaDECIMAL_DOUBLE_LITERALTokenResolver.parseToDouble(token, result);
-				token = "" + result.getResolvedToken();
-			}
+			// TO-DO: Resolve token.
 		}
 		if (token.startsWith("- ")) {
 			token = "-" + token.substring(2);
@@ -510,23 +489,7 @@ public class TalkativeASTMatcher extends ASTMatcher {
 			boolean containsExp = containsP;
 			boolean containsDot = hexToken.toLowerCase().contains(".");
 
-			if (hasHexSuffix && endWithL) {
-				IJavaTokenResolveResult result = new JavaTokenResolveResult();
-				new JavaHEX_LONG_LITERALTokenResolver().resolve(hexToken, null, result);
-				hexToken = result.getResolvedToken().toString();
-			} else if (hasHexSuffix && (containsExp || containsDot) && endsWithF) {
-				IJavaTokenResolveResult result = new JavaTokenResolveResult();
-				new JavaHEX_FLOAT_LITERALTokenResolver().resolve(hexToken, null, result);
-				hexToken = result.getResolvedToken().toString();
-			} else if (hasHexSuffix && (containsExp || containsDot)) {
-				IJavaTokenResolveResult result = new JavaTokenResolveResult();
-				new JavaHEX_DOUBLE_LITERALTokenResolver().resolve(hexToken, null, result);
-				hexToken = result.getResolvedToken().toString();
-			} else if (hasHexSuffix) {
-				IJavaTokenResolveResult result = new JavaTokenResolveResult();
-				new JavaHEX_INTEGER_LITERALTokenResolver().resolve(hexToken, null, result);
-				hexToken = result.getResolvedToken().toString();
-			}
+			// TO-DO: Resolve token.
 		} catch (NumberFormatException nfe) {
 			nfe.printStackTrace();
 		}

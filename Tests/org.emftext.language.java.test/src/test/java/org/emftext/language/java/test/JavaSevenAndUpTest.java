@@ -23,6 +23,7 @@ import java.io.File;
 import org.emftext.language.java.classifiers.Interface;
 import org.emftext.language.java.containers.CompilationUnit;
 import org.emftext.language.java.containers.JavaRoot;
+import org.emftext.language.java.containers.Module;
 import org.emftext.language.java.expressions.ArrayConstructorReferenceExpression;
 import org.emftext.language.java.expressions.AssignmentExpression;
 import org.emftext.language.java.expressions.ClassTypeConstructorReferenceExpression;
@@ -37,7 +38,6 @@ import org.emftext.language.java.members.Method;
 import org.emftext.language.java.modifiers.Default;
 import org.emftext.language.java.modifiers.Modifier;
 import org.emftext.language.java.modifiers.Static;
-import org.emftext.language.java.modules.NormalModule;
 import org.emftext.language.java.parameters.CatchParameter;
 import org.emftext.language.java.parameters.ReceiverParameter;
 import org.emftext.language.java.statements.Block;
@@ -70,8 +70,8 @@ public class JavaSevenAndUpTest extends AbstractJavaParserTestCase {
 		try {
 			String file = "module-info.java";
 			JavaRoot root = this.parseResource(file);
-			this.assertType(root, NormalModule.class);
-			assertEquals(6, ((NormalModule) root).getTarget().size());
+			this.assertType(root, Module.class);
+			assertEquals(6, ((Module) root).getTarget().size());
 			this.assertResolveAllProxies(root);
 			this.parseAndReprint(file);
 		} catch (Exception e) {
