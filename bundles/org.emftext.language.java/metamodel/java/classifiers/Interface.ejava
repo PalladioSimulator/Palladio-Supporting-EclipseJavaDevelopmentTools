@@ -1,0 +1,8 @@
+epackage java.classifiers;
+
+eclass Interface {
+	
+	getAllSuperClassifiers() {
+		return org.emftext.language.java.extensions.classifiers.InterfaceExtension.getAllSuperClassifiers((org.emftext.language.java.classifiers.Interface) this);
+	}
+}

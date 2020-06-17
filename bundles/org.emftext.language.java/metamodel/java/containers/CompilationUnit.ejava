@@ -1,0 +1,36 @@
+epackage java.containers;
+
+eclass CompilationUnit {
+	
+	getContainedClassifier() {
+		return org.emftext.language.java.extensions.containers.CompilationUnitExtension.getContainedClassifier((org.emftext.language.java.containers.CompilationUnit) this, name);
+	}
+	
+	getClassifiersInSamePackage() {
+		return org.emftext.language.java.extensions.containers.CompilationUnitExtension.getClassifiersInSamePackage((org.emftext.language.java.containers.CompilationUnit) this);
+	}
+	
+	getContainedClass() {
+		return org.emftext.language.java.extensions.containers.CompilationUnitExtension.getContainedClass((org.emftext.language.java.containers.CompilationUnit) this);
+	}
+	
+	getContainedInterface() {
+		return org.emftext.language.java.extensions.containers.CompilationUnitExtension.getContainedInterface((org.emftext.language.java.containers.CompilationUnit) this);
+	}
+
+	getContainedAnnotation() {
+		return org.emftext.language.java.extensions.containers.CompilationUnitExtension.getContainedAnnotation((org.emftext.language.java.containers.CompilationUnit) this);
+	}
+	
+	getContainedEnumeration() {
+		return org.emftext.language.java.extensions.containers.CompilationUnitExtension.getContainedEnumeration((org.emftext.language.java.containers.CompilationUnit) this);
+	}
+
+	addImport() {
+		org.emftext.language.java.extensions.containers.CompilationUnitExtension.addImport((org.emftext.language.java.containers.CompilationUnit) this, nameOfClassToImport);
+	}
+	
+	addPackageImport() {
+		org.emftext.language.java.extensions.containers.CompilationUnitExtension.addPackageImport((org.emftext.language.java.containers.CompilationUnit) this, packageName);
+	}
+}

@@ -1,0 +1,33 @@
+epackage java.types;
+
+import java.commons.Commentable;
+import java.classifiers.ConcreteClassifier;
+import java.classifiers.Interface;
+import java.references.MethodCall;
+import java.references.ElementReference;
+import java.generics.TypeParameter;
+import java.arrays.ArrayTypeable;
+import java.references.ReferenceableElement;
+
+import org.emftext.language.java.util.UniqueEList;
+import org.eclipse.emf.common.util.EList;
+import org.emftext.language.java.extensions.types.TypeReferenceExtension;
+
+eclass TypeReference {
+
+	getTarget() {
+		return TypeReferenceExtension.getBoundTarget((org.emftext.language.java.types.TypeReference) this, null);
+	}
+	
+	setTarget() {
+		TypeReferenceExtension.setTarget((org.emftext.language.java.types.TypeReference) this, (org.emftext.language.java.classifiers.Classifier) type);
+	}
+	
+	getBoundTarget() {
+		return TypeReferenceExtension.getBoundTarget((org.emftext.language.java.types.TypeReference) this, (org.emftext.language.java.references.Reference) reference);
+	}
+	
+	getPureClassifierReference() {
+		return TypeReferenceExtension.getPureClassifierReference((org.emftext.language.java.types.TypeReference) this);
+	}
+}

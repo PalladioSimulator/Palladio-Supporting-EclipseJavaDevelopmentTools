@@ -1,0 +1,34 @@
+epackage java.types;
+
+import org.emftext.language.java.util.UniqueEList;
+import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.ecore.util.EcoreUtil;
+import org.eclipse.emf.ecore.EObject;
+import org.emftext.language.java.util.TemporalCompositeClassifier;
+
+import java.arrays.ArrayTypeable;
+import java.classifiers.Annotation;
+import java.classifiers.AnonymousClass;
+import java.classifiers.Class;
+import java.classifiers.Classifier;
+import java.classifiers.ConcreteClassifier;
+import java.classifiers.Interface;
+import java.generics.TypeParameter;
+import java.parameters.VariableLengthParameter;
+import org.emftext.language.java.extensions.types.TypeExtension;
+
+eclass Type {
+	
+	equalsType() {
+		return TypeExtension.equalsType((org.emftext.language.java.types.Type) this, arrayDimension, (org.emftext.language.java.types.Type) otherType, otherArrayDimension);
+	}
+
+	isSuperType() {
+		return TypeExtension.isSuperType((org.emftext.language.java.types.Type) this, arrayDimension, (org.emftext.language.java.types.Type) otherType, (org.emftext.language.java.arrays.ArrayTypeable) otherArrayType);
+	}
+	
+	getAllMembers() {
+		// method has to be specified in subclasses
+		throw new UnsupportedOperationException();
+	}
+}

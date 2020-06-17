@@ -1,0 +1,14 @@
+epackage java.references;
+
+import org.eclipse.emf.common.util.BasicEList;
+import org.eclipse.emf.common.util.EList;
+
+import java.expressions.Expression;
+import java.types.Type;
+
+eclass Argumentable {
+	
+	getArgumentTypes() {
+		return org.emftext.language.java.extensions.references.ArgumentableExtension.getArgumentTypes((org.emftext.language.java.references.Argumentable) this);
+	}
+}

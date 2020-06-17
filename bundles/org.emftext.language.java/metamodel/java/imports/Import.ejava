@@ -1,0 +1,25 @@
+epackage java.imports;
+
+import org.emftext.language.java.util.UniqueEList;
+import org.eclipse.emf.common.util.ECollections;
+import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.ecore.util.EcoreUtil;
+
+import java.classifiers.ConcreteClassifier;
+import java.classifiers.Enumeration;
+import java.commons.NamedElement;
+
+eclass Import {
+
+	getImportedClassifier() {
+		return org.emftext.language.java.extensions.imports.ImportExtension.getImportedClassifier((org.emftext.language.java.imports.Import) this, name);
+	}
+
+	getImportedMembers() {
+		return org.emftext.language.java.extensions.imports.ImportExtension.getImportedMembers((org.emftext.language.java.imports.Import) this);
+	}
+	
+	getImportedClassifiers() {
+		return org.emftext.language.java.extensions.imports.ImportExtension.getImportedClassifiers((org.emftext.language.java.imports.Import) this);
+	}
+}

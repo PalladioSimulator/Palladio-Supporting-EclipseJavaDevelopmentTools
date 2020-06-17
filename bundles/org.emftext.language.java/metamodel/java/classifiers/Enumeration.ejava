@@ -1,0 +1,12 @@
+epackage java.classifiers;
+
+eclass Enumeration {
+	
+	getAllSuperClassifiers() {
+		return org.emftext.language.java.extensions.classifiers.EnumerationExtension.getAllSuperClassifiers((org.emftext.language.java.classifiers.Enumeration) this);
+	}
+	
+	getContainedConstant() {
+		return org.emftext.language.java.extensions.classifiers.EnumerationExtension.getContainedConstant((org.emftext.language.java.classifiers.Enumeration) this, name);
+	}
+}

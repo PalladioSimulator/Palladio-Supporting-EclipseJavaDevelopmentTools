@@ -1,0 +1,13 @@
+epackage java.statements;
+
+import java.variables.LocalVariable;
+
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.common.util.EList;
+
+eclass StatementListContainer {
+
+	/*LocalVariable*/ getLocalVariable(/* String name */) {
+		return org.emftext.language.java.extensions.statements.StatementListContainerExtension.getLocalVariable((org.emftext.language.java.statements.StatementListContainer) this, name);
+	}
+}

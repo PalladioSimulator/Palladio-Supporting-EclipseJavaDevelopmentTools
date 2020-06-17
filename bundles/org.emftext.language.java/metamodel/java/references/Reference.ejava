@@ -1,0 +1,25 @@
+epackage java.references;
+
+import java.classifiers.AnonymousClass;
+import java.classifiers.Class;
+import java.classifiers.Enumeration;
+import java.expressions.NestedExpression;
+import java.literals.Literal;
+import java.literals.Super;
+import java.members.AdditionalField;
+import java.members.EnumConstant;
+import java.types.Type;
+import java.types.TypeReference;
+import java.types.TypedElement;
+import java.variables.AdditionalLocalVariable;
+
+eclass Reference {
+
+	getPrevious() {
+		return org.emftext.language.java.extensions.references.ReferenceExtension.getPrevious((org.emftext.language.java.references.Reference) this);
+	}
+	
+	getReferencedType() {
+		return org.emftext.language.java.extensions.references.ReferenceExtension.getReferencedType((org.emftext.language.java.references.Reference) this);
+	}
+}

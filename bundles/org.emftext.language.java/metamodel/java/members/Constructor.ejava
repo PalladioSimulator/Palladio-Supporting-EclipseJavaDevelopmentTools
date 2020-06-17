@@ -1,0 +1,8 @@
+epackage java.members;
+
+eclass Constructor {
+	
+	getStatements() {
+		return org.emftext.language.java.extensions.members.ConstructorExtension.getStatements((org.emftext.language.java.members.Constructor) this);
+	}
+}

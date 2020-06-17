@@ -1,0 +1,88 @@
+epackage java.modifiers;
+
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.util.EcoreUtil;
+
+import java.classifiers.AnonymousClass;
+import java.classifiers.Classifier;
+import java.annotations.AnnotationInstance;
+import java.classifiers.ConcreteClassifier;
+import java.classifiers.Interface;
+import java.commons.Commentable;
+import java.containers.CompilationUnit;
+import java.literals.Self;
+import java.modifiers.AnnotableAndModifiable;
+import java.modifiers.AnnotationInstanceOrModifier;
+import java.modifiers.Private;
+import java.modifiers.Protected;
+import java.modifiers.Public;
+import java.modifiers.Static;
+import java.references.Reference;
+import java.references.SelfReference;
+import java.types.Type;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Collections;
+
+import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.common.util.BasicEList;
+import org.eclipse.emf.common.util.ECollections;
+
+eclass AnnotableAndModifiable {
+
+	makePrivate() {
+		org.emftext.language.java.extensions.modifiers.AnnotableAndModifiableExtension.makePrivate((org.emftext.language.java.modifiers.AnnotableAndModifiable) this);
+	}
+	
+	makePublic() {
+		org.emftext.language.java.extensions.modifiers.AnnotableAndModifiableExtension.makePublic((org.emftext.language.java.modifiers.AnnotableAndModifiable) this);
+	}
+	
+	makeProtected() {
+		org.emftext.language.java.extensions.modifiers.AnnotableAndModifiableExtension.makeProtected((org.emftext.language.java.modifiers.AnnotableAndModifiable) this);
+	}
+	
+	removeAllModifiers() {
+		org.emftext.language.java.extensions.modifiers.AnnotableAndModifiableExtension.removeAllModifiers((org.emftext.language.java.modifiers.AnnotableAndModifiable) this);
+	}
+	
+	getModifiers() {
+		return org.emftext.language.java.extensions.modifiers.AnnotableAndModifiableExtension.getModifiers((org.emftext.language.java.modifiers.AnnotableAndModifiable) this);
+	}
+	
+	getAnnotationInstances() {
+		return org.emftext.language.java.extensions.modifiers.AnnotableAndModifiableExtension.getAnnotationInstances((org.emftext.language.java.modifiers.AnnotableAndModifiable) this);
+	}
+	
+	addModifier() {
+		org.emftext.language.java.extensions.modifiers.AnnotableAndModifiableExtension.addModifier((org.emftext.language.java.modifiers.AnnotableAndModifiable) this, (org.emftext.language.java.modifiers.Modifier) newModifier);
+	}
+
+	removeModifier() {
+		org.emftext.language.java.extensions.modifiers.AnnotableAndModifiableExtension.removeModifier((org.emftext.language.java.modifiers.AnnotableAndModifiable) this, modifierType);
+	}
+	
+	isPublic() {
+		return org.emftext.language.java.extensions.modifiers.AnnotableAndModifiableExtension.isPublic((org.emftext.language.java.modifiers.AnnotableAndModifiable) this);
+	}
+	
+	isPrivate() {
+		return org.emftext.language.java.extensions.modifiers.AnnotableAndModifiableExtension.isPrivate((org.emftext.language.java.modifiers.AnnotableAndModifiable) this);
+	}
+	
+	isProtected() {
+		return org.emftext.language.java.extensions.modifiers.AnnotableAndModifiableExtension.isProtected((org.emftext.language.java.modifiers.AnnotableAndModifiable) this);
+	}
+	
+	hasModifier() {
+		return org.emftext.language.java.extensions.modifiers.AnnotableAndModifiableExtension.hasModifier((org.emftext.language.java.modifiers.AnnotableAndModifiable) this, type);
+	}
+	
+	isStatic() {
+		return org.emftext.language.java.extensions.modifiers.AnnotableAndModifiableExtension.isStatic((org.emftext.language.java.modifiers.AnnotableAndModifiable) this);
+	}
+
+	isHidden() {
+		return org.emftext.language.java.extensions.modifiers.AnnotableAndModifiableExtension.isHidden((org.emftext.language.java.modifiers.AnnotableAndModifiable) this, (org.emftext.language.java.commons.Commentable) context);
+	}
+}

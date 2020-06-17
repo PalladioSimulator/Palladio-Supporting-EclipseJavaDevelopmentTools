@@ -1,0 +1,14 @@
+epackage java.containers;
+
+import java.classifiers.ConcreteClassifier;
+
+import org.eclipse.emf.common.util.EList;
+import org.emftext.language.java.util.UniqueEList;
+
+eclass JavaRoot {
+	
+	getClassifiersInSamePackage() {
+		return org.emftext.language.java.extensions.containers.JavaRootExtension.getClassifiersInSamePackage((org.emftext.language.java.containers.JavaRoot) this);
+	}
+}
+

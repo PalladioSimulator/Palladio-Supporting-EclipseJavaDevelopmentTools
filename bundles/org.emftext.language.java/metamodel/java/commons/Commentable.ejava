@@ -1,0 +1,108 @@
+epackage java.commons;
+
+eclass Commentable {
+
+	/* void */ addBeforeContainingStatement(/* Statement statementToAdd */) {
+		org.emftext.language.java.extensions.commons.CommentableExtension.addBeforeContainingStatement((org.emftext.language.java.commons.Commentable) this, (org.emftext.language.java.statements.Statement) statementToAdd);
+	}
+
+	/* void */ addAfterContainingStatement(/* Statement statementToAdd */) {
+		org.emftext.language.java.extensions.commons.CommentableExtension.addAfterContainingStatement((org.emftext.language.java.commons.Commentable) this, (org.emftext.language.java.statements.Statement) statementToAdd);
+	}
+
+	getParentByEType() {
+		return org.emftext.language.java.extensions.commons.CommentableExtension.getParentByEType((org.emftext.language.java.commons.Commentable) this, (org.eclipse.emf.ecore.EClass) type);
+	}
+
+	getParentByType() {
+		return org.emftext.language.java.extensions.commons.CommentableExtension.getParentByType((org.emftext.language.java.commons.Commentable) this, type);
+	}
+
+	getFirstChildByEType() {
+		return org.emftext.language.java.extensions.commons.CommentableExtension.getFirstChildByEType((org.emftext.language.java.commons.Commentable) this, (org.eclipse.emf.ecore.EClass) type);
+	}
+
+	getFirstChildByType() {
+		return org.emftext.language.java.extensions.commons.CommentableExtension.getFirstChildByType((org.emftext.language.java.commons.Commentable) this, (Class<T>) type);
+	}
+
+	getChildrenByEType() {
+		return org.emftext.language.java.extensions.commons.CommentableExtension.getChildrenByEType((org.emftext.language.java.commons.Commentable) this, (org.eclipse.emf.ecore.EClass) type);
+	}
+
+	getChildrenByType() {
+		return org.emftext.language.java.extensions.commons.CommentableExtension.getChildrenByType((org.emftext.language.java.commons.Commentable) this, (Class<T>) type);
+	}
+
+	getConcreteClassifier() {
+		return org.emftext.language.java.extensions.commons.CommentableExtension.getConcreteClassifier((org.emftext.language.java.commons.Commentable) this, name);
+	}
+	
+	getConcreteClassifiers() {
+		return org.emftext.language.java.extensions.commons.CommentableExtension.getConcreteClassifiers((org.emftext.language.java.commons.Commentable) this, packageName, classifierQuery);
+	}
+	
+	getConcreteClassifierProxy() {
+		return org.emftext.language.java.extensions.commons.CommentableExtension.getConcreteClassifierProxy((org.emftext.language.java.commons.Commentable) this, name);
+	}
+	
+	getConcreteClassifierProxies() {
+		return org.emftext.language.java.extensions.commons.CommentableExtension.getConcreteClassifierProxies((org.emftext.language.java.commons.Commentable) this, packageName, classifierQuery);
+	}
+	
+	getLibClass() {
+		return org.emftext.language.java.extensions.commons.CommentableExtension.getLibClass((org.emftext.language.java.commons.Commentable) this, name);
+	}
+	
+	getLibInterface() {
+		return org.emftext.language.java.extensions.commons.CommentableExtension.getLibInterface((org.emftext.language.java.commons.Commentable) this, name);
+	}
+	
+	getClassClass()  {
+		return org.emftext.language.java.extensions.commons.CommentableExtension.getClassClass((org.emftext.language.java.commons.Commentable) this);
+	}
+	
+	getObjectClass()  {
+		return org.emftext.language.java.extensions.commons.CommentableExtension.getObjectClass((org.emftext.language.java.commons.Commentable) this);
+	}
+	
+	getStringClass() {
+		return org.emftext.language.java.extensions.commons.CommentableExtension.getStringClass((org.emftext.language.java.commons.Commentable) this);
+	}
+	
+	getAnnotationInterface() {
+		return org.emftext.language.java.extensions.commons.CommentableExtension.getAnnotationInterface((org.emftext.language.java.commons.Commentable) this);
+	}
+	
+	getContainingConcreteClassifier() {
+		return org.emftext.language.java.extensions.commons.CommentableExtension.getContainingConcreteClassifier((org.emftext.language.java.commons.Commentable) this);
+	}
+	
+	getParentConcreteClassifier() {
+		return org.emftext.language.java.extensions.commons.CommentableExtension.getParentConcreteClassifier((org.emftext.language.java.commons.Commentable) this);
+	}
+	
+	getContainingAnonymousClass() {
+		return org.emftext.language.java.extensions.commons.CommentableExtension.getContainingAnonymousClass((org.emftext.language.java.commons.Commentable) this);
+	}
+	
+	getContainingCompilationUnit() {
+		return org.emftext.language.java.extensions.commons.CommentableExtension.getContainingCompilationUnit((org.emftext.language.java.commons.Commentable) this);
+	}
+
+	getContainingAnnotationInstance() {
+		return org.emftext.language.java.extensions.commons.CommentableExtension.getContainingAnnotationInstance((org.emftext.language.java.commons.Commentable) this);
+	}
+	
+	getContainingPackageName() {
+		return org.emftext.language.java.extensions.commons.CommentableExtension.getContainingPackageName((org.emftext.language.java.commons.Commentable) this);
+	}
+	
+	getContainingContainerName() {
+		return org.emftext.language.java.extensions.commons.CommentableExtension.getContainingContainerName((org.emftext.language.java.commons.Commentable) this);
+	}
+	
+	getComments() {
+		return org.emftext.language.java.extensions.commons.CommentableExtension.getComments((org.emftext.language.java.commons.Commentable) this);
+	}
+}

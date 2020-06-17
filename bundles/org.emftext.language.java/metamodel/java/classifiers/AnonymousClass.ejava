@@ -1,0 +1,16 @@
+epackage java.classifiers;
+
+eclass AnonymousClass {
+	
+	getAllMembers() {
+		return org.emftext.language.java.extensions.classifiers.AnonymousClassExtension.getAllMembers((org.emftext.language.java.classifiers.AnonymousClass) this, (org.emftext.language.java.commons.Commentable) context);
+	}
+	
+	getAllSuperClassifiers() {
+		return org.emftext.language.java.extensions.classifiers.AnonymousClassExtension.getAllSuperClassifiers((org.emftext.language.java.classifiers.AnonymousClass) this);
+	}
+	
+	getSuperClassifier() {
+		return org.emftext.language.java.extensions.classifiers.AnonymousClassExtension.getSuperClassifier((org.emftext.language.java.classifiers.AnonymousClass) this);
+	}
+}

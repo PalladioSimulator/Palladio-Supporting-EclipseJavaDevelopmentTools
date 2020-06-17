@@ -1,0 +1,25 @@
+epackage java.variables;
+
+import java.parameters.VariableLengthParameter;
+import java.statements.ExpressionStatement;
+import java.references.IdentifierReference;
+import java.references.MethodCall;
+import java.references.ReferenceableElement;
+import java.members.MemberContainer;
+import java.members.Method;
+import java.types.Type;
+
+eclass Variable {
+
+	getArrayDimension() {
+		return org.emftext.language.java.extensions.variables.VariableExtension.getArrayDimension((org.emftext.language.java.variables.Variable) this);
+	}
+	
+	createMethodCallStatement() {
+		return org.emftext.language.java.extensions.variables.VariableExtension.createMethodCallStatement((org.emftext.language.java.variables.Variable) this, methodName, arguments);
+	}
+
+	createMethodCall() {
+		return org.emftext.language.java.extensions.variables.VariableExtension.createMethodCall((org.emftext.language.java.variables.Variable) this, methodName, arguments);
+	}
+}

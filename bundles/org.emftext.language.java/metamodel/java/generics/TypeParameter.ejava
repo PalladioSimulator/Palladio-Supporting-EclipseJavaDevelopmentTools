@@ -1,0 +1,16 @@
+epackage java.generics;
+
+eclass TypeParameter {
+	
+	getAllSuperClassifiers() {
+		return org.emftext.language.java.extensions.generics.TypeParameterExtension.getAllSuperClassifiers((org.emftext.language.java.generics.TypeParameter) this);
+	}
+	
+	getAllMembers() {
+		return org.emftext.language.java.extensions.generics.TypeParameterExtension.getAllMembers((org.emftext.language.java.generics.TypeParameter) this, (org.emftext.language.java.commons.Commentable) context);
+	}
+	
+	getBoundType() {
+		return org.emftext.language.java.extensions.generics.TypeParameterExtension.getBoundType((org.emftext.language.java.generics.TypeParameter) this, (org.emftext.language.java.types.TypeReference) typeReference, (org.emftext.language.java.references.Reference) reference);
+	}
+}

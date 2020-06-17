@@ -1,0 +1,12 @@
+epackage java.containers;
+
+eclass Package {
+	
+	getClassifiersInSamePackage() {
+		return org.emftext.language.java.extensions.containers.PackageExtension.getClassifiersInSamePackage((org.emftext.language.java.containers.Package) this);
+	}
+	
+	getNamespacesAsString() {
+		return org.emftext.language.java.extensions.containers.PackageExtension.getNamespacesAsString((org.emftext.language.java.containers.Package) this);
+	}
+}

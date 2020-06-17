@@ -1,0 +1,16 @@
+epackage java.classifiers;
+
+eclass Class {
+	
+	getAllSuperClassifiers() {
+		return org.emftext.language.java.extensions.classifiers.ClassExtension.getAllSuperClassifiers((org.emftext.language.java.classifiers.Class) this);
+	}
+	
+	getSuperClass() {
+		return org.emftext.language.java.extensions.classifiers.ClassExtension.getSuperClass((org.emftext.language.java.classifiers.Class) this);
+	}
+	
+	unWrapPrimitiveType() {	
+		return org.emftext.language.java.extensions.classifiers.ClassExtension.unWrapPrimitiveType((org.emftext.language.java.classifiers.Class) this);
+	}
+}

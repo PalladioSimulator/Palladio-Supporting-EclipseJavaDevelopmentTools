@@ -1,0 +1,38 @@
+epackage java.members;
+
+import org.eclipse.emf.common.util.BasicEList;
+import org.eclipse.emf.common.util.EList;
+
+import java.expressions.Expression;
+import java.parameters.Parameter;
+import java.parameters.VariableLengthParameter;
+import java.references.MethodCall;
+import java.types.Type;
+import java.classifiers.ConcreteClassifier;
+
+eclass Method {
+	
+	isSomeMethodForCall() {
+		return org.emftext.language.java.extensions.members.MethodExtension.isSomeMethodForCall((org.emftext.language.java.members.Method) this, (org.emftext.language.java.references.MethodCall) methodCall);
+	}
+
+	isBetterMethodForCall() {
+		return org.emftext.language.java.extensions.members.MethodExtension.isBetterMethodForCall((org.emftext.language.java.members.Method) this, (org.emftext.language.java.members.Method) otherMethod, (org.emftext.language.java.references.MethodCall) methodCall);
+	}
+
+	isMethodForCall() {
+		return org.emftext.language.java.extensions.members.MethodExtension.isMethodForCall((org.emftext.language.java.members.Method) this, (org.emftext.language.java.references.MethodCall) methodCall, needsPerfectMatch);
+	}
+
+	getArrayDimension() {
+		return org.emftext.language.java.extensions.members.MethodExtension.getArrayDimension((org.emftext.language.java.members.Method) this);
+	}
+	
+	getStatements() {
+		return org.emftext.language.java.extensions.members.MethodExtension.getStatements((org.emftext.language.java.members.Method) this);
+	}
+	
+	getBlock() {
+		return org.emftext.language.java.extensions.members.MethodExtension.getBlock((org.emftext.language.java.members.Method) this);
+	}
+}

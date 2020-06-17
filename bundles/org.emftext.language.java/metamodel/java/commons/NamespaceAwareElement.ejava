@@ -1,0 +1,12 @@
+epackage java.commons;
+
+eclass NamespaceAwareElement {
+
+	getNamespacesAsString() {
+		return org.emftext.language.java.extensions.commons.NamespaceAwareElementExtension.getNamespacesAsString((org.emftext.language.java.commons.NamespaceAwareElement) this);
+	}
+	
+	getClassifierAtNamespaces() {
+		return org.emftext.language.java.extensions.commons.NamespaceAwareElementExtension.getClassifierAtNamespaces((org.emftext.language.java.commons.NamespaceAwareElement) this);
+	}
+}

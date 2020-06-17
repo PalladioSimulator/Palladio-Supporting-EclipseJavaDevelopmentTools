@@ -1,0 +1,18 @@
+epackage java.types;
+
+import org.eclipse.emf.common.util.EList;
+
+import java.classifiers.Class;
+import java.commons.Commentable;
+import java.members.Member;
+
+eclass PrimitiveType {
+
+	getAllMembers() {
+		return org.emftext.language.java.extensions.types.PrimitiveTypeExtension.getAllMembers((org.emftext.language.java.types.PrimitiveType) this, (org.emftext.language.java.commons.Commentable) context);
+	}
+	
+	wrapPrimitiveType() {
+		return org.emftext.language.java.extensions.types.PrimitiveTypeExtension.wrapPrimitiveType((org.emftext.language.java.types.PrimitiveType) this);
+	}
+}

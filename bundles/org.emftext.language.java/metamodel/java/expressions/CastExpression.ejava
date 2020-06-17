@@ -1,0 +1,12 @@
+epackage java.expressions;
+
+eclass CastExpression {
+
+	getChild() {
+		return org.emftext.language.java.extensions.expressions.CastExpressionExtension.getChild((org.emftext.language.java.expressions.CastExpression) this);
+	}
+	
+	setChild() {
+		org.emftext.language.java.extensions.expressions.CastExpressionExtension.setChild((org.emftext.language.java.expressions.CastExpression) this, newChild);
+	}
+}

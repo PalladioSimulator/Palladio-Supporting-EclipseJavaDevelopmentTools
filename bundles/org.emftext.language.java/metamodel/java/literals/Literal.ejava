@@ -1,0 +1,11 @@
+epackage java.literals;
+
+import java.classifiers.Class;
+import java.types.Type;
+
+eclass Literal {
+	
+	getOneType() {
+		return org.emftext.language.java.extensions.literals.LiteralExtension.getOneType((org.emftext.language.java.literals.Literal) this);
+	}
+}

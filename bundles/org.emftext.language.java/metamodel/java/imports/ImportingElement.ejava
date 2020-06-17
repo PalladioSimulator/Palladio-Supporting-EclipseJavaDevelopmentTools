@@ -1,0 +1,8 @@
+epackage java.imports;
+
+eclass ImportingElement {
+
+	getDefaultImports() {
+		return org.emftext.language.java.extensions.imports.ImportingElementExtension.getDefaultImports((org.emftext.language.java.imports.ImportingElement) this);
+	}
+}

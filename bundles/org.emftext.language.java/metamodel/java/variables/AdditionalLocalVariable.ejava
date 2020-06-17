@@ -1,0 +1,10 @@
+epackage java.variables;
+
+import java.parameters.VariableLengthParameter;
+
+eclass AdditionalLocalVariable {
+
+	getArrayDimension() {
+		return org.emftext.language.java.extensions.variables.AdditionalLocalVariableExtension.getArrayDimension((org.emftext.language.java.variables.AdditionalLocalVariable) this);
+	}
+}

@@ -1,0 +1,39 @@
+epackage java.expressions;
+
+import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.common.util.TreeIterator;
+import org.eclipse.emf.ecore.EObject;
+
+import java.arrays.ArrayInstantiationBySize;
+import java.arrays.ArrayTypeable;
+import java.classifiers.Class;
+import java.literals.Literal;
+import java.members.AdditionalField;
+import java.members.Field;
+import java.members.Method;
+import java.references.ElementReference;
+import java.references.Reference;
+import java.references.ReferenceableElement;
+import java.types.Type;
+import java.variables.AdditionalLocalVariable;
+import java.variables.LocalVariable;
+import java.parameters.VariableLengthParameter;
+
+eclass Expression {
+
+	getType() {
+		return org.emftext.language.java.extensions.expressions.ExpressionExtension.getType((org.emftext.language.java.expressions.Expression) this);
+	}
+	
+	getAlternativeType() {
+		return org.emftext.language.java.extensions.expressions.ExpressionExtension.getAlternativeType((org.emftext.language.java.expressions.Expression) this);
+	}
+	
+	getOneType() {
+		return org.emftext.language.java.extensions.expressions.ExpressionExtension.getOneType((org.emftext.language.java.expressions.Expression) this, alternative);
+	}
+	
+	getArrayDimension() {
+		return org.emftext.language.java.extensions.expressions.ExpressionExtension.getArrayDimension((org.emftext.language.java.expressions.Expression) this);
+	}
+}

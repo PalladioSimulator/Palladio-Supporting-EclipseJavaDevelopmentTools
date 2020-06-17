@@ -1,0 +1,28 @@
+epackage java.classifiers;
+
+eclass ConcreteClassifier {
+	
+	getAllInnerClassifiers() {
+		return org.emftext.language.java.extensions.classifiers.ConcreteClassifierExtension.getAllInnerClassifiers((org.emftext.language.java.classifiers.ConcreteClassifier) this);
+	}
+	
+	getInnerClassifiers() {
+		return org.emftext.language.java.extensions.classifiers.ConcreteClassifierExtension.getInnerClassifiers((org.emftext.language.java.classifiers.ConcreteClassifier) this);
+	}
+	
+	getSuperTypeReferences() {
+		return org.emftext.language.java.extensions.classifiers.ConcreteClassifierExtension.getSuperTypeReferences((org.emftext.language.java.classifiers.ConcreteClassifier) this);
+	}
+	
+	getAllMembers() {
+		return org.emftext.language.java.extensions.classifiers.ConcreteClassifierExtension.getAllMembers((org.emftext.language.java.classifiers.ConcreteClassifier) this, (org.emftext.language.java.commons.Commentable) context);
+	}
+
+	getQualifiedName() {
+		return org.emftext.language.java.extensions.classifiers.ConcreteClassifierExtension.getQualifiedName((org.emftext.language.java.classifiers.ConcreteClassifier) this);
+	}
+
+	/* boolean */ isJavaLangObject(/* ConcreteClassifier clazz */) {
+		return org.emftext.language.java.extensions.classifiers.ConcreteClassifierExtension.isJavaLangObject((org.emftext.language.java.classifiers.ConcreteClassifier) clazz);
+	}
+}
