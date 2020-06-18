@@ -17,8 +17,11 @@
  ******************************************************************************/
 package org.emftext.language.java.resource.java.mopp;
 
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.emftext.language.java.containers.JavaRoot;
+import org.emftext.language.java.resource.java.IJavaContextDependentURIFragment;
+import org.emftext.language.java.resource.java.IJavaContextDependentURIFragmentWrapper;
 
 import jamopp.parser.api.JaMoPPParserAPI;
 import jamopp.parser.jdt.JaMoPPJDTParser;
@@ -98,8 +101,7 @@ public class JavaResource extends org.eclipse.emf.ecore.resource.impl.ResourceIm
 	}
 	
 	private org.emftext.language.java.resource.java.IJavaReferenceResolverSwitch resolverSwitch;
-	private int proxyCounter = 0;
-	private java.util.Map<String, org.emftext.language.java.resource.java.IJavaContextDependentURIFragment<? extends org.eclipse.emf.ecore.EObject>> internalURIFragmentMap = new java.util.LinkedHashMap<String, org.emftext.language.java.resource.java.IJavaContextDependentURIFragment<? extends org.eclipse.emf.ecore.EObject>>();
+	private java.util.Map<String, IJavaContextDependentURIFragment<? extends EObject>> internalURIFragmentMap = IJavaContextDependentURIFragmentWrapper.GLOBAL_INSTANCE.getInternalURIFragmentMap();
 	private java.util.Map<?, ?> loadOptions;
 	
 	/**
@@ -135,6 +137,7 @@ public class JavaResource extends org.eclipse.emf.ecore.resource.impl.ResourceIm
 			String encoding = getEncoding(options);
 			java.io.InputStream actualInputStream = inputStream;
 			Object inputStreamPreProcessorProvider = null;
+			IJavaContextDependentURIFragmentWrapper.GLOBAL_INSTANCE.setBaseURI(getURI());
 			JaMoPPParserAPI parser = new JaMoPPJDTParser();
 			JavaRoot result = parser.parse(actualInputStream, this.uri.toString().contains(JaMoPPParserAPI.MODULE_DECLARATION_FILE_NAME));
 			
@@ -248,18 +251,6 @@ public class JavaResource extends org.eclipse.emf.ecore.resource.impl.ResourceIm
 	
 	public org.emftext.language.java.resource.java.mopp.JavaMetaInformation getMetaInformation() {
 		return new org.emftext.language.java.resource.java.mopp.JavaMetaInformation();
-	}
-	
-	public void addURIFragment(String internalURIFragment, org.emftext.language.java.resource.java.IJavaContextDependentURIFragment<? extends org.eclipse.emf.ecore.EObject> uriFragment) {
-		internalURIFragmentMap.put(internalURIFragment, uriFragment);
-	}
-	
-	public <ContainerType extends org.eclipse.emf.ecore.EObject, ReferenceType extends org.eclipse.emf.ecore.EObject> void registerContextDependentProxy(org.emftext.language.java.resource.java.IJavaContextDependentURIFragmentFactory<ContainerType, ReferenceType> factory, ContainerType container, org.eclipse.emf.ecore.EReference reference, String id, org.eclipse.emf.ecore.EObject proxyElement, int position) {
-		org.eclipse.emf.ecore.InternalEObject proxy = (org.eclipse.emf.ecore.InternalEObject) proxyElement;
-		String internalURIFragment = org.emftext.language.java.resource.java.IJavaContextDependentURIFragment.INTERNAL_URI_FRAGMENT_PREFIX + (proxyCounter++) + "_" + id;
-		org.emftext.language.java.resource.java.IJavaContextDependentURIFragment<?> uriFragment = factory.create(id, container, reference, position, proxy);
-		proxy.eSetProxyURI(getURI().appendFragment(internalURIFragment));
-		addURIFragment(internalURIFragment, uriFragment);
 	}
 	
 	public org.eclipse.emf.ecore.EObject getEObject(String id) {
@@ -408,7 +399,6 @@ public class JavaResource extends org.eclipse.emf.ecore.resource.impl.ResourceIm
 		internalURIFragmentMap.clear();
 		getErrors().clear();
 		getWarnings().clear();
-		proxyCounter = 0;
 		resolverSwitch = null;
 	}
 	

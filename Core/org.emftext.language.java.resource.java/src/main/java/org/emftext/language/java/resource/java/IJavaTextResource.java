@@ -44,18 +44,6 @@ public interface IJavaTextResource extends org.eclipse.emf.ecore.resource.Resour
 	 */
 	public void reload(java.io.InputStream stream, java.util.Map<?,?> options) throws java.io.IOException;
 
-	/**
-	 * Internal method used by the parser to register a context dependent proxy object
-	 * for later resolution.
-	 * 
-	 * @param container
-	 * @param reference
-	 * @param position
-	 * @param id
-	 * @param proxyElement
-	 */
-	public <ContainerType extends org.eclipse.emf.ecore.EObject, ReferenceType extends org.eclipse.emf.ecore.EObject> void registerContextDependentProxy(org.emftext.language.java.resource.java.IJavaContextDependentURIFragmentFactory<ContainerType, ReferenceType> factory, ContainerType container, org.eclipse.emf.ecore.EReference reference, String id, org.eclipse.emf.ecore.EObject proxyElement, int position);
-	
 	@Deprecated	
 	public void addWarning(String message, org.eclipse.emf.ecore.EObject cause);
 	

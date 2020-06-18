@@ -26,7 +26,6 @@ import java.util.Map;
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
@@ -45,7 +44,6 @@ import org.emftext.language.java.members.Member;
 import org.emftext.language.java.members.MemberContainer;
 import org.emftext.language.java.members.MembersPackage;
 import org.emftext.language.java.resource.java.IJavaContextDependentURIFragment;
-import org.emftext.language.java.resource.java.IJavaContextDependentURIFragmentFactory;
 import org.emftext.language.java.resource.java.IJavaReferenceResolverSwitch;
 import org.emftext.language.java.resource.java.mopp.JavaResource;
 import org.emftext.language.java.util.JavaModelCompletion;
@@ -142,19 +140,6 @@ public class JavaSourceOrClassFileResource extends JavaResource {
 			} else {
 				super.doUnload();
 			}
-		}
-	}
-
-	/**
-	 * We override this method to enhance the created proxy objects by setting
-	 * the 'name' attribute. This is needed to ask proxy objects for their name
-	 * without resolving them.
-	 */
-	public <ContainerType extends EObject, ReferenceType extends EObject> void registerContextDependentProxy(IJavaContextDependentURIFragmentFactory<ContainerType, ReferenceType> factory, ContainerType container, EReference reference, String id, EObject proxyElement, int position) {
-		super.registerContextDependentProxy(factory, container, reference, id, proxyElement, position);
-		if (proxyElement instanceof NamedElement) {
-			NamedElement namedElement = (NamedElement) proxyElement;
-			namedElement.setName(id);
 		}
 	}
 
