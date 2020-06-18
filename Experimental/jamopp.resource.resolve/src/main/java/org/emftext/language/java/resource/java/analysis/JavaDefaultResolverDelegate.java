@@ -71,9 +71,7 @@ public class JavaDefaultResolverDelegate<ContainerType extends org.eclipse.emf.e
 	 */
 	private int oldProxyCount = -1;
 	
-	private static org.emftext.language.java.resource.java.mopp.JavaMetaInformation metaInformation = new org.emftext.language.java.resource.java.mopp.JavaMetaInformation();
-	
-	private org.emftext.language.java.resource.java.IJavaNameProvider nameProvider = metaInformation.createNameProvider();
+	private org.emftext.language.java.resource.java.IJavaNameProvider nameProvider = new JavaDefaultNameProvider();
 	
 	/**
 	 * This standard implementation searches for objects in the resource, which have
@@ -288,7 +286,7 @@ public class JavaDefaultResolverDelegate<ContainerType extends org.eclipse.emf.e
 		return (ReferenceType) element;
 	}
 	
-	protected String produceDeResolveErrorMessage(org.eclipse.emf.ecore.EObject refObject, org.eclipse.emf.ecore.EObject container, org.eclipse.emf.ecore.EReference reference, org.emftext.language.java.resource.java.IJavaTextResource resource) {
+	protected String produceDeResolveErrorMessage(org.eclipse.emf.ecore.EObject refObject, org.eclipse.emf.ecore.EObject container, org.eclipse.emf.ecore.EReference reference) {
 		String msg = getClass().getSimpleName() + ": " + reference.getEType().getName() + " \"" + refObject.toString() + "\" not de-resolveable";
 		return msg;
 	}

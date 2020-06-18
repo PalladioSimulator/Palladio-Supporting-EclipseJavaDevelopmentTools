@@ -66,8 +66,4 @@ public class JavaMetaInformation implements org.emftext.language.java.resource.j
 	public String getLaunchConfigurationType() {
 		return "org.emftext.language.java.resource.java.ui.launchConfigurationType";
 	}
-	
-	public org.emftext.language.java.resource.java.IJavaNameProvider createNameProvider() {
-		return new org.emftext.language.java.resource.java.analysis.JavaDefaultNameProvider();
-	}
 }
