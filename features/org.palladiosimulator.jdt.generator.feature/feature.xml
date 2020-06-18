@@ -2,7 +2,7 @@
 <feature
       id="org.palladiosimulator.jdt.generator.feature"
       label="Palladio Supporting Eclipse Java Development Tools Generator Feature"
-      version="0.1.0.qualifier"
+      version="4.3.0.qualifier"
       provider-name="palladiosimulator.org"
       plugin="org.palladiosimulator.branding"
       license-feature="org.palladiosimulator.license"
