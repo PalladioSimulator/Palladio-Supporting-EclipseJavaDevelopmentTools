@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<associateSites>
-	<associateSite label="Neon"
-		url="http://download.eclipse.org/releases/neon"/>
-	<associateSite label="EMFText"
-		url="http://update.emftext.org/trunk"/>
-	<associateSite label="DevBoost Open-Source Feedback"
-		url="https://jetpack-updates.devboost.de/public/eclipse-feedback/update_trunk"/>
-</associateSites>

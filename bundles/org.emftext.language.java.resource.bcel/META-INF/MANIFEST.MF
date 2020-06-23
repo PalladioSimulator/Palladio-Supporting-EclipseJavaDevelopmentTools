@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Apache BCEL for JaMoPP
+Bundle-SymbolicName: org.emftext.language.java.resource.bcel
+Bundle-Version: 4.3.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-11
+Automatic-Module-Name: org.emftext.language.java.resource.bcel
+Export-Package: org.apache.bcel6_2_0,
+ org.apache.bcel6_2_0.classfile,
+ org.apache.bcel6_2_0.generic,
+ org.apache.bcel6_2_0.util
+Bundle-Vendor: Martin Armbruster

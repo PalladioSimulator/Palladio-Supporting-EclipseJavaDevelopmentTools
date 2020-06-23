@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<genmodel:GenModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" copyrightText="Copyright (c) 2006-2012&#xA;Software Technology Group, Dresden University of Technology&#xA;DevBoost GmbH, Berlin, Amtsgericht Charlottenburg, HRB 140026&#xA;&#xA;All rights reserved. This program and the accompanying materials&#xA;are made available under the terms of the Eclipse Public License v1.0&#xA;which accompanies this distribution, and is available at&#xA;http://www.eclipse.org/legal/epl-v10.html&#xA;&#xA;Contributors:&#xA;  Software Technology Group - TU Dresden, Germany;&#xA;  DevBoost GmbH - Berlin, Germany&#xA;     - initial API and implementation&#xA; "
+    modelDirectory="/org.emftext.commons.jdt/src-gen" modelPluginID="org.emftext.commons.jdt"
+    modelName="Jdt" importerID="org.eclipse.emf.importer.ecore" bundleManifest="false"
+    complianceLevel="11.0" copyrightFields="false" editPluginID="org.emftext.commons.jdt.edit/src-gen">
+  <foreignModel>jdt.ecore</foreignModel>
+  <genPackages prefix="Jdt" basePackage="org.emftext.commons" disposableProviderFactory="true"
+      ecorePackage="jdt.ecore#/">
+    <genClasses ecoreClass="jdt.ecore#//JDTJavaClassifier">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute jdt.ecore#//JDTJavaClassifier/simpleName"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute jdt.ecore#//JDTJavaClassifier/packageName"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute jdt.ecore#//JDTJavaClassifier/enclosingTypeNames"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute jdt.ecore#//JDTJavaClassifier/path"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference jdt.ecore#//JDTJavaClassifier/cachedFields"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute jdt.ecore#//JDTJavaClassifier/hasCachedFields"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute jdt.ecore#//JDTJavaClassifier/projectName"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute jdt.ecore#//JDTJavaClassifier/abstract"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute jdt.ecore#//JDTJavaClassifier/interface"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute jdt.ecore#//JDTJavaClassifier/enum"/>
+      <genOperations ecoreOperation="jdt.ecore#//JDTJavaClassifier/getQualifiedName"
+          body="java.lang.StringBuilder qualifiedName = new java.lang.StringBuilder();&#xA;qualifiedName.append(getPackageName());&#xA;qualifiedName.append(&quot;.&quot;);&#xA;for ( java.lang.String enclosingType : getEnclosingTypeNames()) {&#xA;&#x9;qualifiedName.append(enclosingType);&#xA;&#x9;qualifiedName.append(&quot;$&quot;);&#xA;}&#xA;qualifiedName.append(getSimpleName());&#xA;return qualifiedName.toString();"/>
+      <genOperations ecoreOperation="jdt.ecore#//JDTJavaClassifier/getFields" body="if (!isHasCachedFields()) {&#xA;&#x9;try {&#xA;&#x9;&#x9;org.eclipse.core.resources.IWorkspace workspace = org.eclipse.core.resources.ResourcesPlugin.getWorkspace();&#xA;&#x9;&#x9;org.eclipse.core.resources.IWorkspaceRoot root = workspace.getRoot();&#xA;&#x9;&#x9;java.lang.String projectName = getProjectName();&#xA;&#x9;&#x9;if (projectName != null) {&#xA;&#x9;&#x9;&#x9;org.eclipse.core.resources.IProject project = root.getProject(projectName);&#xA;&#x9;&#x9;&#x9;if (project != null) {&#xA;&#x9;&#x9;&#x9;&#x9;org.eclipse.jdt.core.IJavaProject javaProject = org.eclipse.jdt.core.JavaCore.create(project);&#xA;&#x9;&#x9;&#x9;&#x9;if (javaProject != null &amp;&amp; javaProject.exists()) {&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;org.eclipse.jdt.core.IType type = javaProject.findType(getQualifiedName());&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;org.eclipse.jdt.core.IField[] fields = type.getFields();&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;for ( org.eclipse.jdt.core.IField field : fields) {&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;org.emftext.commons.jdt.JDTField newField = org.emftext.commons.jdt.JdtFactory.eINSTANCE.createJDTField();&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;newField.setName(field.getElementName());&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;getCachedFields().add(newField);&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;}&#xA;&#x9;&#x9;&#x9;&#x9;}&#xA;&#x9;&#x9;&#x9;}&#xA;&#x9;&#x9;}&#xA;&#x9;} catch ( org.eclipse.jdt.core.JavaModelException e) {&#xA;&#x9;&#x9;// TODO handle exception&#xA;&#x9;}&#xA;&#x9;setHasCachedFields(true);&#xA;}&#xA;return getCachedFields();"/>
+    </genClasses>
+    <genClasses ecoreClass="jdt.ecore#//JDTField">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute jdt.ecore#//JDTField/name"/>
+    </genClasses>
+  </genPackages>
+</genmodel:GenModel>
