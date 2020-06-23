@@ -79,7 +79,7 @@ import org.emftext.language.java.types.NamespaceClassifierReference;
  */
 public abstract class AbstractJavaParserTestCase {
 
-	protected static final String TEST_OUTPUT_FOLDER = "target" + File.separator + "output";
+	protected static final String TEST_OUTPUT_FOLDER = "output";
 
 	public AbstractJavaParserTestCase() {
 		Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap().put(

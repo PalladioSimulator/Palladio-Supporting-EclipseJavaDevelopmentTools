@@ -46,8 +46,8 @@ import org.emftext.language.java.test.AbstractJavaParserTestCase;
 
 public class JavaXMISerializationTest extends AbstractJavaParserTestCase {
 
-	protected static final String TEST_INPUT_FOLDER_NAME = "src" + File.separator + "test" + File.separator + "resources";
-	protected static final String TEST_OUTPUT_FOLDER_NAME = "target" + File.separator + "output";
+	protected static final String TEST_INPUT_FOLDER_NAME = "src-input";
+	protected static final String TEST_OUTPUT_FOLDER_NAME = "output";
 	
 	// The following files can not be saved to XMI, because they contain
 	// characters XML (1.0) does not support.

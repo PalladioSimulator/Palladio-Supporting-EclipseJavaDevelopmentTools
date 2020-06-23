@@ -103,7 +103,7 @@ public class JavaLanguageFeatureTest extends AbstractJavaParserTestCase {
 
 	private static final String JAVA_FILE_EXTENSION = ".java";
 
-	protected static final String TEST_INPUT_FOLDER = "src" + File.separator + "test" + File.separator + "resources";
+	protected static final String TEST_INPUT_FOLDER = "src-input";
 
 	@Override
 	protected Map<Object, Object> getLoadOptions() {

@@ -30,8 +30,8 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
  */
 public class AutomatedJavaLanguageFeatureTest extends AbstractJavaParserTestCase {
 
-	protected static final String TEST_INPUT_FOLDER_NAME = "src" + File.separator + "test" + File.separator + "resources";
-	protected static final String TEST_OUTPUT_FOLDER_NAME = "target" + File.separator + "output";
+	protected static final String TEST_INPUT_FOLDER_NAME = "src-input";
+	protected static final String TEST_OUTPUT_FOLDER_NAME = "output";
 
 	public static Test suite() throws Exception {
 		final AutomatedJavaLanguageFeatureTest test = new AutomatedJavaLanguageFeatureTest();

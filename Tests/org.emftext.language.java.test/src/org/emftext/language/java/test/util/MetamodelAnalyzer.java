@@ -45,7 +45,7 @@ public class MetamodelAnalyzer {
 		Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap().put(
 				"ecore", new EcoreResourceFactoryImpl());
 		URI fileURI = URI.createFileURI(
-				"../../Core/org.emftext.language.java/src/metamodel/java.ecore");
+				"../../bundles/org.emftext.language.java/metamodel/java.ecore");
 		ResourceSet rs = new ResourceSetImpl();
 		Resource r = rs.getResource(fileURI, true);
 		EPackage root = (EPackage) r.getContents().get(0);

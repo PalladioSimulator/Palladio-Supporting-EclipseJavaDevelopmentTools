@@ -57,7 +57,7 @@ import org.junit.Test;
 public class JavaSevenAndUpTest extends AbstractJavaParserTestCase {
 	@Override
 	public String getTestInputFolder() {
-		return ".." + File.separator + "org.emftext.language.java.tests.sevenup" + File.separator + "src";
+		return "src-sevenandup";
 	}
 	
 	@Override
