@@ -13,6 +13,8 @@
 
 package jamopp.parser.jdt;
 
+import java.util.List;
+
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.AssertStatement;
@@ -44,6 +46,7 @@ import org.eclipse.jdt.core.dom.VariableDeclarationExpression;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.jdt.core.dom.VariableDeclarationStatement;
 import org.eclipse.jdt.core.dom.WhileStatement;
+import org.eclipse.jdt.core.dom.YieldStatement;
 
 class StatementConverterUtility {
 	@SuppressWarnings("unchecked")
@@ -225,6 +228,14 @@ class StatementConverterUtility {
 			result.setStatement(convertToStatement(whileSt.getBody()));
 			LayoutInformationConverter.convertToMinimalLayoutInformation(result, whileSt);
 			return result;
+		} else if (statement.getNodeType() == ASTNode.YIELD_STATEMENT) {
+			YieldStatement yieldSt = (YieldStatement) statement;
+			org.emftext.language.java.statements.YieldStatement result = org.emftext.language.java.statements.StatementsFactory.eINSTANCE.createYieldStatement();
+			if (yieldSt.getExpression() != null) {
+				result.setYieldExpression(ExpressionConverterUtility.convertToExpression(yieldSt.getExpression()));
+			}
+			LayoutInformationConverter.convertToMinimalLayoutInformation(result, yieldSt);
+			return result;
 		} else {
 			org.emftext.language.java.statements.ExpressionStatement result = org.emftext.language.java.statements.StatementsFactory.eINSTANCE.createExpressionStatement();
 			result.setExpression(ReferenceConverterUtility.convertToReference(statement));
@@ -235,48 +246,46 @@ class StatementConverterUtility {
 	private static org.emftext.language.java.statements.Switch convertToSwitch(SwitchStatement switchSt) {
 		org.emftext.language.java.statements.Switch result = org.emftext.language.java.statements.StatementsFactory.eINSTANCE.createSwitch();
 		result.setVariable(ExpressionConverterUtility.convertToExpression(switchSt.getExpression()));
-		org.emftext.language.java.statements.SwitchCase currentCase = null;
-		for (int index = 0; index < switchSt.statements().size(); index++) {
-			Statement st = (Statement) switchSt.statements().get(index);
-			if (st.getNodeType() == ASTNode.SWITCH_CASE) {
-				currentCase = convertToSwitchCase((SwitchCase) st);
-				result.getCases().add(currentCase);
-			} else {
-				currentCase.getStatements().add(convertToStatement(st));
-			}
-		}
+		convertToSwitchCasesAndSet(result, switchSt.statements());
 		LayoutInformationConverter.convertToMinimalLayoutInformation(result, switchSt);
 		return result;
 	}
 	
+	@SuppressWarnings("rawtypes")
+	static void convertToSwitchCasesAndSet(org.emftext.language.java.statements.Switch switchExprSt, List switchStatementList) {
+		org.emftext.language.java.statements.SwitchCase currentCase = null;
+		for (int index = 0; index < switchStatementList.size(); index++) {
+			Statement st = (Statement) switchStatementList.get(index);
+			if (st.getNodeType() == ASTNode.SWITCH_CASE) {
+				currentCase = convertToSwitchCase((SwitchCase) st);
+				switchExprSt.getCases().add(currentCase);
+			} else {
+				currentCase.getStatements().add(convertToStatement(st));
+			}
+		}
+	}
+	
 	private static org.emftext.language.java.statements.SwitchCase convertToSwitchCase(SwitchCase switchCase) {
 		org.emftext.language.java.statements.SwitchCase result = null;
-//		if (switchCase.isSwitchLabeledRule() && switchCase.isDefault()) {
-//			result = org.emftext.language.java.statements.StatementsFactory.eINSTANCE.createDefaultSwitchRule();
-//		} else if (switchCase.isSwitchLabeledRule() && !switchCase.isDefault()) {
-//			org.emftext.language.java.statements.NormalSwitchRule normalRule = org.emftext.language.java.statements.StatementsFactory.eINSTANCE.createNormalSwitchRule();
-//			normalRule.setCondition(ExpressionConverterUtility.convertToExpression((Expression) switchCase.expressions().get(0)));
-//			for (int index = 1; index < switchCase.expressions().size(); index++) {
-//				Expression expr = (Expression) switchCase.expressions().get(index);
-//				normalRule.getAdditionalConditions().add(ExpressionConverterUtility.convertToExpression(expr));
-//			}
-//			result = normalRule;
-//		} else if (!switchCase.isSwitchLabeledRule() && switchCase.isDefault()) {
-//			result = org.emftext.language.java.statements.StatementsFactory.eINSTANCE.createDefaultSwitchCase();
-//		} else { // !switchCase.isSwitchLabeledRule() && !switchCase.isDefault()
-//			org.emftext.language.java.statements.NormalSwitchCase normalCase = org.emftext.language.java.statements.StatementsFactory.eINSTANCE.createNormalSwitchCase();
-//			normalCase.setCondition(ExpressionConverterUtility.convertToExpression((Expression) switchCase.expressions().get(0)));
-//			for (int index = 1; index < switchCase.expressions().size(); index++) {
-//				Expression expr = (Expression) switchCase.expressions().get(index);
-//				normalCase.getAdditionalConditions().add(ExpressionConverterUtility.convertToExpression(expr));
-//			}
-//			result = normalCase;
-//		}
-		if (switchCase.isDefault()) {
+		if (switchCase.isSwitchLabeledRule() && switchCase.isDefault()) {
+			result = org.emftext.language.java.statements.StatementsFactory.eINSTANCE.createDefaultSwitchRule();
+		} else if (switchCase.isSwitchLabeledRule() && !switchCase.isDefault()) {
+			org.emftext.language.java.statements.NormalSwitchRule normalRule = org.emftext.language.java.statements.StatementsFactory.eINSTANCE.createNormalSwitchRule();
+			normalRule.setCondition(ExpressionConverterUtility.convertToExpression((Expression) switchCase.expressions().get(0)));
+			for (int index = 1; index < switchCase.expressions().size(); index++) {
+				Expression expr = (Expression) switchCase.expressions().get(index);
+				normalRule.getAdditionalConditions().add(ExpressionConverterUtility.convertToExpression(expr));
+			}
+			result = normalRule;
+		} else if (!switchCase.isSwitchLabeledRule() && switchCase.isDefault()) {
 			result = org.emftext.language.java.statements.StatementsFactory.eINSTANCE.createDefaultSwitchCase();
-		} else { // !switchCase.isDefault()
+		} else { // !switchCase.isSwitchLabeledRule() && !switchCase.isDefault()
 			org.emftext.language.java.statements.NormalSwitchCase normalCase = org.emftext.language.java.statements.StatementsFactory.eINSTANCE.createNormalSwitchCase();
-			normalCase.setCondition(ExpressionConverterUtility.convertToExpression(switchCase.getExpression()));
+			normalCase.setCondition(ExpressionConverterUtility.convertToExpression((Expression) switchCase.expressions().get(0)));
+			for (int index = 1; index < switchCase.expressions().size(); index++) {
+				Expression expr = (Expression) switchCase.expressions().get(index);
+				normalCase.getAdditionalConditions().add(ExpressionConverterUtility.convertToExpression(expr));
+			}
 			result = normalCase;
 		}
 		LayoutInformationConverter.convertToMinimalLayoutInformation(result, switchCase);

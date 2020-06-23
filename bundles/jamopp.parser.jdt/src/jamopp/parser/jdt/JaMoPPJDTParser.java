@@ -34,14 +34,14 @@ public class JaMoPPJDTParser implements JaMoPPParserAPI {
 	}
 	
 	private ASTNode parseFileWithJDT(String fileContent, boolean isModule) {
-		ASTParser parser = ASTParser.newParser(AST.JLS13);
+		ASTParser parser = ASTParser.newParser(AST.JLS14);
 		if (isModule) {
 			parser.setUnitName(JaMoPPParserAPI.MODULE_DECLARATION_FILE_NAME);
 		}
 		Map<String, String> options = new HashMap<>();
-		options.put(JavaCore.COMPILER_SOURCE, JavaCore.VERSION_13);
-		options.put(JavaCore.COMPILER_COMPLIANCE, JavaCore.VERSION_13);
-		options.put(JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, JavaCore.VERSION_13);
+		options.put(JavaCore.COMPILER_SOURCE, JavaCore.VERSION_14);
+		options.put(JavaCore.COMPILER_COMPLIANCE, JavaCore.VERSION_14);
+		options.put(JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, JavaCore.VERSION_14);
 		parser.setCompilerOptions(options);
 		parser.setSource(fileContent.toCharArray());
 		return parser.createAST(null); // ast is instanceof org.eclipse.jdt.core.dom.CompilationUnit
