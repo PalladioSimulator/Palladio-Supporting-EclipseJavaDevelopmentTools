@@ -13,13 +13,18 @@
  *   DevBoost GmbH - Berlin, Germany
  *      - initial API and implementation
  ******************************************************************************/
-public class LegalIdentifiers {
-	{
-	int $=0;
-	int _$=0;
-	int $_=0;
-	int $ab=0;
-	int $_$=0;
-	int $__Ä=0;
-	}
+package pkg;
+public class EscapedStrings {
+	public static String theEscapeAsUnicode = "\u00E9";
+	
+	public static String unicode = "\u0001\u0202";
+	public static String notUnicode = "\\u0000\\uFfFf";
+	public static String octal1 = "\0\07\007\0007";
+	public static String octal2 = "\377\388";
+	public static String escapes1 = "\b\n\t\r\n\\";
+	public static String escapes2 = "\"'\'";
+	
+	public static void m1() {}
+	
+	public static class C1 <T>{}
 }
