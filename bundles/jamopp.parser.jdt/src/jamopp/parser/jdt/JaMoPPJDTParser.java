@@ -37,6 +37,8 @@ public class JaMoPPJDTParser implements JaMoPPParserAPI {
 		ASTParser parser = ASTParser.newParser(AST.JLS14);
 		parser.setUnitName(fileName);
 		parser.setEnvironment(new String[] {}, new String[] {}, new String[] {}, true);
+		parser.setResolveBindings(true);
+		parser.setBindingsRecovery(true);
 		Map<String, String> options = new HashMap<>();
 		options.put(JavaCore.COMPILER_SOURCE, JavaCore.VERSION_14);
 		options.put(JavaCore.COMPILER_COMPLIANCE, JavaCore.VERSION_14);
