@@ -34,22 +34,11 @@ public interface JaMoPPParserAPI {
 	/**
 	 * Reads an InputStream and parses its content into a Java model instance.
 	 * 
-	 * @param input the InputStream to read.
-	 * @param isModule true if the InputStream corresponds to a module declaration. false otherwise.
-	 * @return the created Java model instance or null if the InputStream could not be read.
-	 */
-	JavaRoot parse(InputStream input, boolean isModule);
-	
-	/**
-	 * Reads an InputStream and parses its content into a Java model instance. It is assumed that the InputStream does not
-	 * correspond to a module declaration.
-	 * 
+	 * @param fileName name of the Java source file which will be read.
 	 * @param input the InputStream to read.
 	 * @return the created Java model instance or null if the InputStream could not be read.
 	 */
-	default JavaRoot parse(InputStream input) {
-		return parse(input, false);
-	}
+	JavaRoot parse(String fileName, InputStream input);
 	
 	/**
 	 * Reads a file and parses its content into a Java model instance.
@@ -61,7 +50,7 @@ public interface JaMoPPParserAPI {
 		JavaRoot result = null;
 		try {
 			InputStream input = Files.newInputStream(file);
-			result = parse(input, file.endsWith(MODULE_DECLARATION_FILE_NAME));
+			result = parse(file.getFileName().toString(), input);
 			input.close();
 		} catch (IOException e) {
 		}
@@ -70,6 +59,8 @@ public interface JaMoPPParserAPI {
 	
 	/**
 	 * Visits all files and directories in a directory and parses all found Java source files.
+	 * It is assumed that the given directory is a Java source folder containing sub-directories representing
+	 * a Java package hierarchy.
 	 * 
 	 * @param directory the directory to search for Java source files.
 	 * @return a list of all created Java model instances.

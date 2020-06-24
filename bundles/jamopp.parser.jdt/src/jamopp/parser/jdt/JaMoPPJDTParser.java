@@ -18,7 +18,7 @@ import jamopp.parser.api.JaMoPPParserAPI;
 public class JaMoPPJDTParser implements JaMoPPParserAPI {
 
 	@Override
-	public JavaRoot parse(InputStream input, boolean isModule) {
+	public JavaRoot parse(String fileName, InputStream input) {
 		StringBuilder builder = new StringBuilder();
 		String lineSep = System.getProperty("line.separator");
 		try(InputStreamReader inReader = new InputStreamReader(input); BufferedReader buffReader = new BufferedReader(inReader)) {
@@ -26,18 +26,17 @@ public class JaMoPPJDTParser implements JaMoPPParserAPI {
 		} catch (IOException e) {
 		}
 		String src = builder.toString();
-		ASTNode ast = parseFileWithJDT(src, isModule);
+		ASTNode ast = parseFileWithJDT(src, fileName);
 		OrdinaryCompilationUnitJDTASTVisitorAndConverter converter = new OrdinaryCompilationUnitJDTASTVisitorAndConverter();
 		converter.setSource(src);
 		ast.accept(converter);
 		return converter.getConvertedElement();
 	}
 	
-	private ASTNode parseFileWithJDT(String fileContent, boolean isModule) {
+	private ASTNode parseFileWithJDT(String fileContent, String fileName) {
 		ASTParser parser = ASTParser.newParser(AST.JLS14);
-		if (isModule) {
-			parser.setUnitName(JaMoPPParserAPI.MODULE_DECLARATION_FILE_NAME);
-		}
+		parser.setUnitName(fileName);
+		parser.setEnvironment(new String[] {}, new String[] {}, new String[] {}, true);
 		Map<String, String> options = new HashMap<>();
 		options.put(JavaCore.COMPILER_SOURCE, JavaCore.VERSION_14);
 		options.put(JavaCore.COMPILER_COMPLIANCE, JavaCore.VERSION_14);
