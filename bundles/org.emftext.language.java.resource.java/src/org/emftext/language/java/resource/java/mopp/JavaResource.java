@@ -139,7 +139,7 @@ public class JavaResource extends org.eclipse.emf.ecore.resource.impl.ResourceIm
 			Object inputStreamPreProcessorProvider = null;
 			IJavaContextDependentURIFragmentWrapper.GLOBAL_INSTANCE.setBaseURI(getURI());
 			JaMoPPParserAPI parser = new JaMoPPJDTParser();
-			JavaRoot result = parser.parse(this.uri.lastSegment() + "." + this.uri.fileExtension(), actualInputStream);
+			JavaRoot result = parser.parse(this.uri.lastSegment(), actualInputStream);
 			
 			org.emftext.language.java.resource.java.IJavaReferenceResolverSwitch referenceResolverSwitch = getReferenceResolverSwitch();
 			EcoreUtil.resolveAll(result);
