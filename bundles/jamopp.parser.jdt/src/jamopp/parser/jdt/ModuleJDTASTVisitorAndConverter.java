@@ -13,10 +13,10 @@
 
 package jamopp.parser.jdt;
 
-import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.Annotation;
 import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.eclipse.jdt.core.dom.IModuleBinding;
 import org.eclipse.jdt.core.dom.ModuleDeclaration;
 import org.eclipse.jdt.core.dom.ModuleDirective;
 import org.eclipse.jdt.core.dom.ModuleModifier;
@@ -39,12 +39,13 @@ class ModuleJDTASTVisitorAndConverter extends PackageJDTASTVisitorAndConverter {
 	
 	@SuppressWarnings("unchecked")
 	private org.emftext.language.java.containers.Module convertToModule(ModuleDeclaration node) {
-		org.emftext.language.java.containers.Module module = org.emftext.language.java.containers.ContainersFactory.eINSTANCE.createModule();
+		org.emftext.language.java.containers.Module module = JDTResolverUtility.getModule(node.resolveBinding());
 		if (node.isOpen()) {
 			module.setOpen(org.emftext.language.java.modifiers.ModifiersFactory.eINSTANCE.createOpen());
 		}
 		LayoutInformationConverter.convertJavaRootLayoutInformation(module, node, this.getSource());
 		BaseConverterUtility.convertToNamespacesAndSet(node.getName(), module);
+		module.setName("");
 		node.annotations().forEach(obj -> module.getAnnotations().add(AnnotationInstanceOrModifierConverterUtility
 			.convertToAnnotationInstance((Annotation) obj)));
 		node.moduleStatements().forEach(obj -> module.getTarget().add(this.convertToDirective((ModuleDirective) obj)));
@@ -97,8 +98,8 @@ class ModuleJDTASTVisitorAndConverter extends PackageJDTASTVisitorAndConverter {
 	
 	private org.emftext.language.java.modules.ModuleReference convertToModuleReference(Name name) {
 		org.emftext.language.java.modules.ModuleReference ref = org.emftext.language.java.modules.ModulesFactory.eINSTANCE.createModuleReference();
-		org.emftext.language.java.containers.Module modProxy = org.emftext.language.java.containers.ContainersFactory.eINSTANCE.createModule();
-		((InternalEObject) modProxy).eSetProxyURI(null);
+		org.emftext.language.java.containers.Module modProxy = JDTResolverUtility.getModule((IModuleBinding) name.resolveBinding());
+		modProxy.setName("");
 		ref.setTarget(modProxy);
 		BaseConverterUtility.convertToNamespacesAndSet(name, modProxy);
 		return ref;
