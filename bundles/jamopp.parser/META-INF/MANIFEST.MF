@@ -7,4 +7,5 @@ Bundle-Vendor: Martin Armbruster
 Automatic-Module-Name: jamopp.parser
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Export-Package: jamopp.parser.api
-Require-Bundle: org.emftext.language.java
+Require-Bundle: org.emftext.language.java,
+ org.eclipse.emf

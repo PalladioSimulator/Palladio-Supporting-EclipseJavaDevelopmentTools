@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.emftext.language.java.resource.java.mopp;
 
+import java.nio.file.Paths;
+
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.emftext.language.java.containers.JavaRoot;
@@ -139,6 +141,7 @@ public class JavaResource extends org.eclipse.emf.ecore.resource.impl.ResourceIm
 			Object inputStreamPreProcessorProvider = null;
 			IJavaContextDependentURIFragmentWrapper.GLOBAL_INSTANCE.setBaseURI(getURI());
 			JaMoPPParserAPI parser = new JaMoPPJDTParser();
+			parser.setResourceSet(getResourceSet());
 			JavaRoot result = parser.parse(this.uri.lastSegment(), actualInputStream);
 			
 			org.emftext.language.java.resource.java.IJavaReferenceResolverSwitch referenceResolverSwitch = getReferenceResolverSwitch();

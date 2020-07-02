@@ -13,24 +13,16 @@
 
 package jamopp.parser.api;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-
+import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.emftext.language.java.containers.JavaRoot;
 
 /**
  * This interface provides an API for parsers that read Java source files and convert them to Java model instances.
  */
 public interface JaMoPPParserAPI {
-	/**
-	 * File name of a module declaration.
-	 */
-	static final String MODULE_DECLARATION_FILE_NAME = "module-info.java";
-	
 	/**
 	 * Reads an InputStream and parses its content into a Java model instance.
 	 * 
@@ -44,18 +36,9 @@ public interface JaMoPPParserAPI {
 	 * Reads a file and parses its content into a Java model instance.
 	 * 
 	 * @param file the Java source file.
-	 * @return the created Java model instance or null if the file could not be read.
+	 * @return the created Java model instance contained in its associated Resource instance or null if the file could not be read.
 	 */
-	default JavaRoot parseFile(Path file) {
-		JavaRoot result = null;
-		try {
-			InputStream input = Files.newInputStream(file);
-			result = parse(file.getFileName().toString(), input);
-			input.close();
-		} catch (IOException e) {
-		}
-		return result;
-	}
+	Resource parseFile(Path file);
 	
 	/**
 	 * Visits all files and directories in a directory and parses all found Java source files.
@@ -63,15 +46,15 @@ public interface JaMoPPParserAPI {
 	 * a Java package hierarchy.
 	 * 
 	 * @param directory the directory to search for Java source files.
-	 * @return a list of all created Java model instances.
+	 * @return a ResourceSet containing all parsed source files with their associated Resources.
 	 */
-	default List<JavaRoot> parseDirectory(Path directory) {
-		ArrayList<JavaRoot> results = new ArrayList<>();
-		try {
-			Files.walk(directory).filter(path -> Files.isRegularFile(path) && path.endsWith("java"))
-				.forEach(path -> results.add(parseFile(path)));
-		} catch (IOException e) {
-		}
-		return results;
-	}
+	ResourceSet parseDirectory(Path directory);
+	
+	/**
+	 * Sets the ResourceSet that is used to create Resources if new Resource instances are needed. If no ResourceSet is
+	 * provided, a ResourceSet is created.
+	 * 
+	 * @param set the ResourceSet.
+	 */
+	void setResourceSet(ResourceSet set);
 }

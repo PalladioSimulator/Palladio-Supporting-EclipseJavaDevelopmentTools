@@ -11,6 +11,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTNode;
@@ -23,6 +27,7 @@ import jamopp.parser.api.JaMoPPParserAPI;
 
 public class JaMoPPJDTParser implements JaMoPPParserAPI {
 	private final String DEFAULT_ENCODING = "UTF-8";
+	private ResourceSet resourceSet;
 
 	@Override
 	public JavaRoot parse(String fileName, InputStream input) {
@@ -49,13 +54,21 @@ public class JaMoPPJDTParser implements JaMoPPParserAPI {
 	}
 	
 	@Override
-	public JavaRoot parseFile(Path file) {
-		return this.parseFilesWithJDT(new String[] {}, new String[] { file.toAbsolutePath().toString() },
-			new String[] { DEFAULT_ENCODING }).get(0);
+	public Resource parseFile(Path file) {
+		if (this.resourceSet == null) {
+			this.resourceSet = new ResourceSetImpl();
+		}
+		Resource result = this.parseFilesWithJDT(new String[] {}, new String[] { file.toAbsolutePath().toString() },
+			new String[] { DEFAULT_ENCODING }).get(0).eResource();
+		this.resourceSet = null;
+		return result;
 	}
 	
 	@Override
-	public List<JavaRoot> parseDirectory(Path dir) {
+	public ResourceSet parseDirectory(Path dir) {
+		if (this.resourceSet == null) {
+			this.resourceSet = new ResourceSetImpl();
+		}
 		try {
 			String[] sources = Files.walk(dir).filter(path -> Files.isRegularFile(path) && path.getFileName().toString().endsWith("java"))
 				.map(Path::toAbsolutePath).map(Path::toString).toArray(i -> new String[i]);
@@ -65,10 +78,12 @@ public class JaMoPPJDTParser implements JaMoPPParserAPI {
 			}
 			String[] classpathEntries = Files.walk(dir).filter(path -> Files.isRegularFile(path) && path.getFileName().toString().endsWith("jar"))
 				.map(Path::toAbsolutePath).map(Path::toString).toArray(i -> new String[i]);
-			return this.parseFilesWithJDT(classpathEntries, sources, encodings);
+			this.parseFilesWithJDT(classpathEntries, sources, encodings);
 		} catch (IOException e) {
 		}
-		return new ArrayList<>();
+		ResourceSet result = this.resourceSet;
+		this.resourceSet = null;
+		return result;
 	}
 	
 	private List<JavaRoot> parseFilesWithJDT(String[] classpathEntries, String[] sources, String[] encodings) {
@@ -80,7 +95,18 @@ public class JaMoPPJDTParser implements JaMoPPParserAPI {
 			@Override
 			public void acceptAST(String sourceFilePath, CompilationUnit node) {
 				node.accept(converter);
-				result.add(converter.getConvertedElement());
+				JavaRoot root = converter.getConvertedElement();
+				Resource newResource;
+				if (root.eResource() == null) {
+					newResource = JaMoPPJDTParser.this.resourceSet.createResource(URI.createFileURI(sourceFilePath));
+					newResource.getContents().add(root);
+				} else {
+					newResource = root.eResource();
+					if (!newResource.getURI().toFileString().equals(sourceFilePath)) {
+//						newResource.setURI(URI.createFileURI(sourceFilePath));
+					}
+				}
+				result.add(root);
 			}
 		}, null);
 		return result;
@@ -97,5 +123,10 @@ public class JaMoPPJDTParser implements JaMoPPParserAPI {
 		options.put(JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, JavaCore.VERSION_14);
 		parser.setCompilerOptions(options);
 		return parser;
+	}
+	
+	@Override
+	public void setResourceSet(ResourceSet set) {
+		this.resourceSet = set;
 	}
 }
