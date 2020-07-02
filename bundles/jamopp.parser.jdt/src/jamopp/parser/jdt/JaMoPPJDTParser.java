@@ -31,6 +31,7 @@ public class JaMoPPJDTParser implements JaMoPPParserAPI {
 
 	@Override
 	public JavaRoot parse(String fileName, InputStream input) {
+		this.setUpResourceSet();
 		StringBuilder builder = new StringBuilder();
 		String lineSep = System.getProperty("line.separator");
 		try(InputStreamReader inReader = new InputStreamReader(input); BufferedReader buffReader = new BufferedReader(inReader)) {
@@ -42,6 +43,7 @@ public class JaMoPPJDTParser implements JaMoPPParserAPI {
 		OrdinaryCompilationUnitJDTASTVisitorAndConverter converter = new OrdinaryCompilationUnitJDTASTVisitorAndConverter();
 		converter.setSource(src);
 		ast.accept(converter);
+		this.resourceSet = null;
 		return converter.getConvertedElement();
 	}
 	
@@ -55,9 +57,7 @@ public class JaMoPPJDTParser implements JaMoPPParserAPI {
 	
 	@Override
 	public Resource parseFile(Path file) {
-		if (this.resourceSet == null) {
-			this.resourceSet = new ResourceSetImpl();
-		}
+		this.setUpResourceSet();
 		Resource result = this.parseFilesWithJDT(new String[] {}, new String[] { file.toAbsolutePath().toString() },
 			new String[] { DEFAULT_ENCODING }).get(0).eResource();
 		this.resourceSet = null;
@@ -66,9 +66,7 @@ public class JaMoPPJDTParser implements JaMoPPParserAPI {
 	
 	@Override
 	public ResourceSet parseDirectory(Path dir) {
-		if (this.resourceSet == null) {
-			this.resourceSet = new ResourceSetImpl();
-		}
+		this.setUpResourceSet();
 		try {
 			String[] sources = Files.walk(dir).filter(path -> Files.isRegularFile(path) && path.getFileName().toString().endsWith("java"))
 				.map(Path::toAbsolutePath).map(Path::toString).toArray(i -> new String[i]);
@@ -110,6 +108,13 @@ public class JaMoPPJDTParser implements JaMoPPParserAPI {
 			}
 		}, null);
 		return result;
+	}
+	
+	private void setUpResourceSet() {
+		if (this.resourceSet == null) {
+			this.resourceSet = new ResourceSetImpl();
+		}
+		JDTResolverUtility.setResourceSet(this.resourceSet);
 	}
 	
 	private ASTParser setUpParser() {
