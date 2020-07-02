@@ -1,2 +1,0 @@
-- Should NamespaceClassifierReference better be called QualifiedClassifierReference?
-- EnumConstant subclass of Member?

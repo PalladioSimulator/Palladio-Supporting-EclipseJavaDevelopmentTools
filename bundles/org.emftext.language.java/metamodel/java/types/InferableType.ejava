@@ -1,8 +1,0 @@
-epackage java.types;
-
-eclass InferableType {
-	
-	getAllMembers(Commentable context) {
-		return org.emftext.language.java.extensions.types.InferableTypeExtension.getAllMembers((org.emftext.language.java.types.InferableType) this, context);
-	}
-}
