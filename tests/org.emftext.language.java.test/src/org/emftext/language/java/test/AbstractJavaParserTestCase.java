@@ -69,8 +69,8 @@ import org.emftext.language.java.members.Method;
 import org.emftext.language.java.modifiers.AnnotationInstanceOrModifier;
 import org.emftext.language.java.modifiers.Modifier;
 import org.emftext.language.java.modifiers.Public;
-import org.emftext.language.java.resource.JavaSourceOrClassFileResourceFactoryImpl;
 import org.emftext.language.java.resource.java.mopp.JavaResource;
+import org.emftext.language.java.resource.java.mopp.JavaResourceFactory;
 import org.emftext.language.java.resource.java.util.JavaResourceUtil;
 import org.emftext.language.java.types.NamespaceClassifierReference;
 
@@ -83,7 +83,7 @@ public abstract class AbstractJavaParserTestCase {
 
 	public AbstractJavaParserTestCase() {
 		Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap().put(
-				"java", new JavaSourceOrClassFileResourceFactoryImpl());
+				"java", new JavaResourceFactory());
 	}
 
 	protected void registerInClassPath(String file) throws Exception {

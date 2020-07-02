@@ -15,14 +15,14 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
-import org.emftext.language.java.resource.JaMoPPUtil;
+//import org.emftext.language.java.resource.JaMoPPUtil;
 import org.junit.Test;
 
 public class PrintCommentsInEmptyMethodTest {
 
 	@Test
 	public void testPrinting() {
-		JaMoPPUtil.initialize();
+//		JaMoPPUtil.initialize();
 		ResourceSet rs = new ResourceSetImpl();
 		Resource resource = rs.createResource(URI.createURI("C1.java"));
 		assertNotNull(resource);
