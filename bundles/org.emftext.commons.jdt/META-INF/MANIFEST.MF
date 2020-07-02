@@ -1,0 +1,19 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: EMFText Common JDT Util
+Bundle-SymbolicName: org.emftext.commons.jdt;singleton:=true
+Bundle-Version: 4.3.0.qualifier
+Bundle-ClassPath: .
+Bundle-Vendor: Martin Armbruster
+Bundle-Localization: plugin
+Bundle-RequiredExecutionEnvironment: JavaSE-11
+Automatic-Module-Name: org.emftext.commons.jdt
+Export-Package: org.emftext.commons.jdt,
+ org.emftext.commons.jdt.impl,
+ org.emftext.commons.jdt.resolve,
+ org.emftext.commons.jdt.util
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.core.resources,
+ org.eclipse.emf.ecore;visibility:=reexport,
+ org.eclipse.jdt.core;visibility:=reexport
+Bundle-ActivationPolicy: lazy

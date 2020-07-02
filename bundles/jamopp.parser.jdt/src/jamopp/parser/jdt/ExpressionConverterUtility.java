@@ -33,6 +33,7 @@ import org.eclipse.jdt.core.dom.PostfixExpression;
 import org.eclipse.jdt.core.dom.PrefixExpression;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.SuperMethodReference;
+import org.eclipse.jdt.core.dom.SwitchExpression;
 import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeMethodReference;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
@@ -166,6 +167,13 @@ class ExpressionConverterUtility {
 			}
 			result.setGeneralChild(convertToExpression(castExpr.getExpression()));
 			LayoutInformationConverter.convertToMinimalLayoutInformation(result, castExpr);
+			return result;
+		} else if (expr.getNodeType() == ASTNode.SWITCH_EXPRESSION) {
+			SwitchExpression switchExpr = (SwitchExpression) expr;
+			org.emftext.language.java.statements.Switch result = org.emftext.language.java.statements.StatementsFactory.eINSTANCE.createSwitch();
+			result.setVariable(convertToExpression(switchExpr.getExpression()));
+			StatementConverterUtility.convertToSwitchCasesAndSet(result, switchExpr.statements());
+			LayoutInformationConverter.convertToMinimalLayoutInformation(result, switchExpr);
 			return result;
 		} else if (expr instanceof MethodReference) {
 			return convertToMethodReferenceExpression((MethodReference) expr);

@@ -1,14 +1,13 @@
 Manifest-Version: 1.0
-Ant-Version: Apache Ant 1.7.1
-Created-By: 1.5.0_20-141 (Apple Inc.)
 Bundle-ManifestVersion: 2
 Bundle-Name: JaMoPP (Java Model Parser and Printer) Metamodel
 Bundle-SymbolicName: org.emftext.language.java;singleton:=true
-Bundle-Version: 1.5.0.SNAPSHOT
+Bundle-Version: 4.3.0.qualifier
 Bundle-ClassPath: .
 Bundle-Vendor: Martin Armbruster
 Bundle-Localization: plugin
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
+Automatic-Module-Name: org.emftext.language.java
 Export-Package: org.emftext.language.java,
  org.emftext.language.java.annotations,
  org.emftext.language.java.annotations.impl,

@@ -2,23 +2,21 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: JaMoPP Parser Plugin
 Bundle-SymbolicName: org.emftext.language.java.resource.java;singleton:=true
-Bundle-Version: 1.5.0.SNAPSHOT
+Bundle-Version: 4.3.0.qualifier
 Bundle-Vendor: Martin Armbruster
+Automatic-Module-Name: org.emftext.language.java.resource.java
 Require-Bundle: org.eclipse.core.runtime;resolution:=optional,
-  org.eclipse.emf.ecore,
-  org.eclipse.emf.ecore.change,
-  org.eclipse.emf.validation;resolution:=optional,
-  org.emftext.access;resolution:=optional,
-  org.emftext.commons.antlr3_4_0,
-  org.emftext.language.java,
-  org.emftext.commons.layout
+ org.eclipse.emf.ecore,
+ org.eclipse.emf.ecore.change,
+ org.eclipse.emf.validation;resolution:=optional,
+ org.emftext.language.java,
+ org.emftext.commons.layout,
+ jamopp.resource.resolve,
+ jamopp.parser,
+ jamopp.parser.jdt,
+ jamopp.printer
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Export-Package: org.emftext.language.java.resource.java,
-  org.emftext.language.java.resource.java.analysis,
   org.emftext.language.java.resource.java.mopp,
-  org.emftext.language.java.resource.java.debug,
-  org.emftext.language.java.resource.java.launch,
-  org.emftext.language.java.resource.java.grammar,
   org.emftext.language.java.resource.java.util
-Bundle-Activator: org.emftext.language.java.resource.java.mopp.JavaPlugin

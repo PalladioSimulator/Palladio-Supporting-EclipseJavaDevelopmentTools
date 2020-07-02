@@ -12,7 +12,7 @@
 bin/
 javacore.*
 local.properties
-#src-gen/
+src-gen/
 tmp/
 
 # Maven
@@ -45,3 +45,7 @@ target/
 heapdump.*
 Snap.*
 *.log
+*.polyglot.*
+*.takari_issue_192
+*.tycho
+*.META-INF_MANIFEST.MF

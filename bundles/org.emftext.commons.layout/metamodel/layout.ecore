@@ -4,12 +4,9 @@
   <eClassifiers xsi:type="ecore:EClass" name="LayoutInformation" abstract="true">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="startOffset" lowerBound="1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="hiddenTokenText" lowerBound="1"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="visibleTokenText" lowerBound="1"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="syntaxElementID" lowerBound="1"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="hiddenTokenText" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="visibleTokenText" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="syntaxElementID" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ReferenceLayoutInformation" eSuperTypes="#//LayoutInformation">
     <eStructuralFeatures xsi:type="ecore:EReference" name="object" lowerBound="1"
@@ -18,7 +15,11 @@
   <eClassifiers xsi:type="ecore:EClass" name="AttributeLayoutInformation" eSuperTypes="#//LayoutInformation"/>
   <eClassifiers xsi:type="ecore:EClass" name="KeywordLayoutInformation" eSuperTypes="#//LayoutInformation"/>
   <eClassifiers xsi:type="ecore:EClass" name="MinimalLayoutInformation" eSuperTypes="#//ReferenceLayoutInformation">
-    <eOperations name="getSourceString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eOperations name="getSourceString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="body" value="if (rootLayout != null) { String rootSource = rootLayout.getVisibleTokenText(); if (rootSource.length() >= getStartOffset() + getLength()) { return rootSource.substring(getStartOffset(), getStartOffset() + getLength()); } return &quot;&quot;; } else { return &quot;&quot;; }"/>
+      </eAnnotations>
+    </eOperations>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="length" lowerBound="1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="rootLayout" lowerBound="1"

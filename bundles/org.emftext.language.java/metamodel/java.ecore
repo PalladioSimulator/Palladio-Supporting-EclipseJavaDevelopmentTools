@@ -413,7 +413,7 @@
         <eParameters name="statementToAdd" lowerBound="1" eType="#_Wo2YzNz1Ed2bJ_pQViWxFg"/>
       </eOperations>
       <eStructuralFeatures xsi:type="ecore:EReference" name="layoutInformations" upperBound="-1"
-          eType="ecore:EClass platform:/plugin/org.emftext.commons.layout/metamodel/layout.ecore#//LayoutInformation"
+          eType="ecore:EClass platform:/resource/org.emftext.commons.layout/metamodel/layout.ecore#//LayoutInformation"
           containment="true"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="NamedElement" abstract="true" eSuperTypes="#//commons/Commentable">
@@ -573,8 +573,15 @@
         eSuperTypes="#_Wo2YDNz1Ed2bJ_pQViWxFg"/>
     <eClassifiers xsi:type="ecore:EClass" xmi:id="_Wo2YIdz1Ed2bJ_pQViWxFg" name="ConditionalExpression"
         eSuperTypes="#//expressions/AssignmentExpressionChild #//annotations/AnnotationValue">
-      <eOperations name="getExpressionElse" lowerBound="1" eType="#//expressions/AssignmentExpressionChild"/>
+      <eOperations name="getExpressionElse" lowerBound="1" eType="#//expressions/AssignmentExpressionChild">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return org.emftext.language.java.extensions.expressions.ConditionalExpressionExtension.getExpressionElse((org.emftext.language.java.expressions.ConditionalExpression) this);"/>
+        </eAnnotations>
+      </eOperations>
       <eOperations name="setExpressionChild" lowerBound="1">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="org.emftext.language.java.extensions.expressions.ConditionalExpressionExtension.setExpressionElse((org.emftext.language.java.expressions.ConditionalExpression) this, newChild);"/>
+        </eAnnotations>
         <eParameters name="newChild" lowerBound="1" eType="#//expressions/AssignmentExpressionChild"/>
       </eOperations>
       <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_Wo2YI9z1Ed2bJ_pQViWxFg"
@@ -713,8 +720,15 @@
         abstract="true" eSuperTypes="#//expressions/UnaryExpressionChild"/>
     <eClassifiers xsi:type="ecore:EClass" xmi:id="_Wo2YWdz1Ed2bJ_pQViWxFg" name="CastExpression"
         eSuperTypes="#_Wo2ZP9z1Ed2bJ_pQViWxFg #//arrays/ArrayTypeable #//expressions/UnaryModificationExpressionChild">
-      <eOperations name="getChild" lowerBound="1" eType="#//expressions/MultiplicativeExpressionChild"/>
+      <eOperations name="getChild" lowerBound="1" eType="#//expressions/MultiplicativeExpressionChild">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return org.emftext.language.java.extensions.expressions.CastExpressionExtension.getChild((org.emftext.language.java.expressions.CastExpression) this);"/>
+        </eAnnotations>
+      </eOperations>
       <eOperations name="setChild" lowerBound="1">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="org.emftext.language.java.extensions.expressions.CastExpressionExtension.setChild((org.emftext.language.java.expressions.CastExpression) this, newChild);"/>
+        </eAnnotations>
         <eParameters name="newChild" lowerBound="1" eType="#//expressions/MultiplicativeExpressionChild"/>
       </eOperations>
       <eStructuralFeatures xsi:type="ecore:EReference" name="additionalBounds" upperBound="-1"
@@ -778,6 +792,9 @@
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="ExtendsTypeArgument" eSuperTypes="#//annotations/Annotable #//generics/TypeArgument">
       <eOperations name="getExtendTypes" lowerBound="1">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return org.emftext.language.java.extensions.generics.ExtendsTypeArgumentExtension.getExtendTypes((org.emftext.language.java.generics.ExtendsTypeArgument) this);"/>
+        </eAnnotations>
         <eGenericType eClassifier="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EEList">
           <eTypeArguments eClassifier="#_Wo2ZPdz1Ed2bJ_pQViWxFg"/>
         </eGenericType>
@@ -1047,6 +1064,9 @@
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="Constructor" eSuperTypes="#//members/Member #//parameters/Parametrizable #//generics/TypeParametrizable #//members/ExceptionThrower #//modifiers/AnnotableAndModifiable #//statements/BlockContainer #//statements/StatementListContainer">
       <eOperations name="getStatements" lowerBound="1">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return org.emftext.language.java.extensions.members.ConstructorExtension.getStatements((org.emftext.language.java.members.Constructor) this);"/>
+        </eAnnotations>
         <eGenericType eClassifier="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EEList">
           <eTypeArguments eClassifier="#_Wo2YzNz1Ed2bJ_pQViWxFg"/>
         </eGenericType>
@@ -1087,8 +1107,15 @@
           <details key="documentation" value=""/>
         </eAnnotations>
       </eOperations>
-      <eOperations name="getBlock" lowerBound="1" eType="#//statements/Block"/>
+      <eOperations name="getBlock" lowerBound="1" eType="#//statements/Block">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return org.emftext.language.java.extensions.members.MethodExtension.getBlock((org.emftext.language.java.members.Method) this);"/>
+        </eAnnotations>
+      </eOperations>
       <eOperations name="getStatements" lowerBound="1">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return org.emftext.language.java.extensions.members.MethodExtension.getStatements((org.emftext.language.java.members.Method) this);"/>
+        </eAnnotations>
         <eGenericType eClassifier="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EEList">
           <eTypeArguments eClassifier="#_Wo2YzNz1Ed2bJ_pQViWxFg"/>
         </eGenericType>
@@ -1362,6 +1389,9 @@
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="PackageReference" eSuperTypes="#//references/ReferenceableElement #//commons/NamespaceAwareElement">
       <eOperations name="getSubpackages" lowerBound="1">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return org.emftext.language.java.extensions.references.PackageReferenceExtension.getSubpackages((org.emftext.language.java.references.PackageReference) this);"/>
+        </eAnnotations>
         <eGenericType eClassifier="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EEList">
           <eTypeArguments eClassifier="#//references/PackageReference"/>
         </eGenericType>
@@ -1417,6 +1447,9 @@
     <eClassifiers xsi:type="ecore:EClass" xmi:id="_Wo2ZD9z1Ed2bJ_pQViWxFg" name="CatchBlock"
         eSuperTypes="#//statements/StatementListContainer #//statements/BlockContainer">
       <eOperations name="getStatements" lowerBound="1">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return org.emftext.language.java.extensions.statements.CatchBlockExtension.getStatements((org.emftext.language.java.statements.CatchBlock) this);"/>
+        </eAnnotations>
         <eGenericType eClassifier="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EEList">
           <eTypeArguments eClassifier="#_Wo2YzNz1Ed2bJ_pQViWxFg"/>
         </eGenericType>
@@ -1487,6 +1520,9 @@
     <eClassifiers xsi:type="ecore:EClass" xmi:id="_Wo2ZFdz1Ed2bJ_pQViWxFg" name="SynchronizedBlock"
         eSuperTypes="#_Wo2YzNz1Ed2bJ_pQViWxFg #//statements/StatementListContainer #//statements/BlockContainer">
       <eOperations name="getStatements" lowerBound="1">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return org.emftext.language.java.extensions.statements.SynchronizedBlockExtension.getStatements((org.emftext.language.java.statements.SynchronizedBlock) this);"/>
+        </eAnnotations>
         <eGenericType eClassifier="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EEList">
           <eTypeArguments eClassifier="#_Wo2YzNz1Ed2bJ_pQViWxFg"/>
         </eGenericType>
@@ -1502,11 +1538,17 @@
     <eClassifiers xsi:type="ecore:EClass" xmi:id="_Wo2ZCNz1Ed2bJ_pQViWxFg" name="TryBlock"
         eSuperTypes="#_Wo2YzNz1Ed2bJ_pQViWxFg #//statements/StatementListContainer #//statements/BlockContainer">
       <eOperations name="getCatcheBlocks" lowerBound="1">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return org.emftext.language.java.extensions.statements.TryBlockExtension.getCatcheBlocks((org.emftext.language.java.statements.TryBlock) this);"/>
+        </eAnnotations>
         <eGenericType eClassifier="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EEList">
           <eTypeArguments eClassifier="#_Wo2ZD9z1Ed2bJ_pQViWxFg"/>
         </eGenericType>
       </eOperations>
       <eOperations name="getStatements" lowerBound="1">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return org.emftext.language.java.extensions.statements.TryBlockExtension.getStatements((org.emftext.language.java.statements.TryBlock) this);"/>
+        </eAnnotations>
         <eGenericType eClassifier="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EEList">
           <eTypeArguments eClassifier="#_Wo2YzNz1Ed2bJ_pQViWxFg"/>
         </eGenericType>
@@ -1644,6 +1686,9 @@
     <eClassifiers xsi:type="ecore:EClass" name="Void" eSuperTypes="#_Wo2ZR9z1Ed2bJ_pQViWxFg"/>
     <eClassifiers xsi:type="ecore:EClass" name="InferableType" eSuperTypes="#//classifiers/Classifier">
       <eOperations name="getAllMembers" lowerBound="1">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return org.emftext.language.java.extensions.types.InferableTypeExtension.getAllMembers((org.emftext.language.java.types.InferableType) this, context);"/>
+        </eAnnotations>
         <eGenericType eClassifier="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EEList">
           <eTypeArguments eClassifier="#//members/Member"/>
         </eGenericType>

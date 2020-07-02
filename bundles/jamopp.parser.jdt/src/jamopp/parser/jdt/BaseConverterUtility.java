@@ -110,6 +110,11 @@ class BaseConverterUtility {
 				.convertToAnnotationInstance((Annotation) obj)));
 			LayoutInformationConverter.convertToMinimalLayoutInformation(convertedType, primType);
 			return convertedType;
+		} else if (t.isVar()) {
+			org.emftext.language.java.types.ClassifierReference ref = org.emftext.language.java.types.TypesFactory.eINSTANCE.createClassifierReference();
+			ref.setTarget(org.emftext.language.java.types.TypesFactory.eINSTANCE.createInferableType());
+			LayoutInformationConverter.convertToMinimalLayoutInformation(ref, t);
+			return ref;
 		} else if (t.isArrayType()) {
 			ArrayType arrT = (ArrayType) t;
 			return convertToTypeReference(arrT.getElementType());
@@ -163,11 +168,6 @@ class BaseConverterUtility {
 				container = containerContainer.getClassifierReferences().get(containerContainer.getClassifierReferences().size() - 1);
 			}
 			paramT.typeArguments().forEach(obj -> container.getTypeArguments().add(convertToTypeArgument((Type) obj)));
-			return ref;
-		} else if (t.isVar()) {
-			org.emftext.language.java.types.ClassifierReference ref = org.emftext.language.java.types.TypesFactory.eINSTANCE.createClassifierReference();
-			ref.setTarget(org.emftext.language.java.types.TypesFactory.eINSTANCE.createInferableType());
-			LayoutInformationConverter.convertToMinimalLayoutInformation(ref, t);
 			return ref;
 		}
 		return null;

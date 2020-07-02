@@ -2,12 +2,13 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: EMFText LayoutInformation Meta-model Edit Support
 Bundle-SymbolicName: org.emftext.commons.layout.edit;singleton:=true
-Bundle-Version: 1.5.0.SNAPSHOT
+Bundle-Version: 4.3.0.qualifier
 Bundle-ClassPath: .
 Bundle-Activator: org.emftext.commons.layout.provider.LayoutEditPlugin$Implementation
 Bundle-Vendor: Martin Armbruster
 Bundle-Localization: plugin
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
+Automatic-Module-Name: org.emftext.commons.layout.edit
 Export-Package: org.emftext.commons.layout.provider
 Require-Bundle: org.eclipse.core.runtime,
  org.emftext.commons.layout;visibility:=reexport,
