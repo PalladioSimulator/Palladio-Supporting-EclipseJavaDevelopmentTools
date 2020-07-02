@@ -4,18 +4,25 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTParser;
+import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.eclipse.jdt.core.dom.FileASTRequestor;
 import org.emftext.language.java.containers.JavaRoot;
 
 import jamopp.parser.api.JaMoPPParserAPI;
 
 public class JaMoPPJDTParser implements JaMoPPParserAPI {
+	private final String DEFAULT_ENCODING = "UTF-8";
 
 	@Override
 	public JavaRoot parse(String fileName, InputStream input) {
@@ -34,17 +41,61 @@ public class JaMoPPJDTParser implements JaMoPPParserAPI {
 	}
 	
 	private ASTNode parseFileWithJDT(String fileContent, String fileName) {
-		ASTParser parser = ASTParser.newParser(AST.JLS14);
+		ASTParser parser = setUpParser();
 		parser.setUnitName(fileName);
 		parser.setEnvironment(new String[] {}, new String[] {}, new String[] {}, true);
+		parser.setSource(fileContent.toCharArray());
+		return parser.createAST(null);
+	}
+	
+	@Override
+	public JavaRoot parseFile(Path file) {
+		return this.parseFilesWithJDT(new String[] {}, new String[] { file.toAbsolutePath().toString() },
+			new String[] { DEFAULT_ENCODING }).get(0);
+	}
+	
+	@Override
+	public List<JavaRoot> parseDirectory(Path dir) {
+		try {
+			String[] sources = Files.walk(dir).filter(path -> Files.isRegularFile(path) && path.getFileName().toString().endsWith("java"))
+				.map(Path::toAbsolutePath).map(Path::toString).toArray(i -> new String[i]);
+			String[] encodings = new String[sources.length];
+			for (int index = 0; index < encodings.length; index++) {
+				encodings[index] = DEFAULT_ENCODING;
+			}
+			String[] classpathEntries = Files.walk(dir).filter(path -> Files.isRegularFile(path) && path.getFileName().toString().endsWith("jar"))
+				.map(Path::toAbsolutePath).map(Path::toString).toArray(i -> new String[i]);
+			return this.parseFilesWithJDT(classpathEntries, sources, encodings);
+		} catch (IOException e) {
+		}
+		return new ArrayList<>();
+	}
+	
+	private List<JavaRoot> parseFilesWithJDT(String[] classpathEntries, String[] sources, String[] encodings) {
+		ArrayList<JavaRoot> result = new ArrayList<>();
+		ASTParser parser = setUpParser();
+		parser.setEnvironment(classpathEntries, new String[] {}, new String[] {}, true);
+		OrdinaryCompilationUnitJDTASTVisitorAndConverter converter = new OrdinaryCompilationUnitJDTASTVisitorAndConverter();
+		parser.createASTs(sources, encodings, new String[] {}, new FileASTRequestor() {
+			@Override
+			public void acceptAST(String sourceFilePath, CompilationUnit node) {
+				node.accept(converter);
+				result.add(converter.getConvertedElement());
+			}
+		}, null);
+		return result;
+	}
+	
+	private ASTParser setUpParser() {
+		ASTParser parser = ASTParser.newParser(AST.JLS14);
 		parser.setResolveBindings(true);
 		parser.setBindingsRecovery(true);
+		parser.setStatementsRecovery(true);
 		Map<String, String> options = new HashMap<>();
 		options.put(JavaCore.COMPILER_SOURCE, JavaCore.VERSION_14);
 		options.put(JavaCore.COMPILER_COMPLIANCE, JavaCore.VERSION_14);
 		options.put(JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, JavaCore.VERSION_14);
 		parser.setCompilerOptions(options);
-		parser.setSource(fileContent.toCharArray());
-		return parser.createAST(null); // ast is instanceof org.eclipse.jdt.core.dom.CompilationUnit
+		return parser;
 	}
 }
