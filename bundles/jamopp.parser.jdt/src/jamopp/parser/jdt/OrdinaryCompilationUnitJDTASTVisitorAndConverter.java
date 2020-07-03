@@ -28,7 +28,13 @@ class OrdinaryCompilationUnitJDTASTVisitorAndConverter extends ModuleJDTASTVisit
 	
 	@SuppressWarnings("unchecked")
 	private org.emftext.language.java.containers.CompilationUnit convertToCompilationUnit(CompilationUnit cu) {
-		org.emftext.language.java.containers.CompilationUnit result = org.emftext.language.java.containers.ContainersFactory.eINSTANCE.createCompilationUnit();
+		AbstractTypeDeclaration typeDecl = (AbstractTypeDeclaration) cu.types().get(0);
+		org.emftext.language.java.containers.CompilationUnit result = JDTResolverUtility.getCompilationUnit(typeDecl.resolveBinding());
+		for (int index = 1; index < cu.types().size(); index++) {
+			typeDecl = (AbstractTypeDeclaration) cu.types().get(index);
+			JDTResolverUtility.updateMapping(typeDecl.resolveBinding(), result);
+		}
+		result.getClassifiers().clear();
 		LayoutInformationConverter.convertJavaRootLayoutInformation(result, cu, getSource());
 		cu.types().forEach(obj -> result.getClassifiers().add(ClassifierConverterUtility.convertToConcreteClassifier((AbstractTypeDeclaration) obj)));
 		return result;

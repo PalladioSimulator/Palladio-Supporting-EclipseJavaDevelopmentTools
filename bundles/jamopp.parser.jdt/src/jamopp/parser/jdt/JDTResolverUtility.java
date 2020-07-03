@@ -75,4 +75,8 @@ public class JDTResolverUtility {
 			return result;
 		}
 	}
+	
+	static void updateMapping(ITypeBinding binding, org.emftext.language.java.containers.CompilationUnit cu) {
+		typeBindToCU.put(binding, cu);
+	}
 }
