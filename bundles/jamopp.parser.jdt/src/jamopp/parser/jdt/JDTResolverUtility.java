@@ -6,10 +6,16 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.jdt.core.dom.IModuleBinding;
+import org.eclipse.jdt.core.dom.ITypeBinding;
 
 public class JDTResolverUtility {
 	private static ResourceSet resourceSet;
 	private static HashMap<IModuleBinding, org.emftext.language.java.containers.Module> modBindToMod = new HashMap<>();
+	private static HashMap<ITypeBinding, org.emftext.language.java.classifiers.Annotation> typeBindToAnnot = new HashMap<>();
+	private static HashMap<ITypeBinding, org.emftext.language.java.classifiers.Enumeration> typeBindToEnum = new HashMap<>();
+	private static HashMap<ITypeBinding, org.emftext.language.java.classifiers.Interface> typeBindToInterface = new HashMap<>();
+	private static HashMap<ITypeBinding, org.emftext.language.java.classifiers.Class> typeBindToClass = new HashMap<>();
+	private static HashMap<ITypeBinding, org.emftext.language.java.containers.CompilationUnit> typeBindToCU = new HashMap<>();
 	
 	static void setResourceSet(ResourceSet set) {
 		resourceSet = set;
@@ -20,9 +26,52 @@ public class JDTResolverUtility {
 			return modBindToMod.get(binding);
 		} else {
 			org.emftext.language.java.containers.Module result = org.emftext.language.java.containers.ContainersFactory.eINSTANCE.createModule();
-			Resource newResource = resourceSet.createResource(URI.createHierarchicalURI("empty", "JaMoPP", null, new String[] {binding.getName(), "module-info.java"}, null, null));
+			Resource newResource = resourceSet.createResource(URI.createHierarchicalURI("empty", "JaMoPP-Module", null, new String[] {binding.getName(), "module-info.java"}, null, null));
 			newResource.getContents().add(result);
 			modBindToMod.put(binding, result);
+			return result;
+		}
+	}
+	
+	static org.emftext.language.java.classifiers.Annotation getAnnotation(ITypeBinding binding) {
+		if (typeBindToAnnot.containsKey(binding)) {
+			return typeBindToAnnot.get(binding);
+		} else {
+			org.emftext.language.java.classifiers.Annotation result = org.emftext.language.java.classifiers.ClassifiersFactory.eINSTANCE.createAnnotation();
+			if (binding.isNested()) {
+				org.emftext.language.java.classifiers.ConcreteClassifier classifier = getConcreteClassifier(binding.getDeclaringClass());
+				classifier.getMembers().add(result);
+			} else {
+				org.emftext.language.java.containers.CompilationUnit cu = getCompilationUnit(binding);
+				cu.getClassifiers().add(result);
+			}
+			typeBindToAnnot.put(binding, result);
+			return result;
+		}
+	}
+	
+	static org.emftext.language.java.classifiers.ConcreteClassifier getConcreteClassifier(ITypeBinding binding) {
+		if (binding.isAnnotation()) {
+			return getAnnotation(binding);
+		} else if (binding.isInterface()) {
+			
+		} else if (binding.isEnum()) {
+			
+		} else if (binding.isClass()) {
+			
+		}
+		return null;
+	}
+	
+	static org.emftext.language.java.containers.CompilationUnit getCompilationUnit(ITypeBinding binding) {
+		if (typeBindToCU.containsKey(binding)) {
+			return typeBindToCU.get(binding);
+		}
+		else {
+			org.emftext.language.java.containers.CompilationUnit result = org.emftext.language.java.containers.ContainersFactory.eINSTANCE.createCompilationUnit();
+			Resource newResource = resourceSet.createResource(URI.createHierarchicalURI("empty", "JaMoPP-CompilationUnit", null, new String[] {binding.getQualifiedName() + ".java"}, null, null));
+			newResource.getContents().add(result);
+			typeBindToCU.put(binding, result);
 			return result;
 		}
 	}

@@ -70,10 +70,8 @@ class AnnotationInstanceOrModifierConverterUtility {
 	@SuppressWarnings("unchecked")
 	static org.emftext.language.java.annotations.AnnotationInstance convertToAnnotationInstance(Annotation annot) {
 		org.emftext.language.java.annotations.AnnotationInstance result = org.emftext.language.java.annotations.AnnotationsFactory.eINSTANCE.createAnnotationInstance();
-		org.emftext.language.java.classifiers.Class proxyClass = org.emftext.language.java.classifiers.ClassifiersFactory.eINSTANCE.createClass();
+		org.emftext.language.java.classifiers.Annotation proxyClass = JDTResolverUtility.getAnnotation(annot.resolveAnnotationBinding().getAnnotationType());
 		BaseConverterUtility.convertToSimpleNameOnlyAndSet(annot.getTypeName(), proxyClass);
-		IJavaContextDependentURIFragmentWrapper.GLOBAL_INSTANCE.registerContextDependentProxy(JavaContextDependentURIFragmentFactoryFactory.ANNOTATION_INSTANCE_ANNOTATION_REFERENCE_FACTORY, result,
-			org.emftext.language.java.annotations.AnnotationsPackage.Literals.ANNOTATION_INSTANCE__ANNOTATION, proxyClass.getName(), proxyClass, -1);
 		result.setAnnotation(proxyClass);
 		if (annot.isSingleMemberAnnotation()) {
 			org.emftext.language.java.annotations.SingleAnnotationParameter param = org.emftext.language.java.annotations.AnnotationsFactory.eINSTANCE

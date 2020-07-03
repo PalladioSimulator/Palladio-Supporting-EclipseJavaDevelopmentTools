@@ -41,7 +41,7 @@ class ClassifierConverterUtility {
 		if (typeDecl.getNodeType() == ASTNode.TYPE_DECLARATION) {
 			result = convertToClassOrInterface((TypeDeclaration) typeDecl);
 		} else if (typeDecl.getNodeType() == ASTNode.ANNOTATION_TYPE_DECLARATION) {
-			result = org.emftext.language.java.classifiers.ClassifiersFactory.eINSTANCE.createAnnotation();
+			result = JDTResolverUtility.getAnnotation(typeDecl.resolveBinding());
 			org.emftext.language.java.classifiers.ConcreteClassifier fR = result;
 			typeDecl.bodyDeclarations().forEach(obj -> fR.getMembers().add(convertToInterfaceMember((BodyDeclaration) obj)));
 		} else { // typeDecl.getNodeType() == ASTNode.ENUM_DECLARATION
