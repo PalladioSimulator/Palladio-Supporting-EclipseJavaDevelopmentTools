@@ -5,6 +5,7 @@ import java.util.HashMap;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.IModuleBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 
@@ -16,6 +17,7 @@ public class JDTResolverUtility {
 	private static HashMap<ITypeBinding, org.emftext.language.java.classifiers.Interface> typeBindToInterface = new HashMap<>();
 	private static HashMap<ITypeBinding, org.emftext.language.java.classifiers.Class> typeBindToClass = new HashMap<>();
 	private static HashMap<ITypeBinding, org.emftext.language.java.containers.CompilationUnit> typeBindToCU = new HashMap<>();
+	private static HashMap<IMethodBinding, org.emftext.language.java.members.InterfaceMethod> methBindToInter = new HashMap<>();
 	
 	static void setResourceSet(ResourceSet set) {
 		resourceSet = set;
@@ -78,5 +80,17 @@ public class JDTResolverUtility {
 	
 	static void updateMapping(ITypeBinding binding, org.emftext.language.java.containers.CompilationUnit cu) {
 		typeBindToCU.put(binding, cu);
+	}
+	
+	static org.emftext.language.java.members.InterfaceMethod getInterfaceMethod(IMethodBinding binding) {
+		if (methBindToInter.containsKey(binding)) {
+			return methBindToInter.get(binding);
+		} else {
+			org.emftext.language.java.members.InterfaceMethod result = org.emftext.language.java.members.MembersFactory.eINSTANCE.createInterfaceMethod();
+			org.emftext.language.java.classifiers.ConcreteClassifier parent = getConcreteClassifier(binding.getDeclaringClass());
+			parent.getMembers().add(result);
+			methBindToInter.put(binding, result);
+			return result;
+		}
 	}
 }

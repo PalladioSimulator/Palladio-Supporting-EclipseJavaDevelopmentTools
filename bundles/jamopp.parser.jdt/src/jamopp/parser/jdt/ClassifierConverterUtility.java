@@ -150,7 +150,7 @@ class ClassifierConverterUtility {
 	
 	@SuppressWarnings("unchecked")
 	private static org.emftext.language.java.members.InterfaceMethod convertToInterfaceMethod(AnnotationTypeMemberDeclaration annDecl) {
-		org.emftext.language.java.members.InterfaceMethod result = org.emftext.language.java.members.MembersFactory.eINSTANCE.createInterfaceMethod();
+		org.emftext.language.java.members.InterfaceMethod result = JDTResolverUtility.getInterfaceMethod(annDecl.resolveBinding());
 		annDecl.modifiers().forEach(obj -> result.getAnnotationsAndModifiers().add(AnnotationInstanceOrModifierConverterUtility
 			.converToModifierOrAnnotationInstance((IExtendedModifier) obj)));
 		result.setTypeReference(BaseConverterUtility.convertToTypeReference(annDecl.getType()));
@@ -169,7 +169,7 @@ class ClassifierConverterUtility {
 		if (methodDecl.isConstructor()) {
 			return convertToClassMethodOrConstructor(methodDecl);
 		} else {
-			org.emftext.language.java.members.InterfaceMethod result = org.emftext.language.java.members.MembersFactory.eINSTANCE.createInterfaceMethod();
+			org.emftext.language.java.members.InterfaceMethod result = JDTResolverUtility.getInterfaceMethod(methodDecl.resolveBinding());
 			methodDecl.modifiers().forEach(obj -> result.getAnnotationsAndModifiers().add(AnnotationInstanceOrModifierConverterUtility
 				.converToModifierOrAnnotationInstance((IExtendedModifier) obj)));
 			methodDecl.typeParameters().forEach(obj -> result.getTypeParameters().add(convertToTypeParameter((TypeParameter) obj)));

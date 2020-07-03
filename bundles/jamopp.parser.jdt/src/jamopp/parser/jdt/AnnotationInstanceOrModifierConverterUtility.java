@@ -13,7 +13,6 @@
 
 package jamopp.parser.jdt;
 
-import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.Annotation;
 import org.eclipse.jdt.core.dom.ArrayInitializer;
@@ -24,8 +23,6 @@ import org.eclipse.jdt.core.dom.MemberValuePair;
 import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.core.dom.NormalAnnotation;
 import org.eclipse.jdt.core.dom.SingleMemberAnnotation;
-import org.emftext.language.java.resource.java.IJavaContextDependentURIFragmentWrapper;
-import org.emftext.language.java.resource.java.JavaContextDependentURIFragmentFactoryFactory;
 
 class AnnotationInstanceOrModifierConverterUtility {
 	static org.emftext.language.java.modifiers.AnnotationInstanceOrModifier converToModifierOrAnnotationInstance(IExtendedModifier mod) {
@@ -86,13 +83,11 @@ class AnnotationInstanceOrModifierConverterUtility {
 			NormalAnnotation normalAnnot = (NormalAnnotation) annot;
 			normalAnnot.values().forEach(obj -> {
 				MemberValuePair memVal = (MemberValuePair) obj;
+				memVal.resolveMemberValuePairBinding().getMethodBinding();
 				org.emftext.language.java.annotations.AnnotationAttributeSetting attrSet = org.emftext.language.java.annotations.AnnotationsFactory.eINSTANCE
 					.createAnnotationAttributeSetting();
-				org.emftext.language.java.members.InterfaceMethod methodProxy = org.emftext.language.java.members.MembersFactory.eINSTANCE.createInterfaceMethod();
+				org.emftext.language.java.members.InterfaceMethod methodProxy = JDTResolverUtility.getInterfaceMethod(memVal.resolveMemberValuePairBinding().getMethodBinding());
 				BaseConverterUtility.convertToSimpleNameOnlyAndSet(memVal.getName(), methodProxy);
-				((InternalEObject) methodProxy).eSetProxyURI(null);
-				IJavaContextDependentURIFragmentWrapper.GLOBAL_INSTANCE.registerContextDependentProxy(JavaContextDependentURIFragmentFactoryFactory.ANNOTATION_ATTRIBUTE_SETTING_INTERFACE_METHOD_FACTORY, attrSet,
-					org.emftext.language.java.annotations.AnnotationsPackage.Literals.ANNOTATION_ATTRIBUTE_SETTING__ATTRIBUTE, methodProxy.getName(), methodProxy, -1);
 				attrSet.setAttribute(methodProxy);
 				attrSet.setValue(convertToAnnotationValue(memVal.getValue()));
 				LayoutInformationConverter.convertToMinimalLayoutInformation(attrSet, memVal);
