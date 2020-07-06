@@ -21,5 +21,6 @@ Workflow {
         directory = "platform:/resource/org.emftext.commons.layout.edit/src-gen"
         directory = "platform:/resource/org.emftext.language.java/src-gen"
         directory = "platform:/resource/org.emftext.language.java.edit/src-gen"
+        directory = "platform:/resource/org.emftext.language.java.editor/src-gen"
     }
 }
