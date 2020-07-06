@@ -130,6 +130,14 @@ public class JDTResolverUtility {
 		}
 	}
 	
+	static org.emftext.language.java.members.Method getMethod(IMethodBinding binding) {
+		if (binding.getDeclaringClass().isClass()) {
+			return getClassMethod(binding);
+		} else {
+			return getInterfaceMethod(binding);
+		}
+	}
+	
 	static void completeResolution() {
 		// CompilationUnits
 //		Resource newResource = resourceSet.createResource(URI.createHierarchicalURI("empty", "JaMoPP-CompilationUnit", null, new String[] {binding.getQualifiedName() + ".java"}, null, null));

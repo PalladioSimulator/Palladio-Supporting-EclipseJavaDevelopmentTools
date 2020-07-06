@@ -13,7 +13,6 @@
 
 package jamopp.parser.jdt;
 
-import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.Annotation;
 import org.eclipse.jdt.core.dom.ArrayAccess;
@@ -23,6 +22,10 @@ import org.eclipse.jdt.core.dom.ClassInstanceCreation;
 import org.eclipse.jdt.core.dom.ConstructorInvocation;
 import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.FieldAccess;
+import org.eclipse.jdt.core.dom.IBinding;
+import org.eclipse.jdt.core.dom.IMethodBinding;
+import org.eclipse.jdt.core.dom.ITypeBinding;
+import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.ParameterizedType;
 import org.eclipse.jdt.core.dom.ParenthesizedExpression;
@@ -108,7 +111,7 @@ class ReferenceConverterUtility {
 		} else if (expr.getNodeType() == ASTNode.FIELD_ACCESS) {
 			FieldAccess arr = (FieldAccess) expr;
 			org.emftext.language.java.references.Reference parent = internalConvertToReference(arr.getExpression());
-			org.emftext.language.java.references.IdentifierReference result = convertToProxyIdentifierReference(arr.getName());
+			org.emftext.language.java.references.IdentifierReference result = convertToIdentifierReference(arr.getName());
 			parent.setNext(result);
 			return result;
 		} else if (expr.getNodeType() == ASTNode.METHOD_INVOCATION) {
@@ -116,8 +119,7 @@ class ReferenceConverterUtility {
 			org.emftext.language.java.references.MethodCall result = org.emftext.language.java.references.ReferencesFactory.eINSTANCE.createMethodCall();
 			arr.typeArguments().forEach(obj -> result.getCallTypeArguments().add(BaseConverterUtility.convertToTypeArgument((Type) obj)));
 			arr.arguments().forEach(obj -> result.getArguments().add(ExpressionConverterUtility.convertToExpression((Expression) obj)));
-			org.emftext.language.java.members.Method methodProxy = org.emftext.language.java.members.MembersFactory.eINSTANCE.createClassMethod();
-			((InternalEObject) methodProxy).eSetProxyURI(null);
+			org.emftext.language.java.members.Method methodProxy = JDTResolverUtility.getMethod((IMethodBinding) arr.getName().resolveBinding());
 			BaseConverterUtility.convertToSimpleNameOnlyAndSet(arr.getName(), methodProxy);
 			result.setTarget(methodProxy);
 			LayoutInformationConverter.convertToMinimalLayoutInformation(result, arr);
@@ -128,13 +130,13 @@ class ReferenceConverterUtility {
 			return result;
 		} else if (expr.getNodeType() == ASTNode.QUALIFIED_NAME) {
 			QualifiedName arr = (QualifiedName) expr;
-			org.emftext.language.java.references.IdentifierReference result = convertToProxyIdentifierReference(arr.getName());
+			org.emftext.language.java.references.IdentifierReference result = convertToIdentifierReference(arr.getName());
 			org.emftext.language.java.references.Reference parent = internalConvertToReference(arr.getQualifier());
 			parent.setNext(result);
 			LayoutInformationConverter.convertToMinimalLayoutInformation(result, arr);
 			return result;
 		} else if (expr.getNodeType() == ASTNode.SIMPLE_NAME) {
-			return convertToProxyIdentifierReference((SimpleName) expr);
+			return convertToIdentifierReference((SimpleName) expr);
 		} else if (expr.getNodeType() == ASTNode.PARENTHESIZED_EXPRESSION) {
 			ParenthesizedExpression arr = (ParenthesizedExpression) expr;
 			org.emftext.language.java.expressions.NestedExpression result = org.emftext.language.java.expressions.ExpressionsFactory.eINSTANCE.createNestedExpression();
@@ -155,7 +157,7 @@ class ReferenceConverterUtility {
 				org.emftext.language.java.references.Reference parent = internalConvertToReference(arr.getQualifier());
 				parent.setNext(partOne);
 			}
-			org.emftext.language.java.references.IdentifierReference partTwo = convertToProxyIdentifierReference(arr.getName());
+			org.emftext.language.java.references.IdentifierReference partTwo = convertToIdentifierReference(arr.getName());
 			partOne.setNext(partTwo);
 			return partTwo;
 		} else if (expr.getNodeType() == ASTNode.SUPER_METHOD_INVOCATION) {
@@ -169,8 +171,7 @@ class ReferenceConverterUtility {
 			org.emftext.language.java.references.MethodCall partTwo = org.emftext.language.java.references.ReferencesFactory.eINSTANCE.createMethodCall();
 			arr.typeArguments().forEach(obj -> partTwo.getCallTypeArguments().add(BaseConverterUtility.convertToTypeArgument((Type) obj)));
 			arr.arguments().forEach(obj -> partTwo.getArguments().add(ExpressionConverterUtility.convertToExpression((Expression) obj)));
-			org.emftext.language.java.members.Method proxy = org.emftext.language.java.members.MembersFactory.eINSTANCE.createClassMethod();
-			((InternalEObject) proxy).eSetProxyURI(null);
+			org.emftext.language.java.members.Method proxy = JDTResolverUtility.getMethod((IMethodBinding) arr.getName().resolveBinding());
 			BaseConverterUtility.convertToSimpleNameOnlyAndSet(arr.getName(), proxy);
 			partTwo.setTarget(proxy);
 			partOne.setNext(partTwo);
@@ -197,18 +198,25 @@ class ReferenceConverterUtility {
 		return null;
 	}
 	
-	private static org.emftext.language.java.references.IdentifierReference convertToProxyIdentifierReference(SimpleName name) {
-		org.emftext.language.java.references.IdentifierReference result = createProxyIdentifierReference(name.getIdentifier());
+	private static org.emftext.language.java.references.IdentifierReference convertToIdentifierReference(SimpleName name) {
+		org.emftext.language.java.references.IdentifierReference result = org.emftext.language.java.references.ReferencesFactory.eINSTANCE.createIdentifierReference();
+		IBinding b = name.resolveBinding();
+		if (b instanceof ITypeBinding) {
+			org.emftext.language.java.classifiers.Classifier target = JDTResolverUtility.getClassifier((ITypeBinding) b);
+			target.setName(name.getIdentifier());
+			result.setTarget(target);
+		} else if (b instanceof IVariableBinding) {
+			
+		}
 		LayoutInformationConverter.convertToMinimalLayoutInformation(result, name);
 		return result;
 	}
 	
-	private static org.emftext.language.java.references.IdentifierReference createProxyIdentifierReference(String name) {
+	private static org.emftext.language.java.references.IdentifierReference convertToIdentifierReference(String packageName) {
 		org.emftext.language.java.references.IdentifierReference result = org.emftext.language.java.references.ReferencesFactory.eINSTANCE.createIdentifierReference();
-		org.emftext.language.java.members.Field proxy = org.emftext.language.java.members.MembersFactory.eINSTANCE.createField();
-		((InternalEObject) proxy).eSetProxyURI(null);
-		proxy.setName(name);
-		result.setTarget(proxy);
+		org.emftext.language.java.references.PackageReference ref = org.emftext.language.java.references.ReferencesFactory.eINSTANCE.createPackageReference();
+		ref.setName(packageName);
+		result.setTarget(ref);
 		return result;
 	}
 	
@@ -237,7 +245,7 @@ class ReferenceConverterUtility {
 			org.emftext.language.java.types.NamespaceClassifierReference ref = (org.emftext.language.java.types.NamespaceClassifierReference) typeRef;
 			org.emftext.language.java.references.IdentifierReference currentResult = null;
 			for (String namespace : ref.getNamespaces()) {
-				org.emftext.language.java.references.IdentifierReference iterRef = createProxyIdentifierReference(namespace);
+				org.emftext.language.java.references.IdentifierReference iterRef = convertToIdentifierReference(namespace);
 				if (currentResult != null) {
 					currentResult.setNext(iterRef);
 				}
