@@ -16,6 +16,7 @@ public class JDTResolverUtility {
 	private static HashMap<ITypeBinding, org.emftext.language.java.classifiers.Enumeration> typeBindToEnum = new HashMap<>();
 	private static HashMap<ITypeBinding, org.emftext.language.java.classifiers.Interface> typeBindToInterface = new HashMap<>();
 	private static HashMap<ITypeBinding, org.emftext.language.java.classifiers.Class> typeBindToClass = new HashMap<>();
+	private static HashMap<ITypeBinding, org.emftext.language.java.generics.TypeParameter> typeBindToTP = new HashMap<>();
 	private static HashMap<IMethodBinding, org.emftext.language.java.members.InterfaceMethod> methBindToInter = new HashMap<>();
 	private static HashMap<IMethodBinding, org.emftext.language.java.members.ClassMethod> methBindToCM = new HashMap<>();
 	private static HashMap<IMethodBinding, org.emftext.language.java.members.Constructor> methBindToConstr = new HashMap<>();
@@ -74,7 +75,17 @@ public class JDTResolverUtility {
 		}
 	}
 	
-	static org.emftext.language.java.classifiers.ConcreteClassifier getConcreteClassifier(ITypeBinding binding) {
+	static org.emftext.language.java.generics.TypeParameter getTypeParameter(ITypeBinding binding) {
+		if (typeBindToTP.containsKey(binding)) {
+			return typeBindToTP.get(binding);
+		} else {
+			org.emftext.language.java.generics.TypeParameter result = org.emftext.language.java.generics.GenericsFactory.eINSTANCE.createTypeParameter();
+			typeBindToTP.put(binding, result);
+			return result;
+		}
+	}
+	
+	static org.emftext.language.java.classifiers.Classifier getClassifier(ITypeBinding binding) {
 		if (binding.isAnnotation()) {
 			return getAnnotation(binding);
 		} else if (binding.isInterface()) {
@@ -83,6 +94,8 @@ public class JDTResolverUtility {
 			return getEnumeration(binding);
 		} else if (binding.isClass()) {
 			return getClass(binding);
+		} else if (binding.isTypeVariable()) {
+			return getTypeParameter(binding);
 		}
 		return null;
 	}

@@ -59,7 +59,7 @@ class ClassifierConverterUtility {
 	private static org.emftext.language.java.classifiers.ConcreteClassifier convertToClassOrInterface(TypeDeclaration typeDecl) {
 		org.emftext.language.java.classifiers.ConcreteClassifier result;
 		if (typeDecl.isInterface()) {
-			org.emftext.language.java.classifiers.Interface interfaceObj = org.emftext.language.java.classifiers.ClassifiersFactory.eINSTANCE.createInterface();
+			org.emftext.language.java.classifiers.Interface interfaceObj = JDTResolverUtility.getInterface(typeDecl.resolveBinding());
 			typeDecl.superInterfaceTypes().forEach(obj -> interfaceObj.getExtends().add(BaseConverterUtility.convertToTypeReference((Type) obj)));
 			typeDecl.bodyDeclarations().forEach(obj -> interfaceObj.getMembers().add(convertToInterfaceMember((BodyDeclaration) obj)));
 			result = interfaceObj;
@@ -78,7 +78,7 @@ class ClassifierConverterUtility {
 	
 	@SuppressWarnings("unchecked")
 	private static org.emftext.language.java.classifiers.Enumeration convertToEnum(EnumDeclaration enumDecl) {
-		org.emftext.language.java.classifiers.Enumeration result = org.emftext.language.java.classifiers.ClassifiersFactory.eINSTANCE.createEnumeration();
+		org.emftext.language.java.classifiers.Enumeration result = JDTResolverUtility.getEnumeration(enumDecl.resolveBinding());
 		enumDecl.superInterfaceTypes().forEach(obj -> result.getImplements().add(BaseConverterUtility.convertToTypeReference((Type) obj)));
 		enumDecl.enumConstants().forEach(obj -> result.getConstants().add(convertToEnumConstant((EnumConstantDeclaration) obj)));
 		enumDecl.bodyDeclarations().forEach(obj -> result.getMembers().add(convertToClassMember((BodyDeclaration) obj)));
@@ -196,7 +196,7 @@ class ClassifierConverterUtility {
 	@SuppressWarnings("unchecked")
 	private static org.emftext.language.java.members.Member convertToClassMethodOrConstructor(MethodDeclaration methodDecl) {
 		if (methodDecl.isConstructor()) {
-			org.emftext.language.java.members.Constructor result = org.emftext.language.java.members.MembersFactory.eINSTANCE.createConstructor();
+			org.emftext.language.java.members.Constructor result = JDTResolverUtility.getConstructor(methodDecl.resolveBinding());
 			methodDecl.modifiers().forEach(obj -> result.getAnnotationsAndModifiers().add(AnnotationInstanceOrModifierConverterUtility
 				.converToModifierOrAnnotationInstance((IExtendedModifier) obj)));
 			methodDecl.typeParameters().forEach(obj -> result.getTypeParameters().add(convertToTypeParameter((TypeParameter) obj)));
@@ -211,7 +211,7 @@ class ClassifierConverterUtility {
 			LayoutInformationConverter.convertToMinimalLayoutInformation(result, methodDecl);
 			return result;
 		} else {
-			org.emftext.language.java.members.ClassMethod result = org.emftext.language.java.members.MembersFactory.eINSTANCE.createClassMethod();
+			org.emftext.language.java.members.ClassMethod result = JDTResolverUtility.getClassMethod(methodDecl.resolveBinding());
 			methodDecl.modifiers().forEach(obj -> result.getAnnotationsAndModifiers().add(AnnotationInstanceOrModifierConverterUtility
 				.converToModifierOrAnnotationInstance((IExtendedModifier) obj)));
 			methodDecl.typeParameters().forEach(obj -> result.getTypeParameters().add(convertToTypeParameter((TypeParameter) obj)));
@@ -262,7 +262,7 @@ class ClassifierConverterUtility {
 	
 	@SuppressWarnings("unchecked")
 	private static org.emftext.language.java.generics.TypeParameter convertToTypeParameter(TypeParameter param) {
-		org.emftext.language.java.generics.TypeParameter result = org.emftext.language.java.generics.GenericsFactory.eINSTANCE.createTypeParameter();
+		org.emftext.language.java.generics.TypeParameter result = JDTResolverUtility.getTypeParameter(param.resolveBinding());
 		param.modifiers().forEach(obj -> result.getAnnotations().add(AnnotationInstanceOrModifierConverterUtility.convertToAnnotationInstance((Annotation) obj)));
 		BaseConverterUtility.convertToSimpleNameOnlyAndSet(param.getName(), result);
 		param.typeBounds().forEach(obj -> result.getExtendTypes().add(BaseConverterUtility.convertToTypeReference((Type) obj)));

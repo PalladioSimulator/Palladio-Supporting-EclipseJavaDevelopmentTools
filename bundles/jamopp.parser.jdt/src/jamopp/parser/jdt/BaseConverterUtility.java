@@ -13,10 +13,10 @@
 
 package jamopp.parser.jdt;
 
-import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.jdt.core.dom.Annotation;
 import org.eclipse.jdt.core.dom.ArrayType;
 import org.eclipse.jdt.core.dom.Dimension;
+import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.Name;
 import org.eclipse.jdt.core.dom.NameQualifiedType;
 import org.eclipse.jdt.core.dom.ParameterizedType;
@@ -35,16 +35,33 @@ class BaseConverterUtility {
 		} else { // name.isQualifiedName()
 			QualifiedName qualifiedName = (QualifiedName) name;
 			org.emftext.language.java.types.NamespaceClassifierReference ref = org.emftext.language.java.types.TypesFactory.eINSTANCE.createNamespaceClassifierReference();
-			ref.getClassifierReferences().add(convertToClassifierReference(qualifiedName.getName()));
-			convertToNamespacesAndSet(qualifiedName.getQualifier(), ref);
+			Name qualifier = qualifiedName.getQualifier();
+			SimpleName simpleName = qualifiedName.getName();
+			while (simpleName != null && simpleName.resolveBinding() instanceof ITypeBinding) {
+				ref.getClassifierReferences().add(0, convertToClassifierReference(simpleName));
+				if (qualifier == null) {
+					simpleName = null;
+				}
+				if (qualifier.isSimpleName()) {
+					simpleName = (SimpleName) qualifier;
+				} else {
+					simpleName = ((QualifiedName) qualifier).getName();
+					qualifier = ((QualifiedName) qualifier).getQualifier();
+				}
+			}
+			if (simpleName != null && !(simpleName.resolveBinding() instanceof ITypeBinding)) {
+				convertToNamespacesAndSet(simpleName, ref);
+			}
+			if (qualifier != null) {
+				convertToNamespacesAndSet(qualifier, ref);
+			}
 			return ref;
 		}
 	}
 	
 	static org.emftext.language.java.types.ClassifierReference convertToClassifierReference(SimpleName simpleName) {
 		org.emftext.language.java.types.ClassifierReference ref = org.emftext.language.java.types.TypesFactory.eINSTANCE.createClassifierReference();
-		org.emftext.language.java.classifiers.Class proxy = org.emftext.language.java.classifiers.ClassifiersFactory.eINSTANCE.createClass();
-		((InternalEObject) proxy).eSetProxyURI(null);
+		org.emftext.language.java.classifiers.Classifier proxy = JDTResolverUtility.getClassifier((ITypeBinding) simpleName.resolveBinding());
 		proxy.setName(simpleName.getIdentifier());
 		ref.setTarget(proxy);
 		return ref;
@@ -149,8 +166,14 @@ class BaseConverterUtility {
 			return result;
 		} else if (t.isNameQualifiedType()) {
 			NameQualifiedType nqT = (NameQualifiedType) t;
-			org.emftext.language.java.types.NamespaceClassifierReference result = org.emftext.language.java.types.TypesFactory.eINSTANCE.createNamespaceClassifierReference();
-			convertToNamespacesAndSet(nqT.getQualifier(), result);
+			org.emftext.language.java.types.NamespaceClassifierReference result;
+			org.emftext.language.java.types.TypeReference parentRef = convertToClassifierOrNamespaceClassifierReference(nqT.getQualifier());
+			if (parentRef instanceof org.emftext.language.java.types.ClassifierReference) {
+				result = org.emftext.language.java.types.TypesFactory.eINSTANCE.createNamespaceClassifierReference();
+				result.getClassifierReferences().add((org.emftext.language.java.types.ClassifierReference) parentRef);
+			} else {
+				result = (org.emftext.language.java.types.NamespaceClassifierReference) parentRef;
+			}
 			org.emftext.language.java.types.ClassifierReference child = convertToClassifierReference(nqT.getName());
 			nqT.annotations().forEach(obj -> child.getAnnotations().add(AnnotationInstanceOrModifierConverterUtility
 				.convertToAnnotationInstance((Annotation) obj)));
