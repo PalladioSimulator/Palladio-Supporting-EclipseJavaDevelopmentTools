@@ -43,6 +43,7 @@ public class JaMoPPJDTParser implements JaMoPPParserAPI {
 		OrdinaryCompilationUnitJDTASTVisitorAndConverter converter = new OrdinaryCompilationUnitJDTASTVisitorAndConverter();
 		converter.setSource(src);
 		ast.accept(converter);
+		JDTResolverUtility.completeResolution();
 		this.resourceSet = null;
 		return converter.getConvertedElement();
 	}
@@ -107,6 +108,7 @@ public class JaMoPPJDTParser implements JaMoPPParserAPI {
 				result.add(root);
 			}
 		}, null);
+		JDTResolverUtility.completeResolution();
 		return result;
 	}
 	
