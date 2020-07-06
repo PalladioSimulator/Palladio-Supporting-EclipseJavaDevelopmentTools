@@ -16,7 +16,6 @@ public class JDTResolverUtility {
 	private static HashMap<ITypeBinding, org.emftext.language.java.classifiers.Enumeration> typeBindToEnum = new HashMap<>();
 	private static HashMap<ITypeBinding, org.emftext.language.java.classifiers.Interface> typeBindToInterface = new HashMap<>();
 	private static HashMap<ITypeBinding, org.emftext.language.java.classifiers.Class> typeBindToClass = new HashMap<>();
-	private static HashMap<ITypeBinding, org.emftext.language.java.containers.CompilationUnit> typeBindToCU = new HashMap<>();
 	private static HashMap<IMethodBinding, org.emftext.language.java.members.InterfaceMethod> methBindToInter = new HashMap<>();
 	private static HashMap<IMethodBinding, org.emftext.language.java.members.ClassMethod> methBindToCM = new HashMap<>();
 	private static HashMap<IMethodBinding, org.emftext.language.java.members.Constructor> methBindToConstr = new HashMap<>();
@@ -86,21 +85,6 @@ public class JDTResolverUtility {
 			return getClass(binding);
 		}
 		return null;
-	}
-	
-	static org.emftext.language.java.containers.CompilationUnit getCompilationUnit(ITypeBinding binding) {
-		if (typeBindToCU.containsKey(binding)) {
-			return typeBindToCU.get(binding);
-		}
-		else {
-			org.emftext.language.java.containers.CompilationUnit result = org.emftext.language.java.containers.ContainersFactory.eINSTANCE.createCompilationUnit();
-			typeBindToCU.put(binding, result);
-			return result;
-		}
-	}
-	
-	static void updateMapping(ITypeBinding binding, org.emftext.language.java.containers.CompilationUnit cu) {
-		typeBindToCU.put(binding, cu);
 	}
 	
 	static org.emftext.language.java.members.InterfaceMethod getInterfaceMethod(IMethodBinding binding) {
