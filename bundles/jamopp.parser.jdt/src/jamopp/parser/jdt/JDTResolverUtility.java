@@ -1,6 +1,7 @@
 package jamopp.parser.jdt;
 
 import java.util.HashMap;
+import java.util.Map.Entry;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -11,76 +12,82 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
 
 public class JDTResolverUtility {
 	private static ResourceSet resourceSet;
-	private static HashMap<IModuleBinding, org.emftext.language.java.containers.Module> modBindToMod = new HashMap<>();
-	private static HashMap<ITypeBinding, org.emftext.language.java.classifiers.Annotation> typeBindToAnnot = new HashMap<>();
-	private static HashMap<ITypeBinding, org.emftext.language.java.classifiers.Enumeration> typeBindToEnum = new HashMap<>();
-	private static HashMap<ITypeBinding, org.emftext.language.java.classifiers.Interface> typeBindToInterface = new HashMap<>();
-	private static HashMap<ITypeBinding, org.emftext.language.java.classifiers.Class> typeBindToClass = new HashMap<>();
-	private static HashMap<ITypeBinding, org.emftext.language.java.generics.TypeParameter> typeBindToTP = new HashMap<>();
-	private static HashMap<IMethodBinding, org.emftext.language.java.members.InterfaceMethod> methBindToInter = new HashMap<>();
-	private static HashMap<IMethodBinding, org.emftext.language.java.members.ClassMethod> methBindToCM = new HashMap<>();
-	private static HashMap<IMethodBinding, org.emftext.language.java.members.Constructor> methBindToConstr = new HashMap<>();
+	private static HashMap<String, org.emftext.language.java.containers.Module> modBindToMod = new HashMap<>();
+	private static HashMap<String, org.emftext.language.java.classifiers.Annotation> typeBindToAnnot = new HashMap<>();
+	private static HashMap<String, org.emftext.language.java.classifiers.Enumeration> typeBindToEnum = new HashMap<>();
+	private static HashMap<String, org.emftext.language.java.classifiers.Interface> typeBindToInterface = new HashMap<>();
+	private static HashMap<String, org.emftext.language.java.classifiers.Class> typeBindToClass = new HashMap<>();
+	private static HashMap<String, org.emftext.language.java.generics.TypeParameter> typeBindToTP = new HashMap<>();
+	private static HashMap<String, org.emftext.language.java.members.InterfaceMethod> methBindToInter = new HashMap<>();
+	private static HashMap<String, org.emftext.language.java.members.ClassMethod> methBindToCM = new HashMap<>();
+	private static HashMap<String, org.emftext.language.java.members.Constructor> methBindToConstr = new HashMap<>();
 	
 	static void setResourceSet(ResourceSet set) {
 		resourceSet = set;
 	}
 	
 	static org.emftext.language.java.containers.Module getModule(IModuleBinding binding) {
-		if (modBindToMod.containsKey(binding)) {
-			return modBindToMod.get(binding);
+		String modName = binding.getName();
+		if (modBindToMod.containsKey(modName)) {
+			return modBindToMod.get(modName);
 		} else {
 			org.emftext.language.java.containers.Module result = org.emftext.language.java.containers.ContainersFactory.eINSTANCE.createModule();
-			modBindToMod.put(binding, result);
+			modBindToMod.put(modName, result);
 			return result;
 		}
 	}
 	
 	static org.emftext.language.java.classifiers.Annotation getAnnotation(ITypeBinding binding) {
-		if (typeBindToAnnot.containsKey(binding)) {
-			return typeBindToAnnot.get(binding);
+		String annotName = binding.getQualifiedName();
+		if (typeBindToAnnot.containsKey(annotName)) {
+			return typeBindToAnnot.get(annotName);
 		} else {
 			org.emftext.language.java.classifiers.Annotation result = org.emftext.language.java.classifiers.ClassifiersFactory.eINSTANCE.createAnnotation();
-			typeBindToAnnot.put(binding, result);
+			typeBindToAnnot.put(annotName, result);
 			return result;
 		}
 	}
 	
 	static org.emftext.language.java.classifiers.Enumeration getEnumeration(ITypeBinding binding) {
-		if (typeBindToEnum.containsKey(binding)) {
-			return typeBindToEnum.get(binding);
+		String enumName = binding.getQualifiedName();
+		if (typeBindToEnum.containsKey(enumName)) {
+			return typeBindToEnum.get(enumName);
 		} else {
 			org.emftext.language.java.classifiers.Enumeration result = org.emftext.language.java.classifiers.ClassifiersFactory.eINSTANCE.createEnumeration();
-			typeBindToEnum.put(binding, result);
+			typeBindToEnum.put(enumName, result);
 			return result;
 		}
 	}
 	
 	static org.emftext.language.java.classifiers.Class getClass(ITypeBinding binding) {
-		if (typeBindToClass.containsKey(binding)) {
-			return typeBindToClass.get(binding);
+		String className = binding.getQualifiedName();
+		if (typeBindToClass.containsKey(className)) {
+			return typeBindToClass.get(className);
 		} else {
 			org.emftext.language.java.classifiers.Class result = org.emftext.language.java.classifiers.ClassifiersFactory.eINSTANCE.createClass();
-			typeBindToClass.put(binding, result);
+			typeBindToClass.put(className, result);
 			return result;
 		}
 	}
 	
 	static org.emftext.language.java.classifiers.Interface getInterface(ITypeBinding binding) {
-		if (typeBindToInterface.containsKey(binding)) {
-			return typeBindToInterface.get(binding);
+		String interName = binding.getQualifiedName();
+		if (typeBindToInterface.containsKey(interName)) {
+			return typeBindToInterface.get(interName);
 		} else {
 			org.emftext.language.java.classifiers.Interface result = org.emftext.language.java.classifiers.ClassifiersFactory.eINSTANCE.createInterface();
-			typeBindToInterface.put(binding, result);
+			typeBindToInterface.put(interName, result);
 			return result;
 		}
 	}
 	
 	static org.emftext.language.java.generics.TypeParameter getTypeParameter(ITypeBinding binding) {
-		if (typeBindToTP.containsKey(binding)) {
-			return typeBindToTP.get(binding);
+		String paramName = binding.getQualifiedName();
+		if (typeBindToTP.containsKey(paramName)) {
+			return typeBindToTP.get(paramName);
 		} else {
 			org.emftext.language.java.generics.TypeParameter result = org.emftext.language.java.generics.GenericsFactory.eINSTANCE.createTypeParameter();
-			typeBindToTP.put(binding, result);
+			typeBindToTP.put(paramName, result);
 			return result;
 		}
 	}
@@ -100,32 +107,49 @@ public class JDTResolverUtility {
 		return null;
 	}
 	
+	private static String convertToMethodName(IMethodBinding binding) {
+		StringBuilder builder = new StringBuilder();
+		builder.append(binding.getDeclaringClass().getQualifiedName());
+		builder.append("::");
+		builder.append(binding.getName());
+		builder.append("(");
+		for (ITypeBinding p : binding.getParameterTypes()) {
+			builder.append(p.getQualifiedName());
+		}
+		builder.append(")");
+		builder.append(binding.getReturnType().getQualifiedName());
+		return builder.toString();
+	}
+	
 	static org.emftext.language.java.members.InterfaceMethod getInterfaceMethod(IMethodBinding binding) {
-		if (methBindToInter.containsKey(binding)) {
-			return methBindToInter.get(binding);
+		String methName = convertToMethodName(binding);
+		if (methBindToInter.containsKey(methName)) {
+			return methBindToInter.get(methName);
 		} else {
 			org.emftext.language.java.members.InterfaceMethod result = org.emftext.language.java.members.MembersFactory.eINSTANCE.createInterfaceMethod();
-			methBindToInter.put(binding, result);
+			methBindToInter.put(methName, result);
 			return result;
 		}
 	}
 	
 	static org.emftext.language.java.members.ClassMethod getClassMethod(IMethodBinding binding) {
-		if (methBindToCM.containsKey(binding)) {
-			return methBindToCM.get(binding);
+		String methName = convertToMethodName(binding);
+		if (methBindToCM.containsKey(methName)) {
+			return methBindToCM.get(methName);
 		} else {
 			org.emftext.language.java.members.ClassMethod result = org.emftext.language.java.members.MembersFactory.eINSTANCE.createClassMethod();
-			methBindToCM.put(binding, result);
+			methBindToCM.put(methName, result);
 			return result;
 		}
 	}
 	
 	static org.emftext.language.java.members.Constructor getConstructor(IMethodBinding binding) {
-		if (methBindToConstr.containsKey(binding)) {
-			return methBindToConstr.get(binding);
+		String methName = convertToMethodName(binding);
+		if (methBindToConstr.containsKey(methName)) {
+			return methBindToConstr.get(methName);
 		} else {
 			org.emftext.language.java.members.Constructor result = org.emftext.language.java.members.MembersFactory.eINSTANCE.createConstructor();
-			methBindToConstr.put(binding, result);
+			methBindToConstr.put(methName, result);
 			return result;
 		}
 	}
