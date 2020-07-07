@@ -241,11 +241,7 @@ public class JDTResolverUtility {
 		}
 	}
 	
-	private static String convertToParameterName(IVariableBinding binding) {
-		return convertToMethodName(binding.getDeclaringMethod()) + "::" + binding.getName() + "::" + binding.getVariableId();
-	}
-	
-	private static String convertToLocalVariableName(IVariableBinding binding) {
+	private static String convertToParameterName(IVariableBinding binding, boolean register) {
 		String prefix = "";
 		if (binding.getDeclaringMethod() != null) {
 			prefix = convertToMethodName(binding.getDeclaringMethod());
@@ -253,13 +249,30 @@ public class JDTResolverUtility {
 			prefix = varBindToUid.get(binding) + "";
 		} else {
 			prefix = uid + "";
+			if (register) {
+				varBindToUid.put(binding, uid);
+			}
+		}
+		return prefix + "::" + binding.getName() + "::" + binding.getVariableId();
+	}
+	
+	private static String convertToLocalVariableName(IVariableBinding binding, boolean register) {
+		String prefix = "";
+		if (binding.getDeclaringMethod() != null) {
+			prefix = convertToMethodName(binding.getDeclaringMethod());
+		} else if (varBindToUid.containsKey(binding)) {
+			prefix = varBindToUid.get(binding) + "";
+		} else {
+			prefix = uid + "";
+			if (register) {
+				varBindToUid.put(binding, uid);
+			}
 		}
 		return prefix + "::" + binding.getName() + "::" + binding.getVariableId();
 	}
 	
 	static org.emftext.language.java.variables.LocalVariable getLocalVariable(IVariableBinding binding) {
-		String varName = convertToLocalVariableName(binding);
-		varBindToUid.put(binding, uid);
+		String varName = convertToLocalVariableName(binding, true);
 		if (nameToLocVar.containsKey(varName)) {
 			return nameToLocVar.get(varName);
 		} else {
@@ -271,8 +284,7 @@ public class JDTResolverUtility {
 	}
 	
 	static org.emftext.language.java.variables.AdditionalLocalVariable getAdditionalLocalVariable(IVariableBinding binding) {
-		String varName = convertToLocalVariableName(binding);
-		varBindToUid.put(binding, uid);
+		String varName = convertToLocalVariableName(binding, true);
 		if (nameToAddLocVar.containsKey(varName)) {
 			return nameToAddLocVar.get(varName);
 		} else {
@@ -284,7 +296,7 @@ public class JDTResolverUtility {
 	}
 	
 	static org.emftext.language.java.parameters.OrdinaryParameter getOrdinaryParameter(IVariableBinding binding) {
-		String paramName = convertToParameterName(binding);
+		String paramName = convertToParameterName(binding, true);
 		if (nameToOrdParam.containsKey(paramName)) {
 			return nameToOrdParam.get(paramName);
 		} else {
@@ -296,7 +308,7 @@ public class JDTResolverUtility {
 	}
 	
 	static org.emftext.language.java.parameters.VariableLengthParameter getVariableLengthParameter(IVariableBinding binding) {
-		String paramName = convertToParameterName(binding);
+		String paramName = convertToParameterName(binding, true);
 		if (nameToVarLenParam.containsKey(paramName)) {
 			return nameToVarLenParam.get(paramName);
 		} else {
@@ -308,7 +320,7 @@ public class JDTResolverUtility {
 	}
 	
 	static org.emftext.language.java.parameters.CatchParameter getCatchParameter(IVariableBinding binding) {
-		String paramName = convertToParameterName(binding);
+		String paramName = convertToParameterName(binding, true);
 		if (nameToCatchParam.containsKey(paramName)) {
 			return nameToCatchParam.get(paramName);
 		} else {
@@ -336,7 +348,7 @@ public class JDTResolverUtility {
 				return getField(binding);
 			}
 		} else if (binding.isParameter()) {
-			String paramName = convertToParameterName(binding);
+			String paramName = convertToParameterName(binding, false);
 			if (nameToCatchParam.containsKey(paramName)) {
 				return nameToCatchParam.get(paramName);
 			} else if (nameToOrdParam.containsKey(paramName)) {
@@ -347,7 +359,7 @@ public class JDTResolverUtility {
 				return getOrdinaryParameter(binding);
 			}
 		} else {
-			String varName = convertToLocalVariableName(binding);
+			String varName = convertToLocalVariableName(binding, false);
 			if (nameToLocVar.containsKey(varName)) {
 				return nameToLocVar.get(varName);
 			} else if (nameToAddLocVar.containsKey(varName)) {
