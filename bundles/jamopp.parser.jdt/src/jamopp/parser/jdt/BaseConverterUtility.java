@@ -35,6 +35,11 @@ class BaseConverterUtility {
 		} else { // name.isQualifiedName()
 			QualifiedName qualifiedName = (QualifiedName) name;
 			org.emftext.language.java.types.NamespaceClassifierReference ref = org.emftext.language.java.types.TypesFactory.eINSTANCE.createNamespaceClassifierReference();
+			if (name.resolveBinding() == null) {
+				ref.getClassifierReferences().add(convertToClassifierReference(qualifiedName.getName()));
+				convertToNamespacesAndSet(qualifiedName.getQualifier(), ref);
+				return ref;
+			}
 			Name qualifier = qualifiedName.getQualifier();
 			SimpleName simpleName = qualifiedName.getName();
 			while (simpleName != null && simpleName.resolveBinding() instanceof ITypeBinding) {
@@ -44,6 +49,7 @@ class BaseConverterUtility {
 				}
 				if (qualifier.isSimpleName()) {
 					simpleName = (SimpleName) qualifier;
+					qualifier = null;
 				} else {
 					simpleName = ((QualifiedName) qualifier).getName();
 					qualifier = ((QualifiedName) qualifier).getQualifier();
@@ -61,7 +67,13 @@ class BaseConverterUtility {
 	
 	static org.emftext.language.java.types.ClassifierReference convertToClassifierReference(SimpleName simpleName) {
 		org.emftext.language.java.types.ClassifierReference ref = org.emftext.language.java.types.TypesFactory.eINSTANCE.createClassifierReference();
-		org.emftext.language.java.classifiers.Classifier proxy = JDTResolverUtility.getClassifier((ITypeBinding) simpleName.resolveBinding());
+		ITypeBinding binding = (ITypeBinding) simpleName.resolveBinding();
+		org.emftext.language.java.classifiers.Classifier proxy;
+		if (binding == null) {
+			proxy = JDTResolverUtility.getClass(simpleName.getIdentifier());
+		} else {
+			proxy = JDTResolverUtility.getClassifier((ITypeBinding) simpleName.resolveBinding());
+		}
 		proxy.setName(simpleName.getIdentifier());
 		ref.setTarget(proxy);
 		return ref;

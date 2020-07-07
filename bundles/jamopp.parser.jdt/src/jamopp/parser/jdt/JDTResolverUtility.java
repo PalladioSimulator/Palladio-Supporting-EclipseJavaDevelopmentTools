@@ -60,14 +60,7 @@ public class JDTResolverUtility {
 	}
 	
 	static org.emftext.language.java.classifiers.Class getClass(ITypeBinding binding) {
-		String className = binding.getQualifiedName();
-		if (typeBindToClass.containsKey(className)) {
-			return typeBindToClass.get(className);
-		} else {
-			org.emftext.language.java.classifiers.Class result = org.emftext.language.java.classifiers.ClassifiersFactory.eINSTANCE.createClass();
-			typeBindToClass.put(className, result);
-			return result;
-		}
+		return getClass(binding.getQualifiedName());
 	}
 	
 	static org.emftext.language.java.classifiers.Interface getInterface(ITypeBinding binding) {
@@ -159,6 +152,28 @@ public class JDTResolverUtility {
 			return getClassMethod(binding);
 		} else {
 			return getInterfaceMethod(binding);
+		}
+	}
+	
+	static boolean isMappingRegistered(ITypeBinding binding) {
+		if (binding == null) {
+			return false;
+		}
+		return isMappingRegistered(binding.getQualifiedName());
+	}
+	
+	static boolean isMappingRegistered(String typeName) {
+		return typeBindToAnnot.containsKey(typeName) || typeBindToEnum.containsKey(typeName) || typeBindToInterface.containsKey(typeName)
+				|| typeBindToClass.containsKey(typeName) || typeBindToTP.containsKey(typeName);
+	}
+	
+	static org.emftext.language.java.classifiers.Class getClass(String typeName) {
+		if (typeBindToClass.containsKey(typeName)) {
+			return typeBindToClass.get(typeName);
+		} else {
+			org.emftext.language.java.classifiers.Class result = org.emftext.language.java.classifiers.ClassifiersFactory.eINSTANCE.createClass();
+			typeBindToClass.put(typeName, result);
+			return result;
 		}
 	}
 	
