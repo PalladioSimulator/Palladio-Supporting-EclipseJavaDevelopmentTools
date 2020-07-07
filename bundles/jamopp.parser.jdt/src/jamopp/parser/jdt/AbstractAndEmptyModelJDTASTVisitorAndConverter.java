@@ -13,10 +13,12 @@
 
 package jamopp.parser.jdt;
 
-import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.eclipse.jdt.core.dom.IBinding;
+import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
+import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.ImportDeclaration;
 import org.eclipse.jdt.core.dom.QualifiedName;
 
@@ -63,9 +65,14 @@ class AbstractAndEmptyModelJDTASTVisitorAndConverter extends ASTVisitor {
 			org.emftext.language.java.imports.StaticMemberImport convertedImport =
 				org.emftext.language.java.imports.ImportsFactory.eINSTANCE.createStaticMemberImport();
 			convertedImport.setStatic(org.emftext.language.java.modifiers.ModifiersFactory.eINSTANCE.createStatic());
-			org.emftext.language.java.members.Field proxyMember = org.emftext.language.java.members.MembersFactory.eINSTANCE.createField();
-			((InternalEObject) proxyMember).eSetProxyURI(null);
 			QualifiedName qualifiedName = (QualifiedName) importDecl.getName();
+			IBinding b = qualifiedName.resolveBinding();
+			org.emftext.language.java.references.ReferenceableElement proxyMember = null;
+			if (b instanceof IMethodBinding) {
+				proxyMember = JDTResolverUtility.getMethod((IMethodBinding) b);
+			} else if (b instanceof IVariableBinding) {
+				proxyMember = JDTResolverUtility.getReferencableElement((IVariableBinding) b);
+			}
 			proxyMember.setName(qualifiedName.getName().getIdentifier());
 			convertedImport.getStaticMembers().add(proxyMember);
 			org.emftext.language.java.classifiers.Classifier proxyClass = JDTResolverUtility.getClassifier((ITypeBinding) qualifiedName.getQualifier().resolveBinding());

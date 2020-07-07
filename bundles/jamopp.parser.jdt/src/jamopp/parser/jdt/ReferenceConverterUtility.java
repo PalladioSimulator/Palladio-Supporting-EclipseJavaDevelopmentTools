@@ -201,13 +201,14 @@ class ReferenceConverterUtility {
 	private static org.emftext.language.java.references.IdentifierReference convertToIdentifierReference(SimpleName name) {
 		org.emftext.language.java.references.IdentifierReference result = org.emftext.language.java.references.ReferencesFactory.eINSTANCE.createIdentifierReference();
 		IBinding b = name.resolveBinding();
+		org.emftext.language.java.references.ReferenceableElement target = null;
 		if (b instanceof ITypeBinding) {
-			org.emftext.language.java.classifiers.Classifier target = JDTResolverUtility.getClassifier((ITypeBinding) b);
-			target.setName(name.getIdentifier());
-			result.setTarget(target);
+			target = JDTResolverUtility.getClassifier((ITypeBinding) b);
 		} else if (b instanceof IVariableBinding) {
-			
+			target = JDTResolverUtility.getReferencableElement((IVariableBinding) b);
 		}
+		target.setName(name.getIdentifier());
+		result.setTarget(target);
 		LayoutInformationConverter.convertToMinimalLayoutInformation(result, name);
 		return result;
 	}

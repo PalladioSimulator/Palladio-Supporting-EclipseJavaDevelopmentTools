@@ -249,15 +249,17 @@ public class JDTResolverUtility {
 		String prefix = "";
 		if (binding.getDeclaringMethod() != null) {
 			prefix = convertToMethodName(binding.getDeclaringMethod());
+		} else if (varBindToUid.containsKey(binding)) {
+			prefix = varBindToUid.get(binding) + "";
 		} else {
 			prefix = uid + "";
-			varBindToUid.put(binding, uid);
 		}
 		return prefix + "::" + binding.getName() + "::" + binding.getVariableId();
 	}
 	
 	static org.emftext.language.java.variables.LocalVariable getLocalVariable(IVariableBinding binding) {
 		String varName = convertToLocalVariableName(binding);
+		varBindToUid.put(binding, uid);
 		if (nameToLocVar.containsKey(varName)) {
 			return nameToLocVar.get(varName);
 		} else {
@@ -270,6 +272,7 @@ public class JDTResolverUtility {
 	
 	static org.emftext.language.java.variables.AdditionalLocalVariable getAdditionalLocalVariable(IVariableBinding binding) {
 		String varName = convertToLocalVariableName(binding);
+		varBindToUid.put(binding, uid);
 		if (nameToAddLocVar.containsKey(varName)) {
 			return nameToAddLocVar.get(varName);
 		} else {
@@ -318,6 +321,42 @@ public class JDTResolverUtility {
 	
 	static void prepareNextUid() {
 		uid++;
+	}
+	
+	static org.emftext.language.java.references.ReferenceableElement getReferencableElement(IVariableBinding binding) {
+		if (binding.isEnumConstant()) {
+			return getEnumConstant(binding);
+		} else if (binding.isField()) {
+			String fieldName = convertToFieldName(binding);
+			if (nameToField.containsKey(fieldName)) {
+				return nameToField.get(fieldName);
+			} else if (nameToAddField.containsKey(fieldName)) {
+				nameToAddField.get(fieldName);
+			} else {
+				return getField(binding);
+			}
+		} else if (binding.isParameter()) {
+			String paramName = convertToParameterName(binding);
+			if (nameToCatchParam.containsKey(paramName)) {
+				return nameToCatchParam.get(paramName);
+			} else if (nameToOrdParam.containsKey(paramName)) {
+				return nameToOrdParam.get(paramName);
+			} else if (nameToVarLenParam.containsKey(paramName)) {
+				return nameToVarLenParam.get(paramName);
+			} else {
+				return getOrdinaryParameter(binding);
+			}
+		} else {
+			String varName = convertToLocalVariableName(binding);
+			if (nameToLocVar.containsKey(varName)) {
+				return nameToLocVar.get(varName);
+			} else if (nameToAddLocVar.containsKey(varName)) {
+				return nameToAddLocVar.get(varName);
+			} else {
+				return getLocalVariable(binding);
+			}
+		}
+		return null;
 	}
 	
 	static void completeResolution() {
