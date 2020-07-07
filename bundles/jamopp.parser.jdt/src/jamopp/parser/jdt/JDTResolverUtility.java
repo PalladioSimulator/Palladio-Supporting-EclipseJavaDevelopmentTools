@@ -1,6 +1,7 @@
 package jamopp.parser.jdt;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map.Entry;
 
 import org.eclipse.emf.common.util.URI;
@@ -9,6 +10,7 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.IModuleBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
+import org.eclipse.jdt.core.dom.IVariableBinding;
 
 public class JDTResolverUtility {
 	private static ResourceSet resourceSet;
@@ -21,6 +23,10 @@ public class JDTResolverUtility {
 	private static HashMap<String, org.emftext.language.java.members.InterfaceMethod> methBindToInter = new HashMap<>();
 	private static HashMap<String, org.emftext.language.java.members.ClassMethod> methBindToCM = new HashMap<>();
 	private static HashMap<String, org.emftext.language.java.members.Constructor> methBindToConstr = new HashMap<>();
+	private static HashSet<IModuleBinding> moduleBindings = new HashSet<>();
+	private static HashSet<ITypeBinding> typeBindings = new HashSet<>();
+	private static HashSet<IMethodBinding> methodBindings = new HashSet<>();
+	private static HashSet<IVariableBinding> variableBindings = new HashSet<>();
 	
 	static void setResourceSet(ResourceSet set) {
 		resourceSet = set;
@@ -31,6 +37,7 @@ public class JDTResolverUtility {
 		if (modBindToMod.containsKey(modName)) {
 			return modBindToMod.get(modName);
 		} else {
+			moduleBindings.add(binding);
 			org.emftext.language.java.containers.Module result = org.emftext.language.java.containers.ContainersFactory.eINSTANCE.createModule();
 			modBindToMod.put(modName, result);
 			return result;
@@ -42,6 +49,7 @@ public class JDTResolverUtility {
 		if (typeBindToAnnot.containsKey(annotName)) {
 			return typeBindToAnnot.get(annotName);
 		} else {
+			typeBindings.add(binding);
 			org.emftext.language.java.classifiers.Annotation result = org.emftext.language.java.classifiers.ClassifiersFactory.eINSTANCE.createAnnotation();
 			typeBindToAnnot.put(annotName, result);
 			return result;
@@ -53,6 +61,7 @@ public class JDTResolverUtility {
 		if (typeBindToEnum.containsKey(enumName)) {
 			return typeBindToEnum.get(enumName);
 		} else {
+			typeBindings.add(binding);
 			org.emftext.language.java.classifiers.Enumeration result = org.emftext.language.java.classifiers.ClassifiersFactory.eINSTANCE.createEnumeration();
 			typeBindToEnum.put(enumName, result);
 			return result;
@@ -60,6 +69,7 @@ public class JDTResolverUtility {
 	}
 	
 	static org.emftext.language.java.classifiers.Class getClass(ITypeBinding binding) {
+		typeBindings.add(binding);
 		return getClass(binding.getQualifiedName());
 	}
 	
@@ -68,6 +78,7 @@ public class JDTResolverUtility {
 		if (typeBindToInterface.containsKey(interName)) {
 			return typeBindToInterface.get(interName);
 		} else {
+			typeBindings.add(binding);
 			org.emftext.language.java.classifiers.Interface result = org.emftext.language.java.classifiers.ClassifiersFactory.eINSTANCE.createInterface();
 			typeBindToInterface.put(interName, result);
 			return result;
@@ -79,6 +90,7 @@ public class JDTResolverUtility {
 		if (typeBindToTP.containsKey(paramName)) {
 			return typeBindToTP.get(paramName);
 		} else {
+			typeBindings.add(binding);
 			org.emftext.language.java.generics.TypeParameter result = org.emftext.language.java.generics.GenericsFactory.eINSTANCE.createTypeParameter();
 			typeBindToTP.put(paramName, result);
 			return result;
@@ -119,6 +131,7 @@ public class JDTResolverUtility {
 		if (methBindToInter.containsKey(methName)) {
 			return methBindToInter.get(methName);
 		} else {
+			methodBindings.add(binding);
 			org.emftext.language.java.members.InterfaceMethod result = org.emftext.language.java.members.MembersFactory.eINSTANCE.createInterfaceMethod();
 			methBindToInter.put(methName, result);
 			return result;
@@ -130,6 +143,7 @@ public class JDTResolverUtility {
 		if (methBindToCM.containsKey(methName)) {
 			return methBindToCM.get(methName);
 		} else {
+			methodBindings.add(binding);
 			org.emftext.language.java.members.ClassMethod result = org.emftext.language.java.members.MembersFactory.eINSTANCE.createClassMethod();
 			methBindToCM.put(methName, result);
 			return result;
@@ -141,6 +155,7 @@ public class JDTResolverUtility {
 		if (methBindToConstr.containsKey(methName)) {
 			return methBindToConstr.get(methName);
 		} else {
+			methodBindings.add(binding);
 			org.emftext.language.java.members.Constructor result = org.emftext.language.java.members.MembersFactory.eINSTANCE.createConstructor();
 			methBindToConstr.put(methName, result);
 			return result;
