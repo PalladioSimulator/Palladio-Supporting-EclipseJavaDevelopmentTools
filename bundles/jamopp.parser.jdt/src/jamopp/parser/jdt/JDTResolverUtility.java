@@ -2,7 +2,6 @@ package jamopp.parser.jdt;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map.Entry;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -23,6 +22,14 @@ public class JDTResolverUtility {
 	private static HashMap<String, org.emftext.language.java.members.InterfaceMethod> methBindToInter = new HashMap<>();
 	private static HashMap<String, org.emftext.language.java.members.ClassMethod> methBindToCM = new HashMap<>();
 	private static HashMap<String, org.emftext.language.java.members.Constructor> methBindToConstr = new HashMap<>();
+	private static HashMap<String, org.emftext.language.java.members.Field> nameToField = new HashMap<>();
+	private static HashMap<String, org.emftext.language.java.members.AdditionalField> nameToAddField = new HashMap<>();
+	private static HashMap<String, org.emftext.language.java.variables.LocalVariable> nameToLocVar = new HashMap<>();
+	private static HashMap<String, org.emftext.language.java.variables.AdditionalLocalVariable> nameToAddLocVar = new HashMap<>();
+	private static HashMap<String, org.emftext.language.java.members.EnumConstant> nameToEnumConst = new HashMap<>();
+	private static HashMap<String, org.emftext.language.java.parameters.VariableLengthParameter> nameToVarLenParam = new HashMap<>();
+	private static HashMap<String, org.emftext.language.java.parameters.OrdinaryParameter> nameToOrdParam = new HashMap<>();
+	private static HashMap<String, org.emftext.language.java.parameters.CatchParameter> nameToCatchParam = new HashMap<>();
 	private static HashSet<IModuleBinding> moduleBindings = new HashSet<>();
 	private static HashSet<ITypeBinding> typeBindings = new HashSet<>();
 	private static HashSet<IMethodBinding> methodBindings = new HashSet<>();
@@ -188,6 +195,110 @@ public class JDTResolverUtility {
 		} else {
 			org.emftext.language.java.classifiers.Class result = org.emftext.language.java.classifiers.ClassifiersFactory.eINSTANCE.createClass();
 			typeBindToClass.put(typeName, result);
+			return result;
+		}
+	}
+	
+	private static String convertToFieldName(IVariableBinding binding) {
+		return binding.getDeclaringClass().getQualifiedName() + "::" + binding.getName();
+	}
+	
+	static org.emftext.language.java.members.Field getField(IVariableBinding binding) {
+		String varName = convertToFieldName(binding);
+		if (nameToField.containsKey(varName)) {
+			return nameToField.get(varName);
+		} else {
+			variableBindings.add(binding);
+			org.emftext.language.java.members.Field result = org.emftext.language.java.members.MembersFactory.eINSTANCE.createField();
+			nameToField.put(varName, result);
+			return result;
+		}
+	}
+	
+	static org.emftext.language.java.members.EnumConstant getEnumConstant(IVariableBinding binding) {
+		String enumCN = convertToFieldName(binding);
+		if (nameToEnumConst.containsKey(enumCN)) {
+			return nameToEnumConst.get(enumCN);
+		} else {
+			variableBindings.add(binding);
+			org.emftext.language.java.members.EnumConstant result = org.emftext.language.java.members.MembersFactory.eINSTANCE.createEnumConstant();
+			nameToEnumConst.put(enumCN, result);
+			return result;
+		}
+	}
+	
+	static org.emftext.language.java.members.AdditionalField getAdditionalField(IVariableBinding binding) {
+		String varName = convertToFieldName(binding);
+		if (nameToAddField.containsKey(varName)) {
+			return nameToAddField.get(varName);
+		} else {
+			variableBindings.add(binding);
+			org.emftext.language.java.members.AdditionalField result = org.emftext.language.java.members.MembersFactory.eINSTANCE.createAdditionalField();
+			nameToAddField.put(varName, result);
+			return result;
+		}
+	}
+	
+	private static String convertToParameterName(IVariableBinding binding) {
+		return convertToMethodName(binding.getDeclaringMethod()) + "::" + binding.getName() + "::" + binding.getVariableId();
+	}
+	
+	static org.emftext.language.java.variables.LocalVariable getLocalVariable(String context, IVariableBinding binding) {
+		String varName = context + "::" + binding.getName() + "::" + binding.getVariableId();
+		if (nameToLocVar.containsKey(varName)) {
+			return nameToLocVar.get(varName);
+		} else {
+			variableBindings.add(binding);
+			org.emftext.language.java.variables.LocalVariable result = org.emftext.language.java.variables.VariablesFactory.eINSTANCE.createLocalVariable();
+			nameToLocVar.put(varName, result);
+			return result;
+		}
+	}
+	
+	static org.emftext.language.java.variables.AdditionalLocalVariable getAdditionalLocalVariable(String context, IVariableBinding binding) {
+		String varName = context + "::" + binding.getName() + "::" + binding.getVariableId();
+		if (nameToAddLocVar.containsKey(varName)) {
+			return nameToAddLocVar.get(varName);
+		} else {
+			variableBindings.add(binding);
+			org.emftext.language.java.variables.AdditionalLocalVariable result = org.emftext.language.java.variables.VariablesFactory.eINSTANCE.createAdditionalLocalVariable();
+			nameToAddLocVar.put(varName, result);
+			return result;
+		}
+	}
+	
+	static org.emftext.language.java.parameters.OrdinaryParameter getOrdinaryParameter(IVariableBinding binding) {
+		String paramName = convertToParameterName(binding);
+		if (nameToOrdParam.containsKey(paramName)) {
+			return nameToOrdParam.get(paramName);
+		} else {
+			variableBindings.add(binding);
+			org.emftext.language.java.parameters.OrdinaryParameter result = org.emftext.language.java.parameters.ParametersFactory.eINSTANCE.createOrdinaryParameter();
+			nameToOrdParam.put(paramName, result);
+			return result;
+		}
+	}
+	
+	static org.emftext.language.java.parameters.VariableLengthParameter getVariableLengthParameter(IVariableBinding binding) {
+		String paramName = convertToParameterName(binding);
+		if (nameToVarLenParam.containsKey(paramName)) {
+			return nameToVarLenParam.get(paramName);
+		} else {
+			variableBindings.add(binding);
+			org.emftext.language.java.parameters.VariableLengthParameter result = org.emftext.language.java.parameters.ParametersFactory.eINSTANCE.createVariableLengthParameter();
+			nameToVarLenParam.put(paramName, result);
+			return result;
+		}
+	}
+	
+	static org.emftext.language.java.parameters.CatchParameter getCatchParameter(IVariableBinding binding) {
+		String paramName = convertToParameterName(binding);
+		if (nameToCatchParam.containsKey(paramName)) {
+			return nameToCatchParam.get(paramName);
+		} else {
+			variableBindings.add(binding);
+			org.emftext.language.java.parameters.CatchParameter result = org.emftext.language.java.parameters.ParametersFactory.eINSTANCE.createCatchParameter();
+			nameToCatchParam.put(paramName, result);
 			return result;
 		}
 	}
