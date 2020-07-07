@@ -13,9 +13,9 @@
 
 package jamopp.parser.jdt;
 
+import java.util.HashSet;
 import java.util.List;
 
-import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.AssertStatement;
 import org.eclipse.jdt.core.dom.Block;
@@ -49,6 +49,8 @@ import org.eclipse.jdt.core.dom.WhileStatement;
 import org.eclipse.jdt.core.dom.YieldStatement;
 
 class StatementConverterUtility {
+	private static HashSet<org.emftext.language.java.statements.JumpLabel> currentJumpLabels = new HashSet<>();
+	
 	@SuppressWarnings("unchecked")
 	static org.emftext.language.java.statements.Block convertToBlock(Block block) {
 		org.emftext.language.java.statements.Block result = org.emftext.language.java.statements.StatementsFactory.eINSTANCE.createBlock();
@@ -74,9 +76,8 @@ class StatementConverterUtility {
 			BreakStatement breakSt = (BreakStatement) statement;
 			org.emftext.language.java.statements.Break result = org.emftext.language.java.statements.StatementsFactory.eINSTANCE.createBreak();
 			if (breakSt.getLabel() != null) {
-				org.emftext.language.java.statements.JumpLabel proxyTarget = org.emftext.language.java.statements.StatementsFactory.eINSTANCE.createJumpLabel();
-				((InternalEObject) proxyTarget).eSetProxyURI(null);
-				BaseConverterUtility.convertToSimpleNameOnlyAndSet(breakSt.getLabel(), proxyTarget);
+				org.emftext.language.java.statements.JumpLabel proxyTarget = currentJumpLabels.stream()
+					.filter(label -> label.getName().equals(breakSt.getLabel().getIdentifier())).findFirst().get();
 				result.setTarget(proxyTarget);
 			}
 			LayoutInformationConverter.convertToMinimalLayoutInformation(result, breakSt);
@@ -85,9 +86,8 @@ class StatementConverterUtility {
 			ContinueStatement conSt = (ContinueStatement) statement;
 			org.emftext.language.java.statements.Continue result = org.emftext.language.java.statements.StatementsFactory.eINSTANCE.createContinue();
 			if (conSt.getLabel() != null) {
-				org.emftext.language.java.statements.JumpLabel proxyTarget = org.emftext.language.java.statements.StatementsFactory.eINSTANCE.createJumpLabel();
-				((InternalEObject) proxyTarget).eSetProxyURI(null);
-				BaseConverterUtility.convertToSimpleNameOnlyAndSet(conSt.getLabel(), proxyTarget);
+				org.emftext.language.java.statements.JumpLabel proxyTarget = currentJumpLabels.stream()
+					.filter(label -> label.getName().equals(conSt.getLabel().getIdentifier())).findFirst().get();
 				result.setTarget(proxyTarget);
 			}
 			LayoutInformationConverter.convertToMinimalLayoutInformation(result, conSt);
@@ -155,7 +155,9 @@ class StatementConverterUtility {
 			LabeledStatement labelSt = (LabeledStatement) statement;
 			org.emftext.language.java.statements.JumpLabel result = org.emftext.language.java.statements.StatementsFactory.eINSTANCE.createJumpLabel();
 			BaseConverterUtility.convertToSimpleNameOnlyAndSet(labelSt.getLabel(), result);
+			currentJumpLabels.add(result);
 			result.setStatement(convertToStatement(labelSt.getBody()));
+			currentJumpLabels.remove(result);
 			LayoutInformationConverter.convertToMinimalLayoutInformation(result, labelSt);
 			return result;
 		} else if (statement.getNodeType() == ASTNode.RETURN_STATEMENT) {
