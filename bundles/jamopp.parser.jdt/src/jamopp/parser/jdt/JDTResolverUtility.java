@@ -34,6 +34,8 @@ public class JDTResolverUtility {
 	private static HashSet<ITypeBinding> typeBindings = new HashSet<>();
 	private static HashSet<IMethodBinding> methodBindings = new HashSet<>();
 	private static HashSet<IVariableBinding> variableBindings = new HashSet<>();
+	private static int uid = 0;
+	private static HashMap<IVariableBinding, Integer> varBindToUid = new HashMap<>();
 	
 	static void setResourceSet(ResourceSet set) {
 		resourceSet = set;
@@ -243,8 +245,19 @@ public class JDTResolverUtility {
 		return convertToMethodName(binding.getDeclaringMethod()) + "::" + binding.getName() + "::" + binding.getVariableId();
 	}
 	
-	static org.emftext.language.java.variables.LocalVariable getLocalVariable(String context, IVariableBinding binding) {
-		String varName = context + "::" + binding.getName() + "::" + binding.getVariableId();
+	private static String convertToLocalVariableName(IVariableBinding binding) {
+		String prefix = "";
+		if (binding.getDeclaringMethod() != null) {
+			prefix = convertToMethodName(binding.getDeclaringMethod());
+		} else {
+			prefix = uid + "";
+			varBindToUid.put(binding, uid);
+		}
+		return prefix + "::" + binding.getName() + "::" + binding.getVariableId();
+	}
+	
+	static org.emftext.language.java.variables.LocalVariable getLocalVariable(IVariableBinding binding) {
+		String varName = convertToLocalVariableName(binding);
 		if (nameToLocVar.containsKey(varName)) {
 			return nameToLocVar.get(varName);
 		} else {
@@ -255,8 +268,8 @@ public class JDTResolverUtility {
 		}
 	}
 	
-	static org.emftext.language.java.variables.AdditionalLocalVariable getAdditionalLocalVariable(String context, IVariableBinding binding) {
-		String varName = context + "::" + binding.getName() + "::" + binding.getVariableId();
+	static org.emftext.language.java.variables.AdditionalLocalVariable getAdditionalLocalVariable(IVariableBinding binding) {
+		String varName = convertToLocalVariableName(binding);
 		if (nameToAddLocVar.containsKey(varName)) {
 			return nameToAddLocVar.get(varName);
 		} else {
@@ -301,6 +314,10 @@ public class JDTResolverUtility {
 			nameToCatchParam.put(paramName, result);
 			return result;
 		}
+	}
+	
+	static void prepareNextUid() {
+		uid++;
 	}
 	
 	static void completeResolution() {

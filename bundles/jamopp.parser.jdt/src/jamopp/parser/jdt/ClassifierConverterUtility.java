@@ -110,6 +110,7 @@ class ClassifierConverterUtility {
 	
 	@SuppressWarnings("unchecked")
 	private static org.emftext.language.java.statements.Block convertToBlock(Initializer init) {
+		JDTResolverUtility.prepareNextUid();
 		org.emftext.language.java.statements.Block result = StatementConverterUtility.convertToBlock(init.getBody());
 		init.modifiers().forEach(obj -> result.getModifiers().add(AnnotationInstanceOrModifierConverterUtility
 			.convertToModifier((Modifier) obj)));
@@ -118,13 +119,13 @@ class ClassifierConverterUtility {
 	
 	@SuppressWarnings("unchecked")
 	private static org.emftext.language.java.members.Field convertToField(FieldDeclaration fieldDecl) {
-		org.emftext.language.java.members.Field result = org.emftext.language.java.members.MembersFactory.eINSTANCE.createField();
+		VariableDeclarationFragment firstFragment = (VariableDeclarationFragment) fieldDecl.fragments().get(0);
+		org.emftext.language.java.members.Field result = JDTResolverUtility.getField(firstFragment.resolveBinding());
+		BaseConverterUtility.convertToSimpleNameOnlyAndSet(firstFragment.getName(), result);
 		fieldDecl.modifiers().forEach(obj -> result.getAnnotationsAndModifiers().add(AnnotationInstanceOrModifierConverterUtility
 			.converToModifierOrAnnotationInstance((IExtendedModifier) obj)));
 		result.setTypeReference(BaseConverterUtility.convertToTypeReference(fieldDecl.getType()));
 		BaseConverterUtility.convertToArrayDimensionsAndSet(fieldDecl.getType(), result);
-		VariableDeclarationFragment firstFragment = (VariableDeclarationFragment) fieldDecl.fragments().get(0);
-		BaseConverterUtility.convertToSimpleNameOnlyAndSet(firstFragment.getName(), result);
 		firstFragment.extraDimensions().forEach(obj -> BaseConverterUtility.convertToArrayDimensionAfterAndSet((Dimension) obj, result));
 		if (firstFragment.getInitializer() != null) {
 			result.setInitialValue(ExpressionConverterUtility.convertToExpression(firstFragment.getInitializer()));
@@ -138,7 +139,7 @@ class ClassifierConverterUtility {
 	
 	@SuppressWarnings("unchecked")
 	private static org.emftext.language.java.members.AdditionalField convertToAdditionalField(VariableDeclarationFragment frag) {
-		org.emftext.language.java.members.AdditionalField result = org.emftext.language.java.members.MembersFactory.eINSTANCE.createAdditionalField();
+		org.emftext.language.java.members.AdditionalField result = JDTResolverUtility.getAdditionalField(frag.resolveBinding());
 		BaseConverterUtility.convertToSimpleNameOnlyAndSet(frag.getName(), result);
 		frag.extraDimensions().forEach(obj -> BaseConverterUtility.convertToArrayDimensionAfterAndSet((Dimension) obj, result));
 		if (frag.getInitializer() != null) {
@@ -248,7 +249,7 @@ class ClassifierConverterUtility {
 	
 	@SuppressWarnings("unchecked")
 	private static org.emftext.language.java.members.EnumConstant convertToEnumConstant(EnumConstantDeclaration enDecl) {
-		org.emftext.language.java.members.EnumConstant result = org.emftext.language.java.members.MembersFactory.eINSTANCE.createEnumConstant();
+		org.emftext.language.java.members.EnumConstant result = JDTResolverUtility.getEnumConstant(enDecl.resolveVariable());
 		enDecl.modifiers().forEach(obj -> result.getAnnotations().add(AnnotationInstanceOrModifierConverterUtility
 			.convertToAnnotationInstance((Annotation) obj)));
 		BaseConverterUtility.convertToSimpleNameOnlyAndSet(enDecl.getName(), result);
@@ -291,7 +292,7 @@ class ClassifierConverterUtility {
 	@SuppressWarnings("unchecked")
 	private static org.emftext.language.java.parameters.Parameter convertToParameter(SingleVariableDeclaration decl) {
 		if (decl.isVarargs()) {
-			org.emftext.language.java.parameters.VariableLengthParameter result = org.emftext.language.java.parameters.ParametersFactory.eINSTANCE.createVariableLengthParameter();
+			org.emftext.language.java.parameters.VariableLengthParameter result = JDTResolverUtility.getVariableLengthParameter(decl.resolveBinding());
 			decl.modifiers().forEach(obj -> result.getAnnotationsAndModifiers().add(AnnotationInstanceOrModifierConverterUtility
 				.converToModifierOrAnnotationInstance((IExtendedModifier) obj)));
 			result.setTypeReference(BaseConverterUtility.convertToTypeReference(decl.getType()));
@@ -309,7 +310,7 @@ class ClassifierConverterUtility {
 	
 	@SuppressWarnings("unchecked")
 	static org.emftext.language.java.parameters.OrdinaryParameter convertToOrdinaryParameter(SingleVariableDeclaration decl) {
-		org.emftext.language.java.parameters.OrdinaryParameter result = org.emftext.language.java.parameters.ParametersFactory.eINSTANCE.createOrdinaryParameter();
+		org.emftext.language.java.parameters.OrdinaryParameter result = JDTResolverUtility.getOrdinaryParameter(decl.resolveBinding());
 		decl.modifiers().forEach(obj -> result.getAnnotationsAndModifiers().add(AnnotationInstanceOrModifierConverterUtility
 			.converToModifierOrAnnotationInstance((IExtendedModifier) obj)));
 		result.setTypeReference(BaseConverterUtility.convertToTypeReference(decl.getType()));

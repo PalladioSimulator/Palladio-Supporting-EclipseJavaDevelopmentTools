@@ -205,12 +205,12 @@ class StatementConverterUtility {
 		} else if (statement.getNodeType() == ASTNode.VARIABLE_DECLARATION_STATEMENT) {
 			VariableDeclarationStatement varSt = (VariableDeclarationStatement) statement;
 			org.emftext.language.java.statements.LocalVariableStatement result = org.emftext.language.java.statements.StatementsFactory.eINSTANCE.createLocalVariableStatement();
-			org.emftext.language.java.variables.LocalVariable locVar = org.emftext.language.java.variables.VariablesFactory.eINSTANCE.createLocalVariable();
+			VariableDeclarationFragment frag = (VariableDeclarationFragment) varSt.fragments().get(0);
+			org.emftext.language.java.variables.LocalVariable locVar = JDTResolverUtility.getLocalVariable(frag.resolveBinding());
+			BaseConverterUtility.convertToSimpleNameOnlyAndSet(frag.getName(), locVar);
 			varSt.modifiers().forEach(obj -> locVar.getAnnotationsAndModifiers().add(AnnotationInstanceOrModifierConverterUtility
 				.converToModifierOrAnnotationInstance((IExtendedModifier) obj)));
 			locVar.setTypeReference(BaseConverterUtility.convertToTypeReference(varSt.getType()));
-			VariableDeclarationFragment frag = (VariableDeclarationFragment) varSt.fragments().get(0);
-			BaseConverterUtility.convertToSimpleNameOnlyAndSet(frag.getName(), locVar);
 			frag.extraDimensions().forEach(obj -> BaseConverterUtility.convertToArrayDimensionAfterAndSet((Dimension) obj, locVar));
 			if (frag.getInitializer() != null) {
 				locVar.setInitialValue(ExpressionConverterUtility.convertToExpression(frag.getInitializer()));
@@ -295,7 +295,7 @@ class StatementConverterUtility {
 	@SuppressWarnings("unchecked")
 	private static org.emftext.language.java.statements.CatchBlock convertToCatchBlock(CatchClause block) {
 		org.emftext.language.java.statements.CatchBlock result = org.emftext.language.java.statements.StatementsFactory.eINSTANCE.createCatchBlock();
-		org.emftext.language.java.parameters.CatchParameter param = org.emftext.language.java.parameters.ParametersFactory.eINSTANCE.createCatchParameter();
+		org.emftext.language.java.parameters.CatchParameter param = JDTResolverUtility.getCatchParameter(block.getException().resolveBinding());
 		SingleVariableDeclaration decl = block.getException();
 		decl.modifiers().forEach(obj -> param.getAnnotationsAndModifiers().add(AnnotationInstanceOrModifierConverterUtility
 			.converToModifierOrAnnotationInstance((IExtendedModifier) obj)));
@@ -317,7 +317,7 @@ class StatementConverterUtility {
 	
 	@SuppressWarnings("unchecked")
 	private static org.emftext.language.java.variables.AdditionalLocalVariable convertToAdditionalLocalVariable(VariableDeclarationFragment frag) {
-		org.emftext.language.java.variables.AdditionalLocalVariable result = org.emftext.language.java.variables.VariablesFactory.eINSTANCE.createAdditionalLocalVariable();
+		org.emftext.language.java.variables.AdditionalLocalVariable result = JDTResolverUtility.getAdditionalLocalVariable(frag.resolveBinding());
 		BaseConverterUtility.convertToSimpleNameOnlyAndSet(frag.getName(), result);
 		frag.extraDimensions().forEach(obj -> BaseConverterUtility.convertToArrayDimensionAfterAndSet((Dimension) obj, result));
 		if (frag.getInitializer() != null) {
@@ -329,12 +329,12 @@ class StatementConverterUtility {
 	
 	@SuppressWarnings("unchecked")
 	private static org.emftext.language.java.variables.LocalVariable convertToLocalVariable(VariableDeclarationExpression expr) {
-		org.emftext.language.java.variables.LocalVariable loc = org.emftext.language.java.variables.VariablesFactory.eINSTANCE.createLocalVariable();
+		VariableDeclarationFragment frag = (VariableDeclarationFragment) expr.fragments().get(0);
+		org.emftext.language.java.variables.LocalVariable loc = JDTResolverUtility.getLocalVariable(frag.resolveBinding());
+		BaseConverterUtility.convertToSimpleNameOnlyAndSet(frag.getName(), loc);
 		expr.modifiers().forEach(obj -> loc.getAnnotationsAndModifiers().add(AnnotationInstanceOrModifierConverterUtility
 			.converToModifierOrAnnotationInstance((IExtendedModifier) obj)));
 		loc.setTypeReference(BaseConverterUtility.convertToTypeReference(expr.getType()));
-		VariableDeclarationFragment frag = (VariableDeclarationFragment) expr.fragments().get(0);
-		BaseConverterUtility.convertToSimpleNameOnlyAndSet(frag.getName(), loc);
 		frag.extraDimensions().forEach(obj -> BaseConverterUtility.convertToArrayDimensionAfterAndSet((Dimension) obj, loc));
 		if (frag.getInitializer() != null) {
 			loc.setInitialValue(ExpressionConverterUtility.convertToExpression(frag.getInitializer()));
