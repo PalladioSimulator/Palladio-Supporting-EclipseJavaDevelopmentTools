@@ -372,21 +372,108 @@ public class JDTResolverUtility {
 	}
 	
 	static void completeResolution() {
-		// CompilationUnits
-//		Resource newResource = resourceSet.createResource(URI.createHierarchicalURI("empty", "JaMoPP-CompilationUnit", null, new String[] {binding.getQualifiedName() + ".java"}, null, null));
-//		newResource.getContents().add(result);
+		modBindToMod.forEach((modName, module) -> {
+			if (module.eResource() == null) {
+				Resource newResource = resourceSet.createResource(URI.createHierarchicalURI("empty", "JaMoPP-Module", null,
+					new String[] {modName, "module-info.java"}, null, null));
+				newResource.getContents().add(module);
+			}
+		});
 		
-		// Annotations
-//		if (binding.isNested()) {
-//			org.emftext.language.java.classifiers.ConcreteClassifier classifier = getConcreteClassifier(binding.getDeclaringClass());
-//			classifier.getMembers().add(result);
-//		} else {
-//			org.emftext.language.java.containers.CompilationUnit cu = getCompilationUnit(binding);
-//			cu.getClassifiers().add(result);
-//		}
+		nameToEnumConst.forEach((constName, enConst) -> {
+			if (enConst.eResource() == null) {
+				IVariableBinding varBind = variableBindings.stream().filter(var -> constName.equals(convertToFieldName(var)))
+					.findFirst().get();
+				org.emftext.language.java.classifiers.Enumeration enume = getEnumeration(varBind.getDeclaringClass());
+				if (!enume.getConstants().contains(enConst)) {
+					enume.getConstants().add(enConst);
+				}
+			}
+		});
 		
-		// Modules
-//		Resource newResource = resourceSet.createResource(URI.createHierarchicalURI("empty", "JaMoPP-Module", null, new String[] {binding.getName(), "module-info.java"}, null, null));
-//		newResource.getContents().add(result);
+		nameToField.forEach((fieldName, field) -> {
+			if (field.eResource() == null) {
+				IVariableBinding varBind = variableBindings.stream().filter(var -> fieldName.equals(convertToFieldName(var)))
+					.findFirst().get();
+				org.emftext.language.java.classifiers.ConcreteClassifier classifier = (org.emftext.language.java.classifiers.ConcreteClassifier)
+					getClassifier(varBind.getDeclaringClass());
+				if (!classifier.getMembers().contains(field)) {
+					classifier.getMembers().add(field);
+				}
+			}
+		});
+		
+		methBindToConstr.forEach(JDTResolverUtility::completeMethod);
+		
+		methBindToInter.forEach(JDTResolverUtility::completeMethod);
+		
+		methBindToCM.forEach(JDTResolverUtility::completeMethod);
+		
+		typeBindToClass.forEach(JDTResolverUtility::completeType);
+		
+		typeBindToInterface.forEach(JDTResolverUtility::completeType);
+		
+		typeBindToAnnot.forEach(JDTResolverUtility::completeType);
+		
+		typeBindToEnum.forEach(JDTResolverUtility::completeType);
+		
+		modBindToMod.clear();
+		typeBindToAnnot.clear();
+		typeBindToEnum.clear();
+		typeBindToInterface.clear();
+		typeBindToClass.clear();
+		typeBindToTP.clear();
+		methBindToInter.clear();
+		methBindToCM.clear();
+		methBindToConstr.clear();
+		nameToField.clear();
+		nameToAddField.clear();
+		nameToLocVar.clear();
+		nameToAddLocVar.clear();
+		nameToEnumConst.clear();
+		nameToVarLenParam.clear();
+		nameToOrdParam.clear();
+		nameToCatchParam.clear();
+		moduleBindings.clear();
+		typeBindings.clear();
+		methodBindings.clear();
+		variableBindings.clear();
+		uid = 0;
+		varBindToUid.clear();
+	}
+	
+	private static void completeMethod(String methodName, org.emftext.language.java.members.Member method) {
+		if (method.eResource() == null) {
+			IMethodBinding methBind = methodBindings.stream().filter(meth -> methodName.equals(convertToMethodName(meth)))
+				.findFirst().get();
+			org.emftext.language.java.classifiers.ConcreteClassifier classifier = (org.emftext.language.java.classifiers.ConcreteClassifier)
+				getClassifier(methBind.getDeclaringClass());
+			if (!classifier.getMembers().contains(method)) {
+				classifier.getMembers().add(method);
+			}
+		}
+	}
+	
+	private static void completeType(String typeName, org.emftext.language.java.classifiers.ConcreteClassifier classifier) {
+		if (classifier.eResource() == null) {
+			ITypeBinding typeBind = typeBindings.stream().filter(type -> typeName.equals(type.getQualifiedName()))
+				.findFirst().orElse(null);
+			if (typeBind == null || typeBind.isTopLevel()) {
+				org.emftext.language.java.containers.CompilationUnit cu = org.emftext.language.java.containers.ContainersFactory.eINSTANCE.createCompilationUnit();
+				cu.getClassifiers().add(classifier);
+				String[] namespaces = typeName.substring(0, typeName.length() -
+					(typeBind == null ? typeName.length() - 1 : typeBind.getName().length()) - 1).split(".");
+				for (int index = 0; index < namespaces.length; index++) {
+					cu.getNamespaces().add(namespaces[index]);
+				}
+				Resource newResource = resourceSet.createResource(URI.createHierarchicalURI("empty",
+					"JaMoPP-CompilationUnit", null, new String[] {typeName + ".java"}, null, null));
+				newResource.getContents().add(cu);
+			} else if (typeBind.isNested()) {
+				org.emftext.language.java.classifiers.ConcreteClassifier parentClassifier = (org.emftext.language.java.classifiers.ConcreteClassifier)
+					getClassifier(typeBind.getDeclaringClass());
+				completeType(typeBind.getDeclaringClass().getQualifiedName(), parentClassifier);
+			}
+		}
 	}
 }
