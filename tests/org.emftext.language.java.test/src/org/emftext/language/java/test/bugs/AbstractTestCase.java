@@ -23,14 +23,15 @@ import junit.framework.TestCase;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
-import org.emftext.language.java.resource.java.mopp.JavaResourceFactory;
+
+import jamopp.resource.JavaResource2Factory;
 
 public abstract class AbstractTestCase extends TestCase {
 
 	public AbstractTestCase() {
 		super();
 		Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap().put(
-				"java", new JavaResourceFactory());
+				"java", new JavaResource2Factory());
 	}
 	
 	protected Map<?, ?> getLoadOptions() {

@@ -22,8 +22,9 @@ import java.io.File;
 import java.util.Collections;
 import java.util.Map;
 
+import jamopp.resource.JavaResource2;
+
 import org.eclipse.emf.common.util.URI;
-import org.emftext.language.java.resource.java.mopp.JavaResource;
 import org.junit.Test;
 
 /**
@@ -61,7 +62,7 @@ public class UnicodeTest extends AbstractJavaParserTestCase {
 		File file = new File(inputFolder, filename);
 		assertTrue("File " + file + " should exist.", file.exists());
 		URI fileURI = URI.createFileURI(file.getAbsolutePath());
-		JavaResource resource = (JavaResource) getResourceSet().createResource(fileURI);
+		JavaResource2 resource = (JavaResource2) getResourceSet().createResource(fileURI);
 		resource.load(loadOptions);
 		
 		assertTrue(!resource.getErrors().isEmpty());
