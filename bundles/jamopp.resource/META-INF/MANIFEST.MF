@@ -7,3 +7,9 @@ Bundle-Vendor: Martin Armbruster
 Automatic-Module-Name: jamopp.resource
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-ActivationPolicy: lazy
+Require-Bundle: org.eclipse.emf.ecore;bundle-version="2.22.0",
+ jamopp.parser;bundle-version="4.3.0",
+ jamopp.parser.jdt;bundle-version="4.3.0",
+ jamopp.printer;bundle-version="4.3.0",
+ org.emftext.language.java;bundle-version="4.3.0"
+Export-Package: jamopp.resource
