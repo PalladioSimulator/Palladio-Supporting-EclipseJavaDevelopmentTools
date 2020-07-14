@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: JaMoPP new Resource support
+Bundle-SymbolicName: jamopp.resource
+Bundle-Version: 4.3.0.qualifier
+Bundle-Vendor: Martin Armbruster
+Automatic-Module-Name: jamopp.resource
+Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-ActivationPolicy: lazy
