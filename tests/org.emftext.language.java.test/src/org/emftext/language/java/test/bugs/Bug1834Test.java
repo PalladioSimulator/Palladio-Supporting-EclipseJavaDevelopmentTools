@@ -15,23 +15,25 @@
  ******************************************************************************/
 package org.emftext.language.java.test.bugs;
 
+import static org.junit.Assert.assertTrue;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.junit.Ignore;
+import org.junit.Test;
 
-public class Bug1834Test extends AbstractTestCase {
+public class Bug1834Test extends AbstractBugTestCase {
 
 	private static final String NL = System.getProperty("line.separator");
 
 	@Ignore("This test is deactivated because the respective feature is not implemented yet")
+	@Test
 	public void testDefaultMethodPrinting() throws IOException {
 		
 		ResourceSet rs = createResourceSet();
@@ -51,11 +53,5 @@ public class Bug1834Test extends AbstractTestCase {
 			"\t}" + NL + 
 			"}";
 		assertTrue("Print result must contain expected code.", printResult.contains(expected));
-	}
-	
-	@Override
-	protected Map<?, ?> getLoadOptions() {
-		Map<Object, Object> loadOptions = new LinkedHashMap<Object, Object>();
-		return loadOptions;
 	}
 }

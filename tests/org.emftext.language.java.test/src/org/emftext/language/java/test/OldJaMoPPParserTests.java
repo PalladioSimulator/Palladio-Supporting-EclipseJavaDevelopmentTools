@@ -13,6 +13,7 @@
  *   DevBoost GmbH - Berlin, Germany
  *      - initial API and implementation
  ******************************************************************************/
+
 package org.emftext.language.java.test;
 
 import static org.junit.Assert.assertEquals;
@@ -93,7 +94,7 @@ import pkg.NumberLiterals;
  * 
  * @author Christian Wende
  */
-public class JavaLanguageFeatureTest extends AbstractJaMoPPTests {
+public class OldJaMoPPParserTests extends AbstractJaMoPPTests {
 
 	private static final String JAVA_FILE_EXTENSION = ".java";
 
@@ -286,8 +287,7 @@ public class JavaLanguageFeatureTest extends AbstractJaMoPPTests {
 		assertEquals("Field " + name, expectedValue, initValue);
 	}
 
-	private void assertIsStringField(List<Member> members, String name,
-			String expectedValue) {
+	private void assertIsStringField(List<Member> members, String name, String expectedValue) {
 		
 		NamedElement field = findElementByName(members, name);
 		assertNotNull(field);
@@ -315,8 +315,7 @@ public class JavaLanguageFeatureTest extends AbstractJaMoPPTests {
 		assertEquals(expectedInitValue, initLiteral.getValue());
 	}
 
-	private <T extends NamedElement> T findElementByName(
-			List<T> elements, String name) {
+	private <T extends NamedElement> T findElementByName(List<T> elements, String name) {
 		for (T next : elements) {
 			if (name.equals(next.getName())) {
 				return next;
@@ -332,10 +331,6 @@ public class JavaLanguageFeatureTest extends AbstractJaMoPPTests {
 
 	@Override
 	protected String getTestInputFolder() {
-		return getTestInputFolderStatic();
-	}
-
-	protected static String getTestInputFolderStatic() {
 		return TEST_INPUT_FOLDER;
 	}
 
@@ -641,39 +636,6 @@ public class JavaLanguageFeatureTest extends AbstractJaMoPPTests {
 		String filename = typename + JAVA_FILE_EXTENSION;
 		org.emftext.language.java.classifiers.Class clazz = assertParsesToClass(typename);
 		assertMemberCount(clazz, 3);
-		
-		assertEquals("/*******************************************************************************"
-				+ "\r\n * Copyright (c) 2006-2012"
-				+ "\r\n * Software Technology Group, Dresden University of Technology"
-				+ "\r\n * DevBoost GmbH, Berlin, Amtsgericht Charlottenburg, HRB 140026"
-				+ "\r\n * "
-				+ "\r\n * All rights reserved. This program and the accompanying materials"
-				+ "\r\n * are made available under the terms of the Eclipse Public License v1.0"
-				+ "\r\n * which accompanies this distribution, and is available at"
-				+ "\r\n * http://www.eclipse.org/legal/epl-v10.html"
-				+ "\r\n * " 
-				+ "\r\n * Contributors:"
-				+ "\r\n *   Software Technology Group - TU Dresden, Germany;"
-				+ "\r\n *   DevBoost GmbH - Berlin, Germany"
-				+ "\r\n *      - initial API and implementation"
-				+ "\r\n ******************************************************************************/"
-				+ "\r\n/**"
-				+ "\r\n * A multi-line javadoc comment."
-				+ "\r\n */"
-				+ "\r\n/*"
-				+ "\r\n * A multi-line class comment."
-				+ "\r\n */",
-				clazz.getComments().get(0));
-		
-		assertEquals("/** A single-line javadoc comment. */"
-				+ "\r\n\t/* A single-line method comment. */"
-				+ "\r\n\t// A real single line comment.",
-				clazz.getMembers().get(0).getComments().get(0));
-		
-		assertEquals("// another comment inside a method", 
-				clazz.getMembers().get(0).getComments().get(1));
-		
-		System.out.println(clazz.getComments());
 		
 		parseAndReprint(filename);
 	}

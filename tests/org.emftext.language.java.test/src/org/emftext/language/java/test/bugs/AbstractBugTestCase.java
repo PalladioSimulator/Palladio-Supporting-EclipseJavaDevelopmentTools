@@ -13,32 +13,24 @@
  *   DevBoost GmbH - Berlin, Germany
  *      - initial API and implementation
  ******************************************************************************/
+
 package org.emftext.language.java.test.bugs;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import junit.framework.TestCase;
-
-import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
+import org.emftext.language.java.test.AbstractJaMoPPTests;
 
-import jamopp.resource.JavaResource2Factory;
-
-public abstract class AbstractTestCase extends TestCase {
-
-	public AbstractTestCase() {
-		super();
-		Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap().put(
-				"java", new JavaResource2Factory());
+public abstract class AbstractBugTestCase extends AbstractJaMoPPTests {
+	@Override
+	protected boolean isExcludedFromReprintTest(String fileName) {
+		return true;
 	}
 	
-	protected Map<?, ?> getLoadOptions() {
-		Map<String, Object> map = new HashMap<String, Object>();
-		return map;
+	@Override
+	protected String getTestInputFolder() {
+		return "src-input";
 	}
-
+	
 	protected ResourceSet createResourceSet() {
 		ResourceSet rs = new ResourceSetImpl();
 		rs.getLoadOptions().putAll(getLoadOptions());

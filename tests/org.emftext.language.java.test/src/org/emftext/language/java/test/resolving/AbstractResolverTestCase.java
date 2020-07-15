@@ -42,10 +42,6 @@ public abstract class AbstractResolverTestCase extends AbstractJaMoPPTests {
 
 	protected static final String TEST_INPUT_FOLDER_RESOLVING = "src-input" + File.separator + "resolving" + File.separator;
 
-	protected org.emftext.language.java.classifiers.Class assertParsesToClass(String typename) throws Exception {
-		return assertParsesToType(typename, org.emftext.language.java.classifiers.Class.class);
-	}
-
 	protected Field assertIsField(Member member, String expectedName) {
 		assertType(member, Field.class);
 		Field field = (Field) member;

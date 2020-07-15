@@ -15,6 +15,10 @@
  ******************************************************************************/
 package org.emftext.language.java.test.bugs;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -33,15 +37,14 @@ import org.emftext.language.java.containers.CompilationUnit;
 import org.emftext.language.java.containers.ContainersFactory;
 import org.emftext.language.java.types.ClassifierReference;
 import org.emftext.language.java.types.TypesFactory;
+import org.junit.Before;
 import org.junit.Test;
 
-public class Bug1415Test extends AbstractTestCase {
-
-	private static String OUT_FOLDER = "output";
+public class Bug1415Test extends AbstractBugTestCase {
 	
-	public Bug1415Test() {
-		super();
-		emptyFolder(new File(OUT_FOLDER), false);
+	@Before
+	public void setUp() {
+		emptyFolder(new File(TEST_OUTPUT_FOLDER), false);
 	}
 	
 	@Test
@@ -53,13 +56,13 @@ public class Bug1415Test extends AbstractTestCase {
 		
 		Factory f = (Factory) Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap().get("java");
 		
-		Resource r = f.createResource(URI.createFileURI(OUT_FOLDER + "/test1415-1.java"));
+		Resource r = f.createResource(URI.createFileURI(TEST_OUTPUT_FOLDER + "/test1415-1.java"));
 		
 		r.getContents().add(reference);
 		
 		r.save(null);
 		
-		BufferedReader in = new BufferedReader(new FileReader(OUT_FOLDER + "/test1415-1.java"));
+		BufferedReader in = new BufferedReader(new FileReader(TEST_OUTPUT_FOLDER + "/test1415-1.java"));
 		String str = in.readLine();
 		
 		//proxy can not be resolved without RS
@@ -78,13 +81,13 @@ public class Bug1415Test extends AbstractTestCase {
 		reference.setTarget(classifier);
 		
 		ResourceSet rs = createResourceSet();
-		Resource r = rs.createResource(URI.createFileURI(OUT_FOLDER + "/test1415-2.java"));
+		Resource r = rs.createResource(URI.createFileURI(TEST_OUTPUT_FOLDER + "/test1415-2.java"));
 		
 		r.getContents().add(reference);
 		
 		r.save(null);
 
-		BufferedReader in = new BufferedReader(new FileReader(OUT_FOLDER + "/test1415-2.java"));
+		BufferedReader in = new BufferedReader(new FileReader(TEST_OUTPUT_FOLDER + "/test1415-2.java"));
 		String str = in.readLine();
 		
 		assertFalse(reference.getTarget().eIsProxy());
@@ -102,13 +105,13 @@ public class Bug1415Test extends AbstractTestCase {
 		reference.setTarget(classifier);
 		
 		ResourceSet rs = createResourceSet();
-		Resource r = rs.createResource(URI.createFileURI(OUT_FOLDER + "/test1415-3.java"));
+		Resource r = rs.createResource(URI.createFileURI(TEST_OUTPUT_FOLDER + "/test1415-3.java"));
 		rs.getLoadOptions().put(JavaClasspath.OPTION_ALWAYS_USE_FULLY_QUALIFIED_NAMES, true);
 		r.getContents().add(reference);
 		
 		r.save(null);
 
-		BufferedReader in = new BufferedReader(new FileReader(OUT_FOLDER + "/test1415-3.java"));
+		BufferedReader in = new BufferedReader(new FileReader(TEST_OUTPUT_FOLDER + "/test1415-3.java"));
 		String str = in.readLine();
 		
 		assertFalse(reference.getTarget().eIsProxy());
@@ -140,14 +143,14 @@ public class Bug1415Test extends AbstractTestCase {
 		String src_folder_name = "test1415-src-folder-1";
 		
 		ResourceSet rs = createResourceSet();
-		Resource r = rs.createResource(URI.createFileURI(OUT_FOLDER + "/" + src_folder_name + ".java"));
+		Resource r = rs.createResource(URI.createFileURI(TEST_OUTPUT_FOLDER + "/" + src_folder_name + ".java"));
 		r.getContents().add(cu1);
 		r.getContents().add(cu2);
 		
 		r.save(null);
 
-		assertTrue(new File(OUT_FOLDER + "/" + src_folder_name + "/org/my/namespace1/Class1.java").exists());
-		assertTrue(new File(OUT_FOLDER + "/" + src_folder_name + "/org/my/namespace2/Class2.java").exists());
+		assertTrue(new File(TEST_OUTPUT_FOLDER + "/" + src_folder_name + "/org/my/namespace1/Class1.java").exists());
+		assertTrue(new File(TEST_OUTPUT_FOLDER + "/" + src_folder_name + "/org/my/namespace2/Class2.java").exists());
 	}
 	
 	@Test
@@ -172,15 +175,15 @@ public class Bug1415Test extends AbstractTestCase {
 		String src_folder_name = "test1415-src-folder-2";
 		
 		Factory f = (Factory) Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap().get("java");
-		Resource r = f.createResource(URI.createFileURI(OUT_FOLDER + "/" + src_folder_name + ".java"));
+		Resource r = f.createResource(URI.createFileURI(TEST_OUTPUT_FOLDER + "/" + src_folder_name + ".java"));
 		
 		r.getContents().add(cu1);
 		r.getContents().add(cu2);
 		
 		r.save(null);
 
-		assertTrue(new File(OUT_FOLDER + "/" + src_folder_name + "/org/my/namespace1/Class1.java").exists());
-		assertTrue(new File(OUT_FOLDER + "/" + src_folder_name + "/org/my/namespace2/Class2.java").exists());
+		assertTrue(new File(TEST_OUTPUT_FOLDER + "/" + src_folder_name + "/org/my/namespace1/Class1.java").exists());
+		assertTrue(new File(TEST_OUTPUT_FOLDER + "/" + src_folder_name + "/org/my/namespace2/Class2.java").exists());
 	}
 	
 	public void emptyFolder(File path, boolean deleteFolder) {
@@ -196,6 +199,4 @@ public class Bug1415Test extends AbstractTestCase {
 		}
 		if (deleteFolder) path.delete();
 	}
-
-
 }

@@ -13,7 +13,10 @@
  *   DevBoost GmbH - Berlin, Germany
  *      - initial API and implementation
  ******************************************************************************/
+
 package org.emftext.language.java.test.bugs;
+
+import static org.junit.Assert.assertEquals;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -26,13 +29,9 @@ import org.emftext.language.java.containers.CompilationUnit;
 import org.emftext.language.java.containers.ContainersFactory;
 import org.junit.Test;
 
-public class Bug1819Test extends AbstractTestCase {
+public class Bug1819Test extends AbstractBugTestCase {
 	
 	private final static String LINE_BREAK = System.getProperty("line.separator");
-
-	public Bug1819Test() {
-		super();
-	}
 	
 	@Test
 	public void testDefaultPackage() throws IOException {

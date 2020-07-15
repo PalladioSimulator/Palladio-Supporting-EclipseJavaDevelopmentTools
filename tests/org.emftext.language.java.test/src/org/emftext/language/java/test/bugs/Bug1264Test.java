@@ -13,7 +13,11 @@
  *   DevBoost GmbH - Berlin, Germany
  *      - initial API and implementation
  ******************************************************************************/
+
 package org.emftext.language.java.test.bugs;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
@@ -24,11 +28,7 @@ import org.emftext.language.java.commons.Commentable;
 import org.emftext.language.java.containers.ContainersFactory;
 import org.junit.Test;
 
-public class Bug1264Test extends AbstractTestCase {
-
-	public Bug1264Test() {
-		super();
-	}
+public class Bug1264Test extends AbstractBugTestCase {
 	
 	@Test
 	public void testGetConcreteClassifierProxy() {

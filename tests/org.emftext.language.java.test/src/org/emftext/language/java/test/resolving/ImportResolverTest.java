@@ -40,14 +40,14 @@ public class ImportResolverTest extends AbstractResolverTestCase {
      * @throws Exception
      *             Any error during code parsing or resolving.
      */
-    @Ignore
+//    @Ignore
     @Test
     public void testResolveClassifiersOfImport() throws Exception {
         JavaRoot javaRoot = parseResource(BASE_PATH + "JavaUtilEnumerationImport.java");
         EList<Import> imports = javaRoot.getImports();
 
         ConcreteClassifier classifier = imports.get(0).getImportedClassifiers().get(0);
-        EcoreUtil.resolveAll(classifier);
+//        EcoreUtil.resolveAll(classifier);
 
         assertFalse("Failed to resolve classifier (Enum BigDecimalLayoutForm)", classifier.eIsProxy());
 

@@ -22,7 +22,6 @@ public class PrintCommentsInEmptyMethodTest {
 
 	@Test
 	public void testPrinting() {
-//		JaMoPPUtil.initialize();
 		ResourceSet rs = new ResourceSetImpl();
 		Resource resource = rs.createResource(URI.createURI("C1.java"));
 		assertNotNull(resource);

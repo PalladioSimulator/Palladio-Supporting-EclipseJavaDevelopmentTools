@@ -23,12 +23,7 @@ import org.emftext.language.java.statements.Return;
 import org.emftext.language.java.statements.StatementsFactory;
 import org.junit.Test;
 
-public class Bug1818Test extends AbstractTestCase {
-
-	public Bug1818Test() {
-		super();
-	}
-	
+public class Bug1818Test extends AbstractBugTestCase {
 	@Test
 	public void testPrintReturn() {
 	    Return newReturnStatement = StatementsFactory.eINSTANCE.createReturn();
@@ -41,5 +36,4 @@ public class Bug1818Test extends AbstractTestCase {
 //		String text = JavaResourceUtil.getText(newReturnStatement);
 //		assertEquals("return methodCall();", text);
 	}
-
 }

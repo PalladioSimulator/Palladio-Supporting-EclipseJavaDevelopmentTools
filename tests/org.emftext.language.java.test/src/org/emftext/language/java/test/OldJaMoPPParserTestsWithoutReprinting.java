@@ -13,18 +13,14 @@
  *   DevBoost GmbH - Berlin, Germany
  *      - initial API and implementation
  ******************************************************************************/
+
 package org.emftext.language.java.test;
 
 /**
  * A test class that executed all tests from JavaParserTest but
  * does not compare the reprinting results.
  */
-public class JavaLanguageFeatureTestWithoutReprinting extends JavaLanguageFeatureTest {
-
-	public JavaLanguageFeatureTestWithoutReprinting() throws Exception {
-		super();
-	}
-
+public class OldJaMoPPParserTestsWithoutReprinting extends OldJaMoPPParserTests {
 	@Override
 	protected boolean isExcludedFromReprintTest(String filename) {
 		return true;

@@ -13,6 +13,7 @@
  *   DevBoost GmbH - Berlin, Germany
  *      - initial API and implementation
  ******************************************************************************/
+
 package org.emftext.language.java.test;
 
 import static org.junit.Assert.assertTrue;
