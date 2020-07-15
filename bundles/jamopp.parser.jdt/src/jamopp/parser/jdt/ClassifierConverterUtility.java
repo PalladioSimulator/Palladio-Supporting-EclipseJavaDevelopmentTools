@@ -64,7 +64,7 @@ class ClassifierConverterUtility {
 			typeDecl.bodyDeclarations().forEach(obj -> interfaceObj.getMembers().add(convertToInterfaceMember((BodyDeclaration) obj)));
 			result = interfaceObj;
 		} else {
-			org.emftext.language.java.classifiers.Class classObj = org.emftext.language.java.classifiers.ClassifiersFactory.eINSTANCE.createClass();
+			org.emftext.language.java.classifiers.Class classObj = JDTResolverUtility.getClass(typeDecl.resolveBinding());
 			if (typeDecl.getSuperclassType() != null) {
 				classObj.setExtends(BaseConverterUtility.convertToTypeReference(typeDecl.getSuperclassType()));
 			}
