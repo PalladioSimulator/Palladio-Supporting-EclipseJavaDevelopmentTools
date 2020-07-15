@@ -48,13 +48,6 @@ Contributors:
          unpack="false"/>
 
    <plugin
-         id="org.emftext.language.java.resource.java"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.emftext.commons.jdt"
          download-size="0"
          install-size="0"
@@ -97,7 +90,7 @@ Contributors:
          unpack="false"/>
 
    <plugin
-         id="jamopp.resource.resolve"
+         id="jamopp.resource"
          download-size="0"
          install-size="0"
          version="0.0.0"
