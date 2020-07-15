@@ -53,8 +53,16 @@ public class JDTResolverUtility {
 		}
 	}
 	
+	private static String convertToTypeName(ITypeBinding binding) {
+		String qualifiedName = binding.getQualifiedName();
+		if (qualifiedName.contains("<")) {
+			qualifiedName = qualifiedName.substring(0, qualifiedName.indexOf("<"));
+		}
+		return qualifiedName;
+	}
+	
 	static org.emftext.language.java.classifiers.Annotation getAnnotation(ITypeBinding binding) {
-		String annotName = binding.getQualifiedName();
+		String annotName = convertToTypeName(binding);
 		if (typeBindToAnnot.containsKey(annotName)) {
 			return typeBindToAnnot.get(annotName);
 		} else {
@@ -66,7 +74,7 @@ public class JDTResolverUtility {
 	}
 	
 	static org.emftext.language.java.classifiers.Enumeration getEnumeration(ITypeBinding binding) {
-		String enumName = binding.getQualifiedName();
+		String enumName = convertToTypeName(binding);
 		if (typeBindToEnum.containsKey(enumName)) {
 			return typeBindToEnum.get(enumName);
 		} else {
@@ -79,11 +87,11 @@ public class JDTResolverUtility {
 	
 	static org.emftext.language.java.classifiers.Class getClass(ITypeBinding binding) {
 		typeBindings.add(binding);
-		return getClass(binding.getQualifiedName());
+		return getClass(convertToTypeName(binding));
 	}
 	
 	static org.emftext.language.java.classifiers.Interface getInterface(ITypeBinding binding) {
-		String interName = binding.getQualifiedName();
+		String interName = convertToTypeName(binding);
 		if (typeBindToInterface.containsKey(interName)) {
 			return typeBindToInterface.get(interName);
 		} else {
@@ -95,7 +103,7 @@ public class JDTResolverUtility {
 	}
 	
 	static org.emftext.language.java.generics.TypeParameter getTypeParameter(ITypeBinding binding) {
-		String paramName = binding.getQualifiedName();
+		String paramName = convertToTypeName(binding);
 		if (typeBindToTP.containsKey(paramName)) {
 			return typeBindToTP.get(paramName);
 		} else {
@@ -123,7 +131,7 @@ public class JDTResolverUtility {
 	
 	private static String convertToMethodName(IMethodBinding binding) {
 		StringBuilder builder = new StringBuilder();
-		builder.append(binding.getDeclaringClass().getQualifiedName());
+		builder.append(convertToTypeName(binding.getDeclaringClass()));
 		builder.append("::");
 		builder.append(binding.getName());
 		builder.append("(");
@@ -456,7 +464,7 @@ public class JDTResolverUtility {
 	
 	private static void completeType(String typeName, org.emftext.language.java.classifiers.ConcreteClassifier classifier) {
 		if (classifier.eResource() == null) {
-			ITypeBinding typeBind = typeBindings.stream().filter(type -> typeName.equals(type.getQualifiedName()))
+			ITypeBinding typeBind = typeBindings.stream().filter(type -> typeName.equals(convertToTypeName(type)))
 				.findFirst().orElse(null);
 			if (typeBind == null || typeBind.isTopLevel()) {
 				org.emftext.language.java.containers.CompilationUnit cu = org.emftext.language.java.containers.ContainersFactory.eINSTANCE.createCompilationUnit();
