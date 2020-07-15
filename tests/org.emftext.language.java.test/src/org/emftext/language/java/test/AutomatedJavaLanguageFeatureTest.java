@@ -28,7 +28,7 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
  * A test that read all Java files from the input directory and parses and
  * prints them.
  */
-public class AutomatedJavaLanguageFeatureTest extends AbstractJavaParserTestCase {
+public class AutomatedJavaLanguageFeatureTest extends AbstractJaMoPPTests {
 
 	protected static final String TEST_INPUT_FOLDER_NAME = "src-input";
 	protected static final String TEST_OUTPUT_FOLDER_NAME = "output";
@@ -38,33 +38,33 @@ public class AutomatedJavaLanguageFeatureTest extends AbstractJavaParserTestCase
 
 		TestSuite suite = new TestSuite(
 				"Suite testing all files in the input directory automatically");
-		File inputFolder = new File("./" + TEST_INPUT_FOLDER_NAME);
-		List<File> allTestFiles = collectAllFilesRecursive(inputFolder, "java");
-		File last = null;
-		for (final File file : allTestFiles) {
-			test.addFileToClasspath(file, test.getResourceSet());
-			if (file.getName().equals("TypeReferencing.java")) {
-				last = file; 
-				continue;
-			}
-		}
-		if (last != null) {
-			//put the "TypeReferencing.java" file last, because it contains inner
-			//types referenced by other files. If these types are not registered
-			//before proxy resolving, the test will fail.
-			allTestFiles.remove(last);
-			allTestFiles.add(last);
-		}
-		
-		//first do all parse tests (will register inner types in classpath)
-		for (final File file : allTestFiles) {
-			addParseTest(test, suite, file);		
-		}
-		
-		//second do resolving and printing test
-		for (final File file : allTestFiles) {
-			addParseAndReprintTest(test, suite, file);			
-		}
+//		File inputFolder = new File("./" + TEST_INPUT_FOLDER_NAME);
+//		List<File> allTestFiles = collectAllFilesRecursive(inputFolder, "java");
+//		File last = null;
+//		for (final File file : allTestFiles) {
+//			test.addFileToClasspath(file, test.getResourceSet());
+//			if (file.getName().equals("TypeReferencing.java")) {
+//				last = file; 
+//				continue;
+//			}
+//		}
+//		if (last != null) {
+//			//put the "TypeReferencing.java" file last, because it contains inner
+//			//types referenced by other files. If these types are not registered
+//			//before proxy resolving, the test will fail.
+//			allTestFiles.remove(last);
+//			allTestFiles.add(last);
+//		}
+//		
+//		//first do all parse tests (will register inner types in classpath)
+//		for (final File file : allTestFiles) {
+//			addParseTest(test, suite, file);		
+//		}
+//		
+//		//second do resolving and printing test
+//		for (final File file : allTestFiles) {
+//			addParseAndReprintTest(test, suite, file);			
+//		}
 		
 		return suite;
 	}

@@ -31,7 +31,7 @@ import org.junit.Test;
  * A separate test case for the input files that contain Unicode escape
  * sequences.
  */
-public class UnicodeTest extends AbstractJavaParserTestCase {
+public class UnicodeTest extends AbstractJaMoPPTests {
 
 	@Test
 	public void testUnicodeInput() {

@@ -37,7 +37,7 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.emftext.language.java.commons.Commentable;
 import org.emftext.language.java.modifiers.AnnotationInstanceOrModifier;
-import org.emftext.language.java.test.AbstractJavaParserTestCase;
+import org.emftext.language.java.test.AbstractJaMoPPTests;
 
 /**
  * A test for the reference resolving mechanism. Each folder
@@ -86,7 +86,7 @@ public class ResolvingTest extends TestCase {
 	 * A test that is instantiated for a single directory. It collects all
 	 * the files in the directory to build a classpath.
 	 */
-	private static class DirectoryTest extends AbstractJavaParserTestCase {
+	private static class DirectoryTest extends AbstractJaMoPPTests {
 
 		private File directory;
 

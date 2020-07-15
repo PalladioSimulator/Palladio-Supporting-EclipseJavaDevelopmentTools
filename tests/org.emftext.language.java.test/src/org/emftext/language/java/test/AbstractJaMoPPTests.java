@@ -13,6 +13,7 @@
  *   DevBoost GmbH - Berlin, Germany
  *      - initial API and implementation
  ******************************************************************************/
+
 package org.emftext.language.java.test;
 
 import static org.junit.Assert.assertEquals;
@@ -25,12 +26,13 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -66,10 +68,9 @@ import org.emftext.language.java.members.Constructor;
 import org.emftext.language.java.members.Member;
 import org.emftext.language.java.members.MemberContainer;
 import org.emftext.language.java.members.Method;
-import org.emftext.language.java.modifiers.AnnotationInstanceOrModifier;
-import org.emftext.language.java.modifiers.Modifier;
 import org.emftext.language.java.modifiers.Public;
 import org.emftext.language.java.types.NamespaceClassifierReference;
+import org.junit.Before;
 
 import jamopp.resource.JavaResource2;
 import jamopp.resource.JavaResource2Factory;
@@ -77,13 +78,13 @@ import jamopp.resource.JavaResource2Factory;
 /**
  * Abstract superclass that provides some frequently used assert and helper methods.
  */
-public abstract class AbstractJavaParserTestCase {
+public abstract class AbstractJaMoPPTests {
 
 	protected static final String TEST_OUTPUT_FOLDER = "output";
 
-	public AbstractJavaParserTestCase() {
-		Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap().put(
-				"java", new JavaResource2Factory());
+	@Before
+	protected final void initResourceFactory() {
+		Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap().put("java", new JavaResource2Factory());
 	}
 
 	protected void registerInClassPath(String file) throws Exception {
@@ -97,18 +98,11 @@ public abstract class AbstractJavaParserTestCase {
 		JavaClasspath.get(cu).registerClassifierSource(cu, URI.createFileURI(inputFile.getAbsolutePath().toString()));
 	}
 
-	/**
-	 * All test files that were parsed by the method parseResource(String relativePath).
-	 */
-	private static List<File> parsedResources = new ArrayList<File>();
-	private static List<File> reprintedResources = new ArrayList<File>();
-
 	protected JavaRoot parseResource(String filename, String inputFolderName) throws Exception {
 		File inputFolder = new File("." + File.separator + inputFolderName);
 		File file = new File(inputFolder, filename);
 		assertTrue("File " + file + " must exist.", file.exists());
-		
-		addParsedResource(file);
+
 		return loadResource(file.getAbsolutePath());
 	}
 
@@ -132,7 +126,7 @@ public abstract class AbstractJavaParserTestCase {
 		assertEquals("The resource must have one content element.", 1, contents.size());
 		
 		EObject content = contents.get(0);
-		assertTrue("File '" + uri.toString() + "' was parsed to CompilationUnit.", content instanceof JavaRoot);
+		assertTrue("File '" + uri.toString() + "' was parsed to JavaRoot.", content instanceof JavaRoot);
 		JavaRoot root = (JavaRoot) content;
 		return root;
 	}
@@ -160,34 +154,33 @@ public abstract class AbstractJavaParserTestCase {
 		return map;
 	}
 
-	private static void assertNoErrors(String fileIdentifier, JavaResource2 resource) {
+	private void assertNoErrors(String fileIdentifier, JavaResource2 resource) {
 		List<Diagnostic> errors = new BasicEList<Diagnostic>(resource.getErrors());
 		printErrors(fileIdentifier, errors);
 		assertTrue("The resource should be parsed without errors.", errors.isEmpty());
 	}
 
-	private static void assertNoWarnings(String fileIdentifier, JavaResource2 resource) {
+	private void assertNoWarnings(String fileIdentifier, JavaResource2 resource) {
 		List<Diagnostic> warnings = resource.getWarnings();
 		printWarnings(fileIdentifier, warnings);
 		assertTrue("The resource should be parsed without warnings.", warnings.isEmpty());
 	}
 
-	protected static void printErrors(String filename, List<Diagnostic> errors) {
+	protected void printErrors(String filename, List<Diagnostic> errors) {
 		printDiagnostics(filename, errors, "Errors");
 	}
 
-	protected static void printWarnings(String filename, List<Diagnostic> warnings) {
+	protected void printWarnings(String filename, List<Diagnostic> warnings) {
 		printDiagnostics(filename, warnings, "Warnings");
 	}
 
-	private static void printDiagnostics(String filename, List<Diagnostic> errors, String diagnosticType) {
+	private void printDiagnostics(String filename, List<Diagnostic> errors, String diagnosticType) {
 		if (errors.size() == 0) {
 			return;
 		}
 		
 		StringBuffer buffer = new StringBuffer();
-		buffer.append(diagnosticType + " while parsing resource '" + filename
-				+ "':\n");
+		buffer.append(diagnosticType + " while parsing resource '" + filename + "':\n");
 		for (Diagnostic diagnostic : errors) {
 			String text = diagnostic.getMessage();
 			buffer.append("\t" + text + "\n");
@@ -222,7 +215,6 @@ public abstract class AbstractJavaParserTestCase {
 			return;
 		}
 
-		//addReprintedResource(inputFile);
 		resource.setURI(URI.createFileURI(outputFile.getAbsolutePath()));
 		resource.save(null);
 
@@ -234,7 +226,7 @@ public abstract class AbstractJavaParserTestCase {
 		return false;
 	}
 
-	public static void registerLibs(String libdir, JavaClasspath classpath, String prefix) throws IOException, CoreException  {
+	public void registerLibs(String libdir, JavaClasspath classpath, String prefix) throws IOException, CoreException  {
 		File libFolder = new File("." + File.separator + libdir);
 		List<File> allLibFiles = collectAllFilesRecursive(libFolder, "jar");
 		for (File libFile : allLibFiles) {
@@ -250,25 +242,21 @@ public abstract class AbstractJavaParserTestCase {
 		parseAndReprint(file, inputFolderName, outputFolderName);
 	}
 
-	protected void parseAndReprint(File file, String inputFolderName,
-			String outputFolderName) throws Exception {
+	protected void parseAndReprint(File file, String inputFolderName, String outputFolderName) throws Exception {
 		File inputFile = file;
-		assertTrue("File " + inputFile.getAbsolutePath() + " exists.",
-				inputFile.exists());
-		String outputFileName = calculateOutputFilename(inputFile,
-				inputFolderName, outputFolderName);
+		assertTrue("File " + inputFile.getAbsolutePath() + " exists.", inputFile.exists());
+		String outputFileName = calculateOutputFilename(inputFile, inputFolderName, outputFolderName);
 		File outputFile = prepareOutputFile(outputFileName);
 
 		Resource resource = getResourceSet().createResource(URI.createFileURI(inputFile.getAbsolutePath().toString()));
 		resource.load(getLoadOptions());
 
 		assertNoErrors(resource.getURI().toString(), (JavaResource2) resource);
-		addParsedResource(inputFile);
 
 		if (!ignoreSemanticErrors(file.getPath())) {
 			// This will not work if external resources are not yet registered (order of tests)
 			assertResolveAllProxies(resource);
-			// Default EMF vaildation should not fail
+			// Default EMF validation should not fail
 			assertModelValid(resource);
 		}
 
@@ -276,15 +264,13 @@ public abstract class AbstractJavaParserTestCase {
 			return;
 		}
 
-		addReprintedResource(inputFile);
 		resource.setURI(URI.createFileURI(outputFileName));
 		resource.save(null);
 
 		assertTrue("File " + outputFile.getAbsolutePath() + " exists.",
 				outputFile.exists());
 
-		compareTextContents(new FileInputStream(inputFile),
-					new FileInputStream(outputFile));
+		compareTextContents(new FileInputStream(inputFile), new FileInputStream(outputFile));
 	}
 
 	protected abstract boolean isExcludedFromReprintTest(String filename);
@@ -293,7 +279,7 @@ public abstract class AbstractJavaParserTestCase {
 		return false;
 	}
 
-	private static boolean compareTextContents(InputStream inputStream,
+	private boolean compareTextContents(InputStream inputStream,
 			InputStream inputStream2) throws MalformedTreeException,
 			BadLocationException, IOException {
 		
@@ -306,22 +292,19 @@ public abstract class AbstractJavaParserTestCase {
 		TalkativeASTMatcher matcher = new TalkativeASTMatcher(true);
 		boolean result = unit1.subtreeMatch(matcher, unit2);
 
-		assertTrue(
-				"Reprint not equal: " + matcher.getDiff(),
-				result);
+		assertTrue("Reprint not equal: " + matcher.getDiff(), result);
 
 		return result;
 	}
 
-	private static org.eclipse.jdt.core.dom.CompilationUnit parseWithJDT(
-			InputStream inputStream) {
+	private org.eclipse.jdt.core.dom.CompilationUnit parseWithJDT(InputStream inputStream) {
 
-		ASTParser jdtParser = ASTParser.newParser(AST.JLS12);
+		ASTParser jdtParser = ASTParser.newParser(AST.JLS14);
 		char[] charArray = readTextContents(inputStream).toCharArray();
 		jdtParser.setSource(charArray);
 
 		Map<String, String> options = new HashMap<String, String>();
-		options.put(JavaCore.COMPILER_SOURCE, JavaCore.VERSION_12);
+		options.put(JavaCore.COMPILER_SOURCE, JavaCore.VERSION_14);
 		jdtParser.setCompilerOptions(options);
 
 		org.eclipse.jdt.core.dom.CompilationUnit result1 =
@@ -329,8 +312,7 @@ public abstract class AbstractJavaParserTestCase {
 		return result1;
 	}
 
-	private static void removeJavadoc(
-			org.eclipse.jdt.core.dom.CompilationUnit result1) {
+	private void removeJavadoc(org.eclipse.jdt.core.dom.CompilationUnit result1) {
 		final List<Javadoc> javadocNodes = new ArrayList<Javadoc>();
 		result1.accept(new ASTVisitor() {
 			public boolean visit(Javadoc node) {
@@ -343,8 +325,7 @@ public abstract class AbstractJavaParserTestCase {
 		}
 	}
 
-	protected static String calculateOutputFilename(File inputFile,
-			String inputFolderName, String outputFolderName) {
+	protected String calculateOutputFilename(File inputFile, String inputFolderName, String outputFolderName) {
 		File inputPath = new File("." + File.separator + inputFolderName);
 		int trimOffset = inputPath.getAbsolutePath().length();
 		File outputFolder = new File("." + File.separator + outputFolderName);
@@ -353,7 +334,7 @@ public abstract class AbstractJavaParserTestCase {
 		return outputFile.getAbsolutePath();
 	}
 
-	private static File prepareOutputFile(String outputFileName) {
+	private File prepareOutputFile(String outputFileName) {
 		File outputFile = new File(URI.createFileURI(outputFileName).toFileString());
 		File parent = outputFile.getParentFile();
 		if (!parent.exists()) {
@@ -362,11 +343,10 @@ public abstract class AbstractJavaParserTestCase {
 		return outputFile;
 	}
 
-	private static String readTextContents(InputStream inputStream) {
+	private String readTextContents(InputStream inputStream) {
 		StringBuffer contents = new StringBuffer();
 		try {
-			BufferedReader input = new BufferedReader(new InputStreamReader(
-					inputStream));
+			BufferedReader input = new BufferedReader(new InputStreamReader(inputStream));
 			try {
 				String line = null; // not declared within while loop
 				while ((line = input.readLine()) != null) {
@@ -382,32 +362,21 @@ public abstract class AbstractJavaParserTestCase {
 		return contents.toString();
 	}
 
-	protected static List<File> collectAllFilesRecursive(File startFolder, String extension)
+	protected List<File> collectAllFilesRecursive(File startFolder, String extension)
 			throws CoreException {
-		if (!startFolder.isDirectory())
+		if (!startFolder.isDirectory()) {
 			return Collections.emptyList();
-		List<File> allFiles = new ArrayList<File>();
-		//add sub dirs first
-		for (File member : startFolder.listFiles()) {
-			if (member.isDirectory()) {
-				if (!member.getName().equals(".svn")) {
-					allFiles.addAll(collectAllFilesRecursive(member, extension));
-				}
-			}
 		}
-		//bin.jar in the end
-		for (File member : startFolder.listFiles()) {
-			if (member.isFile()) {
-				if (member.getName().endsWith(extension)) {
-					allFiles.add(member);
-				}
-			}
+		try {
+			return Files.walk(startFolder.toPath()).filter(p -> !p.endsWith(".svn"))
+				.filter(p -> !p.endsWith(".git")).filter(Files::isRegularFile)
+				.map(p -> p.toFile()).filter(f -> f.getName().endsWith(extension)).collect(Collectors.toList());
+		} catch (IOException e) {
+			return Collections.emptyList();
 		}
-		return allFiles;
 	}
 
-	protected void assertClassTypeParameterCount(Member member,
-			int expectedNumberOfTypeArguments) {
+	protected void assertClassTypeParameterCount(Member member, int expectedNumberOfTypeArguments) {
 		assertType(member, org.emftext.language.java.classifiers.Class.class);
 		org.emftext.language.java.classifiers.Class clazz = (org.emftext.language.java.classifiers.Class) member;
 		List<TypeParameter> typeParameters = clazz.getTypeParameters();
@@ -416,8 +385,7 @@ public abstract class AbstractJavaParserTestCase {
 				typeParameters.size());
 	}
 
-	protected void assertInterfaceTypeParameterCount(Member member,
-			int expectedNumberOfTypeArguments) {
+	protected void assertInterfaceTypeParameterCount(Member member, int expectedNumberOfTypeArguments) {
 		assertType(member, Interface.class);
 		Interface interfaze = (Interface) member;
 		List<TypeParameter> typeParameters = interfaze.getTypeParameters();
@@ -426,8 +394,7 @@ public abstract class AbstractJavaParserTestCase {
 				typeParameters.size());
 	}
 
-	protected void assertMethodThrowsCount(Member member,
-			int expectedNumberOfThrownExceptions) {
+	protected void assertMethodThrowsCount(Member member, int expectedNumberOfThrownExceptions) {
 		assertType(member, Method.class);
 		Method method = (Method) member;
 		List<NamespaceClassifierReference> exceptions = method.getExceptions();
@@ -436,8 +403,7 @@ public abstract class AbstractJavaParserTestCase {
 				exceptions.size());
 	}
 
-	protected void assertMethodTypeParameterCount(Member member,
-			int expectedNumberOfTypeArguments) {
+	protected void assertMethodTypeParameterCount(Member member, int expectedNumberOfTypeArguments) {
 		assertType(member, Method.class);
 		Method method = (Method) member;
 		List<TypeParameter> typeParameters = method.getTypeParameters();
@@ -446,8 +412,7 @@ public abstract class AbstractJavaParserTestCase {
 				typeParameters.size());
 	}
 
-	protected void assertConstructorThrowsCount(Member member,
-			int expectedNumberOfThrownExceptions) {
+	protected void assertConstructorThrowsCount(Member member, int expectedNumberOfThrownExceptions) {
 		assertType(member, Constructor.class);
 		Constructor constructor = (Constructor) member;
 		List<NamespaceClassifierReference> exceptions = constructor.getExceptions();
@@ -456,8 +421,7 @@ public abstract class AbstractJavaParserTestCase {
 				exceptions.size());
 	}
 
-	protected void assertConstructorTypeParameterCount(Member member,
-			int expectedNumberOfTypeArguments) {
+	protected void assertConstructorTypeParameterCount(Member member, int expectedNumberOfTypeArguments) {
 		assertType(member, Constructor.class);
 		Constructor constructor = (Constructor) member;
 		List<TypeParameter> typeParameters = constructor.getTypeParameters();
@@ -467,8 +431,7 @@ public abstract class AbstractJavaParserTestCase {
 	}
 
 	protected void assertIsClass(Classifier classifier) {
-		assertType(classifier,
-				org.emftext.language.java.classifiers.Class.class);
+		assertType(classifier, org.emftext.language.java.classifiers.Class.class);
 	}
 
 	protected void assertIsInterface(Classifier classifier) {
@@ -481,51 +444,32 @@ public abstract class AbstractJavaParserTestCase {
 	}
 
 	protected void assertType(EObject object, Class<?> expectedType) {
-		assertTrue("The object should have type '"
-				+ expectedType.getSimpleName() + "', but was "
-				+ object.getClass().getSimpleName(), expectedType
-				.isInstance(object));
+		assertTrue("The object should have type '" + expectedType.getSimpleName() + "', but was "
+			+ object.getClass().getSimpleName(), expectedType.isInstance(object));
 	}
 
-	protected void assertClassifierName(Classifier declaration,
-			String expectedName) {
+	protected void assertClassifierName(Classifier declaration, String expectedName) {
 		assertEquals("The name of the declared classifier should equal '"
 				+ expectedName + "'", expectedName, declaration.getName());
 	}
 
-	protected void assertNumberOfClassifiers(CompilationUnit model,
-			int expectedCount) {
+	protected void assertNumberOfClassifiers(CompilationUnit model, int expectedCount) {
 		assertEquals("The compilation unit should contain " + expectedCount
-				+ " classifier declaration(s).", expectedCount, model
-				.getClassifiers().size());
+			+ " classifier declaration(s).", expectedCount, model.getClassifiers().size());
 	}
 
-	protected void assertModifierCount(Method method,
-			int expectedNumberOfModifiers) {
-		List<Modifier> annotationsAndModifiers = getModifiers(method);
+	protected void assertModifierCount(Method method, int expectedNumberOfModifiers) {
 		assertEquals("Method '" + method.getName() + "' should have "
 				+ expectedNumberOfModifiers + " modifier(s).",
-				expectedNumberOfModifiers, annotationsAndModifiers.size());
-	}
-
-	private List<Modifier> getModifiers(Method method) {
-		EList<AnnotationInstanceOrModifier> annotationsAndModifiers = method.getAnnotationsAndModifiers();
-		List<Modifier> modifiers = new ArrayList<Modifier>();
-		for (AnnotationInstanceOrModifier annotationInstanceOrModifier : annotationsAndModifiers) {
-			if (annotationInstanceOrModifier instanceof Modifier) {
-				modifiers.add((Modifier) annotationInstanceOrModifier);
-			}
-		}
-		return modifiers;
+				expectedNumberOfModifiers, method.getModifiers().size());
 	}
 
 	protected void assertIsPublic(Method method) {
 		assertTrue("Method '" + method.getName() + "' should be public.",
-				getModifiers(method).get(0) instanceof Public);
+			method.getModifiers().get(0) instanceof Public);
 	}
 
-	protected Enumeration assertParsesToEnumeration(String typename)
-			throws Exception {
+	protected Enumeration assertParsesToEnumeration(String typename) throws Exception {
 		return assertParsesToEnumeration("", typename);
 	}
 
@@ -534,8 +478,7 @@ public abstract class AbstractJavaParserTestCase {
 		return assertParsesToType(pkgFolder, typename, Enumeration.class);
 	}
 	
-	protected Interface assertParsesToInterface(String typename)
-			throws Exception {
+	protected Interface assertParsesToInterface(String typename) throws Exception {
 		return assertParsesToInterface("", typename);
 	}
 
@@ -544,8 +487,7 @@ public abstract class AbstractJavaParserTestCase {
 		return assertParsesToType(pkgFolder, typename, Interface.class);
 	}
 
-	protected Annotation assertParsesToAnnotation(String typename)
-			throws Exception {
+	protected Annotation assertParsesToAnnotation(String typename) throws Exception {
 		return assertParsesToAnnotation("", typename);
 	}
 	
@@ -566,11 +508,9 @@ public abstract class AbstractJavaParserTestCase {
 			assertClassifierName(declaration, typename);
 			assertType(declaration, expectedType);
 			return expectedType.cast(declaration);
-		}
-		else {
+		} else {
 			return null;
 		}
-
 	}
 
 	protected <T> T assertParsesToType(String typename, Class<T> expectedType) 
@@ -609,9 +549,7 @@ public abstract class AbstractJavaParserTestCase {
 				org.emftext.language.java.classifiers.Class.class);
 	}
 
-	protected void assertMemberCount(
-			MemberContainer container,
-			int expectedCount) {
+	protected void assertMemberCount(MemberContainer container, int expectedCount) {
 		String name = container.toString();
 		if (container instanceof NamedElement) {
 			name = ((NamedElement) container).getName();
@@ -641,34 +579,25 @@ public abstract class AbstractJavaParserTestCase {
 
 	protected ResourceSet getResourceSet() throws Exception {
 		ResourceSet rs = new ResourceSetImpl();
-		setUpClasspath(rs);
 		rs.getLoadOptions().putAll(getLoadOptions());
 		return rs;
 	}
 
-	protected void setUpClasspath(ResourceSet resourceSet) throws Exception {
-		// Sub class can override this method
-	}
-
 	protected boolean assertResolveAllProxies(Resource resource) {
-//		Set<EObject> unresolvedProxies = JavaResourceUtil.findUnresolvedProxies(resource);
-//		boolean failure = false;
-//		String msg="";
-//
-//		for (EObject next : unresolvedProxies) {
-//			InternalEObject nextElement = (InternalEObject) next;
-//			assertFalse("Can not resolve: " + nextElement.eProxyURI(), nextElement.eIsProxy());
-//			for (EObject crElement : nextElement.eCrossReferences()) {
-//				crElement = EcoreUtil.resolve(crElement, resource);
-//				if (crElement.eIsProxy()) {
-//					msg += "\nCan not resolve: " + ((InternalEObject) crElement).eProxyURI();
-//					failure = true;
-//				}
-//			}
-//		}
-//		assertFalse(msg, failure);
-//		return failure;
-		return false;
+		StringBuffer msg = new StringBuffer();
+		resource.getAllContents().forEachRemaining(obj -> {
+			InternalEObject element = (InternalEObject) obj;
+			assertFalse("Can not resolve: " + element.eProxyURI(), element.eIsProxy());
+			for (EObject crElement : element.eCrossReferences()) {
+				crElement = EcoreUtil.resolve(crElement, resource);
+				if (crElement.eIsProxy()) {
+					msg.append("\nCan not resolve: " + ((InternalEObject) crElement).eProxyURI());
+				}
+			}
+		});
+		String finalMsg = msg.toString();
+		assertFalse(finalMsg, finalMsg.length() != 0);
+		return finalMsg.length() != 0;
 	}
 	
 
@@ -676,30 +605,8 @@ public abstract class AbstractJavaParserTestCase {
 		org.eclipse.emf.common.util.Diagnostic result = Diagnostician.INSTANCE.validate(resource.getContents().get(0));
 		String msg = "EMF validation problems found:";
 		for (org.eclipse.emf.common.util.Diagnostic childResult : result.getChildren()) {
-			System.out.println(childResult.getMessage());
 			msg += "\n" + childResult.getMessage();
 		}
 		assertTrue(msg, result.getChildren().isEmpty());
-	}
-
-
-	public static List<File> getParsedResources() {
-		return parsedResources;
-	}
-
-	public static List<File> getReprintedResources() {
-		return reprintedResources;
-	}
-
-	public void addParsedResource(File file) {
-		if (!parsedResources.contains(file)) {
-			parsedResources.add(file);
-		}
-	}
-
-	public void addReprintedResource(File file) {
-		if(!reprintedResources.contains(file)) {
-			reprintedResources.add(file);
-		}
 	}
 }

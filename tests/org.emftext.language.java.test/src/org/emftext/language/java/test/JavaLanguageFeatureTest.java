@@ -18,23 +18,18 @@ package org.emftext.language.java.test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.jface.text.BadLocationException;
-import org.eclipse.text.edits.MalformedTreeException;
 import org.emftext.language.java.JavaClasspath;
 import org.emftext.language.java.classifiers.Annotation;
 import org.emftext.language.java.classifiers.Classifier;
@@ -80,7 +75,6 @@ import org.emftext.language.java.statements.ExpressionStatement;
 import org.emftext.language.java.statements.ForEachLoop;
 import org.emftext.language.java.statements.Statement;
 import org.emftext.language.java.types.TypeReference;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -99,7 +93,7 @@ import pkg.NumberLiterals;
  * 
  * @author Christian Wende
  */
-public class JavaLanguageFeatureTest extends AbstractJavaParserTestCase {
+public class JavaLanguageFeatureTest extends AbstractJaMoPPTests {
 
 	private static final String JAVA_FILE_EXTENSION = ".java";
 
@@ -1848,79 +1842,5 @@ public class JavaLanguageFeatureTest extends AbstractJavaParserTestCase {
 		assertEquals("InnerClass", clazz.getMembers().get(0).getName());
 		
 		parseAndReprint(filename);
-	}
-
-	@AfterClass
-	public static void doMetaTest() {
-		try {
-			checkHasMissingParses();
-			checkHasMissingParseReprints();
-		} catch (Exception e) {
-			fail(e.getMessage());
-		}
-	}
-	
-	/**
-	 * This is a meta-test which checks naively if all test files were parsed
-	 * and reprinted by test cases in this suite.
-	 */
-	public static void checkHasMissingParseReprints() throws Exception {
-		List<File> allTestFiles = getAllTestFiles();
-		allTestFiles.removeAll(getReprintedResources());
-		for (Iterator<File> i = allTestFiles.iterator(); i.hasNext();) {
-			File file = (File) i.next();
-			if (isExcluded(file)) {
-				//these files are not covered by this test
-				i.remove();
-				continue;
-			} else {
-				System.out.println("Not parsed and reprinted: " + file);	
-			}
-		}
-		System.out.println("Not parsed and reprinted total: "
-				+ allTestFiles.size());
-		assertEquals("All testfiles were parsed and reprinted.",
-				Collections.EMPTY_LIST, allTestFiles);
-	}
-
-	/**
-	 * This is a meta-test which checks naively if all test files were parsed
-	 * by test cases in this suite.
-	 */
-	public static void checkHasMissingParses() throws CoreException,
-			MalformedTreeException, IOException, BadLocationException {
-		
-		List<File> allTestFiles = getAllTestFiles();
-		allTestFiles.removeAll(getParsedResources());
-		for (Iterator<File> i = allTestFiles.iterator(); i.hasNext();) {
-			File file = (File) i.next();
-			if (isExcluded(file)) {
-				//these files are not covered by this test
-				i.remove();
-				continue;
-			} else {
-				System.out.println("Not parsed: " + file);	
-			}
-		}
-		assertEquals(
-				"All testfiles contained in input folder were covered by a test case.",
-				Collections.EMPTY_LIST, allTestFiles);
-	}
-
-	private static boolean isExcluded(File file) {
-		if (file.toString().contains(File.separator + "resolving_new" + File.separator)) {
-			return true;
-		}
-		if ("JavaUtilEnumerationImport.java".equals(file.getName())) {
-			return true;
-		}
-		
-		return false;
-	}
-
-	private static List<File> getAllTestFiles() throws CoreException {
-		File inputFolder = new File("." + File.separator + getTestInputFolderStatic());
-		List<File> allTestFiles = collectAllFilesRecursive(inputFolder, JAVA_FILE_EXTENSION);
-		return allTestFiles;
 	}
 }

@@ -54,7 +54,7 @@ import org.junit.Test;
  * 
  * @author Martin Armbruster
  */
-public class JavaSevenAndUpTest extends AbstractJavaParserTestCase {
+public class JavaSevenAndUpTest extends AbstractJaMoPPTests {
 	@Override
 	public String getTestInputFolder() {
 		return "src-sevenandup";

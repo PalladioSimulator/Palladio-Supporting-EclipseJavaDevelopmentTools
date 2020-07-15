@@ -30,7 +30,7 @@ import org.emftext.language.java.references.IdentifierReference;
 import org.emftext.language.java.references.MethodCall;
 import org.emftext.language.java.statements.ExpressionStatement;
 import org.emftext.language.java.statements.Statement;
-import org.emftext.language.java.test.AbstractJavaParserTestCase;
+import org.emftext.language.java.test.AbstractJaMoPPTests;
 import org.emftext.language.java.variables.LocalVariable;
 
 /**
@@ -38,7 +38,7 @@ import org.emftext.language.java.variables.LocalVariable;
  * It provides some assert methods that can be used to check the correctness
  * of reference targets.
  */
-public abstract class AbstractResolverTestCase extends AbstractJavaParserTestCase {
+public abstract class AbstractResolverTestCase extends AbstractJaMoPPTests {
 
 	protected static final String TEST_INPUT_FOLDER_RESOLVING = "src-input" + File.separator + "resolving" + File.separator;
 
