@@ -466,7 +466,7 @@ public class JDTResolverUtility {
 		if (classifier.eResource() == null) {
 			ITypeBinding typeBind = typeBindings.stream().filter(type -> typeName.equals(convertToTypeName(type)))
 				.findFirst().orElse(null);
-			if (typeBind == null || typeBind.isTopLevel()) {
+			if ((typeBind == null || typeBind.isTopLevel()) && classifier.eContainer() == null) {
 				org.emftext.language.java.containers.CompilationUnit cu = org.emftext.language.java.containers.ContainersFactory.eINSTANCE.createCompilationUnit();
 				cu.getClassifiers().add(classifier);
 				String[] namespaces = typeName.substring(0, typeName.length() -
@@ -481,6 +481,9 @@ public class JDTResolverUtility {
 				org.emftext.language.java.classifiers.ConcreteClassifier parentClassifier = (org.emftext.language.java.classifiers.ConcreteClassifier)
 					getClassifier(typeBind.getDeclaringClass());
 				completeType(typeBind.getDeclaringClass().getQualifiedName(), parentClassifier);
+				if (!parentClassifier.getMembers().contains(classifier)) {
+					parentClassifier.getMembers().add(classifier);
+				}
 			}
 		}
 	}
