@@ -83,7 +83,7 @@ public abstract class AbstractJaMoPPTests {
 	protected static final String TEST_OUTPUT_FOLDER = "output";
 
 	@Before
-	protected final void initResourceFactory() {
+	public final void initResourceFactory() {
 		Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap().put("java", new JavaResource2Factory());
 	}
 
