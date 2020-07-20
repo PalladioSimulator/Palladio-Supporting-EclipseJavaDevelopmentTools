@@ -46,8 +46,7 @@ class BaseConverterUtility {
 				ref.getClassifierReferences().add(0, convertToClassifierReference(simpleName));
 				if (qualifier == null) {
 					simpleName = null;
-				}
-				if (qualifier.isSimpleName()) {
+				} else if (qualifier.isSimpleName()) {
 					simpleName = (SimpleName) qualifier;
 					qualifier = null;
 				} else {
