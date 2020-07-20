@@ -391,7 +391,7 @@ public class OldJaMoPPParserTests extends AbstractJaMoPPTests {
 		String typename = "AnnotationsForParameters";
 		String filename = typename + JAVA_FILE_EXTENSION;
 		org.emftext.language.java.classifiers.Class clazz = assertParsesToClass(typename);
-		assertMemberCount(clazz, 15);
+		assertMemberCount(clazz, 11);
 
 		parseAndReprint(filename);
 	}
@@ -608,7 +608,7 @@ public class OldJaMoPPParserTests extends AbstractJaMoPPTests {
 		String typename = "ClassSemicolonOnly";
 		String filename = typename + JAVA_FILE_EXTENSION;
 		org.emftext.language.java.classifiers.Class clazz = assertParsesToClass(typename);
-		assertMemberCount(clazz, 1);
+		assertMemberCount(clazz, 0);
 
 		parseAndReprint(filename);
 	}
@@ -818,9 +818,7 @@ public class OldJaMoPPParserTests extends AbstractJaMoPPTests {
 		String filename = typename + JAVA_FILE_EXTENSION;
 		org.emftext.language.java.classifiers.Class clazz = assertParsesToClass(typename);
 		Enumeration enumeration = (Enumeration) clazz.getMembers().get(0);
-		assertMemberCount(enumeration, 0);
-		//after model completion adds the default members, there should be 3
-		assertEquals(2, enumeration.getDefaultMembers().size());
+		assertMemberCount(enumeration, 2);
 		parseAndReprint(filename);
 	}
 	
@@ -1200,7 +1198,7 @@ public class OldJaMoPPParserTests extends AbstractJaMoPPTests {
 		String typename = "ISemicolonOnly";
 		String filename = typename + JAVA_FILE_EXTENSION;
 		Interface interfaze = assertParsesToInterface(typename);
-		assertMemberCount(interfaze, 1 /*One empty member*/);
+		assertMemberCount(interfaze, 0);
 
 		parseAndReprint(filename);
 	}
@@ -1552,7 +1550,7 @@ public class OldJaMoPPParserTests extends AbstractJaMoPPTests {
 		String typename = "SemicolonAfterMembers";
 		String filename = typename + JAVA_FILE_EXTENSION;
 		org.emftext.language.java.classifiers.Class clazz = assertParsesToClass(typename);
-		assertMemberCount(clazz, 2 + 4 /* + 4 empty */);
+		assertMemberCount(clazz, 2);
 
 		parseAndReprint(filename, getTestInputFolder(), TEST_OUTPUT_FOLDER);
 	}
