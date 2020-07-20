@@ -468,6 +468,7 @@ public class JDTResolverUtility {
 				.findFirst().orElse(null);
 			if ((typeBind == null || typeBind.isTopLevel()) && classifier.eContainer() == null) {
 				org.emftext.language.java.containers.CompilationUnit cu = org.emftext.language.java.containers.ContainersFactory.eINSTANCE.createCompilationUnit();
+				cu.setName("");
 				cu.getClassifiers().add(classifier);
 				String[] namespaces = typeName.substring(0, typeName.length() -
 					(typeBind == null ? typeName.length() - 1 : typeBind.getName().length()) - 1).split(".");

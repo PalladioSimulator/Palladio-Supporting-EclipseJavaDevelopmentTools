@@ -54,6 +54,7 @@ class StatementConverterUtility {
 	@SuppressWarnings("unchecked")
 	static org.emftext.language.java.statements.Block convertToBlock(Block block) {
 		org.emftext.language.java.statements.Block result = org.emftext.language.java.statements.StatementsFactory.eINSTANCE.createBlock();
+		result.setName("");
 		block.statements().forEach(obj -> result.getStatements().add(convertToStatement((Statement) obj)));
 		LayoutInformationConverter.convertToMinimalLayoutInformation(result, block);
 		return result;
