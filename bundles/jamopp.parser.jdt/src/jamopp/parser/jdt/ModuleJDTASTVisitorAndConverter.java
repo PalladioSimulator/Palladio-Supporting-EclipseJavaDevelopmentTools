@@ -17,6 +17,7 @@ import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.Annotation;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.IModuleBinding;
+import org.eclipse.jdt.core.dom.IPackageBinding;
 import org.eclipse.jdt.core.dom.ModuleDeclaration;
 import org.eclipse.jdt.core.dom.ModuleDirective;
 import org.eclipse.jdt.core.dom.ModuleModifier;
@@ -76,7 +77,8 @@ class ModuleJDTASTVisitorAndConverter extends PackageJDTASTVisitorAndConverter {
 			} else { // directive.getNodeType() == ASTNode.EXPORTS_DIRECTIVE
 				convertedDir = org.emftext.language.java.modules.ModulesFactory.eINSTANCE.createExportsModuleDirective();
 			}
-			BaseConverterUtility.convertToNamespacesAndSet(accessDir.getName(), convertedDir);
+			IPackageBinding binding = (IPackageBinding) accessDir.getName().resolveBinding();
+			convertedDir.setAccessablePackage(JDTResolverUtility.getPackage(binding));
 			accessDir.modules().forEach(obj -> convertedDir.getModules().add(this.convertToModuleReference((Name) obj)));
 			LayoutInformationConverter.convertToMinimalLayoutInformation(convertedDir, directive);
 			return convertedDir;
