@@ -54,6 +54,9 @@ public class JDTResolverUtility {
 	}
 	
 	private static String convertToTypeName(ITypeBinding binding) {
+		if (binding == null) {
+			return "";
+		}
 		String qualifiedName = binding.getQualifiedName();
 		if (qualifiedName.contains("<")) {
 			qualifiedName = qualifiedName.substring(0, qualifiedName.indexOf("<"));
@@ -210,7 +213,10 @@ public class JDTResolverUtility {
 	}
 	
 	private static String convertToFieldName(IVariableBinding binding) {
-		return binding.getDeclaringClass().getQualifiedName() + "::" + binding.getName();
+		if (binding == null || !binding.isField()) {
+			return "";
+		}
+		return convertToTypeName(binding.getDeclaringClass()) + "::" + binding.getName();
 	}
 	
 	static org.emftext.language.java.members.Field getField(IVariableBinding binding) {
@@ -250,6 +256,9 @@ public class JDTResolverUtility {
 	}
 	
 	private static String convertToParameterName(IVariableBinding binding, boolean register) {
+		if (binding == null) {
+			return "";
+		}
 		String prefix = "";
 		if (binding.getDeclaringMethod() != null) {
 			prefix = convertToMethodName(binding.getDeclaringMethod());
@@ -265,6 +274,9 @@ public class JDTResolverUtility {
 	}
 	
 	private static String convertToLocalVariableName(IVariableBinding binding, boolean register) {
+		if (binding == null) {
+			return "";
+		}
 		String prefix = "";
 		if (binding.getDeclaringMethod() != null) {
 			prefix = convertToMethodName(binding.getDeclaringMethod());
