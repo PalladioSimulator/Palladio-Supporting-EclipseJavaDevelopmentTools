@@ -281,6 +281,7 @@ class ClassifierConverterUtility {
 	
 	private static org.emftext.language.java.parameters.ReceiverParameter convertToReceiverParameter(MethodDeclaration methodDecl) {
 		org.emftext.language.java.parameters.ReceiverParameter result = org.emftext.language.java.parameters.ParametersFactory.eINSTANCE.createReceiverParameter();
+		result.setName("");
 		result.setTypeReference(BaseConverterUtility.convertToTypeReference(methodDecl.getReceiverType()));
 		if (methodDecl.getReceiverQualifier() != null) {
 			result.setOuterTypeReference(BaseConverterUtility.convertToClassifierReference(methodDecl.getReceiverQualifier()));
