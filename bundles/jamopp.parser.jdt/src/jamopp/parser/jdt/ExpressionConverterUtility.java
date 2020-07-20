@@ -190,7 +190,10 @@ class ExpressionConverterUtility {
 				}
 				lambda.parameters().forEach(obj -> {
 					VariableDeclarationFragment frag = (VariableDeclarationFragment) obj;
-					param.getIdentifiers().add(frag.getName().getIdentifier());
+					org.emftext.language.java.parameters.OrdinaryParameter nextParam = JDTResolverUtility.getOrdinaryParameter(frag.resolveBinding());
+					nextParam.setName(frag.getName().getIdentifier());
+					nextParam.setTypeReference(BaseConverterUtility.convertToTypeReference(frag.resolveBinding().getType()));
+					param.getParameters().add(nextParam);
 				});
 				result.setParameters(param);
 			} else {

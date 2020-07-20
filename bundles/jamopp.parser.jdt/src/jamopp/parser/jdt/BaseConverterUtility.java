@@ -110,6 +110,35 @@ class BaseConverterUtility {
 		}
 	}
 	
+	static org.emftext.language.java.types.TypeReference convertToTypeReference(ITypeBinding binding) {
+		if (binding.isPrimitive()) {
+			if (binding.getName().equals("int")) {
+				return org.emftext.language.java.types.TypesFactory.eINSTANCE.createInt();
+			} else if (binding.getName().equals("byte")) {
+				return org.emftext.language.java.types.TypesFactory.eINSTANCE.createByte();
+			} else if (binding.getName().equals("short")) {
+				return org.emftext.language.java.types.TypesFactory.eINSTANCE.createShort();
+			} else if (binding.getName().equals("long")) {
+				return org.emftext.language.java.types.TypesFactory.eINSTANCE.createLong();
+			} else if (binding.getName().equals("boolean")) {
+				return org.emftext.language.java.types.TypesFactory.eINSTANCE.createBoolean();
+			} else if (binding.getName().equals("double")) {
+				return org.emftext.language.java.types.TypesFactory.eINSTANCE.createDouble();
+			} else if (binding.getName().equals("float")) {
+				return org.emftext.language.java.types.TypesFactory.eINSTANCE.createFloat();
+			} else if (binding.getName().equals("void")) {
+				return org.emftext.language.java.types.TypesFactory.eINSTANCE.createVoid();
+			} else if (binding.getName().equals("char")) {
+				return org.emftext.language.java.types.TypesFactory.eINSTANCE.createChar();
+			}
+		}
+		org.emftext.language.java.classifiers.Classifier classifier = JDTResolverUtility.getClassifier(binding);
+		classifier.setName(binding.getName());
+		org.emftext.language.java.types.ClassifierReference result = org.emftext.language.java.types.TypesFactory.eINSTANCE.createClassifierReference();
+		result.setTarget(classifier);
+		return result;
+	}
+	
 	@SuppressWarnings("unchecked")
 	static org.emftext.language.java.types.TypeReference convertToTypeReference(Type t) {
 		if (t.isPrimitiveType()) {
@@ -139,8 +168,10 @@ class BaseConverterUtility {
 			LayoutInformationConverter.convertToMinimalLayoutInformation(convertedType, primType);
 			return convertedType;
 		} else if (t.isVar()) {
-			org.emftext.language.java.types.ClassifierReference ref = org.emftext.language.java.types.TypesFactory.eINSTANCE.createClassifierReference();
-			ref.setTarget(org.emftext.language.java.types.TypesFactory.eINSTANCE.createInferableType());
+			org.emftext.language.java.types.InferableType ref = org.emftext.language.java.types.TypesFactory.eINSTANCE.createInferableType();
+			if (t.resolveBinding() != null) {
+				// Set target.
+			}
 			LayoutInformationConverter.convertToMinimalLayoutInformation(ref, t);
 			return ref;
 		} else if (t.isArrayType()) {
