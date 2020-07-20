@@ -72,6 +72,7 @@
         </genOperations>
       </genClasses>
       <genClasses image="false" ecoreClass="java.ecore#//classifiers/ConcreteClassifier">
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//classifiers/ConcreteClassifier/package"/>
         <genOperations ecoreOperation="java.ecore#//classifiers/ConcreteClassifier/getInnerClassifiers"
             body="return org.emftext.language.java.extensions.classifiers.ConcreteClassifierExtension.getInnerClassifiers((org.emftext.language.java.classifiers.ConcreteClassifier) this);"/>
         <genOperations ecoreOperation="java.ecore#//classifiers/ConcreteClassifier/getAllInnerClassifiers"
@@ -265,16 +266,17 @@
         </genOperations>
       </genClasses>
       <genClasses ecoreClass="java.ecore#//containers/Package">
-        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//containers/Package/compilationUnits"/>
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference java.ecore#//containers/Package/module"/>
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//containers/Package/classifiers"/>
         <genOperations ecoreOperation="java.ecore#//containers/Package/getNamespacesAsString"
             body="return org.emftext.language.java.extensions.containers.PackageExtension.getNamespacesAsString((org.emftext.language.java.containers.Package) this);"/>
-        <genOperations ecoreOperation="java.ecore#//containers/Package/getClassifiersInSamePackage"
-            body="return org.emftext.language.java.extensions.containers.PackageExtension.getClassifiersInSamePackage((org.emftext.language.java.containers.Package) this);"/>
       </genClasses>
       <genClasses ecoreClass="java.ecore#//containers/EmptyModel"/>
       <genClasses image="false" ecoreClass="java.ecore#//containers/Module">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//containers/Module/open"/>
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//containers/Module/target"/>
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//containers/Module/packages"/>
       </genClasses>
     </nestedGenPackages>
     <nestedGenPackages prefix="Expressions" basePackage="org.emftext.language.java"
@@ -780,10 +782,6 @@
       </genClasses>
       <genClasses ecoreClass="java.ecore#//references/SelfReference">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//references/SelfReference/self"/>
-      </genClasses>
-      <genClasses ecoreClass="java.ecore#//references/PackageReference">
-        <genOperations ecoreOperation="java.ecore#//references/PackageReference/getSubpackages"
-            body="return org.emftext.language.java.extensions.references.PackageReferenceExtension.getSubpackages((org.emftext.language.java.references.PackageReference) this);"/>
       </genClasses>
     </nestedGenPackages>
     <nestedGenPackages prefix="Statements" basePackage="org.emftext.language.java"
