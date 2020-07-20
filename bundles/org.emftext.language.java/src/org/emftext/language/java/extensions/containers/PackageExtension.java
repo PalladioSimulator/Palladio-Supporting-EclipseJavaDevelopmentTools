@@ -17,27 +17,9 @@ package org.emftext.language.java.extensions.containers;
 
 import java.util.Iterator;
 
-import org.eclipse.emf.common.util.EList;
 import org.emftext.language.java.JavaUniquePathConstructor;
-import org.emftext.language.java.classifiers.ConcreteClassifier;
-import org.emftext.language.java.util.UniqueEList;
 
 public class PackageExtension {
-	
-	/**
-	 * @return all classes in the same package
-	 */
-	public static EList<ConcreteClassifier> getClassifiersInSamePackage(org.emftext.language.java.containers.Package me) {
-		EList<ConcreteClassifier> defaultImportList = new UniqueEList<ConcreteClassifier>();
-		
-		String packageName = me.getNamespacesAsString();
-		
-		defaultImportList.addAll(me.getConcreteClassifierProxies(
-				packageName + me.getName(), "*"));
-
-		return defaultImportList;
-	}
-	
 	public static String getNamespacesAsString(org.emftext.language.java.containers.Package me) {
 		String packageName = ""; 
 		for (Iterator<String> it = me.getNamespaces().iterator(); it.hasNext(); ) {
