@@ -47,6 +47,8 @@ import org.emftext.language.java.statements.LocalVariableStatement;
 import org.emftext.language.java.statements.Statement;
 import org.emftext.language.java.statements.TryBlock;
 import org.emftext.language.java.types.InferableType;
+import org.emftext.language.java.types.Int;
+import org.emftext.language.java.types.TypeReference;
 import org.junit.Test;
 
 /**
@@ -376,12 +378,15 @@ public class JavaSevenAndUpTest extends AbstractJaMoPPTests {
 					Method method = (Method) member;
 					assertEquals(8, method.getBlock().getStatements().size());
 					LocalVariableStatement locStat = (LocalVariableStatement) method.getBlock().getStatements().get(0);
-					this.assertType(locStat.getVariable().getTypeReference().getTarget(), InferableType.class);
+					this.assertType(locStat.getVariable().getTypeReference(), InferableType.class);
+					TypeReference reference = ((InferableType) locStat.getVariable().getTypeReference()).getActualTargets().get(0);
+					this.assertType(reference, Int.class);
 				}
 			}
 			this.assertResolveAllProxies(root);
 			this.parseAndReprint(file);
 		} catch (Exception e) {
+			e.printStackTrace();
 			fail(e.getMessage());
 		}
 	}
