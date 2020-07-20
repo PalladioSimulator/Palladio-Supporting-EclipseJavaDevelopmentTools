@@ -137,8 +137,22 @@ public class JDTResolverUtility {
 		}
 	}
 	
+	private static String convertToTypeParameterName(ITypeBinding binding) {
+		if (binding == null) {
+			return "";
+		}
+		String name = "";
+		if (binding.getDeclaringClass() != null) {
+			name += convertToTypeName(binding.getDeclaringClass());
+		} else if (binding.getDeclaringMethod() != null) {
+			name += convertToMethodName(binding.getDeclaringMethod());
+		}
+		name += "." + binding.getName();
+		return name;
+	}
+	
 	static org.emftext.language.java.generics.TypeParameter getTypeParameter(ITypeBinding binding) {
-		String paramName = convertToTypeName(binding);
+		String paramName = convertToTypeParameterName(binding);
 		if (typeBindToTP.containsKey(paramName)) {
 			return typeBindToTP.get(paramName);
 		} else {
