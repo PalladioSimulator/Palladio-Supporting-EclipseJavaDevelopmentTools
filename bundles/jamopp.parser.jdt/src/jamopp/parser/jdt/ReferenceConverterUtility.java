@@ -217,7 +217,7 @@ class ReferenceConverterUtility {
 	
 	private static org.emftext.language.java.references.IdentifierReference convertToIdentifierReference(String packageName) {
 		org.emftext.language.java.references.IdentifierReference result = org.emftext.language.java.references.ReferencesFactory.eINSTANCE.createIdentifierReference();
-		org.emftext.language.java.references.PackageReference ref = org.emftext.language.java.references.ReferencesFactory.eINSTANCE.createPackageReference();
+		org.emftext.language.java.containers.Package ref = org.emftext.language.java.containers.ContainersFactory.eINSTANCE.createPackage();
 		ref.setName(packageName);
 		result.setTarget(ref);
 		return result;
