@@ -85,7 +85,9 @@ public class JavaSevenAndUpTest extends AbstractJaMoPPTests {
 			String file = "simplepackage" + File.separator + "package-info.java";
 			JavaRoot root = this.parseResource(file);
 			this.assertType(root, org.emftext.language.java.containers.Package.class);
-			assertEquals("simplepackage", ((org.emftext.language.java.containers.Package) root).getName());
+			org.emftext.language.java.containers.Package pRoot = (org.emftext.language.java.containers.Package) root;
+			assertEquals(1, pRoot.getNamespaces().size());
+			assertEquals("simplepackage", pRoot.getNamespaces().get(0));
 			this.assertResolveAllProxies(root);
 			this.parseAndReprint(file);
 		} catch (Exception e) {
