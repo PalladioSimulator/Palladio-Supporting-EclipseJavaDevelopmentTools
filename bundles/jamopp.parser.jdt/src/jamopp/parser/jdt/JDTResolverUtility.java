@@ -393,7 +393,7 @@ public class JDTResolverUtility {
 	
 	static void completeResolution() {
 		modBindToMod.forEach((modName, module) -> {
-			if (module.eResource() == null) {
+			if (module.eContainer() == null) {
 				Resource newResource = resourceSet.createResource(URI.createHierarchicalURI("empty", "JaMoPP-Module", null,
 					new String[] {modName, "module-info.java"}, null, null));
 				newResource.getContents().add(module);
@@ -401,25 +401,21 @@ public class JDTResolverUtility {
 		});
 		
 		nameToEnumConst.forEach((constName, enConst) -> {
-			if (enConst.eResource() == null) {
+			if (enConst.eContainer() == null) {
 				IVariableBinding varBind = variableBindings.stream().filter(var -> constName.equals(convertToFieldName(var)))
 					.findFirst().get();
 				org.emftext.language.java.classifiers.Enumeration enume = getEnumeration(varBind.getDeclaringClass());
-				if (!enume.getConstants().contains(enConst)) {
-					enume.getConstants().add(enConst);
-				}
+				enume.getConstants().add(enConst);
 			}
 		});
 		
 		nameToField.forEach((fieldName, field) -> {
-			if (field.eResource() == null) {
+			if (field.eContainer() == null) {
 				IVariableBinding varBind = variableBindings.stream().filter(var -> fieldName.equals(convertToFieldName(var)))
 					.findFirst().get();
 				org.emftext.language.java.classifiers.ConcreteClassifier classifier = (org.emftext.language.java.classifiers.ConcreteClassifier)
 					getClassifier(varBind.getDeclaringClass());
-				if (!classifier.getMembers().contains(field)) {
-					classifier.getMembers().add(field);
-				}
+				classifier.getMembers().add(field);
 			}
 		});
 		
@@ -463,22 +459,20 @@ public class JDTResolverUtility {
 	}
 	
 	private static void completeMethod(String methodName, org.emftext.language.java.members.Member method) {
-		if (method.eResource() == null) {
+		if (method.eContainer() == null) {
 			IMethodBinding methBind = methodBindings.stream().filter(meth -> methodName.equals(convertToMethodName(meth)))
 				.findFirst().get();
 			org.emftext.language.java.classifiers.ConcreteClassifier classifier = (org.emftext.language.java.classifiers.ConcreteClassifier)
 				getClassifier(methBind.getDeclaringClass());
-			if (!classifier.getMembers().contains(method)) {
-				classifier.getMembers().add(method);
-			}
+			classifier.getMembers().add(method);
 		}
 	}
 	
 	private static void completeType(String typeName, org.emftext.language.java.classifiers.ConcreteClassifier classifier) {
-		if (classifier.eResource() == null) {
+		if (classifier.eContainer() == null) {
 			ITypeBinding typeBind = typeBindings.stream().filter(type -> typeName.equals(convertToTypeName(type)))
 				.findFirst().orElse(null);
-			if ((typeBind == null || typeBind.isTopLevel()) && classifier.eContainer() == null) {
+			if (typeBind == null || typeBind.isTopLevel()) {
 				org.emftext.language.java.containers.CompilationUnit cu = org.emftext.language.java.containers.ContainersFactory.eINSTANCE.createCompilationUnit();
 				cu.setName("");
 				cu.getClassifiers().add(classifier);
