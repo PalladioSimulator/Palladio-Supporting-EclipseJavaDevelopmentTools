@@ -976,6 +976,8 @@
       </genClasses>
       <genClasses image="false" ecoreClass="java.ecore#//modules/AccessProvidingModuleDirective">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//modules/AccessProvidingModuleDirective/modules"/>
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference java.ecore#//modules/AccessProvidingModuleDirective/accessablePackage"/>
       </genClasses>
       <genClasses ecoreClass="java.ecore#//modules/RequiresModuleDirective">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//modules/RequiresModuleDirective/modifier"/>

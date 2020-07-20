@@ -133,7 +133,7 @@
         <eParameters name="clazz" lowerBound="1" eType="#//classifiers/ConcreteClassifier"/>
       </eOperations>
       <eStructuralFeatures xsi:type="ecore:EReference" name="package" lowerBound="1"
-          eType="#//containers/Package" containment="true"/>
+          eType="#//containers/Package"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="Implementor" abstract="true" eSuperTypes="#//commons/Commentable">
       <eStructuralFeatures xsi:type="ecore:EReference" name="implements" upperBound="-1"
@@ -514,7 +514,7 @@
       <eStructuralFeatures xsi:type="ecore:EReference" name="module" lowerBound="1"
           eType="#//containers/Module"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="classifiers" upperBound="-1"
-          eType="#//classifiers/ConcreteClassifier" containment="true"/>
+          eType="#//classifiers/ConcreteClassifier"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="EmptyModel" eSuperTypes="#//containers/JavaRoot"/>
     <eClassifiers xsi:type="ecore:EClass" name="Module" eSuperTypes="#//containers/JavaRoot">
@@ -523,7 +523,7 @@
       <eStructuralFeatures xsi:type="ecore:EReference" name="target" upperBound="-1"
           eType="#//modules/ModuleDirective" containment="true"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="packages" upperBound="-1"
-          eType="#//containers/Package" containment="true"/>
+          eType="#//containers/Package"/>
     </eClassifiers>
   </eSubpackages>
   <eSubpackages xmi:id="_Wo2YC9z1Ed2bJ_pQViWxFg" name="expressions" nsURI="http://www.emftext.org/java/expressions"
@@ -1727,6 +1727,8 @@
         eSuperTypes="#//modules/ModuleDirective #//commons/NamespaceAwareElement">
       <eStructuralFeatures xsi:type="ecore:EReference" name="modules" upperBound="-1"
           eType="#//modules/ModuleReference" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="accessablePackage" lowerBound="1"
+          eType="#//containers/Package"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="RequiresModuleDirective" eSuperTypes="#//modules/ModuleDirective">
       <eStructuralFeatures xsi:type="ecore:EReference" name="modifier" eType="#//modifiers/ModuleRequiresModifier"
