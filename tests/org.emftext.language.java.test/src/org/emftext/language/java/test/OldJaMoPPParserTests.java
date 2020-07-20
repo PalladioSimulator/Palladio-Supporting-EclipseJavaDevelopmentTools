@@ -978,23 +978,31 @@ public class OldJaMoPPParserTests extends AbstractJaMoPPTests {
 		String filename = typename + JAVA_FILE_EXTENSION;
 		org.emftext.language.java.classifiers.Class clazz = assertParsesToClass(typename);
 		assertResolveAllProxies(clazz);
-		//there should be 2 package segments that were created during resolving by the ScopedTreeWalker
-		Resource r = clazz.eResource();
-		assertEquals(2 + 1, r.getContents().size());
-		org.emftext.language.java.containers.Package p1 = 
-				(org.emftext.language.java.containers.Package) r.getContents().get(1);
-		org.emftext.language.java.containers.Package p2 = 
-				(org.emftext.language.java.containers.Package) r.getContents().get(2);
-		assertEquals("java", p1.getName());
-		assertEquals("org", p2.getName());
-//		assertEquals("lang", p1.getSubpackages().get(0).getName());
-//		assertEquals(1, p1.getSubpackages().size());
-//		assertEquals("xml", p2.getSubpackages().get(0).getName());
-//		assertEquals("annotation", p1.getSubpackages().get(0).getSubpackages().get(0).getName());
-//		assertEquals("instrument", p1.getSubpackages().get(0).getSubpackages().get(1).getName());
-//		assertEquals("sax", p2.getSubpackages().get(0).getSubpackages().get(0).getName());
-//		assertEquals(0, p1.getSubpackages().get(0).getSubpackages().get(0).getSubpackages().size());
-//		assertEquals(0, p2.getSubpackages().get(0).getSubpackages().get(0).getSubpackages().size());
+		
+		assertEquals(1, clazz.getMembers().size());
+		Member firstMember = clazz.getMembers().get(0);
+		assertType(firstMember, Method.class);
+		Method method = (Method) firstMember;
+		
+		ExpressionStatement statement = (ExpressionStatement) method.getStatements().get(0);
+		IdentifierReference ref = (IdentifierReference) statement.getExpression();
+		assertType(ref.getTarget(), org.emftext.language.java.containers.Package.class);
+		org.emftext.language.java.containers.Package p1 = (org.emftext.language.java.containers.Package) ref.getTarget();
+		assertEquals(1, p1.getNamespaces().size());
+		assertEquals("java", p1.getNamespaces().get(0));
+		
+		ref = (IdentifierReference) ref.getNext();
+		assertType(ref.getTarget(), org.emftext.language.java.containers.Package.class);
+		p1 = (org.emftext.language.java.containers.Package) ref.getTarget();
+		assertEquals(2, p1.getNamespaces().size());
+		assertEquals("java", p1.getNamespaces().get(0));
+		assertEquals("lang", p1.getNamespaces().get(1));
+		
+		ref = (IdentifierReference) ref.getNext();
+		assertType(ref.getTarget(), org.emftext.language.java.containers.Package.class);
+		p1 = (org.emftext.language.java.containers.Package) ref.getTarget();
+		assertEquals(3, p1.getNamespaces().size());
+		assertEquals("annotation", p1.getNamespaces().get(2));
 		
 		parseAndReprint(filename);
 	}
