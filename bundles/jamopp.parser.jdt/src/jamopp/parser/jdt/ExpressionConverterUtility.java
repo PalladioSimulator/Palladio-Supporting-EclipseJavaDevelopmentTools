@@ -192,7 +192,7 @@ class ExpressionConverterUtility {
 					VariableDeclarationFragment frag = (VariableDeclarationFragment) obj;
 					org.emftext.language.java.parameters.OrdinaryParameter nextParam = JDTResolverUtility.getOrdinaryParameter(frag.resolveBinding());
 					nextParam.setName(frag.getName().getIdentifier());
-					nextParam.setTypeReference(BaseConverterUtility.convertToTypeReference(frag.resolveBinding().getType()));
+					nextParam.setTypeReference(BaseConverterUtility.convertToTypeReferences(frag.resolveBinding().getType()).get(0));
 					param.getParameters().add(nextParam);
 				});
 				result.setParameters(param);
