@@ -61,6 +61,9 @@ public class JDTResolverUtility {
 		if (qualifiedName.contains("<")) {
 			qualifiedName = qualifiedName.substring(0, qualifiedName.indexOf("<"));
 		}
+		if (qualifiedName.contains("[")) {
+			qualifiedName = qualifiedName.substring(0, qualifiedName.indexOf("["));
+		}
 		return qualifiedName;
 	}
 	
@@ -128,6 +131,8 @@ public class JDTResolverUtility {
 			return getClass(binding);
 		} else if (binding.isTypeVariable()) {
 			return getTypeParameter(binding);
+		} else if (binding.isArray()) {
+			return getClassifier(binding.getElementType());
 		}
 		return null;
 	}
@@ -490,6 +495,11 @@ public class JDTResolverUtility {
 				completeType(typeBind.getDeclaringClass().getQualifiedName(), parentClassifier);
 				if (!parentClassifier.getMembers().contains(classifier)) {
 					parentClassifier.getMembers().add(classifier);
+				}
+			} else if (typeBind.isArray()) {
+				ITypeBinding elementType = typeBind.getElementType();
+				if (!elementType.isPrimitive() && !elementType.isTypeVariable()) {
+					completeType(typeName, (org.emftext.language.java.classifiers.ConcreteClassifier) getClassifier(elementType));
 				}
 			}
 		}
