@@ -151,7 +151,7 @@ class ReferenceConverterUtility {
 		} else if (expr.getNodeType() == ASTNode.STRING_LITERAL) {
 			StringLiteral arr = (StringLiteral) expr;
 			org.emftext.language.java.references.StringReference result = org.emftext.language.java.references.ReferencesFactory.eINSTANCE.createStringReference();
-			result.setValue(arr.getEscapedValue());
+			result.setValue(arr.getLiteralValue());
 			LayoutInformationConverter.convertToMinimalLayoutInformation(result, arr);
 			return result;
 		} else if (expr.getNodeType() == ASTNode.SUPER_FIELD_ACCESS) {
