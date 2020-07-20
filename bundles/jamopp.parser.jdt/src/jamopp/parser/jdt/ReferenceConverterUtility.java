@@ -206,6 +206,8 @@ class ReferenceConverterUtility {
 			target = JDTResolverUtility.getClassifier((ITypeBinding) b);
 		} else if (b instanceof IVariableBinding) {
 			target = JDTResolverUtility.getReferencableElement((IVariableBinding) b);
+		} else if (b instanceof IMethodBinding) {
+			target = JDTResolverUtility.getMethod((IMethodBinding) b);
 		}
 		target.setName(name.getIdentifier());
 		result.setTarget(target);
