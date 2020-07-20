@@ -765,12 +765,9 @@
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="LambdaBody" abstract="true" eSuperTypes="#//commons/Commentable"/>
     <eClassifiers xsi:type="ecore:EClass" name="LambdaParameters" abstract="true"
-        eSuperTypes="#//commons/Commentable"/>
-    <eClassifiers xsi:type="ecore:EClass" name="ExplicitlyTypedLambdaParameters" eSuperTypes="#//expressions/LambdaParameters #//parameters/Parametrizable"/>
-    <eClassifiers xsi:type="ecore:EClass" name="ImplicitlyTypedLambdaParameters" eSuperTypes="#//expressions/LambdaParameters">
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="identifiers" upperBound="-1"
-          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    </eClassifiers>
+        eSuperTypes="#//commons/Commentable #//parameters/Parametrizable"/>
+    <eClassifiers xsi:type="ecore:EClass" name="ExplicitlyTypedLambdaParameters" eSuperTypes="#//expressions/LambdaParameters"/>
+    <eClassifiers xsi:type="ecore:EClass" name="ImplicitlyTypedLambdaParameters" eSuperTypes="#//expressions/LambdaParameters"/>
     <eClassifiers xsi:type="ecore:EClass" name="SingleImplicitLambdaParameter" eSuperTypes="#//expressions/ImplicitlyTypedLambdaParameters"/>
   </eSubpackages>
   <eSubpackages name="generics" nsURI="http://www.emftext.org/java/generics" nsPrefix="generics">

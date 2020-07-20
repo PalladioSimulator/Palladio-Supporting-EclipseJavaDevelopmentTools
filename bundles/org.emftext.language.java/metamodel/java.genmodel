@@ -404,9 +404,7 @@
       <genClasses image="false" ecoreClass="java.ecore#//expressions/LambdaBody"/>
       <genClasses image="false" ecoreClass="java.ecore#//expressions/LambdaParameters"/>
       <genClasses ecoreClass="java.ecore#//expressions/ExplicitlyTypedLambdaParameters"/>
-      <genClasses ecoreClass="java.ecore#//expressions/ImplicitlyTypedLambdaParameters">
-        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute java.ecore#//expressions/ImplicitlyTypedLambdaParameters/identifiers"/>
-      </genClasses>
+      <genClasses ecoreClass="java.ecore#//expressions/ImplicitlyTypedLambdaParameters"/>
       <genClasses ecoreClass="java.ecore#//expressions/SingleImplicitLambdaParameter"/>
     </nestedGenPackages>
     <nestedGenPackages prefix="Generics" basePackage="org.emftext.language.java" disposableProviderFactory="true"
