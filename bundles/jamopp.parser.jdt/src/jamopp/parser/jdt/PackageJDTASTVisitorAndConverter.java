@@ -22,8 +22,7 @@ class PackageJDTASTVisitorAndConverter extends AbstractAndEmptyModelJDTASTVisito
 	public boolean visit(CompilationUnit node) {
 		org.emftext.language.java.containers.JavaRoot root = this.getConvertedElement();
 		if (root == null && node.getPackage() != null) {
-			root = org.emftext.language.java.containers.ContainersFactory.eINSTANCE.createPackage();
-			root.setName("");
+			root = JDTResolverUtility.getPackage(node.getPackage().resolveBinding());
 			LayoutInformationConverter.convertJavaRootLayoutInformation(root, node, this.getSource());
 			this.setConvertedElement(root);
 		}

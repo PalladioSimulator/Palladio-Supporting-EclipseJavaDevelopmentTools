@@ -24,13 +24,18 @@ import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.FieldAccess;
 import org.eclipse.jdt.core.dom.IBinding;
 import org.eclipse.jdt.core.dom.IMethodBinding;
+import org.eclipse.jdt.core.dom.IPackageBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.MethodInvocation;
+import org.eclipse.jdt.core.dom.Name;
+import org.eclipse.jdt.core.dom.NameQualifiedType;
 import org.eclipse.jdt.core.dom.ParameterizedType;
 import org.eclipse.jdt.core.dom.ParenthesizedExpression;
 import org.eclipse.jdt.core.dom.QualifiedName;
+import org.eclipse.jdt.core.dom.QualifiedType;
 import org.eclipse.jdt.core.dom.SimpleName;
+import org.eclipse.jdt.core.dom.SimpleType;
 import org.eclipse.jdt.core.dom.Statement;
 import org.eclipse.jdt.core.dom.StringLiteral;
 import org.eclipse.jdt.core.dom.SuperConstructorInvocation;
@@ -198,6 +203,18 @@ class ReferenceConverterUtility {
 		return null;
 	}
 	
+	private static org.emftext.language.java.references.IdentifierReference convertToIdentifierReference(Name name) {
+		if (name.isSimpleName()) {
+			return convertToIdentifierReference((SimpleName) name);
+		} else { // name.isQualifiedName()
+			QualifiedName qualifiedName = (QualifiedName) name;
+			org.emftext.language.java.references.IdentifierReference parent = convertToIdentifierReference(qualifiedName.getQualifier());
+			org.emftext.language.java.references.IdentifierReference child = convertToIdentifierReference(qualifiedName.getName());
+			parent.setNext(child);
+			return child;
+		}
+	}
+	
 	private static org.emftext.language.java.references.IdentifierReference convertToIdentifierReference(SimpleName name) {
 		org.emftext.language.java.references.IdentifierReference result = org.emftext.language.java.references.ReferencesFactory.eINSTANCE.createIdentifierReference();
 		IBinding b = name.resolveBinding();
@@ -208,6 +225,8 @@ class ReferenceConverterUtility {
 			target = JDTResolverUtility.getReferencableElement((IVariableBinding) b);
 		} else if (b instanceof IMethodBinding) {
 			target = JDTResolverUtility.getMethod((IMethodBinding) b);
+		} else if (b instanceof IPackageBinding) {
+			target = JDTResolverUtility.getPackage((IPackageBinding) b);
 		}
 		target.setName(name.getIdentifier());
 		result.setTarget(target);
@@ -215,56 +234,45 @@ class ReferenceConverterUtility {
 		return result;
 	}
 	
-	private static org.emftext.language.java.references.IdentifierReference convertToIdentifierReference(String packageName) {
-		org.emftext.language.java.references.IdentifierReference result = org.emftext.language.java.references.ReferencesFactory.eINSTANCE.createIdentifierReference();
-		org.emftext.language.java.containers.Package ref = org.emftext.language.java.containers.ContainersFactory.eINSTANCE.createPackage();
-		ref.setName(packageName);
-		result.setTarget(ref);
-		return result;
-	}
-	
-	private static org.emftext.language.java.references.IdentifierReference convertToIdentifierReference(org.emftext.language.java.types.ClassifierReference ref) {
-		org.emftext.language.java.references.IdentifierReference temp = org.emftext.language.java.references.ReferencesFactory.eINSTANCE.createIdentifierReference();
-		temp.setTarget(ref.getTarget());
-		temp.getTypeArguments().addAll(ref.getTypeArguments());
-		temp.getAnnotations().addAll(ref.getAnnotations());
-		return temp;
-	}
-	
 	static org.emftext.language.java.references.Reference convertToReference(Type t) {
 		return walkUp(internalConvertToReference(t));
 	}
 	
+	@SuppressWarnings("unchecked")
 	private static org.emftext.language.java.references.Reference internalConvertToReference(Type t) {
-		org.emftext.language.java.types.TypeReference typeRef = BaseConverterUtility.convertToTypeReference(t);
-		org.emftext.language.java.references.Reference parent;
-		if (typeRef instanceof org.emftext.language.java.types.PrimitiveType) {
+		if (t.isNameQualifiedType()) {
+			NameQualifiedType nqType = (NameQualifiedType) t;
+			org.emftext.language.java.references.IdentifierReference parent = convertToIdentifierReference(nqType.getQualifier());
+			org.emftext.language.java.references.IdentifierReference child = convertToIdentifierReference(nqType.getName());
+			parent.setNext(child);
+			nqType.annotations().forEach(obj -> child.getAnnotations().add(AnnotationInstanceOrModifierConverterUtility
+				.convertToAnnotationInstance((Annotation) obj)));
+			LayoutInformationConverter.convertToMinimalLayoutInformation(child, nqType);
+			return child;
+		} else if (t.isQualifiedType()) {
+			QualifiedType qType = (QualifiedType) t;
+			org.emftext.language.java.references.Reference parent = internalConvertToReference(qType.getQualifier());
+			org.emftext.language.java.references.IdentifierReference child = convertToIdentifierReference(qType.getName());
+			qType.annotations().forEach(obj -> child.getAnnotations().add(AnnotationInstanceOrModifierConverterUtility
+				.convertToAnnotationInstance((Annotation) obj)));
+			parent.setNext(child);
+			LayoutInformationConverter.convertToMinimalLayoutInformation(child, qType);
+			return child;
+		} else if (t.isSimpleType()) {
+			SimpleType sType = (SimpleType) t;
+			org.emftext.language.java.references.IdentifierReference result = convertToIdentifierReference(sType.getName());
+			sType.annotations().forEach(obj -> result.getAnnotations().add(AnnotationInstanceOrModifierConverterUtility
+				.convertToAnnotationInstance((Annotation) obj)));
+			LayoutInformationConverter.convertToMinimalLayoutInformation(result, sType);
+			return result;
+		} else if (t.isPrimitiveType()) {
+			org.emftext.language.java.types.TypeReference typeRef = BaseConverterUtility.convertToTypeReference(t);
 			org.emftext.language.java.references.PrimitiveTypeReference temp = org.emftext.language.java.references.ReferencesFactory.eINSTANCE.createPrimitiveTypeReference();
 			temp.setPrimitiveType((org.emftext.language.java.types.PrimitiveType) typeRef);
-			parent = temp;
-		} else if (typeRef instanceof org.emftext.language.java.types.ClassifierReference) {
-			parent = convertToIdentifierReference((org.emftext.language.java.types.ClassifierReference) typeRef);
-		} else { // typeRef instanceof org.emftext.language.java.types.NamespaceClassifierReference
-			org.emftext.language.java.types.NamespaceClassifierReference ref = (org.emftext.language.java.types.NamespaceClassifierReference) typeRef;
-			org.emftext.language.java.references.IdentifierReference currentResult = null;
-			for (String namespace : ref.getNamespaces()) {
-				org.emftext.language.java.references.IdentifierReference iterRef = convertToIdentifierReference(namespace);
-				if (currentResult != null) {
-					currentResult.setNext(iterRef);
-				}
-				currentResult = iterRef;
-			}
-			for (org.emftext.language.java.types.ClassifierReference iterRef : ref.getClassifierReferences()) {
-				org.emftext.language.java.references.IdentifierReference iterIdRef = convertToIdentifierReference(iterRef);
-				if (currentResult != null) {
-					currentResult.setNext(iterIdRef);
-				}
-				currentResult = iterIdRef;
-			}
-			parent = currentResult;
+			temp.getLayoutInformations().addAll(typeRef.getLayoutInformations());
+			return temp;
 		}
-		parent.getLayoutInformations().addAll(typeRef.getLayoutInformations());
-		return parent;
+		return null;
 	}
 	
 	static org.emftext.language.java.references.Reference convertToReference(Statement st) {
