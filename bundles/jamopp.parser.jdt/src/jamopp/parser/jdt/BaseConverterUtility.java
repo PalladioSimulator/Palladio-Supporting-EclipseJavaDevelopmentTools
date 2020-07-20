@@ -170,7 +170,12 @@ class BaseConverterUtility {
 		} else if (t.isVar()) {
 			org.emftext.language.java.types.InferableType ref = org.emftext.language.java.types.TypesFactory.eINSTANCE.createInferableType();
 			if (t.resolveBinding() != null) {
-				// Set target.
+				org.emftext.language.java.types.TypeReference actualRef = convertToTypeReference(t.resolveBinding());
+				if (actualRef instanceof org.emftext.language.java.types.ClassifierReference) {
+					ref.setActualTarget(((org.emftext.language.java.types.ClassifierReference) actualRef).getTarget());
+				} else {
+					ref.setActualTarget((org.emftext.language.java.types.PrimitiveType) actualRef);
+				}
 			}
 			LayoutInformationConverter.convertToMinimalLayoutInformation(ref, t);
 			return ref;

@@ -940,7 +940,7 @@
       <genClasses ecoreClass="java.ecore#//types/Void"/>
       <genClasses ecoreClass="java.ecore#//types/InferableType">
         <genFeatures notify="false" createChild="false" propertySortChoices="true"
-            ecoreFeature="ecore:EReference java.ecore#//types/InferableType/classifier"/>
+            ecoreFeature="ecore:EReference java.ecore#//types/InferableType/actualTargets"/>
       </genClasses>
     </nestedGenPackages>
     <nestedGenPackages prefix="Variables" basePackage="org.emftext.language.java"
