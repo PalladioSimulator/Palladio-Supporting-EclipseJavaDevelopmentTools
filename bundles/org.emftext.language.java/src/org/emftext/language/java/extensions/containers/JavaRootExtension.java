@@ -16,9 +16,9 @@
 package org.emftext.language.java.extensions.containers;
 
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.common.util.UniqueEList;
 import org.emftext.language.java.classifiers.ConcreteClassifier;
 import org.emftext.language.java.containers.JavaRoot;
-import org.emftext.language.java.util.UniqueEList;
 
 public class JavaRootExtension {
 	
@@ -30,8 +30,7 @@ public class JavaRootExtension {
 		
 		String packageName = me.getNamespacesAsString();
 		
-		defaultImportList.addAll(me.getConcreteClassifierProxies(
-				packageName, "*"));
+		defaultImportList.addAll(me.getConcreteClassifiers(packageName, "*"));
 
 		return defaultImportList;
 	}

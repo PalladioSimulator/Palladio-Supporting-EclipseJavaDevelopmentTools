@@ -18,10 +18,9 @@ package org.emftext.language.java.extensions.classifiers;
 import java.util.List;
 
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.common.util.UniqueEList;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.util.EcoreUtil;
-import org.emftext.language.java.JavaUniquePathConstructor;
 import org.emftext.language.java.classifiers.Classifier;
 import org.emftext.language.java.classifiers.ConcreteClassifier;
 import org.emftext.language.java.classifiers.Interface;
@@ -31,7 +30,6 @@ import org.emftext.language.java.members.Member;
 import org.emftext.language.java.modifiers.AnnotableAndModifiable;
 import org.emftext.language.java.types.ClassifierReference;
 import org.emftext.language.java.types.TypeReference;
-import org.emftext.language.java.util.UniqueEList;
 
 public class ConcreteClassifierExtension {
 	
@@ -61,22 +59,18 @@ public class ConcreteClassifierExtension {
 	
 	public static EList<ConcreteClassifier> getInnerClassifiers(ConcreteClassifier me) {
 		if (me.eIsProxy()) {
-			 String uriString = ((InternalEObject) me).eProxyURI().trimFragment().toString();
-			 String fullName = uriString.substring(JavaUniquePathConstructor.JAVA_CLASSIFIER_PATHMAP.length(), 
-					 uriString.length() - ".java".length()) + "$";
-			 return me.getConcreteClassifierProxies(fullName, "*");
+			 return null;
 		} else {
 			String suffix = "";
 			ConcreteClassifier containingClass = me;
 			while (containingClass.eContainer() instanceof ConcreteClassifier) {
 				containingClass = (ConcreteClassifier) containingClass.eContainer();
-				suffix = containingClass.getName() + JavaUniquePathConstructor.CLASSIFIER_SEPARATOR + suffix;
+				suffix = containingClass.getName() + "." + suffix;
 			}
 			if (containingClass.eContainer() instanceof CompilationUnit) {
 				CompilationUnit compilationUnit = (CompilationUnit) containingClass.eContainer();
-			    String fullName = compilationUnit.getNamespacesAsString() + suffix + 
-			    		me.getName() + JavaUniquePathConstructor.CLASSIFIER_SEPARATOR;
-			    return me.getConcreteClassifierProxies(fullName, "*");
+			    String fullName = compilationUnit.getNamespacesAsString() + suffix + me.getName();
+			    return me.getConcreteClassifiers(fullName, "*");
 			}
 		}
 

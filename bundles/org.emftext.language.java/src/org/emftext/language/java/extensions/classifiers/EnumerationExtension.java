@@ -16,12 +16,12 @@
 package org.emftext.language.java.extensions.classifiers;
 
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.common.util.UniqueEList;
 import org.emftext.language.java.classifiers.ConcreteClassifier;
 import org.emftext.language.java.classifiers.Enumeration;
 import org.emftext.language.java.classifiers.Interface;
 import org.emftext.language.java.members.EnumConstant;
 import org.emftext.language.java.types.TypeReference;
-import org.emftext.language.java.util.UniqueEList;
 
 public class EnumerationExtension {
 	

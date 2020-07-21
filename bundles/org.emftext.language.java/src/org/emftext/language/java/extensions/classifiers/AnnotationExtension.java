@@ -16,14 +16,13 @@
 package org.emftext.language.java.extensions.classifiers;
 
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.common.util.UniqueEList;
 import org.emftext.language.java.classifiers.Annotation;
 import org.emftext.language.java.classifiers.ConcreteClassifier;
-import org.emftext.language.java.util.UniqueEList;
 
 public class AnnotationExtension {
 	
 	public static EList<ConcreteClassifier> getAllSuperClassifiers(Annotation me) {
-		// TODO Use ECollections.singletonEList() instead?
 		EList<ConcreteClassifier> result = new UniqueEList<ConcreteClassifier>();
 		result.add(me.getAnnotationInterface());
 		return result;

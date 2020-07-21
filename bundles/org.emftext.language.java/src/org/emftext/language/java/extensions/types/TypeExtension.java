@@ -16,8 +16,9 @@
 package org.emftext.language.java.extensions.types;
 
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.common.util.UniqueEList;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.util.EcoreUtil;
+import org.emftext.language.java.JavaClasspath;
 import org.emftext.language.java.arrays.ArrayTypeable;
 import org.emftext.language.java.classifiers.Annotation;
 import org.emftext.language.java.classifiers.AnonymousClass;
@@ -32,7 +33,6 @@ import org.emftext.language.java.types.Type;
 import org.emftext.language.java.types.TypeReference;
 import org.emftext.language.java.types.TypedElement;
 import org.emftext.language.java.util.TemporalCompositeClassifier;
-import org.emftext.language.java.util.UniqueEList;
 
 public class TypeExtension {
 	
@@ -150,8 +150,7 @@ public class TypeExtension {
 		}
 		
 		//String, primitives, and arrays are serializable
-		ConcreteClassifier serializableClass = (ConcreteClassifier) EcoreUtil.resolve(
-				me.getConcreteClassifierProxy("java.io.Serializable"), _this);
+		ConcreteClassifier serializableClass = JavaClasspath.get().getConcreteClassifier("java.io.Serializable");
 		if (lOtherType.equals(serializableClass)) {
 			if (_this.equals(serializableClass)) {
 	 			return true;

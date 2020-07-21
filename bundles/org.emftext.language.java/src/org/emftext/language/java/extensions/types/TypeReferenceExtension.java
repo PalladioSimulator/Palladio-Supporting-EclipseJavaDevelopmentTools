@@ -23,6 +23,7 @@ import org.emftext.language.java.references.MethodCall;
 import org.emftext.language.java.references.Reference;
 import org.emftext.language.java.references.ReferenceableElement;
 import org.emftext.language.java.types.ClassifierReference;
+import org.emftext.language.java.types.InferableType;
 import org.emftext.language.java.types.NamespaceClassifierReference;
 import org.emftext.language.java.types.PrimitiveType;
 import org.emftext.language.java.types.Type;
@@ -45,7 +46,7 @@ public class TypeReferenceExtension {
 	/**
 	 * Sets the type targeted by this type reference
 	 * 
-	 * @param type the new type to set as target
+	 * @param type the new type to set as target.
 	 */
 	public static void setTarget(TypeReference me, Classifier type) {
 		if (type == null) {
@@ -64,6 +65,16 @@ public class TypeReferenceExtension {
 			ClassifierReference classifierRef = TypesFactory.eINSTANCE.createClassifierReference();
 			classifierRef.setTarget(type);
 			nsClassifierReference.getClassifierReferences().add(classifierRef);			
+		} else if (me instanceof ClassifierReference) {
+			ClassifierReference ref = (ClassifierReference) me;
+			ref.setTarget(type);
+		} else if (me instanceof InferableType) {
+			InferableType ref = (InferableType) me;
+			ref.getArrayDimensionsBefore().clear();
+			ref.getActualTargets().clear();
+			ClassifierReference newRef = TypesFactory.eINSTANCE.createClassifierReference();
+			newRef.setTarget(type);
+			ref.getActualTargets().add(newRef);
 		}
 	}
 	
@@ -73,9 +84,9 @@ public class TypeReferenceExtension {
 	 * the Java metamodel. If type parameters are bound in the given reference,
 	 * the bound type will be returned instead of the parameter.
 	 * 
-	 * @param reference
+	 * @param reference.
 	 * 
-	 * @return the referenced type
+	 * @return the referenced type.
 	 */
 	public static Type getBoundTarget(TypeReference me, Reference reference) {
 		Type type = null;
@@ -106,6 +117,13 @@ public class TypeReferenceExtension {
 
 		else if (me instanceof PrimitiveType) {
 			return (PrimitiveType) me;
+		}
+		
+		else if (me instanceof InferableType) {
+			InferableType t = (InferableType) me;
+			if (t.getActualTargets().size() > 0) {
+				return t.getActualTargets().get(0).getBoundTarget(reference);
+			}
 		}
 		
 		//resolve parameter to real type
@@ -140,6 +158,14 @@ public class TypeReferenceExtension {
 				classifierReference = nsClassifierReference.getClassifierReferences().get(lastIndex);
 			}
 		}
+		
+		if (me instanceof InferableType) {
+			InferableType t = (InferableType) me;
+			if (t.getActualTargets().size() > 0) {
+				return t.getActualTargets().get(0).getPureClassifierReference();
+			}
+		}
+		
 		return classifierReference;
 	}
 }

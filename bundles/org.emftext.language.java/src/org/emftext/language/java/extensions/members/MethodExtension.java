@@ -160,16 +160,6 @@ public class MethodExtension {
 		
 		return false;		
 	}
-
-	public static long getArrayDimension(Method me) {
-		int sizeBefore = me.getArrayDimensionsBefore().size();
-		int sizeAfter = me.getArrayDimensionsAfter().size();
-		long size = sizeBefore + sizeAfter;
-		if (me instanceof VariableLengthParameter) {
-			size++;
-		}
-		return size;
-	}
 	
 	/**
 	 * Returns a list of all statements within the block of a method.

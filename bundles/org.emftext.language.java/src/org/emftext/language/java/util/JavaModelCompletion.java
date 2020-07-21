@@ -17,26 +17,16 @@ package org.emftext.language.java.util;
 
 import java.util.Iterator;
 
-import org.eclipse.emf.common.util.BasicEList;
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.util.EcoreUtil;
-import org.emftext.language.java.annotations.AnnotationInstance;
 import org.emftext.language.java.classifiers.Annotation;
 import org.emftext.language.java.classifiers.Class;
 import org.emftext.language.java.classifiers.Enumeration;
 import org.emftext.language.java.classifiers.Interface;
-import org.emftext.language.java.commons.NamedElement;
-import org.emftext.language.java.expressions.Expression;
-import org.emftext.language.java.expressions.PrimaryExpression;
-import org.emftext.language.java.members.EmptyMember;
-import org.emftext.language.java.members.MemberContainer;
 import org.emftext.language.java.members.MembersFactory;
 import org.emftext.language.java.members.Method;
 import org.emftext.language.java.parameters.Parameter;
 import org.emftext.language.java.parameters.ParametersFactory;
-import org.emftext.language.java.statements.Block;
 import org.emftext.language.java.statements.StatementsFactory;
 import org.emftext.language.java.types.ClassifierReference;
 import org.emftext.language.java.types.TypesFactory;
@@ -70,14 +60,7 @@ public class JavaModelCompletion {
 			if (element instanceof Annotation) {
 				addMissingAnnotationMembers((Annotation) element);
 			}
-			if (element instanceof EmptyMember) {
-				setEmptyMemberName((EmptyMember) element);
-			}
-			if (element instanceof Block) {
-				setBlockName((Block) element);
-			}
 		}
-		simplifyExpressions(resource);
 	}
 
 	/**
@@ -126,7 +109,7 @@ public class JavaModelCompletion {
 			valueMethod.setName(valueMethodName);
 			valueMethod.setStatement(StatementsFactory.eINSTANCE.createEmptyStatement());
 			ClassifierReference type = TypesFactory.eINSTANCE.createClassifierReference();
-			type.setTarget(annotation.getConcreteClassifierProxy("java.lang.String"));
+			type.setTarget(annotation.getConcreteClassifier("java.lang.String"));
 			valueMethod.setTypeReference(type);
 			annotation.getDefaultMembers().add(valueMethod);
 		}
@@ -172,113 +155,11 @@ public class JavaModelCompletion {
 			Parameter strParameter = ParametersFactory.eINSTANCE.createOrdinaryParameter();
 			strParameter.setName("str");
 			type = TypesFactory.eINSTANCE.createClassifierReference();
-			type.setTarget(enumeration.getConcreteClassifierProxy("java.lang.String"));
+			type.setTarget(enumeration.getConcreteClassifier("java.lang.String"));
 			strParameter.setTypeReference(type);
 
 			valueOfMethod.getParameters().add(strParameter);
 			enumeration.getDefaultMembers().add(valueOfMethod);
 		}
-	}
-
-	/**
-	 * Sets the name of the given {@link EmptyMember} to MemberX where X is the
-	 * index of the given member in its {@link MemberContainer}. This is
-	 * required to obtain a valid Java model (name is a mandatory attribute of
-	 * {@link NamedElement}).
-	 * 
-	 * @param emptyMember
-	 *            the member to set the name for
-	 */
-	public static void setEmptyMemberName(EmptyMember emptyMember) {
-		if (emptyMember.getName() != null) {
-			return;
-		}
-		EObject container = emptyMember.eContainer();
-		if (!(container instanceof MemberContainer)) {
-			return;
-		}
-		int idx = ((MemberContainer) container).getMembers().indexOf(emptyMember);
-		String name = "Member" + idx;
-		emptyMember.setName(name);
-	}
-
-	/**
-	 * Sets the name of the given {@link Block} to MemberX where X is the index
-	 * of the given member in its {@link MemberContainer}. If the {@link Block}
-	 * is not contained in a {@link MemberContainer} its name is set to 'Block'.
-	 * This is required to obtain a valid Java model (name is a mandatory
-	 * attribute of {@link NamedElement}).
-	 * 
-	 * @param block
-	 *            the block to set the name for
-	 */
-	public static void setBlockName(Block block) {
-		if (block.getName() != null) {
-			return;
-		}
-		
-		EObject container = block.eContainer();
-		if (container instanceof MemberContainer) {
-			int idx = ((MemberContainer) container).getMembers().indexOf(block);
-			String name = "Member" + idx;
-			block.setName(name);
-			return;
-		}
-		block.setName("Block");	
-	}
-
-	/**
-	 * Simplifies all expression in the given resource by removing empty
-	 * containers in all expression trees.
-	 * 
-	 * @param resource
-	 */
-	public static void simplifyExpressions(Resource resource) {
-		simplifyDown(resource.getContents());
-	}
-
-	private static void simplifyDown(EList<EObject> parentList) {
-		for (EObject child : new BasicEList<EObject>(parentList)) {
-			EObject singleContained = getSingleContained(child);
-			EObject next = singleContained;
-			while (next != null) {
-				next = getSingleContained(singleContained);
-				if (next != null) {
-					singleContained = next;
-				}
-			}
-			if (singleContained != null) {
-				EcoreUtil.replace(child, singleContained);
-				child = singleContained;
-			}
-			simplifyDown(child.eContents());
-		}
-	}
-
-	private static EObject getSingleContained(EObject parent) {
-		if (parent.eContainer() instanceof AnnotationInstance) {
-			//special case. Might be changed in the future.
-			return null;
-		}
-		if (!(parent instanceof Expression)) {
-			return null;
-		}
-		//never kill a primary
-		if (parent instanceof PrimaryExpression) {
-			return null;
-		}
-
-		EObject singleContained = null;
-		for(EObject contained : parent.eContents()) {
-			if (singleContained != null) {
-				return null;
-			}
-			singleContained = contained;
-		}
-		if (!(singleContained instanceof Expression)) {
-			return null;
-		}
-
-		return singleContained;
 	}
 }

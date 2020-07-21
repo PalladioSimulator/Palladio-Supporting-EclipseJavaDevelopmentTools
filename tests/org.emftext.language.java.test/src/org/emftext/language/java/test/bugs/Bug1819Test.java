@@ -21,9 +21,9 @@ import static org.junit.Assert.assertEquals;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.emftext.language.java.JavaUniquePathConstructor;
 import org.emftext.language.java.classifiers.ClassifiersFactory;
 import org.emftext.language.java.containers.CompilationUnit;
 import org.emftext.language.java.containers.ContainersFactory;
@@ -38,7 +38,8 @@ public class Bug1819Test extends AbstractBugTestCase {
 		String className = "TestName";
 		
 		ResourceSet rs = createResourceSet();
-		Resource r = rs.createResource(JavaUniquePathConstructor.getJavaFileResourceURI(className));
+		Resource r = rs.createResource(URI.createHierarchicalURI(
+			"empty", "JaMoPP-Class", null, new String[] {className + ".java"}, null, null));
 		CompilationUnit cu = ContainersFactory.eINSTANCE.createCompilationUnit();
 		org.emftext.language.java.classifiers.Class clazz = ClassifiersFactory.eINSTANCE.createClass();
 		clazz.setName(className);
@@ -59,7 +60,8 @@ public class Bug1819Test extends AbstractBugTestCase {
 		String packageName = "a.b.c";
 		
 		ResourceSet rs = createResourceSet();
-		Resource resource = rs.createResource(JavaUniquePathConstructor.getJavaFileResourceURI(packageName + "." + className));
+		Resource resource = rs.createResource(URI.createHierarchicalURI(
+			"empty", "JaMoPP-Class", null, new String[] {packageName + "." + className + ".java"}, null, null));
 		CompilationUnit cu = ContainersFactory.eINSTANCE.createCompilationUnit();
 		org.emftext.language.java.classifiers.Class clazz = ClassifiersFactory.eINSTANCE.createClass();
 		clazz.setName(className);

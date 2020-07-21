@@ -17,6 +17,7 @@
 package org.emftext.language.java.test.bugs;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.eclipse.emf.common.util.EList;
@@ -37,8 +38,8 @@ public class Bug1264Test extends AbstractBugTestCase {
 		Resource r = rs.createResource(URI.createURI("test.java"));
 		r.getContents().add(commentable);
 		
-		ConcreteClassifier result = commentable.getConcreteClassifierProxy("java.lang.Object");
-		assertTrue(result.eIsProxy());
+		ConcreteClassifier result = commentable.getConcreteClassifier("java.lang.Object");
+		assertFalse(result.eIsProxy());
 	}
 	
 	@Test
@@ -49,9 +50,9 @@ public class Bug1264Test extends AbstractBugTestCase {
 		r.getContents().add(commentable);
 		
 		EList<ConcreteClassifier> result = 
-			commentable.getConcreteClassifierProxies("java.lang","Object");
+			commentable.getConcreteClassifiers("java.lang", "Object");
 		assertEquals(1, result.size());
-		assertTrue(result.get(0).eIsProxy());
+		assertFalse(result.get(0).eIsProxy());
 	}
 	
 	@Test

@@ -19,7 +19,6 @@ import org.eclipse.emf.common.util.EList;
 import org.emftext.language.java.expressions.Expression;
 import org.emftext.language.java.members.MemberContainer;
 import org.emftext.language.java.members.Method;
-import org.emftext.language.java.parameters.VariableLengthParameter;
 import org.emftext.language.java.references.IdentifierReference;
 import org.emftext.language.java.references.MethodCall;
 import org.emftext.language.java.references.ReferencesFactory;
@@ -29,14 +28,6 @@ import org.emftext.language.java.types.Type;
 import org.emftext.language.java.variables.Variable;
 
 public class VariableExtension {
-
-	public static long getArrayDimension(Variable me) {
-		long size = me.getArrayDimensionsBefore().size() + me.getArrayDimensionsAfter().size();
-		if (me instanceof VariableLengthParameter) {
-			size++;
-		}
-		return size;
-	}
 	
 	/**
 	 * Creates a statement that calls the method with the given name on this

@@ -1,7 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006-2014
- * Software Technology Group, Dresden University of Technology
- * DevBoost GmbH, Berlin, Amtsgericht Charlottenburg, HRB 140026
+ * Copyright (c) 2020, Martin Armbruster
  * 
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -9,18 +7,22 @@
  * http://www.eclipse.org/legal/epl-v10.html
  * 
  * Contributors:
- *   Software Technology Group - TU Dresden, Germany;
- *   DevBoost GmbH - Berlin, Germany
- *      - initial API and implementation
+ *   Martin Armbruster
+ *      - Initial implementation
  ******************************************************************************/
-package org.emftext.language.java.extensions.variables;
 
-import org.emftext.language.java.variables.AdditionalLocalVariable;
+package org.emftext.language.java.extensions.arrays;
 
-public class AdditionalLocalVariableExtension {
+import org.emftext.language.java.arrays.ArrayTypeable;
+import org.emftext.language.java.parameters.VariableLengthParameter;
 
-	public static long getArrayDimension(AdditionalLocalVariable me) {
+public class ArrayTypeableExtension {
+	
+	public static long getArrayDimension(ArrayTypeable me) {
 		long size = me.getArrayDimensionsBefore().size() + me.getArrayDimensionsAfter().size();
+		if (me instanceof VariableLengthParameter) {
+			size++;
+		}
 		return size;
 	}
 }

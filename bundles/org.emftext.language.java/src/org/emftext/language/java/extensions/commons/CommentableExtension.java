@@ -21,10 +21,9 @@ import java.util.List;
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.ECollections;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.common.util.UniqueEList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.util.EcoreUtil;
-import org.emftext.commons.layout.LayoutInformation;
 import org.emftext.language.java.JavaClasspath;
 import org.emftext.language.java.annotations.AnnotationInstance;
 import org.emftext.language.java.classifiers.AnonymousClass;
@@ -32,11 +31,8 @@ import org.emftext.language.java.classifiers.ConcreteClassifier;
 import org.emftext.language.java.classifiers.Interface;
 import org.emftext.language.java.commons.Commentable;
 import org.emftext.language.java.containers.CompilationUnit;
-import org.emftext.language.java.modifiers.AnnotableAndModifiable;
-import org.emftext.language.java.modifiers.AnnotationInstanceOrModifier;
 import org.emftext.language.java.statements.Statement;
 import org.emftext.language.java.statements.StatementListContainer;
-import org.emftext.language.java.util.UniqueEList;
 
 public class CommentableExtension {
 
@@ -218,18 +214,6 @@ public class CommentableExtension {
 		return result;
 	}
 	
-	public static ConcreteClassifier getConcreteClassifierProxy(Commentable me,
-			String name) {
-		
-		return null;
-	}
-	
-	public static EList<ConcreteClassifier> getConcreteClassifierProxies(
-			Commentable me, String packageName, String classifierQuery) {
-
-		return null;
-	}
-	
 	/**
 	 * Finds the {@link org.emftext.language.java.classifiers.Class}
 	 * representing the class with the given name located in
@@ -301,11 +285,9 @@ public class CommentableExtension {
 	 * @return the Class.
 	 */
 	public static Interface getAnnotationInterface(Commentable me) {
-		ConcreteClassifier proxy = me.getConcreteClassifierProxy("java.lang.annotation.Annotation");
-		Interface annotationClass = (Interface) EcoreUtil.resolve(proxy, me);
-		EObject resolved = EcoreUtil.resolve(annotationClass, me);
-		if (resolved instanceof Interface) {
-			return (Interface) resolved;
+		ConcreteClassifier proxy = JavaClasspath.get().getConcreteClassifier("java.lang.annotation.Annotation");
+		if (proxy != null && proxy instanceof Interface) {
+			return (Interface) proxy;
 		}
 		return null;
 	}
@@ -335,19 +317,7 @@ public class CommentableExtension {
 	 * @return containing classifier
 	 */
 	public static ConcreteClassifier getParentConcreteClassifier(Commentable me) {
-		ConcreteClassifier classifier = me.getContainingConcreteClassifier();
-		if (classifier == null) {
-			CompilationUnit cu = me.getContainingCompilationUnit();
-			// Maybe the outer classifier is in an extra compilation unit
-			if (cu != null && cu.getName() != null && cu.getName().contains("$")) {
-				ConcreteClassifier proxy = me.getConcreteClassifierProxy(cu.getNamespacesAsString());
-				classifier = (ConcreteClassifier) EcoreUtil.resolve(proxy, me);
-				if (classifier.eIsProxy())  {
-					classifier = null;
-				}
-			}
-		}
-		return classifier;
+		return me.getContainingConcreteClassifier();
 	}
 	
 	/**
@@ -421,21 +391,5 @@ public class CommentableExtension {
 			return null;
 		}
 		return ECollections.unmodifiableEList(cu.getNamespaces());
-	}
-	
-	public static EList<String> getComments(Commentable me) {
-		EList<String> comments = new BasicEList<String>();
-		if (me instanceof AnnotableAndModifiable) {
-			for (AnnotationInstanceOrModifier aom : ((AnnotableAndModifiable) me).getAnnotationsAndModifiers()) {
-				comments.addAll(aom.getComments());
-			}
-		}
-		for (LayoutInformation layoutInformation : me.getLayoutInformations()) {
-			String text = layoutInformation.getHiddenTokenText();
-			if (text.contains("/*") || text.contains("//")) {
-				comments.add(layoutInformation.getHiddenTokenText().trim());
-			}
-		}
-		return ECollections.unmodifiableEList(comments);
 	}
 }

@@ -21,6 +21,7 @@ import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.ECollections;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.common.util.UniqueEList;
 import org.eclipse.emf.ecore.EObject;
 import org.emftext.language.java.classifiers.Classifier;
 import org.emftext.language.java.classifiers.ConcreteClassifier;
@@ -53,7 +54,6 @@ import org.emftext.language.java.types.TypeReference;
 import org.emftext.language.java.types.TypedElement;
 import org.emftext.language.java.util.TemporalCompositeClassifier;
 import org.emftext.language.java.util.TemporalTypeArgumentHolder;
-import org.emftext.language.java.util.UniqueEList;
 
 public class TypeParameterExtension {
 	
@@ -120,6 +120,7 @@ public class TypeParameterExtension {
 	 * @param reference
 	 * @return bound type or parameter if not bound
 	 */
+	@SuppressWarnings("unlikely-arg-type")
 	public static Type getBoundType(TypeParameter me,
 			TypeReference typeReference, Reference reference) {
 

@@ -18,6 +18,7 @@ package org.emftext.language.java.extensions.containers;
 import java.util.List;
 
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.common.util.UniqueEList;
 import org.emftext.language.java.classifiers.Annotation;
 import org.emftext.language.java.classifiers.Class;
 import org.emftext.language.java.classifiers.ConcreteClassifier;
@@ -27,7 +28,6 @@ import org.emftext.language.java.containers.CompilationUnit;
 import org.emftext.language.java.imports.ClassifierImport;
 import org.emftext.language.java.imports.ImportsFactory;
 import org.emftext.language.java.imports.PackageImport;
-import org.emftext.language.java.util.UniqueEList;
 
 public class CompilationUnitExtension {
 	
@@ -63,8 +63,7 @@ public class CompilationUnitExtension {
 		//locally defined in this container
 		defaultImportList.addAll(me.getClassifiers());
 		
-		defaultImportList.addAll(me.getConcreteClassifierProxies(
-				packageName, "*"));
+		defaultImportList.addAll(me.getConcreteClassifiers(packageName, "*"));
 
 		return defaultImportList;
 	}
