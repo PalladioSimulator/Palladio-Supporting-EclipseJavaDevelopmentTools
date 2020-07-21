@@ -11,6 +11,7 @@ import org.eclipse.jdt.core.dom.IModuleBinding;
 import org.eclipse.jdt.core.dom.IPackageBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
+import org.emftext.language.java.JavaClasspath;
 
 public class JDTResolverUtility {
 	private static ResourceSet resourceSet;
@@ -50,7 +51,10 @@ public class JDTResolverUtility {
 			return modBindToMod.get(modName);
 		} else {
 			moduleBindings.add(binding);
-			org.emftext.language.java.containers.Module result = org.emftext.language.java.containers.ContainersFactory.eINSTANCE.createModule();
+			org.emftext.language.java.containers.Module result = JavaClasspath.get().getModule(modName);
+			if (result == null) {
+				result = org.emftext.language.java.containers.ContainersFactory.eINSTANCE.createModule();
+			}
 			modBindToMod.put(modName, result);
 			return result;
 		}
@@ -62,7 +66,10 @@ public class JDTResolverUtility {
 			return nameToPackage.get(packageName);
 		} else {
 			packageBindings.add(binding);
-			org.emftext.language.java.containers.Package result = org.emftext.language.java.containers.ContainersFactory.eINSTANCE.createPackage();
+			org.emftext.language.java.containers.Package result = JavaClasspath.get().getPackage(packageName);
+			if (result == null) {
+				result =org.emftext.language.java.containers.ContainersFactory.eINSTANCE.createPackage();
+			}
 			nameToPackage.put(packageName, result);
 			return result;
 		}
@@ -102,7 +109,11 @@ public class JDTResolverUtility {
 			return typeBindToAnnot.get(annotName);
 		} else {
 			typeBindings.add(binding);
-			org.emftext.language.java.classifiers.Annotation result = org.emftext.language.java.classifiers.ClassifiersFactory.eINSTANCE.createAnnotation();
+			org.emftext.language.java.classifiers.Annotation result = (org.emftext.language.java.classifiers.Annotation)
+				JavaClasspath.get().getConcreteClassifier(annotName);
+			if (result == null) {
+				result = org.emftext.language.java.classifiers.ClassifiersFactory.eINSTANCE.createAnnotation();
+			}
 			typeBindToAnnot.put(annotName, result);
 			return result;
 		}
@@ -114,7 +125,11 @@ public class JDTResolverUtility {
 			return typeBindToEnum.get(enumName);
 		} else {
 			typeBindings.add(binding);
-			org.emftext.language.java.classifiers.Enumeration result = org.emftext.language.java.classifiers.ClassifiersFactory.eINSTANCE.createEnumeration();
+			org.emftext.language.java.classifiers.Enumeration result = (org.emftext.language.java.classifiers.Enumeration)
+				JavaClasspath.get().getConcreteClassifier(enumName);
+			if (result == null) {
+				result = org.emftext.language.java.classifiers.ClassifiersFactory.eINSTANCE.createEnumeration();
+			}
 			typeBindToEnum.put(enumName, result);
 			return result;
 		}
@@ -131,7 +146,11 @@ public class JDTResolverUtility {
 			return typeBindToInterface.get(interName);
 		} else {
 			typeBindings.add(binding);
-			org.emftext.language.java.classifiers.Interface result = org.emftext.language.java.classifiers.ClassifiersFactory.eINSTANCE.createInterface();
+			org.emftext.language.java.classifiers.Interface result = (org.emftext.language.java.classifiers.Interface)
+				JavaClasspath.get().getConcreteClassifier(interName);
+			if (result == null) {
+				result = org.emftext.language.java.classifiers.ClassifiersFactory.eINSTANCE.createInterface();
+			}
 			typeBindToInterface.put(interName, result);
 			return result;
 		}
@@ -164,6 +183,11 @@ public class JDTResolverUtility {
 	}
 	
 	static org.emftext.language.java.classifiers.Classifier getClassifier(ITypeBinding binding) {
+		String typeName = convertToTypeName(binding);
+		org.emftext.language.java.classifiers.ConcreteClassifier potClass = JavaClasspath.get().getConcreteClassifier(typeName);
+		if (potClass != null) {
+			return potClass;
+		}
 		if (binding.isAnnotation()) {
 			return getAnnotation(binding);
 		} else if (binding.isInterface()) {
@@ -249,7 +273,11 @@ public class JDTResolverUtility {
 		if (typeBindToClass.containsKey(typeName)) {
 			return typeBindToClass.get(typeName);
 		} else {
-			org.emftext.language.java.classifiers.Class result = org.emftext.language.java.classifiers.ClassifiersFactory.eINSTANCE.createClass();
+			org.emftext.language.java.classifiers.Class result = (org.emftext.language.java.classifiers.Class)
+				JavaClasspath.get().getConcreteClassifier(typeName);
+			if (result == null) {
+				result = org.emftext.language.java.classifiers.ClassifiersFactory.eINSTANCE.createClass();
+			}
 			typeBindToClass.put(typeName, result);
 			return result;
 		}
@@ -499,6 +527,18 @@ public class JDTResolverUtility {
 				module.getNamespaces().add(s);
 			}
 		});
+		
+		modBindToMod.values().forEach(module -> JavaClasspath.get().registerModule(module));
+		
+		nameToPackage.values().forEach(pack -> JavaClasspath.get().registerPackage(pack));
+		
+		typeBindToAnnot.values().forEach(ann -> JavaClasspath.get().registerConcreteClassifier(ann));
+		
+		typeBindToEnum.values().forEach(enume -> JavaClasspath.get().registerConcreteClassifier(enume));
+		
+		typeBindToInterface.values().forEach(interf -> JavaClasspath.get().registerConcreteClassifier(interf));
+		
+		typeBindToClass.values().forEach(clazz -> JavaClasspath.get().registerConcreteClassifier(clazz));
 		
 		modBindToMod.clear();
 		nameToPackage.clear();
