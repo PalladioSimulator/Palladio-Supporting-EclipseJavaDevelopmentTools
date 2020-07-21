@@ -227,6 +227,8 @@ class ReferenceConverterUtility {
 			target = JDTResolverUtility.getMethod((IMethodBinding) b);
 		} else if (b instanceof IPackageBinding) {
 			target = JDTResolverUtility.getPackage((IPackageBinding) b);
+		} else {
+			target = JDTResolverUtility.getClass(name.getIdentifier());
 		}
 		target.setName(name.getIdentifier());
 		result.setTarget(target);
