@@ -16,7 +16,6 @@ package jamopp.parser.jdt;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.Annotation;
 import org.eclipse.jdt.core.dom.ArrayInitializer;
-import org.eclipse.jdt.core.dom.ConditionalExpression;
 import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.IExtendedModifier;
 import org.eclipse.jdt.core.dom.MemberValuePair;
@@ -110,10 +109,10 @@ class AnnotationInstanceOrModifierConverterUtility {
 			return convertToAnnotationInstance((Annotation) expr);
 		} else if (expr.getNodeType() == ASTNode.ARRAY_INITIALIZER) {
 			return convertToArrayInitializer((ArrayInitializer) expr);
-		} else if (expr.getNodeType() == ASTNode.CONDITIONAL_EXPRESSION) {
-			return ExpressionConverterUtility.convertToConditionalExpression((ConditionalExpression) expr);
+		} else {
+			return (org.emftext.language.java.expressions.AssignmentExpressionChild)
+				ExpressionConverterUtility.convertToExpression((Expression) expr);
 		}
-		return null;
 	}
 	
 	@SuppressWarnings("unchecked")
