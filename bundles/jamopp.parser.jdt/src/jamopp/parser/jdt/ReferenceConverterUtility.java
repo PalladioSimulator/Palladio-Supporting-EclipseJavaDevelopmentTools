@@ -120,19 +120,7 @@ class ReferenceConverterUtility {
 			parent.setNext(result);
 			return result;
 		} else if (expr.getNodeType() == ASTNode.METHOD_INVOCATION) {
-			MethodInvocation arr = (MethodInvocation) expr;
-			org.emftext.language.java.references.MethodCall result = org.emftext.language.java.references.ReferencesFactory.eINSTANCE.createMethodCall();
-			arr.typeArguments().forEach(obj -> result.getCallTypeArguments().add(BaseConverterUtility.convertToTypeArgument((Type) obj)));
-			arr.arguments().forEach(obj -> result.getArguments().add(ExpressionConverterUtility.convertToExpression((Expression) obj)));
-			org.emftext.language.java.members.Method methodProxy = JDTResolverUtility.getMethod((IMethodBinding) arr.getName().resolveBinding());
-			BaseConverterUtility.convertToSimpleNameOnlyAndSet(arr.getName(), methodProxy);
-			result.setTarget(methodProxy);
-			LayoutInformationConverter.convertToMinimalLayoutInformation(result, arr);
-			if (arr.getExpression() != null) {
-				org.emftext.language.java.references.Reference parent = internalConvertToReference(arr.getExpression());
-				parent.setNext(result);
-			}
-			return result;
+			return convertToMethodCall((MethodInvocation) expr);
 		} else if (expr.getNodeType() == ASTNode.QUALIFIED_NAME) {
 			QualifiedName arr = (QualifiedName) expr;
 			org.emftext.language.java.references.IdentifierReference result = convertToIdentifierReference(arr.getName());
@@ -201,6 +189,94 @@ class ReferenceConverterUtility {
 			return result;
 		}
 		return null;
+	}
+	
+	@SuppressWarnings("unchecked")
+	private static org.emftext.language.java.references.MethodCall convertToMethodCall(MethodInvocation arr) {
+		org.emftext.language.java.references.Reference parent = null;
+		if (arr.getExpression() != null) {
+			parent = internalConvertToReference(arr.getExpression());
+		}
+		org.emftext.language.java.references.MethodCall result = org.emftext.language.java.references.ReferencesFactory.eINSTANCE.createMethodCall();
+		arr.typeArguments().forEach(obj -> result.getCallTypeArguments().add(BaseConverterUtility.convertToTypeArgument((Type) obj)));
+		arr.arguments().forEach(obj -> result.getArguments().add(ExpressionConverterUtility.convertToExpression((Expression) obj)));
+		IMethodBinding methBind = arr.resolveMethodBinding();
+		org.emftext.language.java.members.Method methodProxy = null;
+		if (methBind != null) {
+			 methodProxy = JDTResolverUtility.getMethod(methBind);
+		} else {
+			if (arr.getExpression() == null || arr.getExpression().getNodeType() == ASTNode.METHOD_INVOCATION) {
+				methodProxy = JDTResolverUtility.getClassMethod(arr.getName().getIdentifier());
+			} else {
+				org.emftext.language.java.classifiers.ConcreteClassifier parentClassifier = null;
+				if (parent instanceof org.emftext.language.java.instantiations.NewConstructorCall) {
+					parentClassifier = getConcreteClassifierForTypeReference(
+						((org.emftext.language.java.instantiations.NewConstructorCall) parent).getTypeReference());
+				} else if (parent instanceof org.emftext.language.java.references.IdentifierReference) {
+					org.emftext.language.java.references.ReferenceableElement parentClassifierRef =
+						((org.emftext.language.java.references.IdentifierReference) parent).getTarget();
+					if (parentClassifierRef instanceof org.emftext.language.java.classifiers.ConcreteClassifier) {
+						parentClassifier = (org.emftext.language.java.classifiers.ConcreteClassifier) parentClassifierRef;
+					} else if (parentClassifierRef instanceof org.emftext.language.java.variables.Variable) {
+						parentClassifier = getConcreteClassifierForTypeReference(
+							((org.emftext.language.java.variables.Variable) parentClassifierRef).getTypeReference());
+					} else if (parentClassifierRef instanceof org.emftext.language.java.variables.AdditionalLocalVariable) {
+						org.emftext.language.java.variables.AdditionalLocalVariable alv =
+							(org.emftext.language.java.variables.AdditionalLocalVariable) parentClassifierRef;
+						parentClassifier = getConcreteClassifierForTypeReference(
+							((org.emftext.language.java.variables.LocalVariable) alv.eContainer()).getTypeReference());
+					} else if (parentClassifierRef instanceof org.emftext.language.java.members.Field) {
+						parentClassifier = getConcreteClassifierForTypeReference(
+							((org.emftext.language.java.members.Field) parentClassifierRef).getTypeReference());
+					} else if (parentClassifierRef instanceof org.emftext.language.java.members.AdditionalField) {
+						org.emftext.language.java.members.AdditionalField f = (org.emftext.language.java.members.AdditionalField)
+							parentClassifierRef;
+						parentClassifier = getConcreteClassifierForTypeReference(
+							((org.emftext.language.java.members.Field) f.eContainer()).getTypeReference());
+					}
+				}
+				if (parentClassifier != null) {
+					for (org.emftext.language.java.members.Member m : parentClassifier.getMembers()) {
+						if (m instanceof org.emftext.language.java.members.Method && m.getName().equals(arr.getName().getIdentifier())) {
+							methodProxy = (org.emftext.language.java.members.Method) m;
+							break;
+						}
+					}
+					if (methodProxy == null) {
+						if (parentClassifier instanceof org.emftext.language.java.classifiers.Class ||
+							parentClassifier instanceof org.emftext.language.java.classifiers.Enumeration) {
+							methodProxy = JDTResolverUtility.getClassMethod(arr.getName().getIdentifier());
+						} else {
+							methodProxy = JDTResolverUtility.getInterfaceMethod(arr.getName().getIdentifier());
+						}
+						methodProxy.setName(arr.getName().getIdentifier());
+						parentClassifier.getMembers().add(methodProxy);
+					}
+				} else {
+					methodProxy = JDTResolverUtility.getClassMethod(arr.getName().getIdentifier());
+				}
+			}
+		}
+		BaseConverterUtility.convertToSimpleNameOnlyAndSet(arr.getName(), methodProxy);
+		result.setTarget(methodProxy);
+		LayoutInformationConverter.convertToMinimalLayoutInformation(result, arr);
+		if (parent != null) {
+			parent.setNext(result);
+		}
+		return result;
+	}
+	
+	private static org.emftext.language.java.classifiers.ConcreteClassifier getConcreteClassifierForTypeReference(
+		org.emftext.language.java.types.TypeReference ref) {
+		if (ref instanceof org.emftext.language.java.types.ClassifierReference) {
+			return (org.emftext.language.java.classifiers.ConcreteClassifier)
+				((org.emftext.language.java.types.ClassifierReference) ref).getTarget();
+		} else {
+			org.emftext.language.java.types.NamespaceClassifierReference nr =
+				(org.emftext.language.java.types.NamespaceClassifierReference) ref;
+			return (org.emftext.language.java.classifiers.ConcreteClassifier)
+				nr.getClassifierReferences().get(nr.getClassifierReferences().size() - 1).getTarget();
+		}
 	}
 	
 	private static org.emftext.language.java.references.IdentifierReference convertToIdentifierReference(Name name) {

@@ -194,28 +194,34 @@ public class JDTResolverUtility {
 		return builder.toString();
 	}
 	
-	static org.emftext.language.java.members.InterfaceMethod getInterfaceMethod(IMethodBinding binding) {
-		String methName = convertToMethodName(binding);
-		if (methBindToInter.containsKey(methName)) {
-			return methBindToInter.get(methName);
+	static org.emftext.language.java.members.InterfaceMethod getInterfaceMethod(String methodName) {
+		if (methBindToInter.containsKey(methodName)) {
+			return methBindToInter.get(methodName);
 		} else {
-			methodBindings.add(binding);
 			org.emftext.language.java.members.InterfaceMethod result = org.emftext.language.java.members.MembersFactory.eINSTANCE.createInterfaceMethod();
-			methBindToInter.put(methName, result);
+			methBindToInter.put(methodName, result);
+			return result;
+		}
+	}
+	
+	static org.emftext.language.java.members.InterfaceMethod getInterfaceMethod(IMethodBinding binding) {
+		methodBindings.add(binding);
+		return getInterfaceMethod(convertToMethodName(binding));
+	}
+	
+	static org.emftext.language.java.members.ClassMethod getClassMethod(String methodName) {
+		if (methBindToCM.containsKey(methodName)) {
+			return methBindToCM.get(methodName);
+		} else {
+			org.emftext.language.java.members.ClassMethod result = org.emftext.language.java.members.MembersFactory.eINSTANCE.createClassMethod();
+			methBindToCM.put(methodName, result);
 			return result;
 		}
 	}
 	
 	static org.emftext.language.java.members.ClassMethod getClassMethod(IMethodBinding binding) {
-		String methName = convertToMethodName(binding);
-		if (methBindToCM.containsKey(methName)) {
-			return methBindToCM.get(methName);
-		} else {
-			methodBindings.add(binding);
-			org.emftext.language.java.members.ClassMethod result = org.emftext.language.java.members.MembersFactory.eINSTANCE.createClassMethod();
-			methBindToCM.put(methName, result);
-			return result;
-		}
+		methodBindings.add(binding);
+		return getClassMethod(convertToMethodName(binding));
 	}
 	
 	static org.emftext.language.java.members.Constructor getConstructor(IMethodBinding binding) {
@@ -229,6 +235,7 @@ public class JDTResolverUtility {
 			return result;
 		}
 	}
+	
 	
 	static org.emftext.language.java.members.Method getMethod(IMethodBinding binding) {
 		if (binding.getDeclaringClass().isClass()) {
@@ -523,10 +530,19 @@ public class JDTResolverUtility {
 	private static void completeMethod(String methodName, org.emftext.language.java.members.Member method) {
 		if (method.eContainer() == null) {
 			IMethodBinding methBind = methodBindings.stream().filter(meth -> methodName.equals(convertToMethodName(meth)))
-				.findFirst().get();
-			org.emftext.language.java.classifiers.ConcreteClassifier classifier = (org.emftext.language.java.classifiers.ConcreteClassifier)
-				getClassifier(methBind.getDeclaringClass());
-			classifier.getMembers().add(method);
+				.findFirst().orElse(null);
+			if (methBind != null) {
+				org.emftext.language.java.classifiers.ConcreteClassifier classifier = (org.emftext.language.java.classifiers.ConcreteClassifier)
+					getClassifier(methBind.getDeclaringClass());
+				classifier.getMembers().add(method);
+			} else {
+				String synName = "SyntheticContainerClass";
+				org.emftext.language.java.classifiers.Class container = getClass(synName);
+				container.setName(synName);
+				if (!container.getMembers().contains(method)) {
+					container.getMembers().add(method);
+				}
+			}
 		}
 	}
 	

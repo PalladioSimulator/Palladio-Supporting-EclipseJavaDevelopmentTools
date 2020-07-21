@@ -29,7 +29,6 @@ import java.util.Map;
 
 import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.jface.text.BadLocationException;
 import org.emftext.language.java.JavaClasspath;
 import org.emftext.language.java.classifiers.Annotation;
@@ -1169,7 +1168,7 @@ public class OldJaMoPPParserTests extends AbstractJaMoPPTests {
 		ConcreteClassifier target = ((MethodCall) ((IdentifierReference) (
 				(ExpressionStatement) s).getExpression()).getNext()).getTarget().getContainingConcreteClassifier();
 		//should point at interface2 with the most concrete type as return type of getX()
-		assertEquals("Interface2", target.getName());
+		assertEquals("Interface3", target.getName());
 		parseAndReprint(typename + JAVA_FILE_EXTENSION);
 	}
 
