@@ -30,7 +30,6 @@ import java.util.Map;
 import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.jface.text.BadLocationException;
-import org.emftext.language.java.JavaClasspath;
 import org.emftext.language.java.classifiers.Annotation;
 import org.emftext.language.java.classifiers.Classifier;
 import org.emftext.language.java.classifiers.ConcreteClassifier;
@@ -74,7 +73,6 @@ import org.emftext.language.java.statements.ExpressionStatement;
 import org.emftext.language.java.statements.ForEachLoop;
 import org.emftext.language.java.statements.Statement;
 import org.emftext.language.java.types.TypeReference;
-import org.junit.Before;
 import org.junit.Test;
 
 import pkg.EscapedStrings;
@@ -330,19 +328,6 @@ public class OldJaMoPPParserTests extends AbstractJaMoPPTests {
 	@Override
 	protected String getTestInputFolder() {
 		return TEST_INPUT_FOLDER;
-	}
-
-	/**
-	 * This method is executed before every single test and initializes fields
-	 * typically needed by the test cases.
-	 * 
-	 * @throws Exception
-	 */
-	@Before
-	public void setUp() throws Exception {
-		// Clear global classpath to make sure that test methods do not rely on
-		// each other
-		JavaClasspath.reset();
 	}
 
 	@Test

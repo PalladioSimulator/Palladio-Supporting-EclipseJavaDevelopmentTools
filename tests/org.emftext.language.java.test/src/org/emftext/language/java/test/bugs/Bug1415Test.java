@@ -106,7 +106,7 @@ public class Bug1415Test extends AbstractBugTestCase {
 		
 		ResourceSet rs = createResourceSet();
 		Resource r = rs.createResource(URI.createFileURI(TEST_OUTPUT_FOLDER + "/test1415-3.java"));
-		rs.getLoadOptions().put(JavaClasspath.OPTION_ALWAYS_USE_FULLY_QUALIFIED_NAMES, true);
+//		rs.getLoadOptions().put(JavaClasspath.OPTION_ALWAYS_USE_FULLY_QUALIFIED_NAMES, true);
 		r.getContents().add(reference);
 		
 		r.save(null);

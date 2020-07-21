@@ -85,6 +85,7 @@ public abstract class AbstractJaMoPPTests {
 	@Before
 	public final void initResourceFactory() {
 		Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap().put("java", new JavaResource2Factory());
+		JavaClasspath.get().clear();
 	}
 
 	protected void registerInClassPath(String file) throws Exception {
@@ -95,7 +96,6 @@ public abstract class AbstractJaMoPPTests {
 		CompilationUnit cu = (CompilationUnit) parseResource(inputFile.getPath());
 
 		inputFile = new File(inputFolder + File.separator + file);
-		JavaClasspath.get(cu).registerClassifierSource(cu, URI.createFileURI(inputFile.getAbsolutePath().toString()));
 	}
 
 	protected JavaRoot parseResource(String filename, String inputFolderName) throws Exception {
@@ -132,7 +132,7 @@ public abstract class AbstractJaMoPPTests {
 	}
 	
 	protected void addFileToClasspath(File file, ResourceSet resourceSet) throws Exception {
-		JavaClasspath cp = JavaClasspath.get(resourceSet);
+		JavaClasspath cp = JavaClasspath.get();
 		String fullName = file.getPath().substring(getTestInputFolder().length() + 3, file.getPath().length() - 5);
 		fullName = fullName.replace(File.separator, ".");
 		int idx = fullName.lastIndexOf(".");
@@ -145,12 +145,11 @@ public abstract class AbstractJaMoPPTests {
 			packageName = fullName.substring(0, idx);
 			classifierName = fullName.substring(idx + 1);			
 		}
-		cp.registerClassifier(packageName, classifierName, URI.createFileURI(file.getAbsolutePath()));
+//		cp.registerClassifier(packageName, classifierName, URI.createFileURI(file.getAbsolutePath()));
 	}
 
 	protected Map<? extends Object, ? extends Object> getLoadOptions() {
 		Map<Object, Object> map = new HashMap<Object, Object>();
-		map.put(JavaClasspath.OPTION_USE_LOCAL_CLASSPATH, Boolean.TRUE);
 		return map;
 	}
 
@@ -200,7 +199,7 @@ public abstract class AbstractJaMoPPTests {
 
 		if (prefixUsedInZipFile()) {
 			String prefix = entry.getName().substring(0, entry.getName().indexOf("/") + 1);
-			registerLibs(libFolderName, JavaClasspath.get(resourceSet), prefix);
+			registerLibs(libFolderName, JavaClasspath.get(), prefix);
 		}
 
 		Resource resource = resourceSet.createResource(archiveURI);
@@ -232,7 +231,6 @@ public abstract class AbstractJaMoPPTests {
 		for (File libFile : allLibFiles) {
 			String libPath = libFile.getAbsolutePath();
 			URI libURI = URI.createFileURI(libPath);
-			classpath.registerClassifierJar(libURI, prefix);
 		}
 	}
 
