@@ -49,14 +49,14 @@ public class UnicodeTest extends AbstractJaMoPPTests {
 		try {
 			Map<String, Object> loadOptions = Collections.emptyMap();
 			
-			assertParsesWithErrorsClass("ControlZ", loadOptions);
-			assertParsesWithErrorsClass("Unicode", loadOptions);
+			assertParsesWithoutErrors("ControlZ", loadOptions);
+			assertParsesWithoutErrors("Unicode", loadOptions);
 		} catch (Exception e) {
 			fail(e.getMessage());
 		}
 	}
 
-	protected void assertParsesWithErrorsClass(String typename, 
+	protected void assertParsesWithoutErrors(String typename, 
 			Map<?, ?> loadOptions) throws Exception {
 		String filename = File.separator + typename + ".java";
 		File inputFolder = new File("./" + getTestInputFolder());
@@ -66,8 +66,7 @@ public class UnicodeTest extends AbstractJaMoPPTests {
 		JavaResource2 resource = (JavaResource2) getResourceSet().createResource(fileURI);
 		resource.load(loadOptions);
 		
-		assertTrue(!resource.getErrors().isEmpty());
-		assertTrue(resource.getErrors().get(0).getMessage().startsWith("Syntax error on"));
+		assertTrue(resource.getErrors().isEmpty());
 	}
 	
 	@Override
