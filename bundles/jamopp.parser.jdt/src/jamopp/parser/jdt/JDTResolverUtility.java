@@ -146,9 +146,11 @@ public class JDTResolverUtility {
 			return typeBindToInterface.get(interName);
 		} else {
 			typeBindings.add(binding);
-			org.emftext.language.java.classifiers.Interface result = (org.emftext.language.java.classifiers.Interface)
-				JavaClasspath.get().getConcreteClassifier(interName);
-			if (result == null) {
+			org.emftext.language.java.classifiers.Interface result;
+			org.emftext.language.java.classifiers.ConcreteClassifier classifier = JavaClasspath.get().getConcreteClassifier(interName);
+			if (classifier != null && classifier instanceof org.emftext.language.java.classifiers.Interface) {
+				result = (org.emftext.language.java.classifiers.Interface) classifier;
+			} else {
 				result = org.emftext.language.java.classifiers.ClassifiersFactory.eINSTANCE.createInterface();
 			}
 			typeBindToInterface.put(interName, result);
