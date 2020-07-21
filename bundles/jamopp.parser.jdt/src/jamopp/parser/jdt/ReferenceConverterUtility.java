@@ -171,6 +171,10 @@ class ReferenceConverterUtility {
 			} else {
 				proxy = JDTResolverUtility.getClassMethod(arr.getName().getIdentifier());
 				proxy.setName(arr.getName().getIdentifier());
+				org.emftext.language.java.statements.Block block = org.emftext.language.java.statements.StatementsFactory.eINSTANCE.createBlock();
+				block.setName("");
+				proxy.setStatement(block);
+				proxy.setTypeReference(org.emftext.language.java.types.TypesFactory.eINSTANCE.createVoid());
 			}
 			BaseConverterUtility.convertToSimpleNameOnlyAndSet(arr.getName(), proxy);
 			partTwo.setTarget(proxy);
@@ -214,6 +218,12 @@ class ReferenceConverterUtility {
 		} else {
 			if (arr.getExpression() == null || arr.getExpression().getNodeType() == ASTNode.METHOD_INVOCATION) {
 				methodProxy = JDTResolverUtility.getClassMethod(arr.getName().getIdentifier());
+				methodProxy.setName(arr.getName().getIdentifier());
+				methodProxy.setTypeReference(org.emftext.language.java.types.TypesFactory.eINSTANCE.createVoid());
+				org.emftext.language.java.statements.Block block =
+						org.emftext.language.java.statements.StatementsFactory.eINSTANCE.createBlock();
+				block.setName("");
+				methodProxy.setStatement(block);
 			} else {
 				org.emftext.language.java.classifiers.ConcreteClassifier parentClassifier = null;
 				if (parent instanceof org.emftext.language.java.instantiations.NewConstructorCall) {
@@ -253,14 +263,26 @@ class ReferenceConverterUtility {
 						if (parentClassifier instanceof org.emftext.language.java.classifiers.Class ||
 							parentClassifier instanceof org.emftext.language.java.classifiers.Enumeration) {
 							methodProxy = JDTResolverUtility.getClassMethod(arr.getName().getIdentifier());
+							org.emftext.language.java.statements.Block block =
+								org.emftext.language.java.statements.StatementsFactory.eINSTANCE.createBlock();
+							block.setName("");
+							methodProxy.setStatement(block);
 						} else {
 							methodProxy = JDTResolverUtility.getInterfaceMethod(arr.getName().getIdentifier());
+							methodProxy.setStatement(org.emftext.language.java.statements.StatementsFactory.eINSTANCE.createEmptyStatement());
 						}
 						methodProxy.setName(arr.getName().getIdentifier());
+						methodProxy.setTypeReference(org.emftext.language.java.types.TypesFactory.eINSTANCE.createVoid());
 						parentClassifier.getMembers().add(methodProxy);
 					}
 				} else {
 					methodProxy = JDTResolverUtility.getClassMethod(arr.getName().getIdentifier());
+					methodProxy.setName(arr.getName().getIdentifier());
+					methodProxy.setTypeReference(org.emftext.language.java.types.TypesFactory.eINSTANCE.createVoid());
+					org.emftext.language.java.statements.Block block =
+							org.emftext.language.java.statements.StatementsFactory.eINSTANCE.createBlock();
+					block.setName("");
+					methodProxy.setStatement(block);
 				}
 			}
 		}
