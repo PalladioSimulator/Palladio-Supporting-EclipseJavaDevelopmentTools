@@ -83,10 +83,17 @@ class AnnotationInstanceOrModifierConverterUtility {
 			NormalAnnotation normalAnnot = (NormalAnnotation) annot;
 			normalAnnot.values().forEach(obj -> {
 				MemberValuePair memVal = (MemberValuePair) obj;
-				memVal.resolveMemberValuePairBinding().getMethodBinding();
 				org.emftext.language.java.annotations.AnnotationAttributeSetting attrSet = org.emftext.language.java.annotations.AnnotationsFactory.eINSTANCE
 					.createAnnotationAttributeSetting();
-				org.emftext.language.java.members.InterfaceMethod methodProxy = JDTResolverUtility.getInterfaceMethod(memVal.resolveMemberValuePairBinding().getMethodBinding());
+				org.emftext.language.java.members.InterfaceMethod methodProxy;
+				if (memVal.resolveMemberValuePairBinding() != null) {
+					 methodProxy = JDTResolverUtility.getInterfaceMethod(memVal.resolveMemberValuePairBinding().getMethodBinding());
+				} else {
+					methodProxy = JDTResolverUtility.getInterfaceMethod(memVal.getName().getIdentifier());
+					if (!proxyClass.getMembers().contains(methodProxy)) {
+						proxyClass.getMembers().add(methodProxy);
+					}
+				}
 				BaseConverterUtility.convertToSimpleNameOnlyAndSet(memVal.getName(), methodProxy);
 				attrSet.setAttribute(methodProxy);
 				attrSet.setValue(convertToAnnotationValue(memVal.getValue()));
