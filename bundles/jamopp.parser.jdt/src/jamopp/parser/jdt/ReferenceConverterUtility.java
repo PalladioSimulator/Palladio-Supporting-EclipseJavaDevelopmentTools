@@ -18,6 +18,7 @@ import org.eclipse.jdt.core.dom.Annotation;
 import org.eclipse.jdt.core.dom.ArrayAccess;
 import org.eclipse.jdt.core.dom.ArrayCreation;
 import org.eclipse.jdt.core.dom.ArrayInitializer;
+import org.eclipse.jdt.core.dom.ArrayType;
 import org.eclipse.jdt.core.dom.ClassInstanceCreation;
 import org.eclipse.jdt.core.dom.ConstructorInvocation;
 import org.eclipse.jdt.core.dom.Expression;
@@ -349,6 +350,20 @@ class ReferenceConverterUtility {
 			temp.setPrimitiveType((org.emftext.language.java.types.PrimitiveType) typeRef);
 			temp.getLayoutInformations().addAll(typeRef.getLayoutInformations());
 			return temp;
+		} else if (t.isArrayType()) {
+			ArrayType arr = (ArrayType) t;
+			org.emftext.language.java.references.Reference result = internalConvertToReference(arr.getElementType());
+			if (arr.getElementType().isPrimitiveType()) {
+				org.emftext.language.java.references.PrimitiveTypeReference primRef =
+					(org.emftext.language.java.references.PrimitiveTypeReference) result;
+				BaseConverterUtility.convertToArrayDimensionsAndSet(arr, primRef);
+			} else {
+				org.emftext.language.java.references.IdentifierReference idRef =
+					(org.emftext.language.java.references.IdentifierReference) result;
+				BaseConverterUtility.convertToArrayDimensionsAndSet(arr, idRef);
+			}
+			LayoutInformationConverter.convertToMinimalLayoutInformation(result, arr);
+			return result;
 		}
 		return null;
 	}
