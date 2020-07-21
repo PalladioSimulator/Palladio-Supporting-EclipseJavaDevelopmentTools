@@ -19,7 +19,6 @@ package org.emftext.language.java.test;
 import java.math.BigInteger;
 
 import org.eclipse.jdt.core.dom.*;
-import org.emftext.language.java.util.CharacterEscaper;
 
 /**
  * An extension of the JDT ASTMatcher that prints information

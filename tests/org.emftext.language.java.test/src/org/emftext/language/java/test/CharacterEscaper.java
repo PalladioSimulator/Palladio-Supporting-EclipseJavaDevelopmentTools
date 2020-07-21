@@ -13,7 +13,7 @@
  *   DevBoost GmbH - Berlin, Germany
  *      - initial API and implementation
  ******************************************************************************/
-package org.emftext.language.java.util;
+package org.emftext.language.java.test;
 
 /**
  * A CharacterEscaper can be used to escape and unescape special characters
