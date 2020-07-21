@@ -1369,10 +1369,10 @@
       <eStructuralFeatures xsi:type="ecore:EReference" name="target" lowerBound="1"
           eType="#//references/ReferenceableElement"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="IdentifierReference" eSuperTypes="#//references/ElementReference #//annotations/Annotable"/>
+    <eClassifiers xsi:type="ecore:EClass" name="IdentifierReference" eSuperTypes="#//references/ElementReference #//annotations/Annotable #//arrays/ArrayTypeable"/>
     <eClassifiers xsi:type="ecore:EClass" name="MethodCall" eSuperTypes="#//references/ElementReference #//references/Argumentable #//generics/CallTypeArgumentable"/>
     <eClassifiers xsi:type="ecore:EClass" name="ReflectiveClassReference" eSuperTypes="#//references/Reference"/>
-    <eClassifiers xsi:type="ecore:EClass" name="PrimitiveTypeReference" eSuperTypes="#//references/Reference">
+    <eClassifiers xsi:type="ecore:EClass" name="PrimitiveTypeReference" eSuperTypes="#//references/Reference #//arrays/ArrayTypeable">
       <eStructuralFeatures xsi:type="ecore:EReference" name="primitiveType" lowerBound="1"
           eType="#_Wo2ZR9z1Ed2bJ_pQViWxFg" containment="true"/>
     </eClassifiers>
