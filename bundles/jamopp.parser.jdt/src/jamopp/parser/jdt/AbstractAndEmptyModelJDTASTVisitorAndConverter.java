@@ -68,14 +68,34 @@ class AbstractAndEmptyModelJDTASTVisitorAndConverter extends ASTVisitor {
 			QualifiedName qualifiedName = (QualifiedName) importDecl.getName();
 			IBinding b = qualifiedName.resolveBinding();
 			org.emftext.language.java.references.ReferenceableElement proxyMember = null;
+			org.emftext.language.java.classifiers.Classifier proxyClass = null;
 			if (b instanceof IMethodBinding) {
 				proxyMember = JDTResolverUtility.getMethod((IMethodBinding) b);
 			} else if (b instanceof IVariableBinding) {
 				proxyMember = JDTResolverUtility.getReferencableElement((IVariableBinding) b);
+			} else if (b instanceof ITypeBinding) {
+				proxyClass = JDTResolverUtility.getClassifier((ITypeBinding) b);
+				org.emftext.language.java.classifiers.ConcreteClassifier conCl =
+					(org.emftext.language.java.classifiers.ConcreteClassifier) proxyClass;
+				for (org.emftext.language.java.members.Member m : conCl.getMembers()) {
+					if (m.getName().equals(qualifiedName.getName().getIdentifier())) {
+						proxyMember = (org.emftext.language.java.references.ReferenceableElement) m;
+						break;
+					}
+				}
+				if (proxyMember == null) {
+					proxyMember = JDTResolverUtility.getClassMethod(qualifiedName.getName().getIdentifier());
+					proxyMember.setName(qualifiedName.getName().getIdentifier());
+					((org.emftext.language.java.members.Method) proxyMember).setTypeReference(
+						org.emftext.language.java.types.TypesFactory.eINSTANCE.createVoid());
+					conCl.getMembers().add((org.emftext.language.java.members.Member) proxyMember);
+				}
 			}
 			proxyMember.setName(qualifiedName.getName().getIdentifier());
 			convertedImport.getStaticMembers().add(proxyMember);
-			org.emftext.language.java.classifiers.Classifier proxyClass = JDTResolverUtility.getClassifier((ITypeBinding) qualifiedName.getQualifier().resolveBinding());
+			if (proxyClass == null) {
+				proxyClass = JDTResolverUtility.getClassifier((ITypeBinding) qualifiedName.getQualifier().resolveBinding());
+			}
 			convertedImport.setClassifier((org.emftext.language.java.classifiers.ConcreteClassifier) proxyClass);
 			BaseConverterUtility.convertToNamespacesAndSimpleNameAndSet(qualifiedName.getQualifier(), convertedImport, proxyClass);
 			LayoutInformationConverter.convertToMinimalLayoutInformation(convertedImport, importDecl);
