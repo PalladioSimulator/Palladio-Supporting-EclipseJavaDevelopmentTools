@@ -165,7 +165,13 @@ class ReferenceConverterUtility {
 			org.emftext.language.java.references.MethodCall partTwo = org.emftext.language.java.references.ReferencesFactory.eINSTANCE.createMethodCall();
 			arr.typeArguments().forEach(obj -> partTwo.getCallTypeArguments().add(BaseConverterUtility.convertToTypeArgument((Type) obj)));
 			arr.arguments().forEach(obj -> partTwo.getArguments().add(ExpressionConverterUtility.convertToExpression((Expression) obj)));
-			org.emftext.language.java.members.Method proxy = JDTResolverUtility.getMethod((IMethodBinding) arr.getName().resolveBinding());
+			org.emftext.language.java.members.Method proxy;
+			if (arr.getName().resolveBinding() != null) {
+				proxy = JDTResolverUtility.getMethod((IMethodBinding) arr.getName().resolveBinding());
+			} else {
+				proxy = JDTResolverUtility.getClassMethod(arr.getName().getIdentifier());
+				proxy.setName(arr.getName().getIdentifier());
+			}
 			BaseConverterUtility.convertToSimpleNameOnlyAndSet(arr.getName(), proxy);
 			partTwo.setTarget(proxy);
 			partOne.setNext(partTwo);
