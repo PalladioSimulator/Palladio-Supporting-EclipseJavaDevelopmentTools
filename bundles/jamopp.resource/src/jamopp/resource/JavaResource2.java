@@ -6,6 +6,8 @@ import java.util.Map;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.impl.ResourceImpl;
+import org.emftext.language.java.JavaClasspath;
+import org.emftext.language.java.classifiers.ConcreteClassifier;
 import org.emftext.language.java.containers.JavaRoot;
 
 import jamopp.parser.api.JaMoPPParserAPI;
@@ -23,6 +25,11 @@ public class JavaResource2 extends ResourceImpl {
 	
 	@Override
 	protected void doLoad(InputStream input, Map<?, ?> options) {
+		ConcreteClassifier classifier = JavaClasspath.get().getConcreteClassifier(getURI());
+		if (classifier != null) {
+			this.getContents().add(classifier.getContainingCompilationUnit());
+			return;
+		}
 		JaMoPPParserAPI api = new JaMoPPJDTParser();
 		api.setResourceSet(this.getResourceSet());
 		this.getContents().add(api.parse(this.getURI().lastSegment(), input));

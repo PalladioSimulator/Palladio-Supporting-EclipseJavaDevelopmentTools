@@ -19,6 +19,8 @@
 package org.emftext.language.java;
 
 import java.util.HashSet;
+
+import org.eclipse.emf.common.util.URI;
 import org.emftext.language.java.classifiers.ConcreteClassifier;
 import org.emftext.language.java.containers.CompilationUnit;
 
@@ -67,6 +69,17 @@ public class JavaClasspath {
 	
 	public org.emftext.language.java.containers.Module getModule(String moduleName) {
 		return modules.stream().filter(m -> m.getNamespacesAsString().equals(moduleName)).findFirst().orElse(null);
+	}
+	
+	public ConcreteClassifier getConcreteClassifier(URI uri) {
+		return classifiers.stream().filter(c -> {
+			if (c.eResource() != null) {
+				if (c.eResource().getURI().toString().equals(uri.toString())) {
+					return true;
+				}
+			}
+			return false;
+		}).findFirst().orElse(null);
 	}
 	
 	public ConcreteClassifier getConcreteClassifier(String fullQualifiedClassifierName) {
