@@ -13,6 +13,7 @@
  *   DevBoost GmbH - Berlin, Germany
  *      - initial API and implementation
  ******************************************************************************/
+
 package org.emftext.language.java.test.xmi;
 
 import static org.junit.Assert.assertNotNull;
@@ -23,11 +24,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
@@ -38,11 +34,11 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.util.EcoreUtil.EqualityHelper;
 import org.eclipse.emf.ecore.xmi.XMIResource;
-import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import org.emftext.language.java.containers.CompilationUnit;
 import org.emftext.language.java.containers.JavaRoot;
 import org.emftext.language.java.containers.Package;
 import org.emftext.language.java.test.AbstractJaMoPPTests;
+import org.junit.Test;
 
 public class JavaXMISerializationTest extends AbstractJaMoPPTests {
 
@@ -58,112 +54,37 @@ public class JavaXMISerializationTest extends AbstractJaMoPPTests {
 		"ControlZ.java", "UnicodeSurrogateCharacters.java" //here the issue exists only in the layout information
 	};
 	
-	public static Test suite() throws Exception {
-		Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap().put(
-				"xmi", new XMIResourceFactoryImpl());
+	@Test
+	public void testXMISerialization() throws Exception {
+		File inputFolder = new File("./" + TEST_INPUT_FOLDER_NAME);
+		List<File> allTestFiles = collectAllFilesRecursive(inputFolder, "java");
 		
-		final JavaXMISerializationTest test = new JavaXMISerializationTest();
-
-		TestSuite suite = new TestSuite(
-				"Suite testing XMI conversion for all files in the input directory automatically");
-//		File inputFolder = new File("./" + TEST_INPUT_FOLDER_NAME);
-//		List<File> allTestFiles = collectAllFilesRecursive(inputFolder, "java");
-//		
-//		File last = null;
-//		for (final File file : allTestFiles) {
-//			test.addFileToClasspath(file, test.getResourceSet());
-//			if (file.getName().equals("TypeReferencing.java")) {
-//				last = file; 
-//				continue;
-//			}
-//		}
-//		if (last != null) {
-//			//put the "TypeReferencing.java" file last, because it contains inner
-//			//types referenced by other files. If these types are not registered
-//			//before proxy resolving, the test will fail.
-//			allTestFiles.remove(last);
-//			allTestFiles.add(last);
-//		}
-//		
-//		for (final File file : allTestFiles) {
-//			if (!Arrays.asList(filesWithInvalidCharacters).contains(file.getName())) {
-//				addLoadTest(test, suite, file);
-//			}
-//		}
-//
-//		addTransferToXMITest(test, suite);
-//		
-//		for (final File file : allTestFiles) {
-//			if (!Arrays.asList(filesWithInvalidCharacters).contains(file.getName())) {
-//				addSaveAndCompareTest(test, suite, file);
-//			}
-//		}
-		return suite;
-	}
-
-	private static void addLoadTest(final JavaXMISerializationTest test,
-			TestSuite suite, final File file) {
-		suite.addTest(new TestCase("Loading " + file.getName()) {
-			public void runTest() {
-				try {
-					test.loadResource(file.getAbsolutePath());
-				}
-				catch (Exception e) {
-					e.printStackTrace();
-					fail(e.getClass() +  ": " + e.getMessage());
-				}
+		for (final File file : allTestFiles) {
+			if (!Arrays.asList(filesWithInvalidCharacters).contains(file.getName())) {
+				load(file);
 			}
-		});
-	}
-
-	private static void addTransferToXMITest(final JavaXMISerializationTest test,
-			TestSuite suite) {
-		suite.addTest(new TestCase("Coverting all Java resources to XMI") {
-			public void runTest() {
-				try {
-					test.transferToXMI();
-				}
-				catch (Exception e) {
-					e.printStackTrace();
-					fail(e.getClass() +  ": " + e.getMessage());
-				}
-			}
-		});
-	}
-	
-	private static void addSaveAndCompareTest(final JavaXMISerializationTest test,
-			TestSuite suite, final File file) {
-		suite.addTest(new TestCase("Saving and comparing XMI " + file.getName()) {
-			public void runTest() {
-				try {
-					test.compare(file);
-				}
-				catch (Exception e) {
-					e.printStackTrace();
-					fail(e.getClass() +  ": " + e.getMessage());
-				}
-			}
-		});
-	}
-
-	private ResourceSet sharedTestResourceSet = null;
-	
-	@Override
-	protected ResourceSet getResourceSet() throws Exception {
-		if (sharedTestResourceSet == null) {
-			sharedTestResourceSet = super.getResourceSet();
 		}
-		return sharedTestResourceSet;
+
+		transferToXMI();
+		
+		for (final File file : allTestFiles) {
+			if (!Arrays.asList(filesWithInvalidCharacters).contains(file.getName())) {
+				compare(file);
+			}
+		}
+	}
+
+	private void load(final File file) {
+		try {
+			loadResource(file.getAbsolutePath());
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getClass() +  ": " + e.getMessage());
+		}
 	}
 	
-	@Override
-	protected Map<? extends Object, ? extends Object> getLoadOptions() {
-		Map<? extends Object, ? extends Object> m = super.getLoadOptions();
-		//m.put(XMIResource.OPTION_XML_VERSION, "1.1");
-		return m;
-	}
-	
-	protected void transferToXMI() throws Exception {
+	private void transferToXMI() throws Exception {
 		ResourceSet rs = getResourceSet();
 		EcoreUtil.resolveAll(rs);
 		
@@ -177,13 +98,15 @@ public class JavaXMISerializationTest extends AbstractJaMoPPTests {
 			JavaRoot root = (JavaRoot) javaResource.getContents().get(0);
 			String outputFileName = "ERROR";
 			if (root instanceof CompilationUnit) {
-				outputFileName = root.getName().substring(0, root.getName().length() - 5).replace(".", File.separator);
+				outputFileName = root.getNamespacesAsString().replace(".", File.separator);
 
 			} else if (root instanceof Package) {
-				outputFileName = root.getNamespacesAsString().replace(".", File.separator) + File.separator + root.getName() + File.separator + "package-info";
+				outputFileName = root.getNamespacesAsString().replace(".", File.separator) + File.separator + "package-info";
 				if (outputFileName.startsWith(File.separator)) {
 					outputFileName = outputFileName.substring(1);
 				}
+			} else if (root instanceof org.emftext.language.java.containers.Module) {
+				outputFileName = root.getNamespacesAsString().replace(".", File.separator) + File.separator + "module-info";
 			} else {
 				fail();
 			}
@@ -257,7 +180,16 @@ public class JavaXMISerializationTest extends AbstractJaMoPPTests {
 	    
 	    assertTrue("Original and reloaded XMI are not equal",
 	    		equalityHelper.equals(root, reloadedRoot));
-		
+	}
+	
+	private ResourceSet sharedRS;
+	
+	@Override
+	protected ResourceSet getResourceSet() throws Exception {
+		if (sharedRS == null) {
+			sharedRS = super.getResourceSet();
+		}
+		return sharedRS;
 	}
 
 	@Override
@@ -269,5 +201,4 @@ public class JavaXMISerializationTest extends AbstractJaMoPPTests {
 	protected String getTestInputFolder() {
 		return TEST_INPUT_FOLDER_NAME;
 	}
-
 }
