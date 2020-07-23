@@ -464,6 +464,89 @@ public class JDTResolverUtility {
 		return null;
 	}
 	
+	static org.emftext.language.java.references.ReferenceableElement getReferenceableElementByNameMatching(String name) {
+		IVariableBinding vBinding = variableBindings.stream().filter(var -> var.getName().equals(name)).findFirst().orElse(null);
+		if (vBinding != null) {
+			return getReferencableElement(vBinding);
+		}
+		IMethodBinding mBinding = methodBindings.stream().filter(meth -> meth.getName().equals(name)).findFirst().orElse(null);
+		if (mBinding != null) {
+			return getMethod(mBinding);
+		}
+		ITypeBinding tBinding = typeBindings.stream().filter(type -> type.getName().equals(name)).findFirst().orElse(null);
+		if (tBinding != null) {
+			return getClassifier(tBinding);
+		}
+		org.emftext.language.java.variables.Variable par = nameToCatchParam.values().stream()
+			.filter(param -> param.getName().equals(name)).findFirst().orElse(null);
+		if (par != null) {
+			return par;
+		}
+		par = nameToLocVar.values().stream().filter(param -> param.getName().equals(name)).findFirst().orElse(null);
+		if (par != null) {
+			return par;
+		}
+		org.emftext.language.java.variables.AdditionalLocalVariable addLocVar = nameToAddLocVar.values().stream()
+			.filter(param -> param.getName().equals(name)).findFirst().orElse(null);
+		if (addLocVar != null) {
+			return addLocVar;
+		}
+		par = nameToVarLenParam.values().stream().filter(param -> param.getName().equals(name)).findFirst().orElse(null);
+		if (par != null) {
+			return par;
+		}
+		par = nameToOrdParam.values().stream().filter(param -> param.getName().equals(name)).findFirst().orElse(null);
+		if (par != null) {
+			return par;
+		}
+		org.emftext.language.java.members.EnumConstant enumConst = nameToEnumConst.values().stream()
+			.filter(param -> param.getName().equals(name)).findFirst().orElse(null);
+		if (enumConst != null) {
+			return enumConst;
+		}
+		org.emftext.language.java.members.Field field = nameToField.values().stream()
+			.filter(param -> param.getName().equals(name)).findFirst().orElse(null);
+		if (field != null) {
+			return field;
+		}
+		org.emftext.language.java.members.AdditionalField addField = nameToAddField.values().stream()
+			.filter(param -> param.getName().equals(name)).findFirst().orElse(null);
+		if (addField != null) {
+			return addField;
+		}
+		org.emftext.language.java.members.Method meth = methBindToCM.values().stream()
+			.filter(param -> param.getName().equals(name)).findFirst().orElse(null);
+		if (meth != null) {
+			return meth;
+		}
+		meth = methBindToInter.values().stream().filter(param -> param.getName().equals(name)).findFirst().orElse(null);
+		if (meth != null) {
+			return meth;
+		}
+		org.emftext.language.java.classifiers.Classifier c = typeBindToTP.values().stream()
+			.filter(param -> param.getName().equals(name)).findFirst().orElse(null);
+		if (c != null) {
+			return c;
+		}
+		c = typeBindToEnum.values().stream().filter(param -> name.equals(param.getName())).findFirst().orElse(null);
+		if (c != null) {
+			return c;
+		}
+		c = typeBindToAnnot.values().stream().filter(param -> name.equals(param.getName())).findFirst().orElse(null);
+		if (c != null) {
+			return c;
+		}
+		c = typeBindToClass.values().stream().filter(param -> name.equals(param.getName())).findFirst().orElse(null);
+		if (c != null) {
+			return c;
+		}
+		c = typeBindToInterface.values().stream().filter(param -> name.equals(param.getName())).findFirst().orElse(null);
+		if (c != null) {
+			return c;
+		}
+		return JDTResolverUtility.getClass(name);
+	}
+	
 	static void completeResolution() {
 		nameToEnumConst.forEach((constName, enConst) -> {
 			if (enConst.eContainer() == null) {

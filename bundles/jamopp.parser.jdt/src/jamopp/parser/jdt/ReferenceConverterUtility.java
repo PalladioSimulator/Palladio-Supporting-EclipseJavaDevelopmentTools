@@ -333,7 +333,7 @@ class ReferenceConverterUtility {
 		} else if (b instanceof IPackageBinding) {
 			target = JDTResolverUtility.getPackage((IPackageBinding) b);
 		} else {
-			target = JDTResolverUtility.getClass(name.getIdentifier());
+			target = JDTResolverUtility.getReferenceableElementByNameMatching(name.getIdentifier());
 		}
 		target.setName(name.getIdentifier());
 		result.setTarget(target);
