@@ -15,6 +15,7 @@ package org.emftext.language.java.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -27,11 +28,13 @@ import org.emftext.language.java.containers.Module;
 import org.emftext.language.java.expressions.ArrayConstructorReferenceExpression;
 import org.emftext.language.java.expressions.AssignmentExpression;
 import org.emftext.language.java.expressions.ClassTypeConstructorReferenceExpression;
+import org.emftext.language.java.expressions.Expression;
 import org.emftext.language.java.expressions.LambdaExpression;
 import org.emftext.language.java.expressions.PrimaryExpressionReferenceExpression;
 import org.emftext.language.java.instantiations.NewConstructorCall;
 import org.emftext.language.java.literals.BinaryIntegerLiteral;
 import org.emftext.language.java.literals.BinaryLongLiteral;
+import org.emftext.language.java.members.ClassMethod;
 import org.emftext.language.java.members.Constructor;
 import org.emftext.language.java.members.Member;
 import org.emftext.language.java.members.Method;
@@ -41,11 +44,17 @@ import org.emftext.language.java.modifiers.Static;
 import org.emftext.language.java.parameters.CatchParameter;
 import org.emftext.language.java.parameters.ReceiverParameter;
 import org.emftext.language.java.statements.Block;
+import org.emftext.language.java.statements.DefaultSwitchRule;
 import org.emftext.language.java.statements.EmptyStatement;
 import org.emftext.language.java.statements.ExpressionStatement;
 import org.emftext.language.java.statements.LocalVariableStatement;
+import org.emftext.language.java.statements.NormalSwitchCase;
+import org.emftext.language.java.statements.NormalSwitchRule;
 import org.emftext.language.java.statements.Statement;
+import org.emftext.language.java.statements.Switch;
+import org.emftext.language.java.statements.SwitchCase;
 import org.emftext.language.java.statements.TryBlock;
+import org.emftext.language.java.statements.YieldStatement;
 import org.emftext.language.java.types.InferableType;
 import org.emftext.language.java.types.Int;
 import org.emftext.language.java.types.TypeReference;
@@ -397,6 +406,59 @@ public class JavaSevenAndUpTest extends AbstractJaMoPPTests {
 			String file = "simplepackage" + File.separator + "SimpleClassWithRestrictedKeywords.java";
 			JavaRoot root = this.parseResource(file);
 			this.assertType(root, CompilationUnit.class);
+			this.assertResolveAllProxies(root);
+			this.parseAndReprint(file);
+		} catch (Exception e) {
+			fail(e.getMessage());
+		}
+	}
+	
+	@Test
+	public void testIntersectionTypeWithTypeArguments() {
+		try {
+			String file = "pkgJava14" + File.separator + "IntersectionTypeWithTypeArguments.java";
+			JavaRoot root = this.parseResource(file);
+			this.assertType(root, CompilationUnit.class);
+			CompilationUnit cu = (CompilationUnit) root;
+			Member m = cu.getClassifiers().get(0).getMembers().get(0);
+			this.assertType(m, ClassMethod.class);
+			ClassMethod method = (ClassMethod) m;
+			LocalVariableStatement locStat = (LocalVariableStatement) method.getBlock().getStatements().get(0);
+			TypeReference typeRef = locStat.getVariable().getTypeReference();
+			this.assertType(typeRef, InferableType.class);
+			InferableType inferType = (InferableType) typeRef;
+			assertEquals(1, inferType.getActualTargets().size());
+			this.assertResolveAllProxies(root);
+			this.parseAndReprint(file);
+		} catch (Exception e) {
+			fail(e.getMessage());
+		}
+	}
+	
+	@Test
+	public void testSimpleClassWithSwitch() {
+		try {
+			String file = "pkgJava14" + File.separator + "SimpleClassWithSwitch.java";
+			JavaRoot root = this.parseResource(file);
+			this.assertType(root, CompilationUnit.class);
+			CompilationUnit cu = (CompilationUnit) root;
+			Member m = cu.getClassifiers().get(0).getMembers().get(1);
+			this.assertType(m, ClassMethod.class);
+			ClassMethod method = (ClassMethod) m;
+			assertEquals(7, method.getBlock().getStatements().size());
+			LocalVariableStatement locStat = (LocalVariableStatement) method.getBlock().getStatements().get(5);
+			Expression e = locStat.getVariable().getInitialValue();
+			this.assertType(e, Switch.class);
+			Switch swith = (Switch) e;
+			SwitchCase ca = swith.getCases().get(0);
+			this.assertType(ca, NormalSwitchCase.class);
+			NormalSwitchCase nca = (NormalSwitchCase) ca;
+			assertNotNull(nca.getCondition());
+			assertEquals(2, nca.getAdditionalConditions().size());
+			this.assertType(nca.getStatements().get(0), YieldStatement.class);
+			swith = (Switch) method.getBlock().getStatements().get(1);
+			this.assertType(swith.getCases().get(0), NormalSwitchRule.class);
+			this.assertType(swith.getCases().get(2), DefaultSwitchRule.class);
 			this.assertResolveAllProxies(root);
 			this.parseAndReprint(file);
 		} catch (Exception e) {
