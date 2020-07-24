@@ -599,12 +599,29 @@ public abstract class AbstractJaMoPPTests {
 	}
 	
 
-	private void assertModelValid(Resource resource) {
+	protected void assertModelValid(Resource resource) {
 		org.eclipse.emf.common.util.Diagnostic result = Diagnostician.INSTANCE.validate(resource.getContents().get(0));
 		String msg = "EMF validation problems found:";
 		for (org.eclipse.emf.common.util.Diagnostic childResult : result.getChildren()) {
 			msg += "\n" + childResult.getMessage();
 		}
 		assertTrue(msg, result.getChildren().isEmpty());
+	}
+	
+	protected void assertModelValid(ResourceSet set) {
+		StringBuilder builder = new StringBuilder();
+		for (Resource res : set.getResources()) {
+			org.eclipse.emf.common.util.Diagnostic result = Diagnostician.INSTANCE.validate(res.getContents().get(0));
+			if (!result.getChildren().isEmpty()) {
+				builder.append("EMF validation problems found in '");
+				builder.append(res.getURI().toString());
+				builder.append("':\n");
+				for (org.eclipse.emf.common.util.Diagnostic childResult : result.getChildren()) {
+					builder.append(childResult.getMessage());
+					builder.append("\n");
+				}
+			}
+		}
+		assertTrue(builder.toString(), builder.length() == 0);
 	}
 }
