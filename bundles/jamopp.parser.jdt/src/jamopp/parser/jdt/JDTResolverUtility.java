@@ -46,11 +46,14 @@ public class JDTResolverUtility {
 	}
 	
 	static org.emftext.language.java.containers.Module getModule(IModuleBinding binding) {
-		String modName = binding.getName();
+		moduleBindings.add(binding);
+		return getModule(binding.getName());
+	}
+	
+	private static org.emftext.language.java.containers.Module getModule(String modName) {
 		if (modBindToMod.containsKey(modName)) {
 			return modBindToMod.get(modName);
 		} else {
-			moduleBindings.add(binding);
 			org.emftext.language.java.containers.Module result = JavaClasspath.get().getModule(modName);
 			if (result == null) {
 				result = org.emftext.language.java.containers.ContainersFactory.eINSTANCE.createModule();
@@ -61,14 +64,17 @@ public class JDTResolverUtility {
 	}
 	
 	static org.emftext.language.java.containers.Package getPackage(IPackageBinding binding) {
-		String packageName = binding.getName();
+		packageBindings.add(binding);
+		return getPackage(binding.getName());
+	}
+	
+	private static org.emftext.language.java.containers.Package getPackage(String packageName) {
 		if (nameToPackage.containsKey(packageName)) {
 			return nameToPackage.get(packageName);
 		} else {
-			packageBindings.add(binding);
 			org.emftext.language.java.containers.Package result = JavaClasspath.get().getPackage(packageName);
 			if (result == null) {
-				result =org.emftext.language.java.containers.ContainersFactory.eINSTANCE.createPackage();
+				result = org.emftext.language.java.containers.ContainersFactory.eINSTANCE.createPackage();
 			}
 			nameToPackage.put(packageName, result);
 			return result;
@@ -225,6 +231,8 @@ public class JDTResolverUtility {
 			return methBindToInter.get(methodName);
 		} else {
 			org.emftext.language.java.members.InterfaceMethod result = org.emftext.language.java.members.MembersFactory.eINSTANCE.createInterfaceMethod();
+			result.setTypeReference(org.emftext.language.java.types.TypesFactory.eINSTANCE.createVoid());
+			result.setStatement(org.emftext.language.java.statements.StatementsFactory.eINSTANCE.createEmptyStatement());
 			methBindToInter.put(methodName, result);
 			return result;
 		}
@@ -240,6 +248,10 @@ public class JDTResolverUtility {
 			return methBindToCM.get(methodName);
 		} else {
 			org.emftext.language.java.members.ClassMethod result = org.emftext.language.java.members.MembersFactory.eINSTANCE.createClassMethod();
+			result.setTypeReference(org.emftext.language.java.types.TypesFactory.eINSTANCE.createVoid());
+			org.emftext.language.java.statements.Block block = org.emftext.language.java.statements.StatementsFactory.eINSTANCE.createBlock();
+			block.setName("");
+			result.setStatement(block);
 			methBindToCM.put(methodName, result);
 			return result;
 		}
@@ -257,6 +269,9 @@ public class JDTResolverUtility {
 		} else {
 			methodBindings.add(binding);
 			org.emftext.language.java.members.Constructor result = org.emftext.language.java.members.MembersFactory.eINSTANCE.createConstructor();
+			org.emftext.language.java.statements.Block block = org.emftext.language.java.statements.StatementsFactory.eINSTANCE.createBlock();
+			block.setName("");
+			result.setBlock(block);
 			methBindToConstr.put(methName, result);
 			return result;
 		}
@@ -299,6 +314,7 @@ public class JDTResolverUtility {
 		} else {
 			variableBindings.add(binding);
 			org.emftext.language.java.members.Field result = org.emftext.language.java.members.MembersFactory.eINSTANCE.createField();
+			result.setTypeReference(org.emftext.language.java.types.TypesFactory.eINSTANCE.createInt());
 			nameToField.put(varName, result);
 			return result;
 		}
@@ -587,13 +603,18 @@ public class JDTResolverUtility {
 					new String[] {packageName, "package-info.java"}, null, null));
 				newResource.getContents().add(pack);
 			}
-			IPackageBinding binding = packageBindings.stream().filter(b -> packageName.equals(b.getName())).findFirst().get();
+			IPackageBinding binding = packageBindings.stream().filter(b -> packageName.equals(b.getName())).findFirst().orElse(null);
 			pack.setName("");
 			pack.getNamespaces().clear();
-			for (String s : binding.getNameComponents()) {
-				pack.getNamespaces().add(s);
+			org.emftext.language.java.containers.Module module;
+			if (binding != null) {
+				for (String s : binding.getNameComponents()) {
+					pack.getNamespaces().add(s);
+				}
+				module = getModule(binding.getModule());
+			} else {
+				module = getModule("");
 			}
-			org.emftext.language.java.containers.Module module = getModule(binding.getModule());
 			pack.setModule(module);
 			module.getPackages().add(pack);
 		});
@@ -604,12 +625,14 @@ public class JDTResolverUtility {
 					new String[] {modName, "module-info.java"}, null, null));
 				newResource.getContents().add(module);
 			}
-			IModuleBinding binding = moduleBindings.stream().filter(b -> modName.equals(b.getName())).findFirst().get();
+			IModuleBinding binding = moduleBindings.stream().filter(b -> modName.equals(b.getName())).findFirst().orElse(null);
 			module.setName("");
 			module.getNamespaces().clear();
-			String nameParts[] = binding.getName().split(".");
-			for (String s : nameParts) {
-				module.getNamespaces().add(s);
+			if (binding != null) {
+				String nameParts[] = binding.getName().split(".");
+				for (String s : nameParts) {
+					module.getNamespaces().add(s);
+				}
 			}
 		});
 		
@@ -676,11 +699,14 @@ public class JDTResolverUtility {
 			.findFirst().orElse(null);
 		if (typeBind != null) {
 			classifier.setPackage(getPackage(typeBind.getPackage()));
+		} else {
+			classifier.setPackage(getPackage(""));
 		}
 		if (classifier.eContainer() != null) {
 			return;
 		}
 		if (typeBind == null || typeBind.isTopLevel()) {
+			classifier.setName(typeBind == null ? typeName : convertToSimpleTypeName(typeBind));
 			org.emftext.language.java.containers.CompilationUnit cu = org.emftext.language.java.containers.ContainersFactory.eINSTANCE.createCompilationUnit();
 			cu.setName("");
 			cu.getClassifiers().add(classifier);
