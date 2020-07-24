@@ -18,3 +18,4 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.jface.text,
  jamopp.resource;bundle-version="4.3.0"
 Export-Package: org.emftext.language.java.test
+Import-Package: jamopp.parser.jdt
