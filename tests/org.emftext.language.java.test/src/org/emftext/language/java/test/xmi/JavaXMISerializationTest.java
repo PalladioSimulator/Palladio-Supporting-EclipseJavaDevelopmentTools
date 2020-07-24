@@ -87,7 +87,7 @@ public class JavaXMISerializationTest extends AbstractJaMoPPTests {
 	private void transferToXMI() throws Exception {
 		ResourceSet rs = getResourceSet();
 		EcoreUtil.resolveAll(rs);
-		
+		int emptyFileName = 0;
 		
 		for (Resource javaResource : new ArrayList<Resource>(rs.getResources())) {
 			assertResolveAllProxies(javaResource);
@@ -98,7 +98,13 @@ public class JavaXMISerializationTest extends AbstractJaMoPPTests {
 			JavaRoot root = (JavaRoot) javaResource.getContents().get(0);
 			String outputFileName = "ERROR";
 			if (root instanceof CompilationUnit) {
-				outputFileName = root.getNamespacesAsString().replace(".", File.separator);
+				outputFileName = root.getNamespacesAsString().replace(".", File.separator) + File.separator;
+				CompilationUnit cu = (CompilationUnit) root;
+				if (cu.getClassifiers().size() > 0) {
+					outputFileName += cu.getClassifiers().get(0).getName();
+				} else {
+					outputFileName += emptyFileName++;
+				}
 
 			} else if (root instanceof Package) {
 				outputFileName = root.getNamespacesAsString().replace(".", File.separator) + File.separator + "package-info";

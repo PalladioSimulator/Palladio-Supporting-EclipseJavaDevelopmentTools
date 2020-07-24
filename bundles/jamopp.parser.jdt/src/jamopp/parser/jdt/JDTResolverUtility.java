@@ -131,9 +131,11 @@ public class JDTResolverUtility {
 			return typeBindToEnum.get(enumName);
 		} else {
 			typeBindings.add(binding);
-			org.emftext.language.java.classifiers.Enumeration result = (org.emftext.language.java.classifiers.Enumeration)
-				JavaClasspath.get().getConcreteClassifier(enumName);
-			if (result == null) {
+			org.emftext.language.java.classifiers.ConcreteClassifier classifier = JavaClasspath.get().getConcreteClassifier(enumName);
+			org.emftext.language.java.classifiers.Enumeration result;
+			if (classifier != null && classifier instanceof org.emftext.language.java.classifiers.Enumeration) {
+				result = (org.emftext.language.java.classifiers.Enumeration) classifier;
+			} else {
 				result = org.emftext.language.java.classifiers.ClassifiersFactory.eINSTANCE.createEnumeration();
 			}
 			typeBindToEnum.put(enumName, result);
@@ -713,7 +715,7 @@ public class JDTResolverUtility {
 			cu.setName("");
 			cu.getClassifiers().add(classifier);
 			String[] namespaces = typeName.substring(0, typeName.length() -
-				(typeBind == null ? typeName.length() : convertToSimpleTypeName(typeBind).length() - 1)).split(".");
+				(typeBind == null ? typeName.length() : convertToSimpleTypeName(typeBind).length())).split("\\.");
 			for (int index = 0; index < namespaces.length; index++) {
 				cu.getNamespaces().add(namespaces[index]);
 			}
