@@ -458,9 +458,7 @@ public class JDTResolverUtility {
 			}
 		} else if (binding.isParameter()) {
 			String paramName = convertToParameterName(binding, false);
-			if (nameToCatchParam.containsKey(paramName)) {
-				return nameToCatchParam.get(paramName);
-			} else if (nameToOrdParam.containsKey(paramName)) {
+			if (nameToOrdParam.containsKey(paramName)) {
 				return nameToOrdParam.get(paramName);
 			} else if (nameToVarLenParam.containsKey(paramName)) {
 				return nameToVarLenParam.get(paramName);
@@ -468,6 +466,10 @@ public class JDTResolverUtility {
 				return getOrdinaryParameter(binding);
 			}
 		} else {
+			String paramName = convertToParameterName(binding, false);
+			if (nameToCatchParam.containsKey(paramName)) {
+				return nameToCatchParam.get(paramName);
+			}
 			String varName = convertToLocalVariableName(binding, false);
 			if (nameToLocVar.containsKey(varName)) {
 				return nameToLocVar.get(varName);
