@@ -102,13 +102,20 @@ public class JaMoPPJDTParser implements JaMoPPParserAPI {
 				} else {
 					newResource = root.eResource();
 					if (!newResource.getURI().toFileString().equals(sourceFilePath)) {
-//						newResource.setURI(URI.createFileURI(sourceFilePath));
+						newResource.setURI(URI.createFileURI(sourceFilePath));
 					}
 				}
 				result.add(root);
 			}
 		}, null);
 		JDTResolverUtility.completeResolution();
+		for (int index = 0; index < this.resourceSet.getResources().size(); index++) {
+			Resource res = this.resourceSet.getResources().get(index);
+			if (res.getContents().isEmpty()) {
+				this.resourceSet.getResources().remove(res);
+				index--;
+			}
+		}
 		return result;
 	}
 	
