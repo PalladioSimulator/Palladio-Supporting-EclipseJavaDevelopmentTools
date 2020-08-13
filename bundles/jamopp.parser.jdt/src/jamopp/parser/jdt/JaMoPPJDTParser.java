@@ -138,7 +138,7 @@ public class JaMoPPJDTParser implements JaMoPPParserAPI {
 		parser.setCompilerOptions(options);
 		return parser;
 	}
-	
+
 	@Override
 	public void setResourceSet(ResourceSet set) {
 		this.resourceSet = set;

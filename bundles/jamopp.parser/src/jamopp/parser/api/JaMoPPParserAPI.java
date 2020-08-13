@@ -15,6 +15,8 @@ package jamopp.parser.api;
 
 import java.io.InputStream;
 import java.nio.file.Path;
+
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.emftext.language.java.containers.JavaRoot;
@@ -57,4 +59,15 @@ public interface JaMoPPParserAPI {
 	 * @param set the ResourceSet.
 	 */
 	void setResourceSet(ResourceSet set);
+	
+	default ResourceSet parseUri(URI uri) {
+		if (uri.isFile()) { 
+			return parseFile(Path.of(uri.toFileString())).getResourceSet();
+		}
+		
+		if (uri.hasPath()) { 
+			return parseDirectory(Path.of(uri.path()));
+	}	
+		return null; 
+}
 }
