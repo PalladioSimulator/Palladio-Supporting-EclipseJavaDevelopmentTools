@@ -3,7 +3,11 @@ package jamopp.parser.jdt;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.jdt.core.dom.IAnnotationBinding;
+import org.eclipse.jdt.core.dom.IMethodBinding;
+import org.eclipse.jdt.core.dom.IPackageBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
+import org.eclipse.jdt.core.dom.IVariableBinding;
 
 class JDTBindingConverterUtility {
 	static List<org.emftext.language.java.types.TypeReference> convertToTypeReferences(ITypeBinding binding) {
@@ -86,5 +90,85 @@ class JDTBindingConverterUtility {
 				arrDimContainer.getArrayDimensionsBefore().add(org.emftext.language.java.arrays.ArraysFactory.eINSTANCE.createArrayDimension());
 			}
 		}
+	}
+	
+	static org.emftext.language.java.classifiers.ConcreteClassifier convertToConcreteClassifier(ITypeBinding binding) {
+		org.emftext.language.java.classifiers.ConcreteClassifier result = null;
+		if (binding.isAnnotation()) {
+			result = JDTResolverUtility.getAnnotation(binding);
+		} else if (binding.isClass()) {
+			org.emftext.language.java.classifiers.Class resultClass = JDTResolverUtility.getClass(binding);
+			if (binding.getSuperclass() != null) {
+				resultClass.setExtends(convertToTypeReferences(binding.getSuperclass()).get(0));
+			}
+			for (ITypeBinding typeBind : binding.getInterfaces()) {
+				resultClass.getImplements().addAll(convertToTypeReferences(typeBind));
+			}
+			result = resultClass;
+		} else if (binding.isInterface()) {
+			org.emftext.language.java.classifiers.Interface resultInterface = JDTResolverUtility.getInterface(binding);
+			for (ITypeBinding typeBind : binding.getInterfaces()) {
+				resultInterface.getExtends().addAll(convertToTypeReferences(typeBind));
+			}
+			result = resultInterface;
+		} else {
+			org.emftext.language.java.classifiers.Enumeration resultEnum = JDTResolverUtility.getEnumeration(binding);
+			for (ITypeBinding typeBind : binding.getInterfaces()) {
+				resultEnum.getImplements().addAll(convertToTypeReferences(typeBind));
+			}
+			result = resultEnum;
+		}
+		result.setPackage(convertToPackage(binding.getPackage()));
+		for (IAnnotationBinding annotBind : binding.getAnnotations()) {
+			result.getAnnotationsAndModifiers().add(convertToAnnotationInstance(annotBind));
+		}
+		for (ITypeBinding typeBind : binding.getTypeParameters()) {
+			result.getTypeParameters().add(convertToTypeParameter(typeBind));
+		}
+		result.getAnnotationsAndModifiers().addAll(convertToModifiers(binding.getModifiers()));
+		convertToNameAndSet(binding, result);
+		for (IVariableBinding varBind : binding.getDeclaredFields()) {
+			result.getMembers().add(convertToField(varBind));
+		}
+		for (IMethodBinding methBind : binding.getDeclaredMethods()) {
+			result.getMembers().add(convertToMethod(methBind));
+		}
+		for (ITypeBinding typeBind : binding.getDeclaredTypes()) {
+			result.getMembers().add(convertToConcreteClassifier(typeBind));
+		}
+		return null;
+	}
+	
+	private static org.emftext.language.java.generics.TypeParameter convertToTypeParameter(ITypeBinding binding) {
+		org.emftext.language.java.generics.TypeParameter result = JDTResolverUtility.getTypeParameter(binding);
+		for (IAnnotationBinding annotBind : binding.getAnnotations()) {
+			result.getAnnotations().add(convertToAnnotationInstance(annotBind));
+		}
+		for (ITypeBinding typeBind : binding.getTypeBounds()) {
+			result.getExtendTypes().addAll(convertToTypeReferences(typeBind));
+		}
+		convertToNameAndSet(binding, result);
+		return result;
+	}
+	
+	private static org.emftext.language.java.members.Field convertToField(IVariableBinding binding) {
+		return null;
+	}
+	
+	private static org.emftext.language.java.members.Method convertToMethod(IMethodBinding binding) {
+		return null;
+	}
+	
+	private static org.emftext.language.java.annotations.AnnotationInstance convertToAnnotationInstance(IAnnotationBinding binding) {
+		return null;
+	}
+	
+	private static List<org.emftext.language.java.modifiers.Modifier> convertToModifiers(int modifiers) {
+		ArrayList<org.emftext.language.java.modifiers.Modifier> result = new ArrayList<>();
+		return result;
+	}
+	
+	private static org.emftext.language.java.containers.Package convertToPackage(IPackageBinding binding) {
+		return null;
 	}
 }
