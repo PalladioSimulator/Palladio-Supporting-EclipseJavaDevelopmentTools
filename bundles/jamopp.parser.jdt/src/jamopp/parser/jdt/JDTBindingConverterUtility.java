@@ -8,6 +8,7 @@ import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.IPackageBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
+import org.eclipse.jdt.core.dom.Modifier;
 
 class JDTBindingConverterUtility {
 	static List<org.emftext.language.java.types.TypeReference> convertToTypeReferences(ITypeBinding binding) {
@@ -165,6 +166,42 @@ class JDTBindingConverterUtility {
 	
 	private static List<org.emftext.language.java.modifiers.Modifier> convertToModifiers(int modifiers) {
 		ArrayList<org.emftext.language.java.modifiers.Modifier> result = new ArrayList<>();
+		if (Modifier.isAbstract(modifiers)) {
+			result.add(org.emftext.language.java.modifiers.ModifiersFactory.eINSTANCE.createAbstract());
+		}
+		if (Modifier.isDefault(modifiers)) {
+			result.add(org.emftext.language.java.modifiers.ModifiersFactory.eINSTANCE.createDefault());
+		}
+		if (Modifier.isFinal(modifiers)) {
+			result.add(org.emftext.language.java.modifiers.ModifiersFactory.eINSTANCE.createFinal());
+		}
+		if (Modifier.isNative(modifiers)) {
+			result.add(org.emftext.language.java.modifiers.ModifiersFactory.eINSTANCE.createNative());
+		}
+		if (Modifier.isPrivate(modifiers)) {
+			result.add(org.emftext.language.java.modifiers.ModifiersFactory.eINSTANCE.createPrivate());
+		}
+		if (Modifier.isProtected(modifiers)) {
+			result.add(org.emftext.language.java.modifiers.ModifiersFactory.eINSTANCE.createProtected());
+		}
+		if (Modifier.isPublic(modifiers)) {
+			result.add(org.emftext.language.java.modifiers.ModifiersFactory.eINSTANCE.createPublic());
+		}
+		if (Modifier.isStatic(modifiers)) {
+			result.add(org.emftext.language.java.modifiers.ModifiersFactory.eINSTANCE.createStatic());
+		}
+		if (Modifier.isStrictfp(modifiers)) {
+			result.add(org.emftext.language.java.modifiers.ModifiersFactory.eINSTANCE.createStrictfp());
+		}
+		if (Modifier.isSynchronized(modifiers)) {
+			result.add(org.emftext.language.java.modifiers.ModifiersFactory.eINSTANCE.createSynchronized());
+		}
+		if (Modifier.isTransient(modifiers)) {
+			result.add(org.emftext.language.java.modifiers.ModifiersFactory.eINSTANCE.createTransient());
+		}
+		if (Modifier.isVolatile(modifiers)) {
+			result.add(org.emftext.language.java.modifiers.ModifiersFactory.eINSTANCE.createVolatile());
+		}
 		return result;
 	}
 	
