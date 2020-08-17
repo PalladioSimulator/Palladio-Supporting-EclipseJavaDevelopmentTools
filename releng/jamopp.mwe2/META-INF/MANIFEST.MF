@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: JaMoPP mwe2 Workflow
+Bundle-SymbolicName: jamopp.mwe2
+Bundle-Version: 4.3.0.qualifier
+Bundle-Vendor: Martin Armbruster
+Automatic-Module-Name: jamopp.mwe2
+Bundle-RequiredExecutionEnvironment: JavaSE-11
+Require-Bundle: org.eclipse.emf.mwe2.launch,
+ tools.mdsd.ecoreworkflow.mwe2lib,
+ org.eclipse.equinox.common,
+ org.objectweb.asm,
+ org.eclipse.core.runtime,
+ org.eclipse.emf.mwe2.lib,
+ org.eclipse.emf.codegen.ecore
+Import-Package: org.apache.commons.logging,
+ org.apache.log4j

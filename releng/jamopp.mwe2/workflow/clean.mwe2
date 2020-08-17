@@ -1,0 +1,26 @@
+module clean
+
+import org.eclipse.emf.mwe2.ecore.EcoreGenerator
+import tools.mdsd.ecoreworkflow.mwe2lib.bean.EclipseRCPSupportingStandaloneSetup
+import tools.mdsd.ecoreworkflow.mwe2lib.component.ContextDependentMapping
+import tools.mdsd.ecoreworkflow.mwe2lib.component.URISupportingDirectoryCleaner
+import tools.mdsd.ecoreworkflow.mwe2lib.component.GapPatternPostProcessor
+
+var workspaceRoot = "../../"
+
+Workflow {
+	
+	bean = EclipseRCPSupportingStandaloneSetup {
+		scanClassPath = true
+		platformUri = workspaceRoot
+	}
+	
+	component = URISupportingDirectoryCleaner {
+        directory = "platform:/resource/org.emftext.commons.jdt/src-gen"
+        directory = "platform:/resource/org.emftext.commons.layout/src-gen"
+        directory = "platform:/resource/org.emftext.commons.layout.edit/src-gen"
+        directory = "platform:/resource/org.emftext.language.java/src-gen"
+        directory = "platform:/resource/org.emftext.language.java.edit/src-gen"
+        directory = "platform:/resource/org.emftext.language.java.editor/src-gen"
+    }
+}

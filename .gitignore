@@ -1,0 +1,51 @@
+# Eclipse
+.loadpath
+.metadata
+.recommenders
+.settings/
+.worksheet
+*.bak
+*.class
+*.swp
+*.tmp
+*~.nib
+bin/
+javacore.*
+local.properties
+src-gen/
+tmp/
+
+# Maven
+.mvn/timing.properties
+/*/bin/
+/*/target/
+buildNumber.properties
+dependency-reduced-pom.xml
+pom.xml.next
+pom.xml.releaseBackup
+pom.xml.tag
+pom.xml.versionsBackup
+release.properties
+target/
+
+# Package Files
+*.ear
+*.jar
+*.nar
+*.rar
+*.tar.gz
+*.war
+*.zip
+
+# General
+.DS_Store
+.polyglot.build.properties
+*.rej
+*~
+heapdump.*
+Snap.*
+*.log
+*.polyglot.*
+*.takari_issue_192
+*.tycho
+*.META-INF_MANIFEST.MF

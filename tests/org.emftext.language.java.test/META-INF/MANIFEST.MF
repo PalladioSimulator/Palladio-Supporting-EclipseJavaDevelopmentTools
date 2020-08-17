@@ -1,0 +1,21 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: JaMoPP Test Plugin
+Bundle-SymbolicName: org.emftext.language.java.test
+Bundle-Version: 4.3.0.qualifier
+Bundle-Vendor: Martin Armbruster
+Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-ActivationPolicy: lazy
+Bundle-Activator: org.emftext.language.java.test.JaMoPPTestPlugin
+Automatic-Module-Name: org.emftext.language.java.test
+Require-Bundle: org.eclipse.core.runtime,
+ org.junit,
+ org.eclipse.jdt.core,
+ org.eclipse.text,
+ org.emftext.language.java,
+ org.eclipse.emf.ecore.xmi,
+ org.eclipse.core.resources,
+ org.eclipse.jface.text,
+ jamopp.resource;bundle-version="4.3.0"
+Export-Package: org.emftext.language.java.test
+Import-Package: jamopp.parser.jdt
