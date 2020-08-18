@@ -136,6 +136,9 @@ class JDTBindingConverterUtility {
 		result.getAnnotationsAndModifiers().addAll(convertToModifiers(binding.getModifiers()));
 		convertToNameAndSet(binding, result);
 		for (IVariableBinding varBind : binding.getDeclaredFields()) {
+			if (varBind.isEnumConstant()) {
+				continue;
+			}
 			result.getMembers().add(convertToField(varBind));
 		}
 		for (IMethodBinding methBind : binding.getDeclaredMethods()) {
@@ -180,11 +183,26 @@ class JDTBindingConverterUtility {
 	}
 	
 	private static org.emftext.language.java.members.Field convertToField(IVariableBinding binding) {
-		return null;
+		org.emftext.language.java.members.Field result = JDTResolverUtility.getField(binding);
+		result.getAnnotationsAndModifiers().addAll(convertToModifiers(binding.getModifiers()));
+		for (IAnnotationBinding annotBind : binding.getAnnotations()) {
+			result.getAnnotationsAndModifiers().add(convertToAnnotationInstance(annotBind));
+		}
+		result.setName(binding.getName());
+		result.setTypeReference(convertToTypeReferences(binding.getType()).get(0));
+		if (binding.getConstantValue() != null) {
+			result.setInitialValue(convertToPrimaryExpression(binding.getConstantValue()));
+		}
+		return result;
 	}
 	
 	private static org.emftext.language.java.members.EnumConstant convertToEnumConstant(IVariableBinding binding) {
-		return null;
+		org.emftext.language.java.members.EnumConstant result = JDTResolverUtility.getEnumConstant(binding);
+		for (IAnnotationBinding annotBind : binding.getAnnotations()) {
+			result.getAnnotations().add(convertToAnnotationInstance(annotBind));
+		}
+		result.setName(binding.getName());
+		return result;
 	}
 	
 	private static org.emftext.language.java.members.Method convertToMethod(IMethodBinding binding) {
@@ -217,11 +235,7 @@ class JDTBindingConverterUtility {
 	}
 	
 	private static org.emftext.language.java.annotations.AnnotationValue convertToAnnotationValue(Object value) {
-		if (value instanceof String) {
-			org.emftext.language.java.references.StringReference ref = org.emftext.language.java.references.ReferencesFactory.eINSTANCE.createStringReference();
-			ref.setValue((String) value);
-			return ref;
-		} else if (value instanceof IVariableBinding) {
+		if (value instanceof IVariableBinding) {
 			IVariableBinding varBind = (IVariableBinding) value;
 			org.emftext.language.java.references.Reference parentRef = internalConvertToReference(varBind.getDeclaringClass());
 			org.emftext.language.java.references.IdentifierReference varRef = org.emftext.language.java.references.ReferencesFactory.eINSTANCE.createIdentifierReference();
@@ -243,6 +257,16 @@ class JDTBindingConverterUtility {
 			org.emftext.language.java.references.ReflectiveClassReference classRef = org.emftext.language.java.references.ReferencesFactory.eINSTANCE.createReflectiveClassReference();
 			parentRef.setNext(classRef);
 			return getTopReference(classRef);
+		} else {
+			return convertToPrimaryExpression(value);
+		}
+	}
+	
+	private static org.emftext.language.java.expressions.PrimaryExpression convertToPrimaryExpression(Object value) {
+		if (value instanceof String) {
+			org.emftext.language.java.references.StringReference ref = org.emftext.language.java.references.ReferencesFactory.eINSTANCE.createStringReference();
+			ref.setValue((String) value);
+			return ref;
 		} else if (value instanceof Boolean) {
 			org.emftext.language.java.literals.BooleanLiteral literal = org.emftext.language.java.literals.LiteralsFactory.eINSTANCE.createBooleanLiteral();
 			literal.setValue((boolean) value);
