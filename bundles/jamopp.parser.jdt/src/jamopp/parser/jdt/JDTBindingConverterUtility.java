@@ -1,9 +1,11 @@
 package jamopp.parser.jdt;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.jdt.core.dom.IAnnotationBinding;
+import org.eclipse.jdt.core.dom.IMemberValuePairBinding;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.IPackageBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
@@ -117,6 +119,11 @@ class JDTBindingConverterUtility {
 			for (ITypeBinding typeBind : binding.getInterfaces()) {
 				resultEnum.getImplements().addAll(convertToTypeReferences(typeBind));
 			}
+			for (IVariableBinding varBind : binding.getDeclaredFields()) {
+				if (varBind.isEnumConstant()) {
+					resultEnum.getConstants().add(convertToEnumConstant(varBind));
+				}
+			}
 			result = resultEnum;
 		}
 		result.setPackage(convertToPackage(binding.getPackage()));
@@ -152,7 +159,31 @@ class JDTBindingConverterUtility {
 		return result;
 	}
 	
+	private static org.emftext.language.java.references.Reference internalConvertToReference(ITypeBinding binding) {
+		org.emftext.language.java.references.IdentifierReference idRef = org.emftext.language.java.references.ReferencesFactory.eINSTANCE.createIdentifierReference();
+		idRef.setTarget(JDTResolverUtility.getClassifier(binding));
+		if (binding.isNested()) {
+			org.emftext.language.java.references.Reference parentRef = internalConvertToReference(binding.getDeclaringClass());
+			parentRef.setNext(idRef);
+		}
+		return idRef;
+	}
+	
+	private static org.emftext.language.java.references.Reference getTopReference(org.emftext.language.java.references.Reference ref) {
+		org.emftext.language.java.references.Reference currentRef = ref;
+		org.emftext.language.java.references.Reference parentRef = ref.getPrevious();
+		while (parentRef != null) {
+			currentRef = parentRef;
+			parentRef = currentRef.getPrevious();
+		}
+		return currentRef;
+	}
+	
 	private static org.emftext.language.java.members.Field convertToField(IVariableBinding binding) {
+		return null;
+	}
+	
+	private static org.emftext.language.java.members.EnumConstant convertToEnumConstant(IVariableBinding binding) {
 		return null;
 	}
 	
@@ -161,9 +192,84 @@ class JDTBindingConverterUtility {
 	}
 	
 	private static org.emftext.language.java.annotations.AnnotationInstance convertToAnnotationInstance(IAnnotationBinding binding) {
-		return null;
+		org.emftext.language.java.annotations.AnnotationInstance result = org.emftext.language.java.annotations.AnnotationsFactory.eINSTANCE.createAnnotationInstance();
+		org.emftext.language.java.classifiers.Annotation resultClass = JDTResolverUtility.getAnnotation(binding.getAnnotationType());
+		convertToNameAndSet(binding.getAnnotationType(), resultClass);
+		result.setAnnotation(resultClass);
+		if (binding.getDeclaredMemberValuePairs().length > 0) {
+			org.emftext.language.java.annotations.AnnotationParameterList params =
+				org.emftext.language.java.annotations.AnnotationsFactory.eINSTANCE.createAnnotationParameterList();
+			for (IMemberValuePairBinding memBind : binding.getDeclaredMemberValuePairs()) {
+				params.getSettings().add(convertToAnnotationAttributeSetting(memBind));
+			}
+			result.setParameter(params);
+		}
+		return result;
 	}
 	
+	private static org.emftext.language.java.annotations.AnnotationAttributeSetting convertToAnnotationAttributeSetting(
+		IMemberValuePairBinding binding) {
+		org.emftext.language.java.annotations.AnnotationAttributeSetting result =
+			org.emftext.language.java.annotations.AnnotationsFactory.eINSTANCE.createAnnotationAttributeSetting();
+		result.setAttribute(JDTResolverUtility.getInterfaceMethod(binding.getMethodBinding()));
+		result.setValue(convertToAnnotationValue(binding.getValue()));
+		return result;
+	}
+	
+	private static org.emftext.language.java.annotations.AnnotationValue convertToAnnotationValue(Object value) {
+		if (value instanceof String) {
+			org.emftext.language.java.references.StringReference ref = org.emftext.language.java.references.ReferencesFactory.eINSTANCE.createStringReference();
+			ref.setValue((String) value);
+			return ref;
+		} else if (value instanceof IVariableBinding) {
+			IVariableBinding varBind = (IVariableBinding) value;
+			org.emftext.language.java.references.Reference parentRef = internalConvertToReference(varBind.getDeclaringClass());
+			org.emftext.language.java.references.IdentifierReference varRef = org.emftext.language.java.references.ReferencesFactory.eINSTANCE.createIdentifierReference();
+			varRef.setTarget(JDTResolverUtility.getEnumConstant(varBind));
+			parentRef.setNext(varRef);
+			return getTopReference(varRef);
+		} else if (value instanceof IAnnotationBinding) {
+			return convertToAnnotationInstance((IAnnotationBinding) value);
+		} else if (value.getClass().isArray()) {
+			Object[] values = (Object[]) value;
+			org.emftext.language.java.arrays.ArrayInitializer initializer = org.emftext.language.java.arrays.ArraysFactory.eINSTANCE.createArrayInitializer();
+			for (int index = 0; index < values.length; index++) {
+				initializer.getInitialValues().add((org.emftext.language.java.arrays.ArrayInitializationValue)
+					convertToAnnotationValue(values[index]));
+			}
+			return initializer;
+		} else if (value instanceof ITypeBinding) {
+			org.emftext.language.java.references.Reference parentRef = internalConvertToReference((ITypeBinding) value);
+			org.emftext.language.java.references.ReflectiveClassReference classRef = org.emftext.language.java.references.ReferencesFactory.eINSTANCE.createReflectiveClassReference();
+			parentRef.setNext(classRef);
+			return getTopReference(classRef);
+		} else if (value instanceof Boolean) {
+			org.emftext.language.java.literals.BooleanLiteral literal = org.emftext.language.java.literals.LiteralsFactory.eINSTANCE.createBooleanLiteral();
+			literal.setValue((boolean) value);
+			return literal;
+		} else if (value instanceof Character) {
+			org.emftext.language.java.literals.CharacterLiteral literal = org.emftext.language.java.literals.LiteralsFactory.eINSTANCE.createCharacterLiteral();
+			literal.setValue((char) value);
+			return literal;
+		} else if (value instanceof Byte || value instanceof Short || value instanceof Integer) {
+			org.emftext.language.java.literals.DecimalIntegerLiteral literal = org.emftext.language.java.literals.LiteralsFactory.eINSTANCE.createDecimalIntegerLiteral();
+			literal.setDecimalValue(BigInteger.valueOf((long) value));
+			return literal;
+		} else if (value instanceof Long) {
+			org.emftext.language.java.literals.DecimalLongLiteral literal = org.emftext.language.java.literals.LiteralsFactory.eINSTANCE.createDecimalLongLiteral();
+			literal.setDecimalValue(BigInteger.valueOf((long) value));
+			return literal;
+		} else if (value instanceof Float) {
+			org.emftext.language.java.literals.DecimalFloatLiteral literal = org.emftext.language.java.literals.LiteralsFactory.eINSTANCE.createDecimalFloatLiteral();
+			literal.setDecimalValue((float) value);
+			return literal;
+		} else { // value instanceof Double
+			org.emftext.language.java.literals.DecimalDoubleLiteral literal = org.emftext.language.java.literals.LiteralsFactory.eINSTANCE.createDecimalDoubleLiteral();
+			literal.setDecimalValue((double) value);
+			return literal;
+		}
+	}
+
 	private static List<org.emftext.language.java.modifiers.Modifier> convertToModifiers(int modifiers) {
 		ArrayList<org.emftext.language.java.modifiers.Modifier> result = new ArrayList<>();
 		if (Modifier.isAbstract(modifiers)) {
