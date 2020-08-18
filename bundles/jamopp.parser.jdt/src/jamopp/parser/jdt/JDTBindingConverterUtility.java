@@ -142,7 +142,11 @@ class JDTBindingConverterUtility {
 			result.getMembers().add(convertToField(varBind));
 		}
 		for (IMethodBinding methBind : binding.getDeclaredMethods()) {
-			result.getMembers().add(convertToMethod(methBind));
+			if (methBind.isConstructor()) {
+				result.getMembers().add(convertToConstructor(methBind));
+			} else {
+				result.getMembers().add(convertToMethod(methBind));
+			}
 		}
 		for (ITypeBinding typeBind : binding.getDeclaredTypes()) {
 			result.getMembers().add(convertToConcreteClassifier(typeBind));
@@ -205,8 +209,110 @@ class JDTBindingConverterUtility {
 		return result;
 	}
 	
+	private static org.emftext.language.java.members.Constructor convertToConstructor(IMethodBinding binding) {
+		org.emftext.language.java.members.Constructor result = JDTResolverUtility.getConstructor(binding);
+		result.getAnnotationsAndModifiers().addAll(convertToModifiers(binding.getModifiers()));
+		for (IAnnotationBinding annotBind : binding.getAnnotations()) {
+			result.getAnnotationsAndModifiers().add(convertToAnnotationInstance(annotBind));
+		}
+		result.setName(binding.getName());
+		for (ITypeBinding typeBind : binding.getTypeParameters()) {
+			result.getTypeParameters().add(convertToTypeParameter(typeBind));
+		}
+		if (binding.getDeclaredReceiverType() != null) {
+			org.emftext.language.java.parameters.ReceiverParameter param = org.emftext.language.java.parameters.ParametersFactory.eINSTANCE.createReceiverParameter();
+			param.setName("");
+			param.setTypeReference(convertToTypeReferences(binding.getDeclaredReceiverType()).get(0));
+			param.setOuterTypeReference(param.getTypeReference());
+			param.setThisReference(org.emftext.language.java.literals.LiteralsFactory.eINSTANCE.createThis());
+			result.getParameters().add(param);
+		}
+		for (int index = 0; index < binding.getParameterTypes().length; index++) {
+			ITypeBinding typeBind = binding.getParameterTypes()[index];
+			org.emftext.language.java.parameters.Parameter param;
+			if (binding.isVarargs() && index == binding.getParameterTypes().length - 1) {
+				param = org.emftext.language.java.parameters.ParametersFactory.eINSTANCE.createVariableLengthParameter();
+			} else {
+				param = org.emftext.language.java.parameters.ParametersFactory.eINSTANCE.createOrdinaryParameter();
+			}
+			param.setName("param" + index);
+			param.setTypeReference(convertToTypeReferences(typeBind).get(0));
+			IAnnotationBinding[] binds = binding.getParameterAnnotations(index);
+			for (IAnnotationBinding annotBind : binds) {
+				param.getAnnotationsAndModifiers().add(convertToAnnotationInstance(annotBind));
+			}
+			result.getParameters().add(param);
+		}
+		for (ITypeBinding typeBind : binding.getExceptionTypes()) {
+			result.getExceptions().add(convertToNamespaceClassifierReference(typeBind));
+		}
+		return result;
+	}
+	
 	private static org.emftext.language.java.members.Method convertToMethod(IMethodBinding binding) {
-		return null;
+		org.emftext.language.java.members.Method result = JDTResolverUtility.getMethod(binding);
+		result.getAnnotationsAndModifiers().addAll(convertToModifiers(binding.getModifiers()));
+		for (IAnnotationBinding annotBind : binding.getAnnotations()) {
+			result.getAnnotationsAndModifiers().add(convertToAnnotationInstance(annotBind));
+		}
+		result.setName(binding.getName());
+		result.setTypeReference(convertToTypeReferences(binding.getReturnType()).get(0));
+		for (ITypeBinding typeBind : binding.getTypeParameters()) {
+			result.getTypeParameters().add(convertToTypeParameter(typeBind));
+		}
+		if (binding.getDeclaredReceiverType() != null) {
+			org.emftext.language.java.parameters.ReceiverParameter param = org.emftext.language.java.parameters.ParametersFactory.eINSTANCE.createReceiverParameter();
+			param.setTypeReference(convertToTypeReferences(binding.getDeclaredReceiverType()).get(0));
+			param.setName("");
+			param.setThisReference(org.emftext.language.java.literals.LiteralsFactory.eINSTANCE.createThis());
+			result.getParameters().add(param);
+		}
+		for (int index = 0; index < binding.getParameterTypes().length; index++) {
+			ITypeBinding typeBind = binding.getParameterTypes()[index];
+			org.emftext.language.java.parameters.Parameter param;
+			if (binding.isVarargs() && index == binding.getParameterTypes().length - 1) {
+				param = org.emftext.language.java.parameters.ParametersFactory.eINSTANCE.createVariableLengthParameter();
+			} else {
+				param = org.emftext.language.java.parameters.ParametersFactory.eINSTANCE.createOrdinaryParameter();
+			}
+			param.setName("param" + index);
+			param.setTypeReference(convertToTypeReferences(typeBind).get(0));
+			IAnnotationBinding[] binds = binding.getParameterAnnotations(index);
+			for (IAnnotationBinding annotBind : binds) {
+				param.getAnnotationsAndModifiers().add(convertToAnnotationInstance(annotBind));
+			}
+			result.getParameters().add(param);
+		}
+		if (binding.getDefaultValue() != null) {
+			((org.emftext.language.java.members.InterfaceMethod) result).setDefaultValue(convertToAnnotationValue(binding.getDefaultValue()));
+		}
+		for (ITypeBinding typeBind : binding.getExceptionTypes()) {
+			result.getExceptions().add(convertToNamespaceClassifierReference(typeBind));
+		}
+		if (binding.getDeclaringClass().isInterface()) {
+			boolean hasDefaultImpl = false;
+			for (org.emftext.language.java.modifiers.Modifier mod : result.getModifiers()) {
+				if (mod instanceof org.emftext.language.java.modifiers.Default) {
+					hasDefaultImpl = true;
+					break;
+				}
+			}
+			if (!hasDefaultImpl) {
+				result.setStatement(org.emftext.language.java.statements.StatementsFactory.eINSTANCE.createEmptyStatement());
+			}
+		}
+		return result;
+	}
+	
+	private static org.emftext.language.java.types.NamespaceClassifierReference convertToNamespaceClassifierReference(ITypeBinding binding) {
+		org.emftext.language.java.types.NamespaceClassifierReference ref = org.emftext.language.java.types.TypesFactory.eINSTANCE.createNamespaceClassifierReference();
+		for (String nameComp : binding.getPackage().getNameComponents()) {
+			ref.getNamespaces().add(nameComp);
+		}
+		org.emftext.language.java.types.ClassifierReference classRef = org.emftext.language.java.types.TypesFactory.eINSTANCE.createClassifierReference();
+		classRef.setTarget(JDTResolverUtility.getClassifier(binding));
+		ref.getClassifierReferences().add(classRef);
+		return ref;
 	}
 	
 	private static org.emftext.language.java.annotations.AnnotationInstance convertToAnnotationInstance(IAnnotationBinding binding) {
