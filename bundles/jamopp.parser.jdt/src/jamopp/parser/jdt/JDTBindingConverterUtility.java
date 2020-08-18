@@ -126,7 +126,7 @@ class JDTBindingConverterUtility {
 			}
 			result = resultEnum;
 		}
-		result.setPackage(convertToPackage(binding.getPackage()));
+		result.setPackage(JDTResolverUtility.getPackage(binding.getPackage()));
 		for (IAnnotationBinding annotBind : binding.getAnnotations()) {
 			result.getAnnotationsAndModifiers().add(convertToAnnotationInstance(annotBind));
 		}
@@ -441,7 +441,16 @@ class JDTBindingConverterUtility {
 		return result;
 	}
 	
-	private static org.emftext.language.java.containers.Package convertToPackage(IPackageBinding binding) {
-		return null;
+	static org.emftext.language.java.containers.Package convertToPackage(IPackageBinding binding) {
+		org.emftext.language.java.containers.Package pack = JDTResolverUtility.getPackage(binding);
+		for (String nameComp : binding.getNameComponents()) {
+			pack.getNamespaces().add(nameComp);
+		}
+		pack.setName("");
+		for (IAnnotationBinding annotBind : binding.getAnnotations()) {
+			pack.getAnnotations().add(convertToAnnotationInstance(annotBind));
+		}
+		pack.setModule(JDTResolverUtility.getModule(binding.getModule()));
+		return pack;
 	}
 }
