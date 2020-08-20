@@ -7,6 +7,7 @@ import java.util.List;
 import org.eclipse.jdt.core.dom.IAnnotationBinding;
 import org.eclipse.jdt.core.dom.IMemberValuePairBinding;
 import org.eclipse.jdt.core.dom.IMethodBinding;
+import org.eclipse.jdt.core.dom.IModuleBinding;
 import org.eclipse.jdt.core.dom.IPackageBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
@@ -452,5 +453,68 @@ class JDTBindingConverterUtility {
 		}
 		pack.setModule(JDTResolverUtility.getModule(binding.getModule()));
 		return pack;
+	}
+	
+	static org.emftext.language.java.containers.Module convertToModule(IModuleBinding binding) {
+		org.emftext.language.java.containers.Module result = JDTResolverUtility.getModule(binding);
+		for (IAnnotationBinding annotBind : binding.getAnnotations()) {
+			result.getAnnotations().add(convertToAnnotationInstance(annotBind));
+		}
+		if (binding.isOpen()) {
+			result.setOpen(org.emftext.language.java.modifiers.ModifiersFactory.eINSTANCE.createOpen());
+		}
+		convertToNamespacesAndSet(binding.getName(), result);
+		result.setName("");
+		for(IPackageBinding packBind : binding.getExportedPackages()) {
+			org.emftext.language.java.modules.ExportsModuleDirective dir = org.emftext.language.java.modules.ModulesFactory.eINSTANCE.createExportsModuleDirective();
+			dir.setAccessablePackage(JDTResolverUtility.getPackage(packBind));
+			String[] mods = binding.getExportedTo(packBind);
+			for (String modName : mods) {
+				org.emftext.language.java.modules.ModuleReference ref = org.emftext.language.java.modules.ModulesFactory.eINSTANCE.createModuleReference();
+				ref.setTarget(JDTResolverUtility.getModule(modName));
+				dir.getModules().add(ref);
+			}
+			result.getTarget().add(dir);
+		}
+		for (IPackageBinding packBind : binding.getOpenedPackages()) {
+			org.emftext.language.java.modules.OpensModuleDirective dir = org.emftext.language.java.modules.ModulesFactory.eINSTANCE.createOpensModuleDirective();
+			dir.setAccessablePackage(JDTResolverUtility.getPackage(packBind));
+			String[] mods = binding.getOpenedTo(packBind);
+			for (String modName : mods) {
+				org.emftext.language.java.modules.ModuleReference ref = org.emftext.language.java.modules.ModulesFactory.eINSTANCE.createModuleReference();
+				ref.setTarget(JDTResolverUtility.getModule(modName));
+				dir.getModules().add(ref);
+			}
+			result.getTarget().add(dir);
+		}
+		for (IModuleBinding modBind : binding.getRequiredModules()) {
+			org.emftext.language.java.modules.RequiresModuleDirective dir = org.emftext.language.java.modules.ModulesFactory.eINSTANCE.createRequiresModuleDirective();
+			org.emftext.language.java.containers.Module reqMod = JDTResolverUtility.getModule(modBind);
+			org.emftext.language.java.modules.ModuleReference ref = org.emftext.language.java.modules.ModulesFactory.eINSTANCE.createModuleReference();
+			ref.setTarget(reqMod);
+			dir.setRequiredModule(ref);
+			result.getTarget().add(dir);
+		}
+		for (ITypeBinding typeBind : binding.getUses()) {
+			org.emftext.language.java.modules.UsesModuleDirective dir = org.emftext.language.java.modules.ModulesFactory.eINSTANCE.createUsesModuleDirective();
+			dir.setTypeReference(convertToTypeReferences(typeBind).get(0));
+			result.getTarget().add(dir);
+		}
+		for (ITypeBinding typeBind : binding.getServices()) {
+			org.emftext.language.java.modules.ProvidesModuleDirective dir = org.emftext.language.java.modules.ModulesFactory.eINSTANCE.createProvidesModuleDirective();
+			dir.setTypeReference(convertToTypeReferences(typeBind).get(0));
+			for (ITypeBinding service : binding.getImplementations(typeBind)) {
+				dir.getServiceProviders().addAll(convertToTypeReferences(service));
+			}
+			result.getTarget().add(dir);
+		}
+		return result;
+	}
+	
+	private static void convertToNamespacesAndSet(String namespaces, org.emftext.language.java.commons.NamespaceAwareElement ele) {
+		String[] singleNamespaces = namespaces.split("\\.");
+		for (String part : singleNamespaces) {
+			ele.getNamespaces().add(part);
+		}
 	}
 }

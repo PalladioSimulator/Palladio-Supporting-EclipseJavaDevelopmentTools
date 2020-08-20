@@ -50,7 +50,7 @@ public class JDTResolverUtility {
 		return getModule(binding.getName());
 	}
 	
-	private static org.emftext.language.java.containers.Module getModule(String modName) {
+	static org.emftext.language.java.containers.Module getModule(String modName) {
 		if (modBindToMod.containsKey(modName)) {
 			return modBindToMod.get(modName);
 		} else {
