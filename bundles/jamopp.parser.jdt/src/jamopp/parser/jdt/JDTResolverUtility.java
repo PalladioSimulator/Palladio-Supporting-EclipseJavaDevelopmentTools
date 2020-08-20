@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.jdt.core.dom.IMethodBinding;
@@ -40,6 +41,7 @@ public class JDTResolverUtility {
 	private static HashSet<IVariableBinding> variableBindings = new HashSet<>();
 	private static int uid = 0;
 	private static HashMap<IVariableBinding, Integer> varBindToUid = new HashMap<>();
+	private static HashSet<EObject> objVisited = new HashSet<>();
 	
 	static void setResourceSet(ResourceSet set) {
 		resourceSet = set;
@@ -122,9 +124,11 @@ public class JDTResolverUtility {
 			return typeBindToAnnot.get(annotName);
 		} else {
 			typeBindings.add(binding);
-			org.emftext.language.java.classifiers.Annotation result = (org.emftext.language.java.classifiers.Annotation)
-				JavaClasspath.get().getConcreteClassifier(annotName);
-			if (result == null) {
+			org.emftext.language.java.classifiers.Annotation result;
+			org.emftext.language.java.classifiers.ConcreteClassifier potClass = JavaClasspath.get().getConcreteClassifier(annotName);
+			if (potClass instanceof org.emftext.language.java.classifiers.Annotation) {
+				result = (org.emftext.language.java.classifiers.Annotation) potClass;
+			} else {
 				result = org.emftext.language.java.classifiers.ClassifiersFactory.eINSTANCE.createAnnotation();
 			}
 			typeBindToAnnot.put(annotName, result);
@@ -225,16 +229,17 @@ public class JDTResolverUtility {
 		if (binding == null) {
 			return "";
 		}
+		binding = binding.getMethodDeclaration();
 		StringBuilder builder = new StringBuilder();
 		builder.append(convertToTypeName(binding.getDeclaringClass()));
 		builder.append("::");
 		builder.append(binding.getName());
 		builder.append("(");
 		for (ITypeBinding p : binding.getParameterTypes()) {
-			builder.append(p.getQualifiedName());
+			builder.append(convertToTypeName(p));
 		}
 		builder.append(")");
-		builder.append(binding.getReturnType().getQualifiedName());
+		builder.append(convertToTypeName(binding.getReturnType()));
 		return builder.toString();
 	}
 	
@@ -302,9 +307,11 @@ public class JDTResolverUtility {
 		if (typeBindToClass.containsKey(typeName)) {
 			return typeBindToClass.get(typeName);
 		} else {
-			org.emftext.language.java.classifiers.Class result = (org.emftext.language.java.classifiers.Class)
-				JavaClasspath.get().getConcreteClassifier(typeName);
-			if (result == null) {
+			org.emftext.language.java.classifiers.Class result;
+			org.emftext.language.java.classifiers.ConcreteClassifier potClass = JavaClasspath.get().getConcreteClassifier(typeName);
+			if (potClass instanceof org.emftext.language.java.classifiers.Class) {
+				result = (org.emftext.language.java.classifiers.Class) potClass;
+			} else {
 				result = org.emftext.language.java.classifiers.ClassifiersFactory.eINSTANCE.createClass();
 			}
 			typeBindToClass.put(typeName, result);
@@ -464,7 +471,7 @@ public class JDTResolverUtility {
 			if (nameToField.containsKey(fieldName)) {
 				return nameToField.get(fieldName);
 			} else if (nameToAddField.containsKey(fieldName)) {
-				nameToAddField.get(fieldName);
+				return nameToAddField.get(fieldName);
 			} else {
 				return getField(binding);
 			}
@@ -491,7 +498,6 @@ public class JDTResolverUtility {
 				return getLocalVariable(binding);
 			}
 		}
-		return null;
 	}
 	
 	static org.emftext.language.java.references.ReferenceableElement getReferenceableElementByNameMatching(String name) {
@@ -612,32 +618,6 @@ public class JDTResolverUtility {
 		
 		convertPurePackageAndModuleBindings();
 		
-		nameToPackage.forEach((packageName, pack) -> {
-			IPackageBinding binding = packageBindings.stream().filter(b -> packageName.equals(b.getName())).findFirst().orElse(null);
-			if (binding == null && pack.eContainer() == null) {
-				pack.setName("");
-				pack.setModule(getModule(""));				
-			}
-			pack.getModule().getPackages().add(pack);
-			if (pack.eContainer() == null) {
-				Resource newResource = resourceSet.createResource(URI.createHierarchicalURI("empty", "JaMoPP-Package", null,
-					new String[] {packageName, "package-info.java"}, null, null));
-				newResource.getContents().add(pack);
-			}
-		});
-		
-		modBindToMod.forEach((modName, module) -> {
-			IModuleBinding binding = moduleBindings.stream().filter(b -> modName.equals(b.getName())).findFirst().orElse(null);
-			if (binding == null) {
-				module.setName("");
-			}
-			if (module.eContainer() == null) {
-				Resource newResource = resourceSet.createResource(URI.createHierarchicalURI("empty", "JaMoPP-Module", null,
-					new String[] {modName, "module-info.java"}, null, null));
-				newResource.getContents().add(module);
-			}
-		});
-		
 		modBindToMod.values().forEach(module -> JavaClasspath.get().registerModule(module));
 		
 		nameToPackage.values().forEach(pack -> JavaClasspath.get().registerPackage(pack));
@@ -675,6 +655,7 @@ public class JDTResolverUtility {
 		variableBindings.clear();
 		uid = 0;
 		varBindToUid.clear();
+		objVisited.clear();
 	}
 	
 	private static void completeMethod(String methodName, org.emftext.language.java.members.Member method) {
@@ -714,6 +695,9 @@ public class JDTResolverUtility {
 	}
 	
 	private static void convertPureTypeBinding(String typeName, org.emftext.language.java.classifiers.ConcreteClassifier classifier) {
+		if (objVisited.contains(classifier)) {
+			return;
+		}
 		ITypeBinding typeBind = typeBindings.stream().filter(type -> typeName.equals(convertToTypeName(type)))
 			.findFirst().orElse(null);
 		if (typeBind == null) {
@@ -743,25 +727,20 @@ public class JDTResolverUtility {
 				convertPureTypeBinding(typeName, (org.emftext.language.java.classifiers.ConcreteClassifier) getClassifier(elementType));
 			}
 		}
+		objVisited.add(classifier);
 	}
 	
 	private static void completeType(String typeName, org.emftext.language.java.classifiers.ConcreteClassifier classifier) {
-		ITypeBinding typeBind = typeBindings.stream().filter(type -> typeName.equals(convertToTypeName(type)))
-			.findFirst().orElse(null);
-		if (typeBind != null && classifier.eContainer() != null) {
-			classifier.setPackage(getPackage(typeBind.getPackage()));
-		} else {
-			classifier.setPackage(getPackage(""));
-		}
-		if (typeBind != null || classifier.eContainer() != null) {
+		classifier.setPackage(getPackage(""));
+		if (classifier.eContainer() != null) {
 			return;
 		}
-		classifier.setName(typeName);
+		String[] namespaces = typeName.split("\\.");
+		classifier.setName(namespaces[namespaces.length - 1]);
 		org.emftext.language.java.containers.CompilationUnit cu = org.emftext.language.java.containers.ContainersFactory.eINSTANCE.createCompilationUnit();
 		cu.setName("");
 		cu.getClassifiers().add(classifier);
-		String[] namespaces = typeName.substring(0, typeName.length() - typeName.length()).split("\\.");
-		for (int index = 0; index < namespaces.length; index++) {
+		for (int index = 0; index < namespaces.length - 1; index++) {
 			cu.getNamespaces().add(namespaces[index]);
 		}
 		Resource newResource = resourceSet.createResource(URI.createHierarchicalURI("empty",
@@ -787,10 +766,15 @@ public class JDTResolverUtility {
 	
 	private static void convertPurePackageBinding(String packageName, org.emftext.language.java.containers.Package pack) {
 		IPackageBinding binding = packageBindings.stream().filter(b -> packageName.equals(b.getName())).findFirst().orElse(null);
-		if (pack.eResource() != null || binding == null) {
+		if (pack.eResource() != null) {
 			return;
 		}
-		JDTBindingConverterUtility.convertToPackage(binding);
+		if (binding == null) {
+			pack.setName("");
+			pack.setModule(getModule(""));
+		} else {
+			JDTBindingConverterUtility.convertToPackage(binding);
+		}
 		Resource newResource = resourceSet.createResource(URI.createHierarchicalURI("empty", "JaMoPP-Package", null,
 			new String[] {packageName, "package-info.java"}, null, null));
 		newResource.getContents().add(pack);
@@ -798,10 +782,19 @@ public class JDTResolverUtility {
 	
 	private static void convertPureModuleBinding(String modName, org.emftext.language.java.containers.Module module) {
 		IModuleBinding binding = moduleBindings.stream().filter(b -> modName.equals(b.getName())).findFirst().orElse(null);
-		if (module.eResource() != null || binding == null) {
+		if (module.eResource() != null) {
 			return;
 		}
-		JDTBindingConverterUtility.convertToModule(binding);
+		if (binding == null) {
+			module.getNamespaces().clear();
+			String[] parts = modName.split("\\.");
+			for (String part : parts) {
+				module.getNamespaces().add(part);
+			}
+			module.setName("");
+		} else {
+			JDTBindingConverterUtility.convertToModule(binding);
+		}
 		Resource newResource = resourceSet.createResource(URI.createHierarchicalURI("empty", "JaMoPP-Module", null,
 			new String[] {modName, "module-info.java"}, null, null));
 		newResource.getContents().add(module);

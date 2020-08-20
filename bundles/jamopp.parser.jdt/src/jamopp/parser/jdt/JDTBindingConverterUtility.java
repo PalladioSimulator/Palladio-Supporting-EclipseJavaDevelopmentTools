@@ -136,8 +136,8 @@ class JDTBindingConverterUtility {
 			}
 			result = resultEnum;
 		}
+		result.setPackage(JDTResolverUtility.getPackage(binding.getPackage()));
 		if (result.eContainer() == null) {
-			result.setPackage(JDTResolverUtility.getPackage(binding.getPackage()));
 			for (IAnnotationBinding annotBind : binding.getAnnotations()) {
 				result.getAnnotationsAndModifiers().add(convertToAnnotationInstance(annotBind));
 			}
@@ -158,6 +158,9 @@ class JDTBindingConverterUtility {
 			}
 		}
 		for (IMethodBinding methBind : binding.getDeclaredMethods()) {
+			if (methBind.isDefaultConstructor()) {
+				continue;
+			}
 			if (methBind.isConstructor()) {
 				member = convertToConstructor(methBind);
 			} else {
@@ -212,10 +215,16 @@ class JDTBindingConverterUtility {
 	}
 	
 	private static org.emftext.language.java.members.Field convertToField(IVariableBinding binding) {
-		org.emftext.language.java.members.Field result = JDTResolverUtility.getField(binding);
-		if (result.eContainer() != null) {
-			return result;
+		org.emftext.language.java.references.ReferenceableElement refElement = JDTResolverUtility.getReferencableElement(binding);
+		if (refElement.eContainer() != null) {
+			if (refElement instanceof org.emftext.language.java.members.AdditionalField) {
+				return (org.emftext.language.java.members.Field)
+					((org.emftext.language.java.members.AdditionalField) refElement).eContainer();
+			} else {
+				return (org.emftext.language.java.members.Field) refElement;
+			}
 		}
+		org.emftext.language.java.members.Field result = (org.emftext.language.java.members.Field) refElement;
 		result.getAnnotationsAndModifiers().addAll(convertToModifiers(binding.getModifiers()));
 		for (IAnnotationBinding annotBind : binding.getAnnotations()) {
 			result.getAnnotationsAndModifiers().add(convertToAnnotationInstance(annotBind));
@@ -497,6 +506,9 @@ class JDTBindingConverterUtility {
 	
 	static org.emftext.language.java.containers.Package convertToPackage(IPackageBinding binding) {
 		org.emftext.language.java.containers.Package pack = JDTResolverUtility.getPackage(binding);
+		if (pack.getAnnotations().size() > 0) {
+			return pack;
+		}
 		pack.getNamespaces().clear();
 		for (String nameComp : binding.getNameComponents()) {
 			pack.getNamespaces().add(nameComp);

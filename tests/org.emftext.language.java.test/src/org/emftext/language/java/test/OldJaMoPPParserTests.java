@@ -425,7 +425,7 @@ public class OldJaMoPPParserTests extends AbstractJaMoPPTests {
 		String typename = "AnnotationsForEnums";
 		String filename = typename + JAVA_FILE_EXTENSION;
 		org.emftext.language.java.classifiers.Enumeration eenum = assertParsesToEnumeration(typename);
-		assertMemberCount(eenum, 0);
+		assertMemberCount(eenum, 2);
 
 		parseAndReprint(filename);
 	}
@@ -436,7 +436,7 @@ public class OldJaMoPPParserTests extends AbstractJaMoPPTests {
 		String filename = typename + JAVA_FILE_EXTENSION;
 		Enumeration enumeration = assertParsesToEnumeration(typename);
 		// assert no members because enumeration constants are not members
-		assertMemberCount(enumeration, 0);
+		assertMemberCount(enumeration, 2);
 
 		parseAndReprint(filename);
 	}
@@ -447,7 +447,7 @@ public class OldJaMoPPParserTests extends AbstractJaMoPPTests {
 		String filename = typename + JAVA_FILE_EXTENSION;
 		Enumeration enumeration = assertParsesToEnumeration(typename);
 		// assert one member (the constructor) because enumeration constants are not members
-		assertMemberCount(enumeration, 1);
+		assertMemberCount(enumeration, 3);
 
 		parseAndReprint(filename);
 	}
@@ -760,7 +760,7 @@ public class OldJaMoPPParserTests extends AbstractJaMoPPTests {
 		String typename = "EmptyEnum";
 		String filename = typename + JAVA_FILE_EXTENSION;
 		Enumeration enumeration = assertParsesToEnumeration(typename);
-		assertEquals(typename + " should have no members.", 0, enumeration
+		assertEquals(typename + " should have no members.", 2, enumeration
 				.getMembers().size());
 
 		parseAndReprint(filename);
@@ -802,7 +802,7 @@ public class OldJaMoPPParserTests extends AbstractJaMoPPTests {
 		String filename = typename + JAVA_FILE_EXTENSION;
 		org.emftext.language.java.classifiers.Class clazz = assertParsesToClass(typename);
 		Enumeration enumeration = (Enumeration) clazz.getMembers().get(0);
-		assertMemberCount(enumeration, 3);
+		assertMemberCount(enumeration, 2);
 		parseAndReprint(filename);
 	}
 	
@@ -811,7 +811,7 @@ public class OldJaMoPPParserTests extends AbstractJaMoPPTests {
 		String typename = "EnumWithMember";
 		String filename = typename + JAVA_FILE_EXTENSION;
 		Enumeration enumeration = assertParsesToEnumeration(typename);
-		assertMemberCount(enumeration, 2);
+		assertMemberCount(enumeration, 5);
 
 		parseAndReprint(filename);
 	}
@@ -821,7 +821,7 @@ public class OldJaMoPPParserTests extends AbstractJaMoPPTests {
 		String typename = "EnumWithConstructor";
 		String filename = typename + JAVA_FILE_EXTENSION;
 		Enumeration enumeration = assertParsesToEnumeration(typename);
-		assertMemberCount(enumeration, 1);
+		assertMemberCount(enumeration, 3);
 
 		parseAndReprint(filename);
 	}
