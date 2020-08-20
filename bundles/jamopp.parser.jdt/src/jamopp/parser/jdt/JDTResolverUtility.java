@@ -85,7 +85,14 @@ public class JDTResolverUtility {
 		if (binding == null) {
 			return "";
 		}
-		String qualifiedName = binding.getQualifiedName();
+		String qualifiedName;
+		if (binding.isMember()) {
+			qualifiedName = convertToTypeName(binding.getDeclaringClass()) + binding.getName();
+		} else if (binding.isLocal()) {
+			qualifiedName = convertToMethodName(binding.getDeclaringMethod()) + binding.getName();
+		} else {
+			qualifiedName = binding.getQualifiedName();
+		}
 		if (qualifiedName.contains("<")) {
 			qualifiedName = qualifiedName.substring(0, qualifiedName.indexOf("<"));
 		}
@@ -215,6 +222,9 @@ public class JDTResolverUtility {
 	}
 	
 	private static String convertToMethodName(IMethodBinding binding) {
+		if (binding == null) {
+			return "";
+		}
 		StringBuilder builder = new StringBuilder();
 		builder.append(convertToTypeName(binding.getDeclaringClass()));
 		builder.append("::");
@@ -706,21 +716,23 @@ public class JDTResolverUtility {
 	private static void convertPureTypeBinding(String typeName, org.emftext.language.java.classifiers.ConcreteClassifier classifier) {
 		ITypeBinding typeBind = typeBindings.stream().filter(type -> typeName.equals(convertToTypeName(type)))
 			.findFirst().orElse(null);
-		if (typeBind == null || classifier.eContainer() != null) {
+		if (typeBind == null) {
 			return;
 		}
 		if (typeBind.isTopLevel()) {
 			JDTBindingConverterUtility.convertToConcreteClassifier(typeBind);
-			org.emftext.language.java.containers.CompilationUnit cu = org.emftext.language.java.containers.ContainersFactory.eINSTANCE.createCompilationUnit();
-			cu.setName("");
-			cu.getClassifiers().add(classifier);
-			String[] namespaces = typeName.substring(0, typeName.length() - convertToSimpleTypeName(typeBind).length()).split("\\.");
-			for (int index = 0; index < namespaces.length; index++) {
-				cu.getNamespaces().add(namespaces[index]);
+			if (classifier.eContainer() == null) {
+				org.emftext.language.java.containers.CompilationUnit cu = org.emftext.language.java.containers.ContainersFactory.eINSTANCE.createCompilationUnit();
+				cu.setName("");
+				cu.getClassifiers().add(classifier);
+				String[] namespaces = typeName.substring(0, typeName.length() - convertToSimpleTypeName(typeBind).length()).split("\\.");
+				for (int index = 0; index < namespaces.length; index++) {
+					cu.getNamespaces().add(namespaces[index]);
+				}
+				Resource newResource = resourceSet.createResource(URI.createHierarchicalURI("empty",
+					"JaMoPP-CompilationUnit", null, new String[] {typeName + ".java"}, null, null));
+				newResource.getContents().add(cu);
 			}
-			Resource newResource = resourceSet.createResource(URI.createHierarchicalURI("empty",
-				"JaMoPP-CompilationUnit", null, new String[] {typeName + ".java"}, null, null));
-			newResource.getContents().add(cu);
 		} else if (typeBind.isNested()) {
 			org.emftext.language.java.classifiers.ConcreteClassifier parentClassifier = (org.emftext.language.java.classifiers.ConcreteClassifier)
 				getClassifier(typeBind.getDeclaringClass());
@@ -775,7 +787,7 @@ public class JDTResolverUtility {
 	
 	private static void convertPurePackageBinding(String packageName, org.emftext.language.java.containers.Package pack) {
 		IPackageBinding binding = packageBindings.stream().filter(b -> packageName.equals(b.getName())).findFirst().orElse(null);
-		if (pack.eContainer() != null || binding == null) {
+		if (pack.eResource() != null || binding == null) {
 			return;
 		}
 		JDTBindingConverterUtility.convertToPackage(binding);
@@ -786,7 +798,7 @@ public class JDTResolverUtility {
 	
 	private static void convertPureModuleBinding(String modName, org.emftext.language.java.containers.Module module) {
 		IModuleBinding binding = moduleBindings.stream().filter(b -> modName.equals(b.getName())).findFirst().orElse(null);
-		if (module.eContainer() != null || binding == null) {
+		if (module.eResource() != null || binding == null) {
 			return;
 		}
 		JDTBindingConverterUtility.convertToModule(binding);

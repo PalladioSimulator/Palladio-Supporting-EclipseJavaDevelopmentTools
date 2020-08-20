@@ -802,7 +802,7 @@ public class OldJaMoPPParserTests extends AbstractJaMoPPTests {
 		String filename = typename + JAVA_FILE_EXTENSION;
 		org.emftext.language.java.classifiers.Class clazz = assertParsesToClass(typename);
 		Enumeration enumeration = (Enumeration) clazz.getMembers().get(0);
-		assertMemberCount(enumeration, 2);
+		assertMemberCount(enumeration, 3);
 		parseAndReprint(filename);
 	}
 	

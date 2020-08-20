@@ -183,9 +183,11 @@ public class ConcreteClassifierExtension {
 			
 		StringBuilder qualifiedName = new StringBuilder();
 		List<String> packageParts = me.getContainingPackageName();
-		for (String packagePart : packageParts) {
-			qualifiedName.append(packagePart);
-			qualifiedName.append(".");
+		if (packageParts != null) {
+			for (String packagePart : packageParts) {
+				qualifiedName.append(packagePart);
+				qualifiedName.append(".");
+			}
 		}
 		qualifiedName.append(me.getName());
 		return qualifiedName.toString();
