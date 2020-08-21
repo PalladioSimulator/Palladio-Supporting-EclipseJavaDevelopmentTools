@@ -239,7 +239,11 @@ public class JDTResolverUtility {
 			builder.append(convertToTypeName(p));
 		}
 		builder.append(")");
-		builder.append(convertToTypeName(binding.getReturnType()));
+		if (builder.toString().equals("java.lang.Object::clone()")) {
+			builder.append("java.lang.Object");
+		} else {
+			builder.append(convertToTypeName(binding.getReturnType()));
+		}
 		return builder.toString();
 	}
 	
