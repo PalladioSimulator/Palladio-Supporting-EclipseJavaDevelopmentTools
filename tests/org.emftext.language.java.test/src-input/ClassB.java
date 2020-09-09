@@ -1,2 +1,5 @@
-public class ClassA {
+public class ClassA extends ClassB{
+	
+	public int overwriteable() {
+		return 1;
 	}

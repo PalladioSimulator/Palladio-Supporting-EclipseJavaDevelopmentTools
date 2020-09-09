@@ -16,6 +16,8 @@ import org.eclipse.emf.ecore.xmi.XMLResource;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMLResourceFactoryImpl;
 import org.emftext.language.java.containers.EmptyModel;
+import org.emftext.language.java.containers.JavaRoot;
+import org.emftext.language.java.containers.ContainersFactory;
 
 import jamopp.parser.api.JaMoPPParserAPI;
 import jamopp.parser.jdt.JaMoPPJDTParser;
@@ -33,20 +35,32 @@ import jamopp.parser.jdt.JaMoPPJDTParser;
 
 public class JaMoPPStandalone {
 	
-	private static final String INPUT = "";
+	private static final String INPUT = "/Users/adrianschneider/Desktop/DemoApplication.java";
     private static final String OUTPUT = "./file.containers";
 	
 
 	public static void main(String[] args) {
-		
+		 JaMoPPParserAPI parser = new JaMoPPJDTParser();
+		 ResourceSet rs = parser.parseUri(URI.createURI(INPUT));
+		 //ResourceSet rs = new ResourceSetImpl();
+	     // Here the resource is created, with fileextensions "gast" and "xml" (adapt this to use your own file extension).
+	     Resource gastResource = createAndAddResource("C:/file.gast", new String[] {"xml","gast"}, rs);
+	     // The root object is created by using (adapt this to create your own root object)
+	     JavaRoot root = ContainersFactory.eINSTANCE.createEmptyModel();  
+	     gastResource.getContents().add(root);
+	     saveResource(gastResource);
+	}
+		/*
 			JaMoPPParserAPI parser = new JaMoPPJDTParser();
+			JavaRoot root = ContainersFactory.eINSTANCE.createEmptyModel();
 			ResourceSet set = parser.parseUri(URI.createURI(INPUT));
 			Resource resource = createAndAddResource(OUTPUT, new String[] {"xml","java" }, set);
-			EmptyModel root = org.emftext.language.java.containers.ContainersFactory.eINSTANCE.createEmptyModel();	
+			
 			resource.getContents().add(root);
 		    saveResource(resource);
 		  }
 		
+		*/
 	  public static Resource createAndAddResource(String outputFile, String[] fileextensions, ResourceSet rs) {
 		     for (String fileext : fileextensions) {
 		        rs.getResourceFactoryRegistry().getExtensionToFactoryMap().put(fileext, new XMLResourceFactoryImpl());
