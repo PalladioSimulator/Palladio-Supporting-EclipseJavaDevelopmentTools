@@ -6,6 +6,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 
 import org.emftext.language.java.annotations.Annotable;
 import org.emftext.language.java.annotations.AnnotationAttributeSetting;
@@ -13,19 +14,24 @@ import org.emftext.language.java.annotations.AnnotationInstance;
 import org.emftext.language.java.annotations.AnnotationParameterList;
 import org.emftext.language.java.annotations.AnnotationValue;
 import org.emftext.language.java.annotations.SingleAnnotationParameter;
+import org.emftext.language.java.arrays.ArrayDimension;
 import org.emftext.language.java.arrays.ArrayInitializer;
 import org.emftext.language.java.classifiers.Annotation;
+import org.emftext.language.java.classifiers.AnonymousClass;
 import org.emftext.language.java.classifiers.ConcreteClassifier;
 import org.emftext.language.java.classifiers.Enumeration;
 import org.emftext.language.java.classifiers.Implementor;
 import org.emftext.language.java.classifiers.Interface;
 import org.emftext.language.java.containers.CompilationUnit;
 import org.emftext.language.java.containers.JavaRoot;
+import org.emftext.language.java.expressions.Expression;
 import org.emftext.language.java.generics.ExtendsTypeArgument;
 import org.emftext.language.java.generics.QualifiedTypeArgument;
 import org.emftext.language.java.generics.SuperTypeArgument;
 import org.emftext.language.java.generics.TypeArgument;
 import org.emftext.language.java.generics.TypeArgumentable;
+import org.emftext.language.java.generics.TypeParameter;
+import org.emftext.language.java.generics.TypeParametrizable;
 import org.emftext.language.java.generics.UnknownTypeArgument;
 import org.emftext.language.java.imports.ClassifierImport;
 import org.emftext.language.java.imports.Import;
@@ -33,7 +39,14 @@ import org.emftext.language.java.imports.ImportingElement;
 import org.emftext.language.java.imports.PackageImport;
 import org.emftext.language.java.imports.StaticClassifierImport;
 import org.emftext.language.java.imports.StaticMemberImport;
+import org.emftext.language.java.members.AdditionalField;
+import org.emftext.language.java.members.ClassMethod;
+import org.emftext.language.java.members.Constructor;
+import org.emftext.language.java.members.EmptyMember;
 import org.emftext.language.java.members.EnumConstant;
+import org.emftext.language.java.members.ExceptionThrower;
+import org.emftext.language.java.members.Field;
+import org.emftext.language.java.members.InterfaceMethod;
 import org.emftext.language.java.members.Member;
 import org.emftext.language.java.members.MemberContainer;
 import org.emftext.language.java.modifiers.Abstract;
@@ -58,6 +71,14 @@ import org.emftext.language.java.modules.OpensModuleDirective;
 import org.emftext.language.java.modules.ProvidesModuleDirective;
 import org.emftext.language.java.modules.RequiresModuleDirective;
 import org.emftext.language.java.modules.UsesModuleDirective;
+import org.emftext.language.java.parameters.OrdinaryParameter;
+import org.emftext.language.java.parameters.Parameter;
+import org.emftext.language.java.parameters.Parametrizable;
+import org.emftext.language.java.parameters.ReceiverParameter;
+import org.emftext.language.java.parameters.VariableLengthParameter;
+import org.emftext.language.java.references.Argumentable;
+import org.emftext.language.java.statements.Block;
+import org.emftext.language.java.statements.Statement;
 import org.emftext.language.java.types.ClassifierReference;
 import org.emftext.language.java.types.InferableType;
 import org.emftext.language.java.types.NamespaceClassifierReference;
@@ -194,7 +215,7 @@ public final class JaMoPPPrinter {
 		} else if (element instanceof ArrayInitializer) {
 			
 		} else {
-			
+			printExpression((Expression) element, writer);
 		}
 	}
 	
@@ -276,12 +297,10 @@ public final class JaMoPPPrinter {
 	private static void printTypeArgumentable(TypeArgumentable element, BufferedWriter writer) throws IOException {
 		if (element.getTypeArguments().size() > 0) {
 			writer.append("<");
+			printTypeArgument(element.getTypeArguments().get(0), writer);
 			for (int index = 0; index < element.getTypeArguments().size(); index++) {
-				TypeArgument arg = element.getTypeArguments().get(0);
-				printTypeArgument(arg, writer);
-				if (index < element.getTypeArguments().size() - 1) {
-					writer.append(", ");
-				}
+				writer.append(", ");
+				printTypeArgument(element.getTypeArguments().get(index), writer);
 			}
 			writer.append(">");
 		}
@@ -356,11 +375,10 @@ public final class JaMoPPPrinter {
 		writer.append(element.getAccessablePackage().getNamespacesAsString());
 		if (element.getModules().size() > 0) {
 			writer.append(" to ");
-			for (int index = 0; index < element.getModules().size(); index++) {
+			writer.append(element.getModules().get(0).getTarget().getNamespacesAsString());
+			for (int index = 1; index < element.getModules().size(); index++) {
+				writer.append(", ");
 				writer.append(element.getModules().get(index).getTarget().getNamespacesAsString());
-				if (index < element.getModules().size() - 1) {
-					writer.append(", ");
-				}
 			}
 		}
 		writer.append(";\n");
@@ -441,14 +459,19 @@ public final class JaMoPPPrinter {
 		writer.append("}\n");
 	}
 	
+	private static void printAnonymousClass(AnonymousClass element, BufferedWriter writer) throws IOException {
+		writer.append("{\n");
+		printMemberContainer(element, writer);
+		writer.append("}\n");
+	}
+	
 	private static void printImplementor(Implementor element, BufferedWriter writer) throws IOException {
 		if (element.getImplements().size() > 0) {
 			writer.append("implements ");
-			for (int index = 0; index < element.getImplements().size(); index++) {
+			printTypeReference(element.getImplements().get(0), writer);
+			for (int index = 1; index < element.getImplements().size(); index++) {
+				writer.append(", ");
 				printTypeReference(element.getImplements().get(index), writer);
-				if (index < element.getImplements().size() - 1) {
-					writer.append(", ");
-				}
 			}
 			writer.append(" ");
 		}
@@ -471,7 +494,14 @@ public final class JaMoPPPrinter {
 	}
 	
 	private static void printEnumConstant(EnumConstant element, BufferedWriter writer) throws IOException {
-		
+		printAnnotable(element, writer);
+		writer.append(element.getName() + " ");
+		if (element.getArguments().size() > 0) {
+			printArgumentable(element, writer);
+		}
+		if (element.getAnonymousClass() != null) {
+			printAnonymousClass(element.getAnonymousClass(), writer);
+		}
 	}
 	
 	private static void printInterface(Interface element, BufferedWriter writer) throws IOException {
@@ -479,11 +509,10 @@ public final class JaMoPPPrinter {
 		writer.append("interface " + element.getName() + " ");
 		if (element.getExtends().size() > 0) {
 			writer.append("extends ");
-			for (int index = 0; index < element.getExtends().size(); index++) {
+			printTypeReference(element.getExtends().get(0), writer);
+			for (int index = 1; index < element.getExtends().size(); index++) {
+				writer.append(", ");
 				printTypeReference(element.getExtends().get(index), writer);
-				if (index < element.getExtends().size() - 1) {
-					writer.append(", ");
-				}
 			}
 			writer.append(" ");
 		}
@@ -506,6 +535,214 @@ public final class JaMoPPPrinter {
 	}
 	
 	private static void printMember(Member element, BufferedWriter writer) throws IOException {
+		if (element instanceof Field) {
+			printField((Field) element, writer);
+		} else if (element instanceof Constructor) {
+			printConstructor((Constructor) element, writer);
+		} else if (element instanceof ClassMethod) {
+			printClassMethod((ClassMethod) element, writer);
+		} else if (element instanceof InterfaceMethod) {
+			printInterfaceMethod((InterfaceMethod) element, writer);
+		} else if (element instanceof ConcreteClassifier) {
+			printConcreteClassifier((ConcreteClassifier) element, writer);
+		} else if (element instanceof Block) {
+			printBlock((Block) element, writer);
+		} else {
+			printEmptyMember((EmptyMember) element, writer);
+		}
+	}
+	
+	private static void printField(Field element, BufferedWriter writer) throws IOException {
+		printAnnotableAndModifiable(element, writer);
+		printTypeReference(element.getTypeReference(), writer);
+		printArrayDimensions(element.getArrayDimensionsBefore(), writer);
+		writer.append(element.getName());
+		printArrayDimensions(element.getArrayDimensionsAfter(), writer);
+		if (element.getInitialValue() != null) {
+			writer.append(" = ");
+			printExpression(element.getInitialValue(), writer);
+		}
+		for (AdditionalField f : element.getAdditionalFields()) {
+			writer.append(", ");
+			printAdditionalField(f, writer);
+		}
+		writer.append(";\n\n");
+	}
+	
+	private static void printAdditionalField(AdditionalField element, BufferedWriter writer) throws IOException {
+		writer.append(element.getName());
+		printArrayDimensions(element.getArrayDimensionsBefore(), writer);
+		printArrayDimensions(element.getArrayDimensionsAfter(), writer);
+		if (element.getInitialValue() != null) {
+			writer.append(" = ");
+			printExpression(element.getInitialValue(), writer);
+		}
+	}
+	
+	private static void printArrayDimensions(List<ArrayDimension> element, BufferedWriter writer) throws IOException {
+		for (ArrayDimension dim : element) {
+			if (dim.getAnnotations().size() > 0) {
+				writer.append(" ");
+				printAnnotable(dim, writer);
+			}
+			writer.append("[] ");
+		}
+	}
+	
+	private static void printConstructor(Constructor element, BufferedWriter writer) throws IOException {
+		printAnnotableAndModifiable(element, writer);
+		printTypeParametrizable(element, writer);
+		writer.append(" " + element.getName());
+		printParametrizable(element, writer);
+		printExceptionThrower(element, writer);
+		printBlock(element.getBlock(), writer);
+	}
+	
+	private static void printClassMethod(ClassMethod element, BufferedWriter writer) throws IOException {
+		printAnnotableAndModifiable(element, writer);
+		printTypeParametrizable(element, writer);
+		writer.append(" ");
+		printTypeReference(element.getTypeReference(), writer);
+		printArrayDimensions(element.getArrayDimensionsBefore(), writer);
+		writer.append(" " + element.getName());
+		printParametrizable(element, writer);
+		printArrayDimensions(element.getArrayDimensionsAfter(), writer);
+		printExceptionThrower(element, writer);
+		writer.append(" ");
+		printStatement(element.getStatement(), writer);
+		writer.append("\n");
+	}
+	
+	private static void printInterfaceMethod(InterfaceMethod element, BufferedWriter writer) throws IOException {
+		printAnnotableAndModifiable(element, writer);
+		printTypeParametrizable(element, writer);
+		writer.append(" ");
+		printTypeReference(element.getTypeReference(), writer);
+		printArrayDimensions(element.getArrayDimensionsBefore(), writer);
+		writer.append(" " + element.getName());
+		printParametrizable(element, writer);
+		printArrayDimensions(element.getArrayDimensionsAfter(), writer);
+		printExceptionThrower(element, writer);
+		writer.append(" ");
+		if (element.getDefaultValue() != null) {
+			writer.append("default ");
+			printAnnotationValue(element.getDefaultValue(), writer);
+		}
+		printStatement(element.getStatement(), writer);
+		writer.append("\n");
+	}
+	
+	private static void printExceptionThrower(ExceptionThrower element, BufferedWriter writer) throws IOException {
+		if (element.getExceptions().size() > 0) {
+			writer.append("throws ");
+			printTypeReference(element.getExceptions().get(0), writer);
+			for (int index = 1; index < element.getExceptions().size(); index++) {
+				writer.append(", ");
+				printTypeReference(element.getExceptions().get(index), writer);
+			}
+		}
+	}
+	
+	private static void printParametrizable(Parametrizable element, BufferedWriter writer) throws IOException {
+		writer.append("(");
+		for (int index = 0; index < element.getParameters().size(); index++) {
+			Parameter param = element.getParameters().get(index);
+			if (param instanceof ReceiverParameter) {
+				printReceiverParameter((ReceiverParameter) param, writer);
+			} else if (param instanceof OrdinaryParameter) {
+				printOrdinaryParameter((OrdinaryParameter) param, writer);
+			} else {
+				printVariableLengthParameter((VariableLengthParameter) element, writer);
+			}
+			if (index < element.getParameters().size() - 1) {
+				writer.append(", ");
+			}
+		}
+		writer.append(")");
+	}
+	
+	private static void printReceiverParameter(ReceiverParameter element, BufferedWriter writer) throws IOException {
+		printAnnotable(element, writer);
+		printTypeReference(element.getTypeReference(), writer);
+		writer.append(" ");
+		if (element.getOuterTypeReference() != null) {
+			printTypeReference(element.getOuterTypeReference(), writer);
+			writer.append(".");
+		}
+		writer.append("this");
+	}
+	
+	private static void printOrdinaryParameter(OrdinaryParameter element, BufferedWriter writer) throws IOException {
+		printAnnotableAndModifiable(element, writer);
+		printTypeReference(element.getTypeReference(), writer);
+		printArrayDimensions(element.getArrayDimensionsBefore(), writer);
+		writer.append(" " + element.getName());
+		printArrayDimensions(element.getArrayDimensionsAfter(), writer);
+	}
+	
+	private static void printVariableLengthParameter(VariableLengthParameter element, BufferedWriter writer) throws IOException {
+		printAnnotableAndModifiable(element, writer);
+		printTypeReference(element.getTypeReference(), writer);
+		writer.append(" ");
+		printAnnotable(element, writer);
+		writer.append(" ..." + element.getName());
+	}
+	
+	private static void printArgumentable(Argumentable element, BufferedWriter writer) throws IOException {
+		writer.append("(");
+		for (int index = 0; index < element.getArguments().size(); index++) {
+			printExpression(element.getArguments().get(index), writer);
+			if (index < element.getArguments().size() - 1) {
+				writer.append(", ");
+			}
+		}
+		writer.append(")");
+	}
+	
+	private static void printExpression(Expression element, BufferedWriter writer) throws IOException {
 		
+	}
+	
+	private static void printBlock(Block element, BufferedWriter writer) throws IOException {
+		for (Modifier m : element.getModifiers()) {
+			printModifier(m, writer);
+		}
+		writer.append("{\n");
+		for (Statement s : element.getStatements()) {
+			printStatement(s, writer);
+		}
+		writer.append("}\n");
+	}
+	
+	private static void printEmptyMember(EmptyMember element, BufferedWriter writer) throws IOException {
+		writer.append(";\n\n");
+	}
+	
+	private static void printStatement(Statement element, BufferedWriter writer) throws IOException {
+		
+	}
+	
+	private static void printTypeParametrizable(TypeParametrizable element, BufferedWriter writer) throws IOException {
+		writer.append("<");
+		for (int index = 0; index < element.getTypeParameters().size(); index++) {
+			printTypeParameter(element.getTypeParameters().get(index), writer);
+			if (index < element.getTypeParameters().size() - 1) {
+				writer.append(", ");
+			}
+		}
+		writer.append("> ");
+	}
+	
+	private static void printTypeParameter(TypeParameter element, BufferedWriter writer) throws IOException {
+		printAnnotable(element, writer);
+		writer.append(element.getName());
+		if (element.getExtendTypes().size() > 0) {
+			writer.append(" extends ");
+			printTypeReference(element.getExtendTypes().get(0), writer);
+			for (int index = 1; index < element.getExtendTypes().size(); index++) {
+				writer.append(" & ");
+				printTypeReference(element.getExtendTypes().get(index), writer);
+			}
+		}
 	}
 }
