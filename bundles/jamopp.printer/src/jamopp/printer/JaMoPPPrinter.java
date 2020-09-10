@@ -82,7 +82,22 @@ import org.emftext.language.java.imports.ImportingElement;
 import org.emftext.language.java.imports.PackageImport;
 import org.emftext.language.java.imports.StaticClassifierImport;
 import org.emftext.language.java.imports.StaticMemberImport;
+import org.emftext.language.java.literals.BinaryIntegerLiteral;
+import org.emftext.language.java.literals.BinaryLongLiteral;
+import org.emftext.language.java.literals.BooleanLiteral;
+import org.emftext.language.java.literals.CharacterLiteral;
+import org.emftext.language.java.literals.DecimalDoubleLiteral;
+import org.emftext.language.java.literals.DecimalFloatLiteral;
+import org.emftext.language.java.literals.DecimalIntegerLiteral;
+import org.emftext.language.java.literals.DecimalLongLiteral;
+import org.emftext.language.java.literals.HexDoubleLiteral;
+import org.emftext.language.java.literals.HexFloatLiteral;
+import org.emftext.language.java.literals.HexIntegerLiteral;
+import org.emftext.language.java.literals.HexLongLiteral;
 import org.emftext.language.java.literals.Literal;
+import org.emftext.language.java.literals.NullLiteral;
+import org.emftext.language.java.literals.OctalIntegerLiteral;
+import org.emftext.language.java.literals.OctalLongLiteral;
 import org.emftext.language.java.members.AdditionalField;
 import org.emftext.language.java.members.ClassMethod;
 import org.emftext.language.java.members.Constructor;
@@ -1271,7 +1286,51 @@ public final class JaMoPPPrinter {
 	}
 	
 	private static void printLiteral(Literal element, BufferedWriter writer) throws IOException {
-		
+		if (element instanceof BooleanLiteral) {
+			BooleanLiteral lit = (BooleanLiteral) element;
+			writer.append(Boolean.toString(lit.isValue()));
+		} else if (element instanceof CharacterLiteral) {
+			CharacterLiteral lit = (CharacterLiteral) element;
+			writer.append(lit.getValue());
+		} else if (element instanceof NullLiteral) {
+			writer.append("null");
+		} else if (element instanceof DecimalFloatLiteral) {
+			DecimalFloatLiteral lit = (DecimalFloatLiteral) element;
+			writer.append(Float.toString(lit.getDecimalValue()));
+		} else if (element instanceof HexFloatLiteral) {
+			HexFloatLiteral lit = (HexFloatLiteral) element;
+			writer.append(Float.toHexString(lit.getHexValue()));
+		} else if (element instanceof DecimalDoubleLiteral) {
+			DecimalDoubleLiteral lit = (DecimalDoubleLiteral) element;
+			writer.append(Double.toString(lit.getDecimalValue()));
+		} else if (element instanceof HexDoubleLiteral) {
+			HexDoubleLiteral lit = (HexDoubleLiteral) element;
+			writer.append(Double.toHexString(lit.getHexValue()));
+		} else if (element instanceof DecimalIntegerLiteral) {
+			DecimalIntegerLiteral lit = (DecimalIntegerLiteral) element;
+			writer.append(lit.getDecimalValue().toString());
+		} else if (element instanceof HexIntegerLiteral) {
+			HexIntegerLiteral lit = (HexIntegerLiteral) element;
+			writer.append(lit.getHexValue().toString(16));
+		} else if (element instanceof OctalIntegerLiteral) {
+			OctalIntegerLiteral lit = (OctalIntegerLiteral) element;
+			writer.append(lit.getOctalValue().toString(8));
+		} else if (element instanceof BinaryIntegerLiteral) {
+			BinaryIntegerLiteral lit = (BinaryIntegerLiteral) element;
+			writer.append(lit.getBinaryValue().toString(2));
+		} else if (element instanceof DecimalLongLiteral) {
+			DecimalLongLiteral lit = (DecimalLongLiteral) element;
+			writer.append(lit.getDecimalValue().toString() + "L");
+		} else if (element instanceof HexLongLiteral) {
+			HexLongLiteral lit = (HexLongLiteral) element;
+			writer.append(lit.getHexValue().toString(16) + "L");
+		} else if (element instanceof OctalLongLiteral) {
+			OctalLongLiteral lit = (OctalLongLiteral) element;
+			writer.append(lit.getOctalValue().toString(8) + "L");
+		} else if (element instanceof BinaryLongLiteral) {
+			BinaryLongLiteral lit = (BinaryLongLiteral) element;
+			writer.append(lit.getBinaryValue().toString(2) + "L");
+		}
 	}
 	
 	private static void printReference(Reference element, BufferedWriter writer) throws IOException {
