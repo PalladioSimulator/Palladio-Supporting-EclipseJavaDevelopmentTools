@@ -25,6 +25,7 @@ import org.emftext.language.java.classifiers.Interface;
 import org.emftext.language.java.containers.CompilationUnit;
 import org.emftext.language.java.containers.JavaRoot;
 import org.emftext.language.java.expressions.Expression;
+import org.emftext.language.java.expressions.ExpressionList;
 import org.emftext.language.java.generics.ExtendsTypeArgument;
 import org.emftext.language.java.generics.QualifiedTypeArgument;
 import org.emftext.language.java.generics.SuperTypeArgument;
@@ -71,19 +72,49 @@ import org.emftext.language.java.modules.OpensModuleDirective;
 import org.emftext.language.java.modules.ProvidesModuleDirective;
 import org.emftext.language.java.modules.RequiresModuleDirective;
 import org.emftext.language.java.modules.UsesModuleDirective;
+import org.emftext.language.java.parameters.CatchParameter;
 import org.emftext.language.java.parameters.OrdinaryParameter;
 import org.emftext.language.java.parameters.Parameter;
 import org.emftext.language.java.parameters.Parametrizable;
 import org.emftext.language.java.parameters.ReceiverParameter;
 import org.emftext.language.java.parameters.VariableLengthParameter;
 import org.emftext.language.java.references.Argumentable;
+import org.emftext.language.java.references.ElementReference;
+import org.emftext.language.java.statements.Assert;
 import org.emftext.language.java.statements.Block;
+import org.emftext.language.java.statements.Break;
+import org.emftext.language.java.statements.CatchBlock;
+import org.emftext.language.java.statements.Condition;
+import org.emftext.language.java.statements.Continue;
+import org.emftext.language.java.statements.DefaultSwitchCase;
+import org.emftext.language.java.statements.DefaultSwitchRule;
+import org.emftext.language.java.statements.DoWhileLoop;
+import org.emftext.language.java.statements.EmptyStatement;
+import org.emftext.language.java.statements.ExpressionStatement;
+import org.emftext.language.java.statements.ForEachLoop;
+import org.emftext.language.java.statements.ForLoop;
+import org.emftext.language.java.statements.ForLoopInitializer;
+import org.emftext.language.java.statements.JumpLabel;
+import org.emftext.language.java.statements.LocalVariableStatement;
+import org.emftext.language.java.statements.NormalSwitchCase;
+import org.emftext.language.java.statements.NormalSwitchRule;
+import org.emftext.language.java.statements.Return;
 import org.emftext.language.java.statements.Statement;
+import org.emftext.language.java.statements.Switch;
+import org.emftext.language.java.statements.SwitchCase;
+import org.emftext.language.java.statements.SynchronizedBlock;
+import org.emftext.language.java.statements.Throw;
+import org.emftext.language.java.statements.TryBlock;
+import org.emftext.language.java.statements.WhileLoop;
+import org.emftext.language.java.statements.YieldStatement;
 import org.emftext.language.java.types.ClassifierReference;
 import org.emftext.language.java.types.InferableType;
 import org.emftext.language.java.types.NamespaceClassifierReference;
 import org.emftext.language.java.types.PrimitiveType;
 import org.emftext.language.java.types.TypeReference;
+import org.emftext.language.java.variables.AdditionalLocalVariable;
+import org.emftext.language.java.variables.LocalVariable;
+import org.emftext.language.java.variables.Resource;
 
 /**
  * This class provides methods to print JaMoPP model instances.
@@ -703,6 +734,10 @@ public final class JaMoPPPrinter {
 		
 	}
 	
+	private static void printElementReference(ElementReference element, BufferedWriter writer) throws IOException {
+		
+	}
+	
 	private static void printBlock(Block element, BufferedWriter writer) throws IOException {
 		for (Modifier m : element.getModifiers()) {
 			printModifier(m, writer);
@@ -719,7 +754,326 @@ public final class JaMoPPPrinter {
 	}
 	
 	private static void printStatement(Statement element, BufferedWriter writer) throws IOException {
-		
+		if (element instanceof ConcreteClassifier) {
+			printConcreteClassifier((ConcreteClassifier) element, writer);
+		} else if (element instanceof Assert) {
+			printAssert((Assert) element, writer);
+		} else if (element instanceof Block) {
+			printBlock((Block) element, writer);
+		} else if (element instanceof Condition) {
+			printCondition((Condition) element, writer);
+		} else if (element instanceof EmptyStatement) {
+			printEmptyStatement((EmptyStatement) element, writer);
+		} else if (element instanceof ExpressionStatement) {
+			printExpressionStatement((ExpressionStatement) element, writer);
+		} else if (element instanceof ForLoop) {
+			printForLoop((ForLoop) element, writer);
+		} else if (element instanceof ForEachLoop) {
+			printForEachLoop((ForEachLoop) element, writer);
+		} else if (element instanceof Break) {
+			printBreak((Break) element, writer);
+		} else if (element instanceof Continue) {
+			printContinue((Continue) element, writer);
+		} else if (element instanceof JumpLabel) {
+			printJumpLabel((JumpLabel) element, writer);
+		} else if (element instanceof LocalVariableStatement) {
+			printLocalVariableStatement((LocalVariableStatement) element, writer);
+		} else if (element instanceof Return) {
+			printReturn((Return) element, writer);
+		} else if (element instanceof Switch) {
+			printSwitch((Switch) element, writer);
+		} else if (element instanceof SynchronizedBlock) {
+			printSynchronizedBlock((SynchronizedBlock) element, writer);
+		} else if (element instanceof Throw) {
+			printThrow((Throw) element, writer);
+		} else if (element instanceof TryBlock) {
+			printTryBlock((TryBlock) element, writer);
+		} else if (element instanceof DoWhileLoop) {
+			printDoWhileLoop((DoWhileLoop) element, writer);
+		} else if (element instanceof WhileLoop) {
+			printWhileLoop((WhileLoop) element, writer);
+		} else {
+			printYieldStatement((YieldStatement) element, writer);
+		}
+	}
+	
+	private static void printAssert(Assert element, BufferedWriter writer) throws IOException {
+		writer.append("assert ");
+		printExpression(element.getCondition(), writer);
+		if (element.getErrorMessage() != null) {
+			writer.append(" : ");
+			printExpression(element.getErrorMessage(), writer);
+		}
+		writer.append(";\n");
+	}
+	
+	private static void printBreak(Break element, BufferedWriter writer) throws IOException {
+		writer.append("break");
+		if (element.getTarget() != null) {
+			writer.append(" " + element.getTarget().getName());
+		}
+		writer.append(";\n");
+	}
+	
+	private static void printCatchBlock(CatchBlock element, BufferedWriter writer) throws IOException {
+		writer.append("catch(");
+		printCatchParameter((CatchParameter) element.getParameter(), writer);
+		writer.append(")");
+		printBlock(element.getBlock(), writer);
+	}
+	
+	private static void printCatchParameter(CatchParameter element, BufferedWriter writer) throws IOException {
+		printAnnotableAndModifiable(element, writer);
+		printTypeReference(element.getTypeReference(), writer);
+		if (element.getTypeReferences().size() > 0) {
+			for (TypeReference ref : element.getTypeReferences()) {
+				writer.append(" | ");
+				printTypeReference(ref, writer);
+			}
+		}
+		writer.append(" " + element.getName());
+	}
+	
+	private static void printContinue(Continue element, BufferedWriter writer) throws IOException {
+		writer.append("continue");
+		if (element.getTarget() != null) {
+			writer.append(" " + element.getTarget().getName());	
+		}
+		writer.append(";\n");
+	}
+	
+	private static void printDoWhileLoop(DoWhileLoop element, BufferedWriter writer) throws IOException {
+		writer.append("do\n");
+		printStatement(element.getStatement(), writer);
+		writer.append("while (");
+		printExpression(element.getCondition(), writer);
+		writer.append(");\n");
+	}
+	
+	private static void printEmptyStatement(EmptyStatement element, BufferedWriter writer) throws IOException {
+		writer.append(";\n");
+	}
+	
+	private static void printCondition(Condition element, BufferedWriter writer) throws IOException {
+		writer.append("if (");
+		printExpression(element.getCondition(), writer);
+		writer.append(")\n");
+		printStatement(element.getStatement(), writer);
+		if (element.getElseStatement() != null) {
+			writer.append("else\n");
+			printStatement(element.getElseStatement(), writer);
+		}
+	}
+	
+	private static void printExpressionStatement(ExpressionStatement element, BufferedWriter writer) throws IOException {
+		printExpression(element.getExpression(), writer);
+		writer.append(";\n");
+	}
+	
+	private static void printForLoop(ForLoop element, BufferedWriter writer) throws IOException {
+		writer.append("for (");
+		if (element.getInit() != null) {
+			printForLoopInitializer(element.getInit(), writer);
+		}
+		writer.append(" ; ");
+		if (element.getCondition() != null) {
+			printExpression(element.getCondition(), writer);
+		}
+		writer.append(" ; ");
+		for (int index = 0; index < element.getUpdates().size(); index++) {
+			printExpression(element.getUpdates().get(index), writer);
+			if (index < element.getUpdates().size() - 1) {
+				writer.append(", ");
+			}
+		}
+		writer.append(")\n");
+		printStatement(element.getStatement(), writer);
+	}
+	
+	private static void printForLoopInitializer(ForLoopInitializer element, BufferedWriter writer) throws IOException {
+		if (element instanceof LocalVariable) {
+			printLocalVariable((LocalVariable) element, writer);
+		} else {
+			ExpressionList list = (ExpressionList) element;
+			for (int index = 0; index < list.getExpressions().size(); index++) {
+				printExpression(list.getExpressions().get(index), writer);
+				if (index < list.getExpressions().size() - 1) {
+					writer.append(", ");
+				}
+			}
+		}
+	}
+	
+	private static void printForEachLoop(ForEachLoop element, BufferedWriter writer) throws IOException {
+		writer.append("for (");
+		printOrdinaryParameter(element.getNext(), writer);
+		writer.append(" : ");
+		printExpression(element.getCollection(), writer);
+		writer.append(")\n");
+		printStatement(element.getStatement(), writer);
+	}
+	
+	private static void printJumpLabel(JumpLabel element, BufferedWriter writer) throws IOException {
+		writer.append(element.getName() + ": ");
+		printStatement(element.getStatement(), writer);
+	}
+	
+	private static void printLocalVariableStatement(LocalVariableStatement element, BufferedWriter writer) throws IOException {
+		printLocalVariable(element.getVariable(), writer);
+		writer.append(";\n");
+	}
+	
+	private static void printLocalVariable(LocalVariable element, BufferedWriter writer) throws IOException {
+		printAnnotableAndModifiable(element, writer);
+		printTypeReference(element.getTypeReference(), writer);
+		printArrayDimensions(element.getArrayDimensionsBefore(), writer);
+		writer.append(" " + element.getName());
+		printArrayDimensions(element.getArrayDimensionsAfter(), writer);
+		if (element.getInitialValue() != null) {
+			writer.append(" = ");
+			printExpression(element.getInitialValue(), writer);
+		}
+		for (AdditionalLocalVariable var : element.getAdditionalLocalVariables()) {
+			writer.append(", ");
+			printAdditionalLocalVariable(var, writer);
+		}
+	}
+	
+	private static void printAdditionalLocalVariable(AdditionalLocalVariable element, BufferedWriter writer) throws IOException {
+		writer.append(element.getName());
+		printArrayDimensions(element.getArrayDimensionsBefore(), writer);
+		printArrayDimensions(element.getArrayDimensionsAfter(), writer);
+		if (element.getInitialValue() != null) {
+			writer.append(" = ");
+			printExpression(element.getInitialValue(), writer);
+		}
+	}
+	
+	private static void printReturn(Return element, BufferedWriter writer) throws IOException {
+		writer.append("return");
+		if (element.getReturnValue() != null) {
+			printExpression(element.getReturnValue(), writer);
+		}
+		writer.append(";\n");
+	}
+	
+	private static void printSwitch(Switch element, BufferedWriter writer) throws IOException {
+		writer.append("switch (");
+		printExpression(element.getVariable(), writer);
+		writer.append(") {\n");
+		for (SwitchCase cas : element.getCases()) {
+			printSwitchCase(cas, writer);
+		}
+		writer.append("}\n");
+	}
+	
+	private static void printSwitchCase(SwitchCase element, BufferedWriter writer) throws IOException {
+		if (element instanceof DefaultSwitchCase) {
+			printDefaultSwitchCase((DefaultSwitchCase) element, writer);
+		} else if (element instanceof NormalSwitchCase) {
+			printNormalSwitchCase((NormalSwitchCase) element, writer);
+		} else if (element instanceof DefaultSwitchRule) {
+			printDefaultSwitchRule((DefaultSwitchRule) element, writer);
+		} else {
+			printNormalSwitchRule((NormalSwitchRule) element, writer);
+		}
+	}
+	
+	private static void printDefaultSwitchCase(DefaultSwitchCase element, BufferedWriter writer) throws IOException {
+		writer.append("default: ");
+		for (Statement s : element.getStatements()) {
+			printStatement(s, writer);
+		}
+		writer.append("\n");
+	}
+	
+	private static void printNormalSwitchCase(NormalSwitchCase element, BufferedWriter writer) throws IOException {
+		writer.append("case ");
+		printExpression(element.getCondition(), writer);
+		for (Expression expr : element.getAdditionalConditions()) {
+			writer.append(", ");
+			printExpression(expr, writer);
+		}
+		writer.append(": ");
+		for (Statement s : element.getStatements()) {
+			printStatement(s, writer);
+		}
+	}
+	
+	private static void printDefaultSwitchRule(DefaultSwitchRule element, BufferedWriter writer) throws IOException {
+		writer.append("default -> ");
+		for (Statement s : element.getStatements()) {
+			printStatement(s, writer);
+		}
+	}
+	
+	private static void printNormalSwitchRule(NormalSwitchRule element, BufferedWriter writer) throws IOException {
+		writer.append("case ");
+		printExpression(element.getCondition(), writer);
+		for (Expression expr : element.getAdditionalConditions()) {
+			writer.append(", ");
+			printExpression(expr, writer);
+		}
+		writer.append(" -> ");
+		for (Statement s : element.getStatements()) {
+			printStatement(s, writer);
+		}
+	}
+	
+	private static void printSynchronizedBlock(SynchronizedBlock element, BufferedWriter writer) throws IOException {
+		writer.append("synchronized (");
+		printExpression(element.getLockProvider(), writer);
+		writer.append(") ");
+		printBlock(element.getBlock(), writer);
+	}
+	
+	private static void printThrow(Throw element, BufferedWriter writer) throws IOException {
+		writer.append("throw ");
+		printExpression(element.getThrowable(), writer);
+		writer.append(";\n");
+	}
+	
+	private static void printTryBlock(TryBlock element, BufferedWriter writer) throws IOException {
+		writer.append("try");
+		if (element.getResources().size() > 0) {
+			writer.append("(");
+			printResource(element.getResources().get(0), writer);
+			for (int index = 1; index < element.getResources().size(); index++) {
+				writer.append("; ");
+				printResource(element.getResources().get(index), writer);
+			}
+			writer.append(")");
+		}
+		writer.append(" ");
+		printBlock(element.getBlock(), writer);
+		for (CatchBlock cat : element.getCatchBlocks()) {
+			printCatchBlock(cat, writer);
+		}
+		if (element.getFinallyBlock() != null) {
+			writer.append("finally ");
+			printBlock(element.getFinallyBlock(), writer);
+		}
+	}
+	
+	private static void printResource(Resource element, BufferedWriter writer) throws IOException {
+		if (element instanceof LocalVariable) {
+			printLocalVariable((LocalVariable) element, writer);
+		} else {
+			printElementReference((ElementReference) element, writer);
+		}
+	}
+	
+	private static void printYieldStatement(YieldStatement element, BufferedWriter writer) throws IOException {
+		writer.append("yield ");
+		printExpression(element.getYieldExpression(), writer);
+		writer.append(";\n");
+	}
+	
+	private static void printWhileLoop(WhileLoop element, BufferedWriter writer) throws IOException {
+		writer.append("while (");
+		printExpression(element.getCondition(), writer);
+		writer.append(")\n");
+		printStatement(element.getStatement(), writer);
 	}
 	
 	private static void printTypeParametrizable(TypeParametrizable element, BufferedWriter writer) throws IOException {
