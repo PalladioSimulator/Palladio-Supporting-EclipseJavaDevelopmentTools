@@ -24,14 +24,46 @@ import org.emftext.language.java.classifiers.Implementor;
 import org.emftext.language.java.classifiers.Interface;
 import org.emftext.language.java.containers.CompilationUnit;
 import org.emftext.language.java.containers.JavaRoot;
+import org.emftext.language.java.expressions.AdditiveExpression;
+import org.emftext.language.java.expressions.AdditiveExpressionChild;
+import org.emftext.language.java.expressions.AndExpression;
+import org.emftext.language.java.expressions.AndExpressionChild;
 import org.emftext.language.java.expressions.AssignmentExpression;
 import org.emftext.language.java.expressions.AssignmentExpressionChild;
+import org.emftext.language.java.expressions.CastExpression;
+import org.emftext.language.java.expressions.ConditionalAndExpression;
+import org.emftext.language.java.expressions.ConditionalAndExpressionChild;
+import org.emftext.language.java.expressions.ConditionalExpression;
+import org.emftext.language.java.expressions.ConditionalExpressionChild;
+import org.emftext.language.java.expressions.ConditionalOrExpression;
+import org.emftext.language.java.expressions.ConditionalOrExpressionChild;
+import org.emftext.language.java.expressions.EqualityExpression;
+import org.emftext.language.java.expressions.EqualityExpressionChild;
+import org.emftext.language.java.expressions.ExclusiveOrExpression;
+import org.emftext.language.java.expressions.ExclusiveOrExpressionChild;
 import org.emftext.language.java.expressions.Expression;
 import org.emftext.language.java.expressions.ExpressionList;
 import org.emftext.language.java.expressions.ImplicitlyTypedLambdaParameters;
+import org.emftext.language.java.expressions.InclusiveOrExpression;
+import org.emftext.language.java.expressions.InclusiveOrExpressionChild;
+import org.emftext.language.java.expressions.InstanceOfExpression;
+import org.emftext.language.java.expressions.InstanceOfExpressionChild;
 import org.emftext.language.java.expressions.LambdaExpression;
 import org.emftext.language.java.expressions.LambdaParameters;
+import org.emftext.language.java.expressions.MethodReferenceExpression;
+import org.emftext.language.java.expressions.MethodReferenceExpressionChild;
+import org.emftext.language.java.expressions.MultiplicativeExpression;
+import org.emftext.language.java.expressions.MultiplicativeExpressionChild;
+import org.emftext.language.java.expressions.PrefixUnaryModificationExpression;
+import org.emftext.language.java.expressions.RelationExpression;
+import org.emftext.language.java.expressions.RelationExpressionChild;
+import org.emftext.language.java.expressions.ShiftExpression;
+import org.emftext.language.java.expressions.ShiftExpressionChild;
 import org.emftext.language.java.expressions.SingleImplicitLambdaParameter;
+import org.emftext.language.java.expressions.SuffixUnaryModificationExpression;
+import org.emftext.language.java.expressions.UnaryExpression;
+import org.emftext.language.java.expressions.UnaryExpressionChild;
+import org.emftext.language.java.expressions.UnaryModificationExpressionChild;
 import org.emftext.language.java.generics.ExtendsTypeArgument;
 import org.emftext.language.java.generics.QualifiedTypeArgument;
 import org.emftext.language.java.generics.SuperTypeArgument;
@@ -78,6 +110,39 @@ import org.emftext.language.java.modules.OpensModuleDirective;
 import org.emftext.language.java.modules.ProvidesModuleDirective;
 import org.emftext.language.java.modules.RequiresModuleDirective;
 import org.emftext.language.java.modules.UsesModuleDirective;
+import org.emftext.language.java.operators.Addition;
+import org.emftext.language.java.operators.AdditiveOperator;
+import org.emftext.language.java.operators.Assignment;
+import org.emftext.language.java.operators.AssignmentAnd;
+import org.emftext.language.java.operators.AssignmentDivision;
+import org.emftext.language.java.operators.AssignmentExclusiveOr;
+import org.emftext.language.java.operators.AssignmentLeftShift;
+import org.emftext.language.java.operators.AssignmentMinus;
+import org.emftext.language.java.operators.AssignmentModulo;
+import org.emftext.language.java.operators.AssignmentMultiplication;
+import org.emftext.language.java.operators.AssignmentOperator;
+import org.emftext.language.java.operators.AssignmentOr;
+import org.emftext.language.java.operators.AssignmentPlus;
+import org.emftext.language.java.operators.AssignmentRightShift;
+import org.emftext.language.java.operators.Division;
+import org.emftext.language.java.operators.Equal;
+import org.emftext.language.java.operators.EqualityOperator;
+import org.emftext.language.java.operators.GreaterThan;
+import org.emftext.language.java.operators.GreaterThanOrEqual;
+import org.emftext.language.java.operators.LeftShift;
+import org.emftext.language.java.operators.LessThan;
+import org.emftext.language.java.operators.LessThanOrEqual;
+import org.emftext.language.java.operators.Multiplication;
+import org.emftext.language.java.operators.MultiplicativeOperator;
+import org.emftext.language.java.operators.Negate;
+import org.emftext.language.java.operators.NotEqual;
+import org.emftext.language.java.operators.PlusPlus;
+import org.emftext.language.java.operators.RelationOperator;
+import org.emftext.language.java.operators.RightShift;
+import org.emftext.language.java.operators.ShiftOperator;
+import org.emftext.language.java.operators.Subtraction;
+import org.emftext.language.java.operators.UnaryModificationOperator;
+import org.emftext.language.java.operators.UnaryOperator;
 import org.emftext.language.java.parameters.CatchParameter;
 import org.emftext.language.java.parameters.OrdinaryParameter;
 import org.emftext.language.java.parameters.Parameter;
@@ -786,10 +851,380 @@ public final class JaMoPPPrinter {
 	}
 	
 	private static void printAssignmentExpression(AssignmentExpression element, BufferedWriter writer) throws IOException {
-		
+		printAssignmentExpressionChild(element.getChild(), writer);
+		if (element.getAssignmentOperator() != null) {
+			printAssignmentOperator(element.getAssignmentOperator(), writer);
+			printExpression(element.getValue(), writer);
+		}
+	}
+	
+	private static void printAssignmentOperator(AssignmentOperator element, BufferedWriter writer) throws IOException {
+		if (element instanceof Assignment) {
+			writer.append(" = ");
+		} else if (element instanceof AssignmentAnd) {
+			writer.append(" &= ");
+		} else if (element instanceof AssignmentDivision) {
+			writer.append(" /= ");
+		} else if (element instanceof AssignmentExclusiveOr) {
+			writer.append(" ^= ");
+		} else if (element instanceof AssignmentMinus) {
+			writer.append(" -= ");
+		} else if (element instanceof AssignmentModulo) {
+			writer.append(" %= ");
+		} else if (element instanceof AssignmentMultiplication) {
+			writer.append(" *= ");
+		} else if (element instanceof AssignmentLeftShift) {
+			writer.append(" <<= ");
+		} else if (element instanceof AssignmentOr) {
+			writer.append(" |= ");
+		} else if (element instanceof AssignmentPlus) {
+			writer.append(" += ");
+		} else if (element instanceof AssignmentRightShift) {
+			writer.append(" >>= ");
+		} else {
+			writer.append(" >>>= ");
+		}
 	}
 	
 	private static void printAssignmentExpressionChild(AssignmentExpressionChild element, BufferedWriter writer) throws IOException {
+		if (element instanceof ConditionalExpression) {
+			printConditionalExpression((ConditionalExpression) element, writer);
+		} else {
+			printConditionalExpressionChild((ConditionalExpressionChild) element, writer);
+		}
+	}
+	
+	private static void printConditionalExpression(ConditionalExpression element, BufferedWriter writer) throws IOException {
+		printConditionalExpressionChild(element.getChild(), writer);
+		if (element.getExpressionIf() != null) {
+			writer.append(" ? ");
+			printExpression(element.getExpressionIf(), writer);
+			writer.append(" : ");
+			printExpression(element.getGeneralExpressionElse(), writer);
+		}
+	}
+	
+	private static void printConditionalExpressionChild(ConditionalExpressionChild element, BufferedWriter writer)
+		throws IOException {
+		if (element instanceof ConditionalOrExpression) {
+			printConditionalOrExpression((ConditionalOrExpression) element, writer);
+		} else {
+			printConditionalOrExpressionChild((ConditionalOrExpressionChild) element, writer);
+		}
+	}
+	
+	private static void printConditionalOrExpression(ConditionalOrExpression element, BufferedWriter writer) throws IOException {
+		printConditionalOrExpressionChild(element.getChildren().get(0), writer);
+		for (int index = 1; index < element.getChildren().size(); index++) {
+			writer.append(" || ");
+			printConditionalOrExpressionChild(element.getChildren().get(index), writer);
+		}
+	}
+	
+	private static void printConditionalOrExpressionChild(ConditionalOrExpressionChild element, BufferedWriter writer)
+		throws IOException {
+		if (element instanceof ConditionalAndExpression) {
+			printConditionalAndExpression((ConditionalAndExpression) element, writer);
+		} else {
+			printConditionalAndExpressionChild((ConditionalAndExpressionChild) element, writer);
+		}
+	}
+	
+	private static void printConditionalAndExpression(ConditionalAndExpression element, BufferedWriter writer) throws IOException {
+		printConditionalAndExpressionChild(element.getChildren().get(0), writer);
+		for (int index = 1; index < element.getChildren().size(); index++) {
+			writer.append(" && ");
+			printConditionalAndExpressionChild(element.getChildren().get(index), writer);
+		}
+	}
+	
+	private static void printConditionalAndExpressionChild(ConditionalAndExpressionChild element, BufferedWriter writer)
+		throws IOException {
+		if (element instanceof InclusiveOrExpression) {
+			printInclusiveOrExpression((InclusiveOrExpression) element, writer);
+		} else {
+			printInclusiveOrExpressionChild((InclusiveOrExpressionChild) element, writer);
+		}
+	}
+	
+	private static void printInclusiveOrExpression(InclusiveOrExpression element, BufferedWriter writer) throws IOException {
+		printInclusiveOrExpressionChild(element.getChildren().get(0), writer);
+		for (int index = 0; index < element.getChildren().size(); index++) {
+			writer.append(" | ");
+			printInclusiveOrExpressionChild(element.getChildren().get(index), writer);
+		}
+	}
+	
+	private static void printInclusiveOrExpressionChild(InclusiveOrExpressionChild element, BufferedWriter writer) throws IOException {
+		if (element instanceof ExclusiveOrExpression) {
+			printExclusiveOrExpression((ExclusiveOrExpression) element, writer);
+		} else {
+			printExclusiveOrExpressionChild((ExclusiveOrExpressionChild) element, writer);
+		}
+	}
+	
+	private static void printExclusiveOrExpression(ExclusiveOrExpression element, BufferedWriter writer) throws IOException {
+		printExclusiveOrExpressionChild(element.getChildren().get(0), writer);
+		for (int index = 1; index < element.getChildren().size(); index++) {
+			writer.append(" ^ ");
+			printExclusiveOrExpressionChild(element.getChildren().get(index), writer);
+		}
+	}
+	
+	private static void printExclusiveOrExpressionChild(ExclusiveOrExpressionChild element, BufferedWriter writer) throws IOException {
+		if (element instanceof AndExpression) {
+			printAndExpression((AndExpression) element, writer);
+		} else {
+			printAndExpressionChild((AndExpressionChild) element, writer);
+		}
+	}
+	
+	private static void printAndExpression(AndExpression element, BufferedWriter writer) throws IOException {
+		printAndExpressionChild(element.getChildren().get(0), writer);
+		for (int index = 0; index < element.getChildren().size(); index++) {
+			writer.append(" & ");
+			printAndExpressionChild(element.getChildren().get(index), writer);
+		}
+	}
+	
+	private static void printAndExpressionChild(AndExpressionChild element, BufferedWriter writer) throws IOException {
+		if (element instanceof EqualityExpression) {
+			printEqualityExpression((EqualityExpression) element, writer);
+		} else {
+			printEqualityExpressionChild((EqualityExpressionChild) element, writer);
+		}
+	}
+	
+	private static void printEqualityExpression(EqualityExpression element, BufferedWriter writer) throws IOException {
+		printEqualityExpressionChild(element.getChildren().get(0), writer);
+		for (int index = 1; index < element.getChildren().size(); index++) {
+			printEqualityOperator(element.getEqualityOperators().get(index - 1), writer);
+			printEqualityExpressionChild(element.getChildren().get(index), writer);
+		}
+	}
+	
+	private static void printEqualityOperator(EqualityOperator element, BufferedWriter writer) throws IOException {
+		if (element instanceof Equal) {
+			writer.append(" == ");
+		} else if (element instanceof NotEqual) {
+			writer.append(" != ");
+		}
+	}
+	
+	private static void printEqualityExpressionChild(EqualityExpressionChild element, BufferedWriter writer) throws IOException {
+		if (element instanceof InstanceOfExpression) {
+			printInstanceOfExpression((InstanceOfExpression) element, writer);
+		} else {
+			printInstanceOfExpressionChild((InstanceOfExpressionChild) element, writer);
+		}
+	}
+	
+	private static void printInstanceOfExpression(InstanceOfExpression element, BufferedWriter writer) throws IOException {
+		printInstanceOfExpressionChild(element.getChild(), writer);
+		writer.append(" instanceof ");
+		printTypeReference(element.getTypeReference(), writer);
+		printArrayDimensions(element.getArrayDimensionsBefore(), writer);
+		printArrayDimensions(element.getArrayDimensionsAfter(), writer);
+	}
+	
+	private static void printInstanceOfExpressionChild(InstanceOfExpressionChild element, BufferedWriter writer) throws IOException {
+		if (element instanceof RelationExpression) {
+			printRelationExpression((RelationExpression) element, writer);
+		} else {
+			printRelationExpressionChild((RelationExpressionChild) element, writer);
+		}
+	}
+	
+	private static void printRelationExpression(RelationExpression element, BufferedWriter writer) throws IOException {
+		printRelationExpressionChild(element.getChildren().get(0), writer);
+		for (int index = 1; index < element.getChildren().size(); index++) {
+			printRelationOperator(element.getRelationOperators().get(index - 1), writer);
+			printRelationExpressionChild(element.getChildren().get(index), writer);
+		}
+	}
+	
+	private static void printRelationOperator(RelationOperator element, BufferedWriter writer) throws IOException {
+		if (element instanceof GreaterThan) {
+			writer.append(" > ");
+		} else if (element instanceof GreaterThanOrEqual) {
+			writer.append(" >= ");
+		} else if (element instanceof LessThan) {
+			writer.append(" < ");
+		} else if (element instanceof LessThanOrEqual) {
+			writer.append(" <= ");
+		}
+	}
+	
+	private static void printRelationExpressionChild(RelationExpressionChild element, BufferedWriter writer) throws IOException {
+		if (element instanceof ShiftExpression) {
+			printShiftExpression((ShiftExpression) element, writer);
+		} else {
+			printShiftExpressionChild((ShiftExpressionChild) element, writer);
+		}
+	}
+	
+	private static void printShiftExpression(ShiftExpression element, BufferedWriter writer) throws IOException {
+		printShiftExpressionChild(element.getChildren().get(0), writer);
+		for (int index = 1; index < element.getChildren().size(); index++) {
+			printShiftOperator(element.getShiftOperators().get(index - 1), writer);
+			printShiftExpressionChild(element.getChildren().get(index), writer);
+		}
+	}
+	
+	private static void printShiftOperator(ShiftOperator element, BufferedWriter writer) throws IOException {
+		if (element instanceof LeftShift) {
+			writer.append(" << ");
+		} else if (element instanceof RightShift) {
+			writer.append(" >> ");
+		} else {
+			writer.append(" >>> ");
+		}
+	}
+	
+	private static void printShiftExpressionChild(ShiftExpressionChild element, BufferedWriter writer) throws IOException {
+		if (element instanceof AdditiveExpression) {
+			printAdditiveExpression((AdditiveExpression) element, writer);
+		} else {
+			printAdditiveExpressionChild((AdditiveExpressionChild) element, writer);
+		}
+	}
+	
+	private static void printAdditiveExpression(AdditiveExpression element, BufferedWriter writer) throws IOException {
+		printAdditiveExpressionChild(element.getChildren().get(0), writer);
+		for (int index = 1; index < element.getChildren().size(); index++) {
+			printAdditiveOperator(element.getAdditiveOperators().get(index - 1), writer);
+			printAdditiveExpressionChild(element.getChildren().get(index), writer);
+		}
+	}
+	
+	private static void printAdditiveOperator(AdditiveOperator element, BufferedWriter writer) throws IOException {
+		if (element instanceof Addition) {
+			writer.append(" + ");
+		} else {
+			writer.append(" - ");
+		}
+	}
+	
+	private static void printAdditiveExpressionChild(AdditiveExpressionChild element, BufferedWriter writer) throws IOException {
+		if (element instanceof MultiplicativeExpression) {
+			printMultiplicativeExpression((MultiplicativeExpression) element, writer);
+		} else {
+			printMultiplicativeExpressionChild((MultiplicativeExpressionChild) element, writer);
+		}
+	}
+	
+	private static void printMultiplicativeExpression(MultiplicativeExpression element, BufferedWriter writer) throws IOException {
+		printMultiplicativeExpressionChild(element.getChildren().get(0), writer);
+		for (int index = 1; index < element.getChildren().size(); index++) {
+			printMultiplicativeOperator(element.getMultiplicativeOperators().get(index - 1), writer);
+			printMultiplicativeExpressionChild(element.getChildren().get(index), writer);
+		}
+	}
+	
+	private static void printMultiplicativeOperator(MultiplicativeOperator element, BufferedWriter writer) throws IOException {
+		if (element instanceof Multiplication) {
+			writer.append(" * ");
+		} else if (element instanceof Division) {
+			writer.append(" / ");
+		} else {
+			writer.append(" % ");
+		}
+	}
+	
+	private static void printMultiplicativeExpressionChild(MultiplicativeExpressionChild element, BufferedWriter writer)
+		throws IOException {
+		if (element instanceof UnaryExpression) {
+			printUnaryExpression((UnaryExpression) element, writer);
+		} else {
+			printUnaryExpressionChild((UnaryExpressionChild) element, writer);
+		}
+	}
+	
+	private static void printUnaryExpression(UnaryExpression element, BufferedWriter writer) throws IOException {
+		for (UnaryOperator op : element.getOperators()) {
+			printUnaryOperator(op, writer);
+		}
+		printUnaryExpressionChild(element.getChild(), writer);
+	}
+	
+	private static void printUnaryOperator(UnaryOperator element, BufferedWriter writer) throws IOException {
+		if (element instanceof Addition) {
+			writer.append("+");
+		} else if (element instanceof Subtraction) {
+			writer.append("-");
+		} else if (element instanceof Negate) {
+			writer.append("~");
+		} else {
+			writer.append("!");
+		}
+	}
+	
+	private static void printUnaryExpressionChild(UnaryExpressionChild element, BufferedWriter writer) throws IOException {
+		if (element instanceof PrefixUnaryModificationExpression) {
+			printPrefixUnaryModificationExpression((PrefixUnaryModificationExpression) element, writer);
+		} else if (element instanceof SuffixUnaryModificationExpression) {
+			printSuffixUnaryModificationExpression((SuffixUnaryModificationExpression) element, writer);
+		} else {
+			printUnaryModificationExpressionChild((UnaryModificationExpressionChild) element, writer);
+		}
+	}
+	
+	private static void printPrefixUnaryModificationExpression(PrefixUnaryModificationExpression element, BufferedWriter writer)
+		throws IOException {
+		if (element.getOperator() != null) {
+			printUnaryModificationOperator(element.getOperator(), writer);
+		}
+		printUnaryModificationExpressionChild(element.getChild(), writer);
+	}
+	
+	private static void printSuffixUnaryModificationExpression(SuffixUnaryModificationExpression element, BufferedWriter writer)
+		throws IOException {
+		printUnaryModificationExpressionChild(element.getChild(), writer);
+		if (element.getOperator() != null) {
+			printUnaryModificationOperator(element.getOperator(), writer);
+		}
+	}
+	
+	private static void printUnaryModificationOperator(UnaryModificationOperator element, BufferedWriter writer) throws IOException {
+		if (element instanceof PlusPlus) {
+			writer.append("++");
+		} else {
+			writer.append("--");
+		}
+	}
+	
+	private static void printUnaryModificationExpressionChild(UnaryModificationExpressionChild element, BufferedWriter writer)
+		throws IOException {
+		if (element instanceof Switch) {
+			printSwitch((Switch) element, writer);
+		} else if (element instanceof CastExpression) {
+			printCastExpression((CastExpression) element, writer);
+		} else if (element instanceof MethodReferenceExpression) {
+			printMethodReferenceExpression((MethodReferenceExpression) element, writer);
+		} else {
+			printMethodReferenceExpressionChild((MethodReferenceExpressionChild) element, writer);
+		}
+	}
+	
+	private static void printCastExpression(CastExpression element, BufferedWriter writer) throws IOException {
+		writer.append("(");
+		printTypeReference(element.getTypeReference(), writer);
+		printArrayDimensions(element.getArrayDimensionsBefore(), writer);
+		printArrayDimensions(element.getArrayDimensionsAfter(), writer);
+		for (TypeReference ref : element.getAdditionalBounds()) {
+			writer.append(" | ");
+			printTypeReference(ref, writer);
+		}
+		writer.append(") ");
+		printExpression(element.getGeneralChild(), writer);
+	}
+	
+	private static void printMethodReferenceExpression(MethodReferenceExpression element, BufferedWriter writer) throws IOException {
+		
+	}
+	
+	private static void printMethodReferenceExpressionChild(MethodReferenceExpressionChild element, BufferedWriter writer)
+		throws IOException {
 		
 	}
 	
