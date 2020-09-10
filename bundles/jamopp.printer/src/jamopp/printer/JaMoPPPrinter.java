@@ -14,6 +14,11 @@ import org.emftext.language.java.annotations.AnnotationParameterList;
 import org.emftext.language.java.annotations.AnnotationValue;
 import org.emftext.language.java.annotations.SingleAnnotationParameter;
 import org.emftext.language.java.arrays.ArrayInitializer;
+import org.emftext.language.java.classifiers.Annotation;
+import org.emftext.language.java.classifiers.ConcreteClassifier;
+import org.emftext.language.java.classifiers.Enumeration;
+import org.emftext.language.java.classifiers.Implementor;
+import org.emftext.language.java.classifiers.Interface;
 import org.emftext.language.java.containers.CompilationUnit;
 import org.emftext.language.java.containers.JavaRoot;
 import org.emftext.language.java.generics.ExtendsTypeArgument;
@@ -28,7 +33,24 @@ import org.emftext.language.java.imports.ImportingElement;
 import org.emftext.language.java.imports.PackageImport;
 import org.emftext.language.java.imports.StaticClassifierImport;
 import org.emftext.language.java.imports.StaticMemberImport;
+import org.emftext.language.java.members.EnumConstant;
+import org.emftext.language.java.members.Member;
+import org.emftext.language.java.members.MemberContainer;
+import org.emftext.language.java.modifiers.Abstract;
+import org.emftext.language.java.modifiers.AnnotableAndModifiable;
+import org.emftext.language.java.modifiers.AnnotationInstanceOrModifier;
+import org.emftext.language.java.modifiers.Default;
+import org.emftext.language.java.modifiers.Final;
+import org.emftext.language.java.modifiers.Modifier;
+import org.emftext.language.java.modifiers.Native;
+import org.emftext.language.java.modifiers.Private;
+import org.emftext.language.java.modifiers.Protected;
+import org.emftext.language.java.modifiers.Public;
 import org.emftext.language.java.modifiers.Static;
+import org.emftext.language.java.modifiers.Strictfp;
+import org.emftext.language.java.modifiers.Synchronized;
+import org.emftext.language.java.modifiers.Transient;
+import org.emftext.language.java.modifiers.Volatile;
 import org.emftext.language.java.modules.AccessProvidingModuleDirective;
 import org.emftext.language.java.modules.ExportsModuleDirective;
 import org.emftext.language.java.modules.ModuleDirective;
@@ -95,12 +117,8 @@ public final class JaMoPPPrinter {
 				writer.append("package " + root.getNamespacesAsString() + ";\n\n");
 			}
 			printImportingElement(root, writer);
-			if (root instanceof org.emftext.language.java.containers.Package) {
-				
-			} else if (root instanceof CompilationUnit) {
-				
-			} else {
-				
+			if (root instanceof CompilationUnit) {
+				printCompilationUnit((CompilationUnit) root, writer);
 			}
 		}
 	}
@@ -346,5 +364,148 @@ public final class JaMoPPPrinter {
 			}
 		}
 		writer.append(";\n");
+	}
+	
+	private static void printCompilationUnit(CompilationUnit element, BufferedWriter writer) throws IOException {
+		for (ConcreteClassifier classifier : element.getClassifiers()) {
+			printConcreteClassifier(classifier, writer);
+		}
+	}
+	
+	private static void printConcreteClassifier(ConcreteClassifier element, BufferedWriter writer) throws IOException {
+		if (element instanceof org.emftext.language.java.classifiers.Class) {
+			printClass((org.emftext.language.java.classifiers.Class) element, writer);
+		} else if (element instanceof Interface) {
+			printInterface((Interface) element, writer);
+		} else if (element instanceof Enumeration) {
+			printEnumeration((Enumeration) element, writer);
+		} else {
+			printAnnotation((Annotation) element, writer);
+		}
+	}
+	
+	private static void printAnnotableAndModifiable(AnnotableAndModifiable element, BufferedWriter writer) throws IOException {
+		for (AnnotationInstanceOrModifier el : element.getAnnotationsAndModifiers()) {
+			printAnnotationInstanceOrModifier(el, writer);
+		}
+	}
+	
+	private static void printAnnotationInstanceOrModifier(AnnotationInstanceOrModifier element, BufferedWriter writer)
+		throws IOException {
+		if (element instanceof AnnotationInstance) {
+			printAnnotationInstance((AnnotationInstance) element, writer);
+		} else {
+			printModifier((Modifier) element, writer);
+		}
+	}
+	
+	private static void printModifier(Modifier element, BufferedWriter writer) throws IOException {
+		if (element instanceof Abstract) {
+			writer.append("abstract ");
+		} else if (element instanceof Final) {
+			writer.append("final ");
+		} else if (element instanceof Native) {
+			writer.append("native ");
+		} else if (element instanceof Protected) {
+			writer.append("protected ");
+		} else if (element instanceof Private) {
+			writer.append("private ");
+		} else if (element instanceof Public) {
+			writer.append("public ");
+		} else if (element instanceof Static) {
+			writer.append("static ");
+		} else if (element instanceof Strictfp) {
+			writer.append("strictfp ");
+		} else if (element instanceof Synchronized) {
+			writer.append("synchronized ");
+		} else if (element instanceof Transient) {
+			writer.append("transient ");
+		} else if (element instanceof Volatile) {
+			writer.append("volatile ");
+		} else if (element instanceof Default) {
+			writer.append("default ");
+		}
+	}
+	
+	private static void printClass(org.emftext.language.java.classifiers.Class element, BufferedWriter writer) throws IOException {
+		printAnnotableAndModifiable(element, writer);
+		writer.append("class " + element.getName() + " ");
+		if (element.getExtends() != null) {
+			writer.append("extends ");
+			printTypeReference(element.getDefaultExtends(), writer);
+			writer.append(" ");
+		}
+		printImplementor(element, writer);
+		writer.append("{\n");
+		printMemberContainer(element, writer);
+		writer.append("}\n");
+	}
+	
+	private static void printImplementor(Implementor element, BufferedWriter writer) throws IOException {
+		if (element.getImplements().size() > 0) {
+			writer.append("implements ");
+			for (int index = 0; index < element.getImplements().size(); index++) {
+				printTypeReference(element.getImplements().get(index), writer);
+				if (index < element.getImplements().size() - 1) {
+					writer.append(", ");
+				}
+			}
+			writer.append(" ");
+		}
+	}
+	
+	private static void printEnumeration(Enumeration element, BufferedWriter writer) throws IOException {
+		printAnnotableAndModifiable(element, writer);
+		writer.append("enum " + element.getName() + " ");
+		printImplementor(element, writer);
+		writer.append("{\n");
+		for (EnumConstant enc : element.getConstants()) {
+			printEnumConstant(enc, writer);
+			writer.append(",\n");
+		}
+		if (element.getMembers().size() > 0) {
+			writer.append(";\n\n");
+			printMemberContainer(element, writer);
+		}
+		writer.append("}\n");
+	}
+	
+	private static void printEnumConstant(EnumConstant element, BufferedWriter writer) throws IOException {
+		
+	}
+	
+	private static void printInterface(Interface element, BufferedWriter writer) throws IOException {
+		printAnnotableAndModifiable(element, writer);
+		writer.append("interface " + element.getName() + " ");
+		if (element.getExtends().size() > 0) {
+			writer.append("extends ");
+			for (int index = 0; index < element.getExtends().size(); index++) {
+				printTypeReference(element.getExtends().get(index), writer);
+				if (index < element.getExtends().size() - 1) {
+					writer.append(", ");
+				}
+			}
+			writer.append(" ");
+		}
+		writer.append("{\n");
+		printMemberContainer(element, writer);
+		writer.append("}\n");
+	}
+	
+	private static void printAnnotation(Annotation element, BufferedWriter writer) throws IOException {
+		printAnnotableAndModifiable(element, writer);
+		writer.append("@interface " + element.getName() + " {\n");
+		printMemberContainer(element, writer);
+		writer.append("}\n");
+	}
+	
+	private static void printMemberContainer(MemberContainer element, BufferedWriter writer) throws IOException {
+		for (Member mem : element.getMembers()) {
+			printMember(mem, writer);
+		}
+	}
+	
+	private static void printMember(Member element, BufferedWriter writer) throws IOException {
+		
 	}
 }
