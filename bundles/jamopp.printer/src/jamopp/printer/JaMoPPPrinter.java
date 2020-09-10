@@ -24,8 +24,14 @@ import org.emftext.language.java.classifiers.Implementor;
 import org.emftext.language.java.classifiers.Interface;
 import org.emftext.language.java.containers.CompilationUnit;
 import org.emftext.language.java.containers.JavaRoot;
+import org.emftext.language.java.expressions.AssignmentExpression;
+import org.emftext.language.java.expressions.AssignmentExpressionChild;
 import org.emftext.language.java.expressions.Expression;
 import org.emftext.language.java.expressions.ExpressionList;
+import org.emftext.language.java.expressions.ImplicitlyTypedLambdaParameters;
+import org.emftext.language.java.expressions.LambdaExpression;
+import org.emftext.language.java.expressions.LambdaParameters;
+import org.emftext.language.java.expressions.SingleImplicitLambdaParameter;
 import org.emftext.language.java.generics.ExtendsTypeArgument;
 import org.emftext.language.java.generics.QualifiedTypeArgument;
 import org.emftext.language.java.generics.SuperTypeArgument;
@@ -731,6 +737,59 @@ public final class JaMoPPPrinter {
 	}
 	
 	private static void printExpression(Expression element, BufferedWriter writer) throws IOException {
+		if (element instanceof LambdaExpression) {
+			printLambdaExpression((LambdaExpression) element, writer);
+		} else if (element instanceof AssignmentExpression) {
+			printAssignmentExpression((AssignmentExpression) element, writer);
+		} else {
+			printAssignmentExpressionChild((AssignmentExpressionChild) element, writer);
+		}
+	}
+	
+	private static void printLambdaExpression(LambdaExpression element, BufferedWriter writer) throws IOException {
+		printLambdaParameters(element.getParameters(), writer);
+		writer.append(" -> ");
+		if (element.getBody() instanceof Block) {
+			printBlock((Block) element.getBody(), writer);
+		} else {
+			printExpression((Expression) element.getBody(), writer);
+		}
+	}
+	
+	private static void printLambdaParameters(LambdaParameters element, BufferedWriter writer) throws IOException {
+		if (element instanceof SingleImplicitLambdaParameter) {
+			writer.append(element.getParameters().get(0).getName());
+		} else if (element instanceof ImplicitlyTypedLambdaParameters) {
+			writer.append("(");
+			for (int index = 0; index < element.getParameters().size(); index++) {
+				writer.append(element.getParameters().get(index).getName());
+				if (index < element.getParameters().size() - 1) {
+					writer.append(", ");
+				}
+			}
+			writer.append(")");
+		} else {
+			writer.append("(");
+			for (int index = 0; index < element.getParameters().size(); index++) {
+				Parameter param = element.getParameters().get(index);
+				if (param instanceof OrdinaryParameter) {
+					printOrdinaryParameter((OrdinaryParameter) element, writer);
+				} else {
+					printVariableLengthParameter((VariableLengthParameter) element, writer);
+				}
+				if (index < element.getParameters().size() - 1) {
+					writer.append(", ");
+				}
+			}
+			writer.append(")");
+		}
+	}
+	
+	private static void printAssignmentExpression(AssignmentExpression element, BufferedWriter writer) throws IOException {
+		
+	}
+	
+	private static void printAssignmentExpressionChild(AssignmentExpressionChild element, BufferedWriter writer) throws IOException {
 		
 	}
 	
