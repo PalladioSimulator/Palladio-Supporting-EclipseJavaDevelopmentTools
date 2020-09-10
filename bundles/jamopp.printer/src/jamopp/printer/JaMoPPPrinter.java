@@ -28,9 +28,11 @@ import org.emftext.language.java.expressions.AdditiveExpression;
 import org.emftext.language.java.expressions.AdditiveExpressionChild;
 import org.emftext.language.java.expressions.AndExpression;
 import org.emftext.language.java.expressions.AndExpressionChild;
+import org.emftext.language.java.expressions.ArrayConstructorReferenceExpression;
 import org.emftext.language.java.expressions.AssignmentExpression;
 import org.emftext.language.java.expressions.AssignmentExpressionChild;
 import org.emftext.language.java.expressions.CastExpression;
+import org.emftext.language.java.expressions.ClassTypeConstructorReferenceExpression;
 import org.emftext.language.java.expressions.ConditionalAndExpression;
 import org.emftext.language.java.expressions.ConditionalAndExpressionChild;
 import org.emftext.language.java.expressions.ConditionalExpression;
@@ -55,6 +57,7 @@ import org.emftext.language.java.expressions.MethodReferenceExpressionChild;
 import org.emftext.language.java.expressions.MultiplicativeExpression;
 import org.emftext.language.java.expressions.MultiplicativeExpressionChild;
 import org.emftext.language.java.expressions.PrefixUnaryModificationExpression;
+import org.emftext.language.java.expressions.PrimaryExpressionReferenceExpression;
 import org.emftext.language.java.expressions.RelationExpression;
 import org.emftext.language.java.expressions.RelationExpressionChild;
 import org.emftext.language.java.expressions.ShiftExpression;
@@ -64,6 +67,7 @@ import org.emftext.language.java.expressions.SuffixUnaryModificationExpression;
 import org.emftext.language.java.expressions.UnaryExpression;
 import org.emftext.language.java.expressions.UnaryExpressionChild;
 import org.emftext.language.java.expressions.UnaryModificationExpressionChild;
+import org.emftext.language.java.generics.CallTypeArgumentable;
 import org.emftext.language.java.generics.ExtendsTypeArgument;
 import org.emftext.language.java.generics.QualifiedTypeArgument;
 import org.emftext.language.java.generics.SuperTypeArgument;
@@ -78,6 +82,7 @@ import org.emftext.language.java.imports.ImportingElement;
 import org.emftext.language.java.imports.PackageImport;
 import org.emftext.language.java.imports.StaticClassifierImport;
 import org.emftext.language.java.imports.StaticMemberImport;
+import org.emftext.language.java.literals.Literal;
 import org.emftext.language.java.members.AdditionalField;
 import org.emftext.language.java.members.ClassMethod;
 import org.emftext.language.java.members.Constructor;
@@ -151,6 +156,7 @@ import org.emftext.language.java.parameters.ReceiverParameter;
 import org.emftext.language.java.parameters.VariableLengthParameter;
 import org.emftext.language.java.references.Argumentable;
 import org.emftext.language.java.references.ElementReference;
+import org.emftext.language.java.references.Reference;
 import org.emftext.language.java.statements.Assert;
 import org.emftext.language.java.statements.Block;
 import org.emftext.language.java.statements.Break;
@@ -1220,11 +1226,55 @@ public final class JaMoPPPrinter {
 	}
 	
 	private static void printMethodReferenceExpression(MethodReferenceExpression element, BufferedWriter writer) throws IOException {
-		
+		if (element instanceof PrimaryExpressionReferenceExpression) {
+			PrimaryExpressionReferenceExpression ref = (PrimaryExpressionReferenceExpression) element;
+			printMethodReferenceExpressionChild(ref.getChild(), writer);
+			if (ref.getMethodReference() != null) {
+				writer.append("::");
+				printCallTypeArgumentable(ref, writer);
+				printReference(ref.getMethodReference(), writer);
+			}
+		} else if (element instanceof ClassTypeConstructorReferenceExpression) {
+			ClassTypeConstructorReferenceExpression ref = (ClassTypeConstructorReferenceExpression) element;
+			printTypeReference(ref.getTypeReference(), writer);
+			writer.append("::");
+			printCallTypeArgumentable(ref, writer);
+			writer.append("new");
+		} else {
+			ArrayConstructorReferenceExpression ref = (ArrayConstructorReferenceExpression) element;
+			printTypeReference(ref.getTypeReference(), writer);
+			printArrayDimensions(ref.getArrayDimensionsBefore(), writer);
+			printArrayDimensions(ref.getArrayDimensionsAfter(), writer);
+			writer.append("::new");
+		}
+	}
+	
+	private static void printCallTypeArgumentable(CallTypeArgumentable element, BufferedWriter writer) throws IOException {
+		if (element.getCallTypeArguments().size() > 0) {
+			writer.append("<");
+			printTypeArgument(element.getCallTypeArguments().get(0), writer);
+			for (int index = 1; index < element.getCallTypeArguments().size(); index++) {
+				writer.append(", ");
+				printTypeArgument(element.getCallTypeArguments().get(index), writer);
+			}
+			writer.append(">");
+		}
 	}
 	
 	private static void printMethodReferenceExpressionChild(MethodReferenceExpressionChild element, BufferedWriter writer)
 		throws IOException {
+		if (element instanceof Literal) {
+			printLiteral((Literal) element, writer);
+		} else {
+			printReference((Reference) element, writer);
+		}
+	}
+	
+	private static void printLiteral(Literal element, BufferedWriter writer) throws IOException {
+		
+	}
+	
+	private static void printReference(Reference element, BufferedWriter writer) throws IOException {
 		
 	}
 	
