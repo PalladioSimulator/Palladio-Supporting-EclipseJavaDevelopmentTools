@@ -7,6 +7,7 @@ import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import org.emftext.language.java.annotations.Annotable;
 import org.emftext.language.java.annotations.AnnotationAttributeSetting;
 import org.emftext.language.java.annotations.AnnotationInstance;
 import org.emftext.language.java.annotations.AnnotationParameterList;
@@ -15,12 +16,31 @@ import org.emftext.language.java.annotations.SingleAnnotationParameter;
 import org.emftext.language.java.arrays.ArrayInitializer;
 import org.emftext.language.java.containers.CompilationUnit;
 import org.emftext.language.java.containers.JavaRoot;
+import org.emftext.language.java.generics.ExtendsTypeArgument;
+import org.emftext.language.java.generics.QualifiedTypeArgument;
+import org.emftext.language.java.generics.SuperTypeArgument;
+import org.emftext.language.java.generics.TypeArgument;
+import org.emftext.language.java.generics.TypeArgumentable;
+import org.emftext.language.java.generics.UnknownTypeArgument;
 import org.emftext.language.java.imports.ClassifierImport;
 import org.emftext.language.java.imports.Import;
 import org.emftext.language.java.imports.ImportingElement;
 import org.emftext.language.java.imports.PackageImport;
 import org.emftext.language.java.imports.StaticClassifierImport;
 import org.emftext.language.java.imports.StaticMemberImport;
+import org.emftext.language.java.modifiers.Static;
+import org.emftext.language.java.modules.AccessProvidingModuleDirective;
+import org.emftext.language.java.modules.ExportsModuleDirective;
+import org.emftext.language.java.modules.ModuleDirective;
+import org.emftext.language.java.modules.OpensModuleDirective;
+import org.emftext.language.java.modules.ProvidesModuleDirective;
+import org.emftext.language.java.modules.RequiresModuleDirective;
+import org.emftext.language.java.modules.UsesModuleDirective;
+import org.emftext.language.java.types.ClassifierReference;
+import org.emftext.language.java.types.InferableType;
+import org.emftext.language.java.types.NamespaceClassifierReference;
+import org.emftext.language.java.types.PrimitiveType;
+import org.emftext.language.java.types.TypeReference;
 
 /**
  * This class provides methods to print JaMoPP model instances.
@@ -68,11 +88,10 @@ public final class JaMoPPPrinter {
 	private static void printJavaRoot(JavaRoot root, BufferedWriter writer) throws IOException {
 		if (root instanceof org.emftext.language.java.containers.Module) {
 			printImportingElement(root, writer);
+			printModule((org.emftext.language.java.containers.Module) root, writer);
 		} else {
 			if (root.getNamespaces().size() > 0) {
-				for (AnnotationInstance inst : root.getAnnotations()) {
-					printAnnotationInstance(inst, writer);
-				}
+				printAnnotable(root, writer);
 				writer.append("package " + root.getNamespacesAsString() + ";\n\n");
 			}
 			printImportingElement(root, writer);
@@ -127,6 +146,12 @@ public final class JaMoPPPrinter {
 			+ element.getStaticMembers().get(0).getName());
 	}
 	
+	private static void printAnnotable(Annotable element, BufferedWriter writer) throws IOException {
+		for (AnnotationInstance inst : element.getAnnotations()) {
+			printAnnotationInstance(inst, writer);
+		}
+	}
+	
 	private static void printAnnotationInstance(AnnotationInstance element, BufferedWriter writer) throws IOException {
 		writer.append("@" + element.getAnnotation().getName());
 		if (element.getParameter() != null) {
@@ -153,5 +178,173 @@ public final class JaMoPPPrinter {
 		} else {
 			
 		}
+	}
+	
+	private static void printModule(org.emftext.language.java.containers.Module element, BufferedWriter writer) throws IOException {
+		writer.append("module ");
+		if (element.getOpen() != null) {
+			writer.append("open ");
+		}
+		writer.append(element.getNamespacesAsString() + " {\n");
+		for (ModuleDirective dir : element.getTarget()) {
+			if (dir instanceof UsesModuleDirective) {
+				printUsesModuleDirective((UsesModuleDirective) dir, writer);
+			} else if (dir instanceof ProvidesModuleDirective) {
+				printProvidesModuleDirective((ProvidesModuleDirective) dir, writer);
+			} else if (dir instanceof RequiresModuleDirective) {
+				printRequiresModuleDirective((RequiresModuleDirective) dir, writer);
+			} else if (dir instanceof OpensModuleDirective) {
+				printOpensModuleDirective((OpensModuleDirective) dir, writer);
+			} else {
+				printExportsModuleDirective((ExportsModuleDirective) dir, writer);
+			}
+		}
+		writer.append("}\n");
+	}
+	
+	private static void printTypeReference(TypeReference element, BufferedWriter writer) throws IOException {
+		if (element instanceof NamespaceClassifierReference) {
+			printNamespaceClassifierReference((NamespaceClassifierReference) element, writer);
+		} else if (element instanceof ClassifierReference) {
+			printClassifierReference((ClassifierReference) element, writer);
+		} else if (element instanceof PrimitiveType) {
+			printPrimitiveType((PrimitiveType) element, writer);
+		} else if (element instanceof InferableType) {
+			printInferableType((InferableType) element, writer);
+		}
+	}
+	
+	private static void printInferableType(InferableType element, BufferedWriter writer) throws IOException {
+		writer.append("var");
+	}
+	
+	private static void printPrimitiveType(PrimitiveType element, BufferedWriter writer) throws IOException {
+		printAnnotable(element, writer);
+		if (element instanceof org.emftext.language.java.types.Boolean) {
+			writer.append("boolean");
+		} else if (element instanceof org.emftext.language.java.types.Byte) {
+			writer.append("byte");
+		} else if (element instanceof org.emftext.language.java.types.Char) {
+			writer.append("char");
+		} else if (element instanceof org.emftext.language.java.types.Double) {
+			writer.append("double");
+		} else if (element instanceof org.emftext.language.java.types.Float) {
+			writer.append("float");
+		} else if (element instanceof org.emftext.language.java.types.Int) {
+			writer.append("int");
+		} else if (element instanceof org.emftext.language.java.types.Long) {
+			writer.append("long");
+		} else if (element instanceof org.emftext.language.java.types.Short) {
+			writer.append("short");
+		} else if (element instanceof org.emftext.language.java.types.Void) {
+			writer.append("void");
+		}
+	}
+	
+	private static void printNamespaceClassifierReference(NamespaceClassifierReference element, BufferedWriter writer) throws IOException {
+		writer.append(element.getNamespacesAsString());
+		for (int index = 0; index < element.getClassifierReferences().size(); index++) {
+			writer.append(".");
+			printClassifierReference(element.getClassifierReferences().get(index), writer);
+		}
+	}
+	
+	private static void printClassifierReference(ClassifierReference element, BufferedWriter writer) throws IOException {
+		printAnnotable(element, writer);
+		writer.append(element.getTarget().getName());
+		printTypeArgumentable(element, writer);
+	}
+	
+	private static void printTypeArgumentable(TypeArgumentable element, BufferedWriter writer) throws IOException {
+		if (element.getTypeArguments().size() > 0) {
+			writer.append("<");
+			for (int index = 0; index < element.getTypeArguments().size(); index++) {
+				TypeArgument arg = element.getTypeArguments().get(0);
+				printTypeArgument(arg, writer);
+				if (index < element.getTypeArguments().size() - 1) {
+					writer.append(", ");
+				}
+			}
+			writer.append(">");
+		}
+	}
+	
+	private static void printTypeArgument(TypeArgument element, BufferedWriter writer) throws IOException {
+		if (element instanceof QualifiedTypeArgument) {
+			QualifiedTypeArgument arg = (QualifiedTypeArgument) element;
+			printTypeReference(arg.getTypeReference(), writer);
+		} else if (element instanceof UnknownTypeArgument) {
+			UnknownTypeArgument arg = (UnknownTypeArgument) element;
+			printAnnotable(arg, writer);
+			writer.append("?");
+		} else if (element instanceof SuperTypeArgument) {
+			SuperTypeArgument arg = (SuperTypeArgument) element;
+			printAnnotable(arg, writer);
+			writer.append("? super ");
+			printTypeReference(arg.getSuperType(), writer);
+		} else {
+			ExtendsTypeArgument arg = (ExtendsTypeArgument) element;
+			printAnnotable(arg, writer);
+			writer.append("? extends ");
+			printTypeReference(arg.getExtendType(), writer);
+		}
+	}
+	
+	private static void printUsesModuleDirective(UsesModuleDirective element, BufferedWriter writer) throws IOException {
+		writer.append("uses ");
+		printTypeReference(element.getTypeReference(), writer);
+		writer.append(";\n");
+	}
+	
+	private static void printProvidesModuleDirective(ProvidesModuleDirective element, BufferedWriter writer) throws IOException {
+		writer.append("provides ");
+		printTypeReference(element.getTypeReference(), writer);
+		writer.append(" with ");
+		for (int index = 0; index < element.getServiceProviders().size(); index++) {
+			TypeReference ref = element.getServiceProviders().get(index);
+			printTypeReference(ref, writer);
+			if (index < element.getServiceProviders().size() - 1) {
+				writer.append(".");
+			}
+		}
+		writer.append(";\n");
+	}
+	
+	private static void printRequiresModuleDirective(RequiresModuleDirective element, BufferedWriter writer) throws IOException {
+		writer.append("requires ");
+		if (element.getModifier() != null) {
+			if (element.getModifier() instanceof Static) {
+				writer.append("static ");
+			} else {
+				writer.append("transitive ");
+			}
+		}
+		writer.append(element.getRequiredModule().getTarget().getNamespacesAsString());
+		writer.append(";\n");
+	}
+	
+	private static void printOpensModuleDirective(OpensModuleDirective element, BufferedWriter writer) throws IOException {
+		writer.append("opens ");
+		printRemainingAccessProvidingModuleDirective(element, writer);
+	}
+	
+	private static void printExportsModuleDirective(ExportsModuleDirective element, BufferedWriter writer) throws IOException {
+		writer.append("exports ");
+		printRemainingAccessProvidingModuleDirective(element, writer);
+	}
+	
+	private static void printRemainingAccessProvidingModuleDirective(AccessProvidingModuleDirective element, BufferedWriter writer)
+		throws IOException {
+		writer.append(element.getAccessablePackage().getNamespacesAsString());
+		if (element.getModules().size() > 0) {
+			writer.append(" to ");
+			for (int index = 0; index < element.getModules().size(); index++) {
+				writer.append(element.getModules().get(index).getTarget().getNamespacesAsString());
+				if (index < element.getModules().size() - 1) {
+					writer.append(", ");
+				}
+			}
+		}
+		writer.append(";\n");
 	}
 }
