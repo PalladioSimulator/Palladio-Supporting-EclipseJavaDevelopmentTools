@@ -427,13 +427,13 @@ public class TalkativeASTMatcher extends ASTMatcher {
 		}
 		
 		if (token.matches("0x[0-9,a-f]+")) {
-			token = new BigInteger(token, 16).toString();
+			token = new BigInteger(token.substring(2), 16).toString();
 		}
 		if (token.matches("0[0-9]+")) {
-			token = new BigInteger(token, 8).toString();
+			token = new BigInteger(token.substring(0), 8).toString();
 		}
 		if (token.matches("0b[0-1]+")) {
-			token = new BigInteger(token, 2).toString();
+			token = new BigInteger(token.substring(2), 2).toString();
 		}
 		
 		if (token.startsWith("- ")) {
