@@ -214,6 +214,7 @@ class StatementConverterUtility {
 			varSt.modifiers().forEach(obj -> locVar.getAnnotationsAndModifiers().add(AnnotationInstanceOrModifierConverterUtility
 				.converToModifierOrAnnotationInstance((IExtendedModifier) obj)));
 			locVar.setTypeReference(BaseConverterUtility.convertToTypeReference(varSt.getType()));
+			BaseConverterUtility.convertToArrayDimensionsAndSet(varSt.getType(), locVar);
 			frag.extraDimensions().forEach(obj -> BaseConverterUtility.convertToArrayDimensionAfterAndSet((Dimension) obj, locVar));
 			if (frag.getInitializer() != null) {
 				locVar.setInitialValue(ExpressionConverterUtility.convertToExpression(frag.getInitializer()));
@@ -338,6 +339,7 @@ class StatementConverterUtility {
 		expr.modifiers().forEach(obj -> loc.getAnnotationsAndModifiers().add(AnnotationInstanceOrModifierConverterUtility
 			.converToModifierOrAnnotationInstance((IExtendedModifier) obj)));
 		loc.setTypeReference(BaseConverterUtility.convertToTypeReference(expr.getType()));
+		BaseConverterUtility.convertToArrayDimensionsAndSet(expr.getType(), loc);
 		frag.extraDimensions().forEach(obj -> BaseConverterUtility.convertToArrayDimensionAfterAndSet((Dimension) obj, loc));
 		if (frag.getInitializer() != null) {
 			loc.setInitialValue(ExpressionConverterUtility.convertToExpression(frag.getInitializer()));

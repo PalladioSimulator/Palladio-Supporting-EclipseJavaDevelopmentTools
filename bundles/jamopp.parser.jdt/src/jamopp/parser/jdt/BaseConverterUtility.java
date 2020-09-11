@@ -251,11 +251,18 @@ class BaseConverterUtility {
 		}
 	}
 	
-	@SuppressWarnings("unchecked")
 	static void convertToArrayDimensionsAndSet(Type t, org.emftext.language.java.arrays.ArrayTypeable arrDimContainer) {
+		convertToArrayDimensionsAndSet(t, arrDimContainer, 0);
+	}
+	
+	static void convertToArrayDimensionsAndSet(Type t, org.emftext.language.java.arrays.ArrayTypeable arrDimContainer,
+			int ignoreDimensions) {
 		if (t.isArrayType()) {
 			ArrayType arrT = (ArrayType) t;
-			arrT.dimensions().forEach(obj -> arrDimContainer.getArrayDimensionsBefore().add(convertToArrayDimension((Dimension) obj)));
+			for (int i = ignoreDimensions; i < arrT.dimensions().size(); i++) {
+				arrDimContainer.getArrayDimensionsBefore().add(convertToArrayDimension((Dimension)
+					arrT.dimensions().get(i)));
+			}
 		}
 	}
 	
