@@ -425,10 +425,14 @@ public final class JaMoPPPrinter {
 	
 	private static void printNamespaceClassifierReference(NamespaceClassifierReference element, BufferedWriter writer) throws IOException {
 		writer.append(element.getNamespacesAsString());
-		for (int index = 0; index < element.getClassifierReferences().size(); index++) {
+		if (element.getNamespaces().size() > 0) {
 			writer.append(".");
-			printClassifierReference(element.getClassifierReferences().get(index), writer);
 		}
+		for (int index = 0; index < element.getClassifierReferences().size() - 1; index++) {
+			printClassifierReference(element.getClassifierReferences().get(index), writer);
+			writer.append(".");
+		}
+		printClassifierReference(element.getClassifierReferences().get(element.getClassifierReferences().size() - 1), writer);
 	}
 	
 	private static void printClassifierReference(ClassifierReference element, BufferedWriter writer) throws IOException {
@@ -703,7 +707,7 @@ public final class JaMoPPPrinter {
 		printAnnotableAndModifiable(element, writer);
 		printTypeReference(element.getTypeReference(), writer);
 		printArrayDimensions(element.getArrayDimensionsBefore(), writer);
-		writer.append(element.getName());
+		writer.append(" " + element.getName());
 		printArrayDimensions(element.getArrayDimensionsAfter(), writer);
 		if (element.getInitialValue() != null) {
 			writer.append(" = ");
@@ -799,7 +803,7 @@ public final class JaMoPPPrinter {
 			} else if (param instanceof OrdinaryParameter) {
 				printOrdinaryParameter((OrdinaryParameter) param, writer);
 			} else {
-				printVariableLengthParameter((VariableLengthParameter) element, writer);
+				printVariableLengthParameter((VariableLengthParameter) param, writer);
 			}
 			if (index < element.getParameters().size() - 1) {
 				writer.append(", ");
@@ -883,9 +887,9 @@ public final class JaMoPPPrinter {
 			for (int index = 0; index < element.getParameters().size(); index++) {
 				Parameter param = element.getParameters().get(index);
 				if (param instanceof OrdinaryParameter) {
-					printOrdinaryParameter((OrdinaryParameter) element, writer);
+					printOrdinaryParameter((OrdinaryParameter) param, writer);
 				} else {
-					printVariableLengthParameter((VariableLengthParameter) element, writer);
+					printVariableLengthParameter((VariableLengthParameter) param, writer);
 				}
 				if (index < element.getParameters().size() - 1) {
 					writer.append(", ");
@@ -1320,40 +1324,40 @@ public final class JaMoPPPrinter {
 			writer.append("null");
 		} else if (element instanceof DecimalFloatLiteral) {
 			DecimalFloatLiteral lit = (DecimalFloatLiteral) element;
-			writer.append(Float.toString(lit.getDecimalValue()));
+			writer.append(Float.toString(lit.getDecimalValue()) + "F");
 		} else if (element instanceof HexFloatLiteral) {
 			HexFloatLiteral lit = (HexFloatLiteral) element;
-			writer.append(Float.toHexString(lit.getHexValue()));
+			writer.append("0x" + Float.toHexString(lit.getHexValue()) + "F");
 		} else if (element instanceof DecimalDoubleLiteral) {
 			DecimalDoubleLiteral lit = (DecimalDoubleLiteral) element;
-			writer.append(Double.toString(lit.getDecimalValue()));
+			writer.append(Double.toString(lit.getDecimalValue()) + "D");
 		} else if (element instanceof HexDoubleLiteral) {
 			HexDoubleLiteral lit = (HexDoubleLiteral) element;
-			writer.append(Double.toHexString(lit.getHexValue()));
+			writer.append("0x" + Double.toHexString(lit.getHexValue()) + "D");
 		} else if (element instanceof DecimalIntegerLiteral) {
 			DecimalIntegerLiteral lit = (DecimalIntegerLiteral) element;
 			writer.append(lit.getDecimalValue().toString());
 		} else if (element instanceof HexIntegerLiteral) {
 			HexIntegerLiteral lit = (HexIntegerLiteral) element;
-			writer.append(lit.getHexValue().toString(16));
+			writer.append("0x" + lit.getHexValue().toString(16));
 		} else if (element instanceof OctalIntegerLiteral) {
 			OctalIntegerLiteral lit = (OctalIntegerLiteral) element;
-			writer.append(lit.getOctalValue().toString(8));
+			writer.append("0" + lit.getOctalValue().toString(8));
 		} else if (element instanceof BinaryIntegerLiteral) {
 			BinaryIntegerLiteral lit = (BinaryIntegerLiteral) element;
-			writer.append(lit.getBinaryValue().toString(2));
+			writer.append("0b" + lit.getBinaryValue().toString(2));
 		} else if (element instanceof DecimalLongLiteral) {
 			DecimalLongLiteral lit = (DecimalLongLiteral) element;
 			writer.append(lit.getDecimalValue().toString() + "L");
 		} else if (element instanceof HexLongLiteral) {
 			HexLongLiteral lit = (HexLongLiteral) element;
-			writer.append(lit.getHexValue().toString(16) + "L");
+			writer.append("0x" + lit.getHexValue().toString(16) + "L");
 		} else if (element instanceof OctalLongLiteral) {
 			OctalLongLiteral lit = (OctalLongLiteral) element;
-			writer.append(lit.getOctalValue().toString(8) + "L");
+			writer.append("0" + lit.getOctalValue().toString(8) + "L");
 		} else if (element instanceof BinaryLongLiteral) {
 			BinaryLongLiteral lit = (BinaryLongLiteral) element;
-			writer.append(lit.getBinaryValue().toString(2) + "L");
+			writer.append("0b" + lit.getBinaryValue().toString(2) + "L");
 		}
 	}
 	
