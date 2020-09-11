@@ -15,7 +15,13 @@ import org.emftext.language.java.annotations.AnnotationParameterList;
 import org.emftext.language.java.annotations.AnnotationValue;
 import org.emftext.language.java.annotations.SingleAnnotationParameter;
 import org.emftext.language.java.arrays.ArrayDimension;
+import org.emftext.language.java.arrays.ArrayInitializationValue;
 import org.emftext.language.java.arrays.ArrayInitializer;
+import org.emftext.language.java.arrays.ArrayInstantiation;
+import org.emftext.language.java.arrays.ArrayInstantiationBySize;
+import org.emftext.language.java.arrays.ArrayInstantiationByValuesTyped;
+import org.emftext.language.java.arrays.ArrayInstantiationByValuesUntyped;
+import org.emftext.language.java.arrays.ArraySelector;
 import org.emftext.language.java.classifiers.Annotation;
 import org.emftext.language.java.classifiers.AnonymousClass;
 import org.emftext.language.java.classifiers.ConcreteClassifier;
@@ -56,6 +62,7 @@ import org.emftext.language.java.expressions.MethodReferenceExpression;
 import org.emftext.language.java.expressions.MethodReferenceExpressionChild;
 import org.emftext.language.java.expressions.MultiplicativeExpression;
 import org.emftext.language.java.expressions.MultiplicativeExpressionChild;
+import org.emftext.language.java.expressions.NestedExpression;
 import org.emftext.language.java.expressions.PrefixUnaryModificationExpression;
 import org.emftext.language.java.expressions.PrimaryExpressionReferenceExpression;
 import org.emftext.language.java.expressions.RelationExpression;
@@ -82,6 +89,10 @@ import org.emftext.language.java.imports.ImportingElement;
 import org.emftext.language.java.imports.PackageImport;
 import org.emftext.language.java.imports.StaticClassifierImport;
 import org.emftext.language.java.imports.StaticMemberImport;
+import org.emftext.language.java.instantiations.ExplicitConstructorCall;
+import org.emftext.language.java.instantiations.Instantiation;
+import org.emftext.language.java.instantiations.NewConstructorCall;
+import org.emftext.language.java.instantiations.NewConstructorCallWithInferredTypeArguments;
 import org.emftext.language.java.literals.BinaryIntegerLiteral;
 import org.emftext.language.java.literals.BinaryLongLiteral;
 import org.emftext.language.java.literals.BooleanLiteral;
@@ -98,6 +109,9 @@ import org.emftext.language.java.literals.Literal;
 import org.emftext.language.java.literals.NullLiteral;
 import org.emftext.language.java.literals.OctalIntegerLiteral;
 import org.emftext.language.java.literals.OctalLongLiteral;
+import org.emftext.language.java.literals.Self;
+import org.emftext.language.java.literals.Super;
+import org.emftext.language.java.literals.This;
 import org.emftext.language.java.members.AdditionalField;
 import org.emftext.language.java.members.ClassMethod;
 import org.emftext.language.java.members.Constructor;
@@ -171,7 +185,13 @@ import org.emftext.language.java.parameters.ReceiverParameter;
 import org.emftext.language.java.parameters.VariableLengthParameter;
 import org.emftext.language.java.references.Argumentable;
 import org.emftext.language.java.references.ElementReference;
+import org.emftext.language.java.references.IdentifierReference;
+import org.emftext.language.java.references.MethodCall;
+import org.emftext.language.java.references.PrimitiveTypeReference;
 import org.emftext.language.java.references.Reference;
+import org.emftext.language.java.references.ReflectiveClassReference;
+import org.emftext.language.java.references.SelfReference;
+import org.emftext.language.java.references.StringReference;
 import org.emftext.language.java.statements.Assert;
 import org.emftext.language.java.statements.Block;
 import org.emftext.language.java.statements.Break;
@@ -336,7 +356,7 @@ public final class JaMoPPPrinter {
 		if (element instanceof AnnotationInstance) {
 			printAnnotationInstance((AnnotationInstance) element, writer);
 		} else if (element instanceof ArrayInitializer) {
-			
+			printArrayInitializer((ArrayInitializer) element, writer);
 		} else {
 			printExpression((Expression) element, writer);
 		}
@@ -1334,11 +1354,164 @@ public final class JaMoPPPrinter {
 	}
 	
 	private static void printReference(Reference element, BufferedWriter writer) throws IOException {
-		
+		if (element instanceof AnnotationInstance) {
+			printAnnotationInstance((AnnotationInstance) element, writer);
+		} else if (element instanceof NestedExpression) {
+			printNestedExpression((NestedExpression) element, writer);
+		} else if (element instanceof ReflectiveClassReference) {
+			printReflectiveClassReference((ReflectiveClassReference) element, writer);
+		} else if (element instanceof PrimitiveTypeReference) {
+			printPrimitiveTypeReference((PrimitiveTypeReference) element, writer);
+		} else if (element instanceof StringReference) {
+			printStringReference((StringReference) element, writer);
+		} else if (element instanceof SelfReference) {
+			printSelfReference((SelfReference) element, writer);
+		} else if (element instanceof ArrayInstantiation) {
+			printArrayInstantiation((ArrayInstantiation) element, writer);
+		} else if (element instanceof Instantiation) {
+			printInstantiation((Instantiation) element, writer);
+		} else {
+			printElementReference((ElementReference) element, writer);
+		}
+		for (ArraySelector sel : element.getArraySelectors()) {
+			printArraySelector(sel, writer);
+		}
+		if (element.getNext() != null) {
+			writer.append(".");
+			printReference(element.getNext(), writer);
+		}
+	}
+	
+	private static void printArraySelector(ArraySelector element, BufferedWriter writer) throws IOException {
+		printAnnotable(element, writer);
+		writer.append("[");
+		printExpression(element.getPosition(), writer);
+		writer.append("]");
+	}
+	
+	private static void printNestedExpression(NestedExpression element, BufferedWriter writer) throws IOException {
+		writer.append("(");
+		printExpression(element.getExpression(), writer);
+		writer.append(")");
+	}
+	
+	private static void printReflectiveClassReference(ReflectiveClassReference element, BufferedWriter writer) throws IOException {
+		writer.append("class");
+	}
+	
+	private static void printPrimitiveTypeReference(PrimitiveTypeReference element, BufferedWriter writer) throws IOException {
+		printPrimitiveType(element.getPrimitiveType(), writer);
+		printArrayDimensions(element.getArrayDimensionsBefore(), writer);
+		printArrayDimensions(element.getArrayDimensionsAfter(), writer);
+	}
+	
+	private static void printStringReference(StringReference element, BufferedWriter writer) throws IOException {
+		writer.append("\"" + element.getValue() + "\"");
+	}
+	
+	private static void printSelfReference(SelfReference element, BufferedWriter writer) throws IOException {
+		printSelf(element.getSelf(), writer);
+	}
+	
+	private static void printSelf(Self element, BufferedWriter writer) throws IOException {
+		if (element instanceof This) {
+			writer.append("this");
+		} else if (element instanceof Super) {
+			writer.append("super");
+		}
+	}
+	
+	private static void printInstantiation(Instantiation element, BufferedWriter writer) throws IOException {
+		if (element instanceof NewConstructorCall) {
+			NewConstructorCall call = (NewConstructorCall) element;
+			writer.append("new ");
+			printCallTypeArgumentable(call, writer);
+			writer.append(" ");
+			printTypeReference(call.getTypeReference(), writer);
+			if (call instanceof NewConstructorCallWithInferredTypeArguments) {
+				writer.append("<>");
+			} else {
+				printTypeArgumentable(call, writer);
+			}
+			printArgumentable(call, writer);
+			if (call.getAnonymousClass() != null) {
+				printAnonymousClass(call.getAnonymousClass(), writer);
+			}
+		} else {
+			ExplicitConstructorCall call = (ExplicitConstructorCall) element;
+			printCallTypeArgumentable(call, writer);
+			printSelf(call.getCallTarget(), writer);
+			printArgumentable(call, writer);
+		}
+	}
+	
+	private static void printArrayInstantiation(ArrayInstantiation element, BufferedWriter writer) throws IOException {
+		if (element instanceof ArrayInstantiationBySize) {
+			ArrayInstantiationBySize inst = (ArrayInstantiationBySize) element;
+			writer.append("new ");
+			printTypeReference(inst.getTypeReference(), writer);
+			printTypeArgumentable(inst, writer);
+			writer.append(" ");
+			for (Expression expr : inst.getSizes()) {
+				writer.append("[");
+				printExpression(expr, writer);
+				writer.append("] ");
+			}
+			printArrayDimensions(inst.getArrayDimensionsBefore(), writer);
+			printArrayDimensions(inst.getArrayDimensionsAfter(), writer);
+		} else if (element instanceof ArrayInstantiationByValuesUntyped) {
+			ArrayInstantiationByValuesUntyped inst = (ArrayInstantiationByValuesUntyped) element;
+			printArrayInitializer(inst.getArrayInitializer(), writer);
+		} else {
+			ArrayInstantiationByValuesTyped inst = (ArrayInstantiationByValuesTyped) element;
+			writer.append("new ");
+			printTypeReference(inst.getTypeReference(), writer);
+			printTypeArgumentable(inst, writer);
+			printArrayDimensions(inst.getArrayDimensionsBefore(), writer);
+			printArrayDimensions(inst.getArrayDimensionsAfter(), writer);
+			writer.append(" ");
+			printArrayInitializer(inst.getArrayInitializer(), writer);
+		}
+	}
+	
+	private static void printArrayInitializer(ArrayInitializer element, BufferedWriter writer) throws IOException {
+		writer.append("{");
+		for (ArrayInitializationValue val : element.getInitialValues()) {
+			if (val instanceof AnnotationInstance) {
+				printAnnotationInstance((AnnotationInstance) val, writer);
+			} else if (val instanceof ArrayInitializer) {
+				printArrayInitializer((ArrayInitializer) val, writer);
+			} else {
+				printExpression((Expression) val, writer);
+			}
+		}
+		writer.append("}");
 	}
 	
 	private static void printElementReference(ElementReference element, BufferedWriter writer) throws IOException {
-		
+		if (element instanceof IdentifierReference) {
+			printIdentifierReference((IdentifierReference) element, writer);
+		} else {
+			printMethodCall((MethodCall) element, writer);
+		}
+	}
+	
+	private static void printIdentifierReference(IdentifierReference element, BufferedWriter writer) throws IOException {
+		printAnnotable(element, writer);
+		if (element.getTarget() instanceof org.emftext.language.java.containers.Package) {
+			writer.append(((org.emftext.language.java.containers.Package) element).getNamespacesAsString());
+		} else {
+			writer.append(element.getTarget().getName());
+		}
+		printTypeArgumentable(element, writer);
+		printArrayDimensions(element.getArrayDimensionsBefore(), writer);
+		printArrayDimensions(element.getArrayDimensionsAfter(), writer);
+	}
+	
+	private static void printMethodCall(MethodCall element, BufferedWriter writer) throws IOException {
+		printCallTypeArgumentable(element, writer);
+		writer.append(" " + element.getTarget().getName());
+		printArgumentable(element, writer);
 	}
 	
 	private static void printBlock(Block element, BufferedWriter writer) throws IOException {
