@@ -239,7 +239,7 @@ public class JDTResolverUtility {
 			builder.append(convertToTypeName(p));
 		}
 		builder.append(")");
-		if (builder.toString().equals("java.lang.Object::clone()")) {
+		if (builder.toString().equals("java.lang.Object::clone()") && binding.getReturnType().isArray()) {
 			builder.append("java.lang.Object");
 		} else {
 			builder.append(convertToTypeName(binding.getReturnType()));
@@ -251,36 +251,88 @@ public class JDTResolverUtility {
 		if (methBindToInter.containsKey(methodName)) {
 			return methBindToInter.get(methodName);
 		} else {
-			org.emftext.language.java.members.InterfaceMethod result = org.emftext.language.java.members.MembersFactory.eINSTANCE.createInterfaceMethod();
-			result.setTypeReference(org.emftext.language.java.types.TypesFactory.eINSTANCE.createVoid());
-			result.setStatement(org.emftext.language.java.statements.StatementsFactory.eINSTANCE.createEmptyStatement());
+			org.emftext.language.java.members.InterfaceMethod result = createNewInterfaceMethod();
 			methBindToInter.put(methodName, result);
 			return result;
 		}
 	}
 	
+	private static org.emftext.language.java.members.InterfaceMethod createNewInterfaceMethod() {
+		org.emftext.language.java.members.InterfaceMethod result =
+			org.emftext.language.java.members.MembersFactory.eINSTANCE.createInterfaceMethod();
+		result.setTypeReference(org.emftext.language.java.types.TypesFactory.eINSTANCE.createVoid());
+		result.setStatement(org.emftext.language.java.statements.StatementsFactory.eINSTANCE.createEmptyStatement());
+		return result;
+	}
+	
 	static org.emftext.language.java.members.InterfaceMethod getInterfaceMethod(IMethodBinding binding) {
 		methodBindings.add(binding);
-		return getInterfaceMethod(convertToMethodName(binding));
+		String methName = convertToMethodName(binding);
+		if (methBindToInter.containsKey(methName)) {
+			return methBindToInter.get(methName);
+		} else {
+			org.emftext.language.java.classifiers.ConcreteClassifier classifier =
+				(org.emftext.language.java.classifiers.ConcreteClassifier) getClassifier(binding.getDeclaringClass());
+			org.emftext.language.java.members.InterfaceMethod result = null;
+			if (classifier != null) {
+				for (org.emftext.language.java.members.Member mem : classifier.getMembers()) {
+					if (mem instanceof org.emftext.language.java.members.InterfaceMethod && mem.getName().equals(binding.getName())) {
+						result = (org.emftext.language.java.members.InterfaceMethod) mem;
+						break;
+					}
+				}
+			}
+			if (result == null) {
+				result = createNewInterfaceMethod();
+			}
+			methBindToInter.put(methName, result);
+			return result;
+		}
 	}
 	
 	static org.emftext.language.java.members.ClassMethod getClassMethod(String methodName) {
 		if (methBindToCM.containsKey(methodName)) {
 			return methBindToCM.get(methodName);
 		} else {
-			org.emftext.language.java.members.ClassMethod result = org.emftext.language.java.members.MembersFactory.eINSTANCE.createClassMethod();
-			result.setTypeReference(org.emftext.language.java.types.TypesFactory.eINSTANCE.createVoid());
-			org.emftext.language.java.statements.Block block = org.emftext.language.java.statements.StatementsFactory.eINSTANCE.createBlock();
-			block.setName("");
-			result.setStatement(block);
+			org.emftext.language.java.members.ClassMethod result = createNewClassMethod();
 			methBindToCM.put(methodName, result);
 			return result;
 		}
 	}
 	
+	private static org.emftext.language.java.members.ClassMethod createNewClassMethod() {
+		org.emftext.language.java.members.ClassMethod result =
+			org.emftext.language.java.members.MembersFactory.eINSTANCE.createClassMethod();
+		result.setTypeReference(org.emftext.language.java.types.TypesFactory.eINSTANCE.createVoid());
+		org.emftext.language.java.statements.Block block = org.emftext.language.java.statements.StatementsFactory.eINSTANCE.createBlock();
+		block.setName("");
+		result.setStatement(block);
+		return result;
+	}
+	
 	static org.emftext.language.java.members.ClassMethod getClassMethod(IMethodBinding binding) {
 		methodBindings.add(binding);
-		return getClassMethod(convertToMethodName(binding));
+		String methName = convertToMethodName(binding);
+		if (methBindToCM.containsKey(methName)) {
+			return methBindToCM.get(methName);
+		} else {
+			org.emftext.language.java.classifiers.ConcreteClassifier classifier =
+				(org.emftext.language.java.classifiers.ConcreteClassifier) getClassifier(binding.getDeclaringClass());
+			org.emftext.language.java.members.ClassMethod result = null;
+			if (classifier != null) {
+				for (org.emftext.language.java.members.Member mem : classifier.getMembers()) {
+					if (mem instanceof org.emftext.language.java.members.ClassMethod && mem.getName().equals(binding.getName())) {
+						result = (org.emftext.language.java.members.ClassMethod) mem;
+						break;
+					}
+				}
+			}
+			if (result == null) {
+				result = createNewClassMethod();
+			}
+			methBindToCM.put(methName, result);
+			return result;
+		}
 	}
 	
 	static org.emftext.language.java.members.Constructor getConstructor(IMethodBinding binding) {
@@ -289,10 +341,24 @@ public class JDTResolverUtility {
 			return methBindToConstr.get(methName);
 		} else {
 			methodBindings.add(binding);
-			org.emftext.language.java.members.Constructor result = org.emftext.language.java.members.MembersFactory.eINSTANCE.createConstructor();
-			org.emftext.language.java.statements.Block block = org.emftext.language.java.statements.StatementsFactory.eINSTANCE.createBlock();
-			block.setName("");
-			result.setBlock(block);
+			org.emftext.language.java.members.Constructor result = null;
+			org.emftext.language.java.classifiers.ConcreteClassifier potClass =
+				(org.emftext.language.java.classifiers.ConcreteClassifier) getClassifier(binding.getDeclaringClass());
+			if (potClass != null) {
+				for (org.emftext.language.java.members.Member mem : potClass.getMembers()) {
+					if (mem instanceof org.emftext.language.java.members.Constructor && mem.getName().equals(binding.getName())) {
+						result = (org.emftext.language.java.members.Constructor) mem;
+						break;
+					}
+				}
+			}
+			if (result == null) {
+				result = org.emftext.language.java.members.MembersFactory.eINSTANCE.createConstructor();
+				org.emftext.language.java.statements.Block block =
+					org.emftext.language.java.statements.StatementsFactory.eINSTANCE.createBlock();
+				block.setName("");
+				result.setBlock(block);
+			}
 			methBindToConstr.put(methName, result);
 			return result;
 		}
@@ -300,10 +366,10 @@ public class JDTResolverUtility {
 	
 	
 	static org.emftext.language.java.members.Method getMethod(IMethodBinding binding) {
-		if (binding.getDeclaringClass().isClass()) {
-			return getClassMethod(binding);
-		} else {
+		if (binding.getDeclaringClass().isInterface()) {
 			return getInterfaceMethod(binding);
+		} else {
+			return getClassMethod(binding);
 		}
 	}
 	
@@ -336,8 +402,19 @@ public class JDTResolverUtility {
 			return nameToField.get(varName);
 		} else {
 			variableBindings.add(binding);
-			org.emftext.language.java.members.Field result = org.emftext.language.java.members.MembersFactory.eINSTANCE.createField();
-			result.setTypeReference(org.emftext.language.java.types.TypesFactory.eINSTANCE.createInt());
+			org.emftext.language.java.classifiers.ConcreteClassifier potClass =
+				(org.emftext.language.java.classifiers.ConcreteClassifier) getClassifier(binding.getDeclaringClass());
+			org.emftext.language.java.members.Field result = null;
+			for (org.emftext.language.java.members.Member mem : potClass.getMembers()) {
+				if (mem instanceof org.emftext.language.java.members.Field && mem.getName().equals(binding.getName())) {
+					result = (org.emftext.language.java.members.Field) mem;
+					break;
+				}
+			}
+			if (result == null) {
+				result = org.emftext.language.java.members.MembersFactory.eINSTANCE.createField();
+				result.setTypeReference(org.emftext.language.java.types.TypesFactory.eINSTANCE.createInt());
+			}
 			nameToField.put(varName, result);
 			return result;
 		}
@@ -349,7 +426,19 @@ public class JDTResolverUtility {
 			return nameToEnumConst.get(enumCN);
 		} else {
 			variableBindings.add(binding);
-			org.emftext.language.java.members.EnumConstant result = org.emftext.language.java.members.MembersFactory.eINSTANCE.createEnumConstant();
+			org.emftext.language.java.classifiers.Enumeration potPar = getEnumeration(binding.getDeclaringClass());
+			org.emftext.language.java.members.EnumConstant result = null;
+			if (potPar != null) {
+				for (org.emftext.language.java.members.EnumConstant con : potPar.getConstants()) {
+					if (con.getName().equals(binding.getName())) {
+						result = con;
+						break;
+					}
+				}
+			}
+			if (result == null) {
+				result = org.emftext.language.java.members.MembersFactory.eINSTANCE.createEnumConstant();
+			}
 			nameToEnumConst.put(enumCN, result);
 			return result;
 		}
@@ -361,7 +450,25 @@ public class JDTResolverUtility {
 			return nameToAddField.get(varName);
 		} else {
 			variableBindings.add(binding);
-			org.emftext.language.java.members.AdditionalField result = org.emftext.language.java.members.MembersFactory.eINSTANCE.createAdditionalField();
+			org.emftext.language.java.members.AdditionalField result = null;
+			org.emftext.language.java.classifiers.ConcreteClassifier potClass =
+				(org.emftext.language.java.classifiers.ConcreteClassifier) getClassifier(binding.getDeclaringClass());
+			if (potClass != null) {
+				outerLoop: for (org.emftext.language.java.members.Member mem : potClass.getMembers()) {
+					if (mem instanceof org.emftext.language.java.members.Field) {
+						org.emftext.language.java.members.Field field = (org.emftext.language.java.members.Field) mem;
+						for (org.emftext.language.java.members.AdditionalField af : field.getAdditionalFields()) {
+							if (af.getName().equals(binding.getName())) {
+								result = af;
+								break outerLoop;
+							}
+						}
+					}
+				}
+			}
+			if (result == null) {
+				result = org.emftext.language.java.members.MembersFactory.eINSTANCE.createAdditionalField();
+			}
 			nameToAddField.put(varName, result);
 			return result;
 		}
@@ -743,10 +850,10 @@ public class JDTResolverUtility {
 			return;
 		}
 		objVisited.add(pack);
-		IPackageBinding binding = packageBindings.stream().filter(b -> packageName.equals(b.getName())).findFirst().orElse(null);
 		if (pack.eResource() != null) {
 			return;
 		}
+		IPackageBinding binding = packageBindings.stream().filter(b -> packageName.equals(b.getName())).findFirst().orElse(null);
 		if (binding == null) {
 			pack.setName("");
 			pack.setModule(getModule(""));
@@ -763,10 +870,10 @@ public class JDTResolverUtility {
 			return;
 		}
 		objVisited.add(module);
-		IModuleBinding binding = moduleBindings.stream().filter(b -> modName.equals(b.getName())).findFirst().orElse(null);
 		if (module.eResource() != null) {
 			return;
 		}
+		IModuleBinding binding = moduleBindings.stream().filter(b -> modName.equals(b.getName())).findFirst().orElse(null);
 		if (binding == null) {
 			module.getNamespaces().clear();
 			String[] parts = modName.split("\\.");
