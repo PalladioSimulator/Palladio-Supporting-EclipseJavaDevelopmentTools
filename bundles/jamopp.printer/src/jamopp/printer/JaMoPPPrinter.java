@@ -441,7 +441,7 @@ public final class JaMoPPPrinter {
 		if (element.getTypeArguments().size() > 0) {
 			writer.append("<");
 			printTypeArgument(element.getTypeArguments().get(0), writer);
-			for (int index = 0; index < element.getTypeArguments().size(); index++) {
+			for (int index = 1; index < element.getTypeArguments().size(); index++) {
 				writer.append(", ");
 				printTypeArgument(element.getTypeArguments().get(index), writer);
 			}
@@ -590,10 +590,12 @@ public final class JaMoPPPrinter {
 	
 	private static void printClass(org.emftext.language.java.classifiers.Class element, BufferedWriter writer) throws IOException {
 		printAnnotableAndModifiable(element, writer);
-		writer.append("class " + element.getName() + " ");
+		writer.append("class " + element.getName());
+		printTypeParametrizable(element, writer);
+		writer.append(" ");
 		if (element.getExtends() != null) {
 			writer.append("extends ");
-			printTypeReference(element.getDefaultExtends(), writer);
+			printTypeReference(element.getExtends(), writer);
 			writer.append(" ");
 		}
 		printImplementor(element, writer);
@@ -649,7 +651,9 @@ public final class JaMoPPPrinter {
 	
 	private static void printInterface(Interface element, BufferedWriter writer) throws IOException {
 		printAnnotableAndModifiable(element, writer);
-		writer.append("interface " + element.getName() + " ");
+		writer.append("interface " + element.getName());
+		printTypeParametrizable(element, writer);
+		writer.append(" ");
 		if (element.getExtends().size() > 0) {
 			writer.append("extends ");
 			printTypeReference(element.getExtends().get(0), writer);
@@ -1253,7 +1257,7 @@ public final class JaMoPPPrinter {
 		printArrayDimensions(element.getArrayDimensionsBefore(), writer);
 		printArrayDimensions(element.getArrayDimensionsAfter(), writer);
 		for (TypeReference ref : element.getAdditionalBounds()) {
-			writer.append(" | ");
+			writer.append(" & ");
 			printTypeReference(ref, writer);
 		}
 		writer.append(") ");
@@ -1728,6 +1732,7 @@ public final class JaMoPPPrinter {
 	private static void printReturn(Return element, BufferedWriter writer) throws IOException {
 		writer.append("return");
 		if (element.getReturnValue() != null) {
+			writer.append(" ");
 			printExpression(element.getReturnValue(), writer);
 		}
 		writer.append(";\n");
@@ -1853,14 +1858,15 @@ public final class JaMoPPPrinter {
 	}
 	
 	private static void printTypeParametrizable(TypeParametrizable element, BufferedWriter writer) throws IOException {
-		writer.append("<");
-		for (int index = 0; index < element.getTypeParameters().size(); index++) {
-			printTypeParameter(element.getTypeParameters().get(index), writer);
-			if (index < element.getTypeParameters().size() - 1) {
+		if (element.getTypeParameters().size() > 0) {
+			writer.append("<");
+			printTypeParameter(element.getTypeParameters().get(0), writer);
+			for (int index = 1; index < element.getTypeParameters().size(); index++) {
 				writer.append(", ");
+				printTypeParameter(element.getTypeParameters().get(index), writer);
 			}
+			writer.append("> ");
 		}
-		writer.append("> ");
 	}
 	
 	private static void printTypeParameter(TypeParameter element, BufferedWriter writer) throws IOException {
