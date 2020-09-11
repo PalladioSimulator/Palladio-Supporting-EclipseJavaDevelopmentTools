@@ -1507,7 +1507,7 @@ public final class JaMoPPPrinter {
 	private static void printIdentifierReference(IdentifierReference element, BufferedWriter writer) throws IOException {
 		printAnnotable(element, writer);
 		if (element.getTarget() instanceof org.emftext.language.java.containers.Package) {
-			writer.append(((org.emftext.language.java.containers.Package) element).getNamespacesAsString());
+			writer.append(((org.emftext.language.java.containers.Package) element.getTarget()).getNamespacesAsString());
 		} else {
 			writer.append(element.getTarget().getName());
 		}
