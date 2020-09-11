@@ -218,7 +218,8 @@ public abstract class AbstractJaMoPPTests {
 		resource.save(null);
 
 		assertTrue("File " + outputFile.getAbsolutePath() + " must exist.", outputFile.exists());
-		compareTextContents(file.getInputStream(entry), new FileInputStream(outputFile));
+		compareTextContents(file.getInputStream(entry), entryName.endsWith("module-info.java"),
+			new FileInputStream(outputFile), outputFile.getPath().endsWith("module-info.java"));
 	}
 
 	protected boolean prefixUsedInZipFile() {
@@ -268,7 +269,8 @@ public abstract class AbstractJaMoPPTests {
 		assertTrue("File " + outputFile.getAbsolutePath() + " exists.",
 				outputFile.exists());
 
-		compareTextContents(new FileInputStream(inputFile), new FileInputStream(outputFile));
+		compareTextContents(new FileInputStream(inputFile), inputFile.getPath().endsWith("module-info.java"),
+			new FileInputStream(outputFile), outputFile.getPath().endsWith("module-info.java"));
 	}
 
 	protected abstract boolean isExcludedFromReprintTest(String filename);
@@ -277,14 +279,14 @@ public abstract class AbstractJaMoPPTests {
 		return false;
 	}
 
-	private boolean compareTextContents(InputStream inputStream,
-			InputStream inputStream2) throws MalformedTreeException,
+	private boolean compareTextContents(InputStream inputStream, boolean isModule,
+			InputStream inputStream2, boolean is2Module) throws MalformedTreeException,
 			BadLocationException, IOException {
 		
-		org.eclipse.jdt.core.dom.CompilationUnit unit1 = parseWithJDT(inputStream);
+		org.eclipse.jdt.core.dom.CompilationUnit unit1 = parseWithJDT(inputStream, isModule);
 		removeJavadoc(unit1);
 
-		org.eclipse.jdt.core.dom.CompilationUnit unit2 = parseWithJDT(inputStream2);
+		org.eclipse.jdt.core.dom.CompilationUnit unit2 = parseWithJDT(inputStream2, is2Module);
 		removeJavadoc(unit2);
 
 		TalkativeASTMatcher matcher = new TalkativeASTMatcher(true);
@@ -295,11 +297,15 @@ public abstract class AbstractJaMoPPTests {
 		return result;
 	}
 
-	private org.eclipse.jdt.core.dom.CompilationUnit parseWithJDT(InputStream inputStream) {
+	private org.eclipse.jdt.core.dom.CompilationUnit parseWithJDT(InputStream inputStream, boolean isModule) {
 
 		ASTParser jdtParser = ASTParser.newParser(AST.JLS14);
 		char[] charArray = readTextContents(inputStream).toCharArray();
 		jdtParser.setSource(charArray);
+		
+		if (isModule) {
+			jdtParser.setUnitName("module-info.java");
+		}
 
 		Map<String, String> options = new HashMap<String, String>();
 		options.put(JavaCore.COMPILER_SOURCE, JavaCore.VERSION_14);
