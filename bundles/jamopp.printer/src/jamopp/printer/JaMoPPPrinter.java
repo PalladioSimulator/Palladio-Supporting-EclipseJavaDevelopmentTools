@@ -342,9 +342,13 @@ public final class JaMoPPPrinter {
 				printAnnotationValue(((SingleAnnotationParameter) element.getParameter()).getValue(), writer);
 			} else {
 				AnnotationParameterList list = (AnnotationParameterList) element.getParameter();
-				for (AnnotationAttributeSetting setting : list.getSettings()) {
+				for (int index = 0; index < list.getSettings().size(); index++) {
+					AnnotationAttributeSetting setting = list.getSettings().get(index);
 					writer.append(setting.getAttribute().getName() + " = ");
 					printAnnotationValue(setting.getValue(), writer);
+					if (index < list.getSettings().size() - 1) {
+						writer.append(", ");
+					}
 				}
 			}
 			writer.append(")");
@@ -706,6 +710,7 @@ public final class JaMoPPPrinter {
 	private static void printField(Field element, BufferedWriter writer) throws IOException {
 		printAnnotableAndModifiable(element, writer);
 		printTypeReference(element.getTypeReference(), writer);
+		printTypeArgumentable(element, writer);
 		printArrayDimensions(element.getArrayDimensionsBefore(), writer);
 		writer.append(" " + element.getName());
 		printArrayDimensions(element.getArrayDimensionsAfter(), writer);
@@ -815,6 +820,7 @@ public final class JaMoPPPrinter {
 	private static void printReceiverParameter(ReceiverParameter element, BufferedWriter writer) throws IOException {
 		printAnnotable(element, writer);
 		printTypeReference(element.getTypeReference(), writer);
+		printTypeArgumentable(element, writer);
 		writer.append(" ");
 		if (element.getOuterTypeReference() != null) {
 			printTypeReference(element.getOuterTypeReference(), writer);
@@ -826,6 +832,7 @@ public final class JaMoPPPrinter {
 	private static void printOrdinaryParameter(OrdinaryParameter element, BufferedWriter writer) throws IOException {
 		printAnnotableAndModifiable(element, writer);
 		printTypeReference(element.getTypeReference(), writer);
+		printTypeArgumentable(element, writer);
 		printArrayDimensions(element.getArrayDimensionsBefore(), writer);
 		writer.append(" " + element.getName());
 		printArrayDimensions(element.getArrayDimensionsAfter(), writer);
@@ -834,6 +841,9 @@ public final class JaMoPPPrinter {
 	private static void printVariableLengthParameter(VariableLengthParameter element, BufferedWriter writer) throws IOException {
 		printAnnotableAndModifiable(element, writer);
 		printTypeReference(element.getTypeReference(), writer);
+		printTypeArgumentable(element, writer);
+		printArrayDimensions(element.getArrayDimensionsBefore(), writer);
+		printArrayDimensions(element.getArrayDimensionsAfter(), writer);
 		writer.append(" ");
 		printAnnotable(element, writer);
 		writer.append(" ..." + element.getName());
@@ -998,7 +1008,7 @@ public final class JaMoPPPrinter {
 	
 	private static void printInclusiveOrExpression(InclusiveOrExpression element, BufferedWriter writer) throws IOException {
 		printInclusiveOrExpressionChild(element.getChildren().get(0), writer);
-		for (int index = 0; index < element.getChildren().size(); index++) {
+		for (int index = 1; index < element.getChildren().size(); index++) {
 			writer.append(" | ");
 			printInclusiveOrExpressionChild(element.getChildren().get(index), writer);
 		}
@@ -1030,7 +1040,7 @@ public final class JaMoPPPrinter {
 	
 	private static void printAndExpression(AndExpression element, BufferedWriter writer) throws IOException {
 		printAndExpressionChild(element.getChildren().get(0), writer);
-		for (int index = 0; index < element.getChildren().size(); index++) {
+		for (int index = 1; index < element.getChildren().size(); index++) {
 			writer.append(" & ");
 			printAndExpressionChild(element.getChildren().get(index), writer);
 		}
@@ -1319,7 +1329,7 @@ public final class JaMoPPPrinter {
 			writer.append(Boolean.toString(lit.isValue()));
 		} else if (element instanceof CharacterLiteral) {
 			CharacterLiteral lit = (CharacterLiteral) element;
-			writer.append(lit.getValue());
+			writer.append("'" + lit.getValue() + "'");
 		} else if (element instanceof NullLiteral) {
 			writer.append("null");
 		} else if (element instanceof DecimalFloatLiteral) {
@@ -1484,13 +1494,17 @@ public final class JaMoPPPrinter {
 	
 	private static void printArrayInitializer(ArrayInitializer element, BufferedWriter writer) throws IOException {
 		writer.append("{");
-		for (ArrayInitializationValue val : element.getInitialValues()) {
+		for (int index = 0; index < element.getInitialValues().size(); index++) {
+			ArrayInitializationValue val = element.getInitialValues().get(index);
 			if (val instanceof AnnotationInstance) {
 				printAnnotationInstance((AnnotationInstance) val, writer);
 			} else if (val instanceof ArrayInitializer) {
 				printArrayInitializer((ArrayInitializer) val, writer);
 			} else {
 				printExpression((Expression) val, writer);
+			}
+			if (index < element.getInitialValues().size() - 1) {
+				writer.append(", ");
 			}
 		}
 		writer.append("}");
@@ -1507,7 +1521,8 @@ public final class JaMoPPPrinter {
 	private static void printIdentifierReference(IdentifierReference element, BufferedWriter writer) throws IOException {
 		printAnnotable(element, writer);
 		if (element.getTarget() instanceof org.emftext.language.java.containers.Package) {
-			writer.append(((org.emftext.language.java.containers.Package) element.getTarget()).getNamespacesAsString());
+			org.emftext.language.java.containers.Package pack = (org.emftext.language.java.containers.Package) element.getTarget();
+			writer.append(pack.getNamespaces().get(pack.getNamespaces().size() - 1));
 		} else {
 			writer.append(element.getTarget().getName());
 		}
@@ -1710,6 +1725,7 @@ public final class JaMoPPPrinter {
 	private static void printLocalVariable(LocalVariable element, BufferedWriter writer) throws IOException {
 		printAnnotableAndModifiable(element, writer);
 		printTypeReference(element.getTypeReference(), writer);
+		printTypeArgumentable(element, writer);
 		printArrayDimensions(element.getArrayDimensionsBefore(), writer);
 		writer.append(" " + element.getName());
 		printArrayDimensions(element.getArrayDimensionsAfter(), writer);
