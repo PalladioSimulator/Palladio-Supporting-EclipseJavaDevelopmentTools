@@ -21,6 +21,7 @@ import org.emftext.language.java.containers.ContainersFactory;
 
 import jamopp.parser.api.JaMoPPParserAPI;
 import jamopp.parser.jdt.JaMoPPJDTParser;
+import jamopp.resource.JavaResource2Factory;
 
 //import de.fzi.gast.core.Root;
 //import de.fzi.gast.core.coreFactory;	
@@ -40,13 +41,12 @@ public class JaMoPPStandalone {
 	
 
 	public static void main(String[] args) {
+		 JavaRoot root = ContainersFactory.eINSTANCE.createEmptyModel();  
+		 Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap().put("java", new JavaResource2Factory());
 		 JaMoPPParserAPI parser = new JaMoPPJDTParser();
-		 ResourceSet rs = parser.parseUri(URI.createURI(INPUT));
-		 //ResourceSet rs = new ResourceSetImpl();
-	     // Here the resource is created, with fileextensions "gast" and "xml" (adapt this to use your own file extension).
-	     Resource gastResource = createAndAddResource("C:/file.gast", new String[] {"xml","gast"}, rs);
-	     // The root object is created by using (adapt this to create your own root object)
-	     JavaRoot root = ContainersFactory.eINSTANCE.createEmptyModel();  
+		 ResourceSet rs = parser.parseFile(Path.of(INPUT)).getResourceSet().getResources();
+		 rs.createResource(URI.createFileURI(Path.of(INPUT)));
+	     Resource gastResource = createAndAddResource("C:/file.gast", new String[] {"xml","gast"}, rs); 
 	     gastResource.getContents().add(root);
 	     saveResource(gastResource);
 	}
