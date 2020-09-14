@@ -209,6 +209,9 @@ public class JDTResolverUtility {
 		if (potClass != null) {
 			return potClass;
 		}
+		if (binding.isAnonymous()) {
+			return null;
+		}
 		if (binding.isAnnotation()) {
 			return getAnnotation(binding);
 		} else if (binding.isInterface()) {
@@ -405,10 +408,12 @@ public class JDTResolverUtility {
 			org.emftext.language.java.classifiers.ConcreteClassifier potClass =
 				(org.emftext.language.java.classifiers.ConcreteClassifier) getClassifier(binding.getDeclaringClass());
 			org.emftext.language.java.members.Field result = null;
-			for (org.emftext.language.java.members.Member mem : potClass.getMembers()) {
-				if (mem instanceof org.emftext.language.java.members.Field && mem.getName().equals(binding.getName())) {
-					result = (org.emftext.language.java.members.Field) mem;
-					break;
+			if (potClass != null) {
+				for (org.emftext.language.java.members.Member mem : potClass.getMembers()) {
+					if (mem instanceof org.emftext.language.java.members.Field && mem.getName().equals(binding.getName())) {
+						result = (org.emftext.language.java.members.Field) mem;
+						break;
+					}
 				}
 			}
 			if (result == null) {
@@ -699,7 +704,9 @@ public class JDTResolverUtility {
 			if (enConst.eContainer() == null) {
 				IVariableBinding varBind = variableBindings.stream().filter(var -> constName.equals(convertToFieldName(var)))
 					.findFirst().get();
-				getEnumeration(varBind.getDeclaringClass());
+				if (!varBind.getDeclaringClass().isAnonymous()) {
+					getEnumeration(varBind.getDeclaringClass());
+				}
 			}
 		});
 		
@@ -707,7 +714,9 @@ public class JDTResolverUtility {
 			if (field.eContainer() == null) {
 				IVariableBinding varBind = variableBindings.stream().filter(var -> fieldName.equals(convertToFieldName(var)))
 					.findFirst().get();
-				getClassifier(varBind.getDeclaringClass());
+				if (!varBind.getDeclaringClass().isAnonymous()) {
+					getClassifier(varBind.getDeclaringClass());
+				}
 			}
 		});
 		
