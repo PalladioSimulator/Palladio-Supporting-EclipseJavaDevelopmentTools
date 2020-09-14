@@ -89,9 +89,9 @@ public class JDTResolverUtility {
 		}
 		String qualifiedName;
 		if (binding.isMember()) {
-			qualifiedName = convertToTypeName(binding.getDeclaringClass()) + binding.getName();
+			qualifiedName = convertToTypeName(binding.getDeclaringClass()) + "." + binding.getName();
 		} else if (binding.isLocal()) {
-			qualifiedName = convertToMethodName(binding.getDeclaringMethod()) + binding.getName();
+			qualifiedName = convertToMethodName(binding.getDeclaringMethod()) + "." + binding.getName();
 		} else {
 			qualifiedName = binding.getQualifiedName();
 		}
@@ -102,20 +102,6 @@ public class JDTResolverUtility {
 			qualifiedName = qualifiedName.substring(0, qualifiedName.indexOf("["));
 		}
 		return qualifiedName;
-	}
-	
-	private static String convertToSimpleTypeName(ITypeBinding binding) {
-		if (binding == null) {
-			return "";
-		}
-		String name = binding.getName();
-		if (name.contains("<")) {
-			name = name.substring(0, name.indexOf("<"));
-		}
-		if (name.contains("[")) {
-			name = name.substring(0, name.indexOf("["));
-		}
-		return name;
 	}
 	
 	static org.emftext.language.java.classifiers.Annotation getAnnotation(ITypeBinding binding) {
@@ -817,6 +803,11 @@ public class JDTResolverUtility {
 			return;
 		}
 		objVisited.add(classifier);
+		org.emftext.language.java.classifiers.ConcreteClassifier potClass =
+			JavaClasspath.get().getConcreteClassifier(typeName);
+		if (potClass == classifier) {
+			return;
+		}
 		ITypeBinding typeBind = typeBindings.stream().filter(type -> typeName.equals(convertToTypeName(type)))
 			.findFirst().orElse(null);
 		if (typeBind == null) {
