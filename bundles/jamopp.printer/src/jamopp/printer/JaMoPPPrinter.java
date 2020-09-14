@@ -336,7 +336,7 @@ public final class JaMoPPPrinter {
 	}
 	
 	private static void printAnnotationInstance(AnnotationInstance element, BufferedWriter writer) throws IOException {
-		writer.append("@" + element.getAnnotation().getName());
+		writer.append("@" + element.getNamespacesAsString());
 		if (element.getParameter() != null) {
 			writer.append("(");
 			if (element.getParameter() instanceof SingleAnnotationParameter) {

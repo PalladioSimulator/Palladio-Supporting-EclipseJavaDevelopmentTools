@@ -946,6 +946,10 @@ public class JDTResolverUtility {
 			return;
 		}
 		objVisited.add(pack);
+		org.emftext.language.java.containers.Package potPack = JavaClasspath.get().getPackage(packageName);
+		if (potPack == pack) {
+			return;
+		}
 		if (pack.eResource() != null) {
 			return;
 		}
@@ -966,6 +970,10 @@ public class JDTResolverUtility {
 			return;
 		}
 		objVisited.add(module);
+		org.emftext.language.java.containers.Module potMod = JavaClasspath.get().getModule(modName);
+		if (potMod == module) {
+			return;
+		}
 		if (module.eResource() != null) {
 			return;
 		}
