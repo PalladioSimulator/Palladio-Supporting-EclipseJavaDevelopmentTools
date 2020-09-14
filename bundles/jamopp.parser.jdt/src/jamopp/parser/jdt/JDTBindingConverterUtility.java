@@ -431,7 +431,7 @@ class JDTBindingConverterUtility {
 			return literal;
 		} else if (value instanceof Character) {
 			org.emftext.language.java.literals.CharacterLiteral literal = org.emftext.language.java.literals.LiteralsFactory.eINSTANCE.createCharacterLiteral();
-			literal.setValue((char) value);
+			literal.setValue(Character.toString((char) value));
 			return literal;
 		} else if (value instanceof Byte) {
 			org.emftext.language.java.literals.DecimalIntegerLiteral literal = org.emftext.language.java.literals.LiteralsFactory.eINSTANCE.createDecimalIntegerLiteral();;

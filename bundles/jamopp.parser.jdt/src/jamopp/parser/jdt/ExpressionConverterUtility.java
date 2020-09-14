@@ -527,7 +527,7 @@ class ExpressionConverterUtility {
 		} else if (expr.getNodeType() == ASTNode.CHARACTER_LITERAL) {
 			CharacterLiteral lit = (CharacterLiteral) expr;
 			org.emftext.language.java.literals.CharacterLiteral result = org.emftext.language.java.literals.LiteralsFactory.eINSTANCE.createCharacterLiteral();
-			result.setValue(lit.charValue());
+			result.setValue(lit.getEscapedValue().substring(1, lit.getEscapedValue().length() - 1));
 			LayoutInformationConverter.convertToMinimalLayoutInformation(result, lit);
 			return result;
 		} else if (expr.getNodeType() == ASTNode.NUMBER_LITERAL) {

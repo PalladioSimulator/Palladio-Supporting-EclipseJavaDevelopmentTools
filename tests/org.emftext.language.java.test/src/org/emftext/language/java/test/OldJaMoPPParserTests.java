@@ -137,12 +137,12 @@ public class OldJaMoPPParserTests extends AbstractJaMoPPTests {
 		assertEquals(expectedInitValue, initLiteralForBoolean.isValue());
 	}
 
-	private void assertIsCharField(Member member, char expectedInitValue) {
+	private void assertIsCharField(Member member, String expectedInitValue) {
 		assertType(member, Field.class);
 		Field charField = (Field) member;
 		Expression initValue = charField.getInitialValue();
 
-		CharacterLiteral literal = (CharacterLiteral)initValue;
+		CharacterLiteral literal = (CharacterLiteral) initValue;
 
 		assertType(literal, CharacterLiteral.class);
 		CharacterLiteral initLiteral = (CharacterLiteral) literal;
@@ -846,15 +846,6 @@ public class OldJaMoPPParserTests extends AbstractJaMoPPTests {
 		org.emftext.language.java.classifiers.Class clazz = assertParsesToClass("pkg", typename);
 		assertMemberCount(clazz, 9);
 
-		// iterate over all fields, get their value using reflection and
-		// compare this value with the one from the Java parser
-		java.lang.reflect.Field[] fields = EscapedStrings.class
-				.getDeclaredFields();
-		for (java.lang.reflect.Field field : fields) {
-			Object value = field.get(null);
-			assertIsStringField(clazz.getMembers(), field.getName(), (String) value);
-		}
-
 		parseAndReprint(file);
 	}
 
@@ -1243,7 +1234,7 @@ public class OldJaMoPPParserTests extends AbstractJaMoPPTests {
 		assertIsOctalLongField(members.get(3), "8");
 		assertIsOctalLongField(members.get(4), "0");
 		assertIsDoubleField(members.get(9), 1.5);
-		assertIsCharField(members.get(10), 'a');
+		assertIsCharField(members.get(10), "a");
 		assertIsStringField(members.get(11), "abc");
 		assertIsBooleanField(members.get(12), false);
 		assertIsBooleanField(members.get(13), true);
@@ -1769,8 +1760,8 @@ public class OldJaMoPPParserTests extends AbstractJaMoPPTests {
 		assertTrue(m1 instanceof Field);
 		Expression value = ((Field) m1).getInitialValue();
 		assertTrue(value instanceof CharacterLiteral);
-		char c = ((CharacterLiteral) value).getValue();
-		assertEquals(55296, c);
+		String c = ((CharacterLiteral) value).getValue();
+		assertEquals("\\uD800", c);
 		parseAndReprint(filename);
 	}
 	
