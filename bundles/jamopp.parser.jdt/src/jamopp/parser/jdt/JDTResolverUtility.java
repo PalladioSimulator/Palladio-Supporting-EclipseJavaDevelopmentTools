@@ -255,6 +255,7 @@ public class JDTResolverUtility {
 	}
 	
 	static org.emftext.language.java.members.InterfaceMethod getInterfaceMethod(IMethodBinding binding) {
+		binding = binding.getMethodDeclaration();
 		methodBindings.add(binding);
 		String methName = convertToMethodName(binding);
 		if (methBindToInter.containsKey(methName)) {
@@ -265,9 +266,11 @@ public class JDTResolverUtility {
 			org.emftext.language.java.members.InterfaceMethod result = null;
 			if (classifier != null) {
 				for (org.emftext.language.java.members.Member mem : classifier.getMembers()) {
-					if (mem instanceof org.emftext.language.java.members.InterfaceMethod && mem.getName().equals(binding.getName())) {
-						result = (org.emftext.language.java.members.InterfaceMethod) mem;
-						break;
+					if (mem instanceof org.emftext.language.java.members.InterfaceMethod) {
+						result = checkMethod((org.emftext.language.java.members.Method) mem, binding);
+						if (result != null) {
+							break;
+						}
 					}
 				}
 			}
@@ -300,6 +303,7 @@ public class JDTResolverUtility {
 	}
 	
 	static org.emftext.language.java.members.ClassMethod getClassMethod(IMethodBinding binding) {
+		binding = binding.getMethodDeclaration();
 		methodBindings.add(binding);
 		String methName = convertToMethodName(binding);
 		if (methBindToCM.containsKey(methName)) {
@@ -310,9 +314,12 @@ public class JDTResolverUtility {
 			org.emftext.language.java.members.ClassMethod result = null;
 			if (classifier != null) {
 				for (org.emftext.language.java.members.Member mem : classifier.getMembers()) {
-					if (mem instanceof org.emftext.language.java.members.ClassMethod && mem.getName().equals(binding.getName())) {
-						result = (org.emftext.language.java.members.ClassMethod) mem;
-						break;
+					if (mem instanceof org.emftext.language.java.members.ClassMethod) {
+						result = checkMethod((org.emftext.language.java.members.Method) mem,
+							binding);
+						if (result != null) {
+							break;
+						}
 					}
 				}
 			}
@@ -321,6 +328,77 @@ public class JDTResolverUtility {
 			}
 			methBindToCM.put(methName, result);
 			return result;
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	private static <T extends org.emftext.language.java.members.Method> T checkMethod(org.emftext.language.java.members.Method mem,
+			IMethodBinding binding) {
+		if (mem.getName().equals(binding.getName())) {
+			T meth = (T) mem;
+			if (meth.getName().equals("clone")) {
+				return meth;
+			}
+			int receiveOffset = 0;
+			if (binding.getDeclaredReceiverType() != null) {
+				receiveOffset = 1;
+			}
+			if (binding.getParameterTypes().length + receiveOffset == meth.getParameters().size()) {
+				if (receiveOffset == 1 &&
+					!(meth.getParameters().get(0) instanceof org.emftext.language.java.parameters.ReceiverParameter
+					&& convertToTypeName(binding.getDeclaredReceiverType()).equals(
+						convertToTypeName(meth.getParameters().get(0).getTypeReference())))) {
+					return null;
+				}
+				if (!convertToTypeName(binding.getReturnType()).equals(convertToTypeName(meth.getTypeReference()))) {
+					return null;
+				}
+				for (int i = 0; i < binding.getParameterTypes().length; i++) {
+					if (!convertToTypeName(binding.getParameterTypes()[i]).equals(
+						convertToTypeName(meth.getParameters().get(i + receiveOffset).getTypeReference()))) {
+						return null;
+					}
+				}
+				return meth;
+			}
+		}
+		return null;
+	}
+	
+	private static String convertToTypeName(org.emftext.language.java.types.TypeReference ref) {
+		if (ref instanceof org.emftext.language.java.types.ClassifierReference) {
+			org.emftext.language.java.types.ClassifierReference convRef = (org.emftext.language.java.types.ClassifierReference) ref;
+			if (convRef.getTarget() instanceof org.emftext.language.java.classifiers.ConcreteClassifier) {
+				return ((org.emftext.language.java.classifiers.ConcreteClassifier) convRef.getTarget()).getQualifiedName();
+			} else if (convRef.getTarget() instanceof org.emftext.language.java.types.InferableType) {
+				return "var";
+			} else {
+				return ((org.emftext.language.java.generics.TypeParameter) convRef.getTarget()).getName();
+			}
+		} else if (ref instanceof org.emftext.language.java.types.NamespaceClassifierReference) {
+			org.emftext.language.java.types.NamespaceClassifierReference nRef = (org.emftext.language.java.types.NamespaceClassifierReference) ref;
+			if (nRef.getClassifierReferences().size() > 0) {
+				return convertToTypeName(nRef.getClassifierReferences().get(nRef.getClassifierReferences().size() - 1));
+			}
+			return nRef.getNamespacesAsString();
+		} else if (ref instanceof org.emftext.language.java.types.Boolean) {
+			return "boolean";
+		} else if (ref instanceof org.emftext.language.java.types.Byte) {
+			return "byte";
+		} else if (ref instanceof org.emftext.language.java.types.Char) {
+			return "char";
+		} else if (ref instanceof org.emftext.language.java.types.Double) {
+			return "double";
+		} else if (ref instanceof org.emftext.language.java.types.Float) {
+			return "float";
+		} else if (ref instanceof org.emftext.language.java.types.Int) {
+			return "int";
+		} else if (ref instanceof org.emftext.language.java.types.Long) {
+			return "long";
+		} else if (ref instanceof org.emftext.language.java.types.Short) {
+			return "short";
+		} else {
+			return "void";
 		}
 	}
 	
@@ -334,10 +412,28 @@ public class JDTResolverUtility {
 			org.emftext.language.java.classifiers.ConcreteClassifier potClass =
 				(org.emftext.language.java.classifiers.ConcreteClassifier) getClassifier(binding.getDeclaringClass());
 			if (potClass != null) {
-				for (org.emftext.language.java.members.Member mem : potClass.getMembers()) {
+				outerLoop: for (org.emftext.language.java.members.Member mem : potClass.getMembers()) {
 					if (mem instanceof org.emftext.language.java.members.Constructor && mem.getName().equals(binding.getName())) {
-						result = (org.emftext.language.java.members.Constructor) mem;
-						break;
+						org.emftext.language.java.members.Constructor con = (org.emftext.language.java.members.Constructor) mem;
+						int receiveOffset = 0;
+						if (binding.getDeclaredReceiverType() != null) {
+							receiveOffset = 1;
+						}
+						if (con.getParameters().size() == binding.getParameterTypes().length + receiveOffset) {
+							if (receiveOffset == 1 && !(con.getParameters().get(0) instanceof org.emftext.language.java.parameters.ReceiverParameter
+								&& convertToTypeName(binding.getDeclaredReceiverType()).equals(
+									convertToTypeName(con.getParameters().get(0).getTypeReference())))) {
+								continue outerLoop;
+							}
+							for (int i = 0; i < binding.getParameterTypes().length; i++) {
+								if (!convertToTypeName(binding.getParameterTypes()[i]).equals(
+									convertToTypeName(con.getParameters().get(i + receiveOffset).getTypeReference()))) {
+									continue outerLoop;
+								}
+							}
+							result = con;
+							break;
+						}
 					}
 				}
 			}

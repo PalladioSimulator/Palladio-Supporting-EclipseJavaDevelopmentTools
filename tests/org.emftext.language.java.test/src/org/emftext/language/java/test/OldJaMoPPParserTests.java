@@ -814,7 +814,7 @@ public class OldJaMoPPParserTests extends AbstractJaMoPPTests {
 		String typename = "EnumWithMember";
 		String filename = typename + JAVA_FILE_EXTENSION;
 		Enumeration enumeration = assertParsesToEnumeration(typename);
-		assertMemberCount(enumeration, 5);
+		assertMemberCount(enumeration, 4);
 
 		parseAndReprint(filename);
 	}
