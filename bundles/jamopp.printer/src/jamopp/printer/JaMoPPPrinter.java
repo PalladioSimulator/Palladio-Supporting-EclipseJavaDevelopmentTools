@@ -223,6 +223,7 @@ import org.emftext.language.java.types.ClassifierReference;
 import org.emftext.language.java.types.InferableType;
 import org.emftext.language.java.types.NamespaceClassifierReference;
 import org.emftext.language.java.types.PrimitiveType;
+import org.emftext.language.java.types.Type;
 import org.emftext.language.java.types.TypeReference;
 import org.emftext.language.java.variables.AdditionalLocalVariable;
 import org.emftext.language.java.variables.LocalVariable;
@@ -755,6 +756,30 @@ public final class JaMoPPPrinter {
 	}
 	
 	private static void printClassMethod(ClassMethod element, BufferedWriter writer) throws IOException {
+		if (element.eContainer() instanceof org.emftext.language.java.classifiers.Enumeration) {
+			boolean isStatic = false;
+			boolean isPublic = false;
+			for (Modifier m : element.getModifiers()) {
+				if (m instanceof Static) {
+					isStatic = true;
+				} else if (m instanceof Public) {
+					isPublic = true;
+				}
+			}
+			if (isStatic && isPublic) {
+				if (element.getName().equals("valueOf") && element.getParameters().size() == 1) {
+					Type t = element.getParameters().get(0).getTypeReference().getTarget();
+					if (t instanceof org.emftext.language.java.classifiers.Class) {
+						org.emftext.language.java.classifiers.Class cla = (org.emftext.language.java.classifiers.Class) t;
+						if (cla.getQualifiedName().equals("java.lang.String")) {
+							return;
+						}
+					}
+				} else if (element.getName().equals("values") && element.getParameters().size() == 0) {
+					return;
+				}
+			}
+		}
 		printAnnotableAndModifiable(element, writer);
 		printTypeParametrizable(element, writer);
 		writer.append(" ");
@@ -1533,7 +1558,7 @@ public final class JaMoPPPrinter {
 	
 	private static void printMethodCall(MethodCall element, BufferedWriter writer) throws IOException {
 		printCallTypeArgumentable(element, writer);
-		writer.append(" " + element.getTarget().getName());
+		writer.append(element.getTarget().getName());
 		printArgumentable(element, writer);
 	}
 	
