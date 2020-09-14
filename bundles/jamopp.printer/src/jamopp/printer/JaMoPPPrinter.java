@@ -1237,9 +1237,9 @@ public final class JaMoPPPrinter {
 		} else if (element instanceof Subtraction) {
 			writer.append("-");
 		} else if (element instanceof Negate) {
-			writer.append("~");
-		} else {
 			writer.append("!");
+		} else {
+			writer.append("~");
 		}
 	}
 	
@@ -1362,13 +1362,13 @@ public final class JaMoPPPrinter {
 			writer.append(Float.toString(lit.getDecimalValue()) + "F");
 		} else if (element instanceof HexFloatLiteral) {
 			HexFloatLiteral lit = (HexFloatLiteral) element;
-			writer.append("0x" + Float.toHexString(lit.getHexValue()) + "F");
+			writer.append(Float.toHexString(lit.getHexValue()) + "F");
 		} else if (element instanceof DecimalDoubleLiteral) {
 			DecimalDoubleLiteral lit = (DecimalDoubleLiteral) element;
 			writer.append(Double.toString(lit.getDecimalValue()) + "D");
 		} else if (element instanceof HexDoubleLiteral) {
 			HexDoubleLiteral lit = (HexDoubleLiteral) element;
-			writer.append("0x" + Double.toHexString(lit.getHexValue()) + "D");
+			writer.append(Double.toHexString(lit.getHexValue()) + "D");
 		} else if (element instanceof DecimalIntegerLiteral) {
 			DecimalIntegerLiteral lit = (DecimalIntegerLiteral) element;
 			writer.append(lit.getDecimalValue().toString());

@@ -384,12 +384,10 @@ public class TalkativeASTMatcher extends ASTMatcher {
 		String oToken = null;
 
 		if (other instanceof PrefixExpression) {
-			oToken = ((PrefixExpression)other).toString();
-		}
-		else if (other instanceof NumberLiteral) {
-			oToken = ((NumberLiteral)other).getToken();
-		}
-		else {
+			oToken = ((PrefixExpression) other).toString();
+		} else if (other instanceof NumberLiteral) {
+			oToken = ((NumberLiteral) other).getToken();
+		} else {
 			return setDiff(node, other, false);
 		}
 		String nToken = node.getToken();
@@ -407,40 +405,33 @@ public class TalkativeASTMatcher extends ASTMatcher {
 	private String normalizeNumberToken(String token) {
 		token = token.toLowerCase();
 		token = token.replaceAll("_", "");
-
-		if (token.endsWith("f")) {
-			token = token.substring(0, token.length() - 1);
-		}
-		if (token.endsWith("d")) {
-			token = token.substring(0, token.length() - 1);
-		}
-		if (token.endsWith("l")) {
-			token = token.substring(0, token.length() - 1);
-		}
 		
 		if (token.startsWith("-0x")) {
 			token = token.substring(1);
-			token = "-" + normalizeNumberToken(token);
-		}
-		if (token.contains(".") || token.contains("p") || token.contains("e")) {
-			token = "" + Double.parseDouble(token);
-		}
-		
-		if (token.matches("0x[0-9,a-f]+")) {
-			token = new BigInteger(token.substring(2), 16).toString();
-		}
-		if (token.matches("0[0-9]+")) {
-			token = new BigInteger(token.substring(0), 8).toString();
-		}
-		if (token.matches("0b[0-1]+")) {
-			token = new BigInteger(token.substring(2), 2).toString();
+			return token = "-" + normalizeNumberToken(token);
 		}
 		
 		if (token.startsWith("- ")) {
 			token = "-" + token.substring(2);
 		}
 		
-		return token;
+		if (token.endsWith("l")) {
+			token = token.substring(0, token.length() - 1);
+		}
+		if (token.matches("0x[0-9,a-f]+")) {
+			return new BigInteger(token.substring(2), 16).toString();
+		}
+		if (token.matches("0[0-9]+")) {
+			return new BigInteger(token.substring(0), 8).toString();
+		}
+		if (token.matches("0b[0-1]+")) {
+			return new BigInteger(token.substring(2), 2).toString();
+		}
+
+		if (token.endsWith("f")) {
+			return "" + Float.parseFloat(token);
+		}
+		return "" + Double.parseDouble(token);
 	}
 
 	@Override
