@@ -7,6 +7,7 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.jdt.core.dom.IBinding;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.IModuleBinding;
 import org.eclipse.jdt.core.dom.IPackageBinding;
@@ -91,7 +92,12 @@ public class JDTResolverUtility {
 		if (binding.isMember()) {
 			qualifiedName = convertToTypeName(binding.getDeclaringClass()) + "." + binding.getName();
 		} else if (binding.isLocal()) {
-			qualifiedName = convertToMethodName(binding.getDeclaringMethod()) + "." + binding.getName();
+			IBinding b = binding.getDeclaringMember();
+			if (b instanceof IMethodBinding) {
+				qualifiedName = convertToMethodName((IMethodBinding) b) + "." + binding.getName();
+			}  else {
+				qualifiedName = convertToFieldName((IVariableBinding) b) + "." + binding.getName();
+			}
 		} else {
 			qualifiedName = binding.getQualifiedName();
 		}
@@ -855,6 +861,9 @@ public class JDTResolverUtility {
 			IMethodBinding methBind = methodBindings.stream().filter(meth -> methodName.equals(convertToMethodName(meth)))
 				.findFirst().orElse(null);
 			if (methBind != null) {
+				if (methBind.getDeclaringClass().isAnonymous()) {
+					return;
+				}
 				getClassifier(methBind.getDeclaringClass());
 			} else {
 				String synName = "SyntheticContainerClass";

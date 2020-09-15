@@ -68,10 +68,10 @@ class BaseConverterUtility {
 		org.emftext.language.java.types.ClassifierReference ref = org.emftext.language.java.types.TypesFactory.eINSTANCE.createClassifierReference();
 		ITypeBinding binding = (ITypeBinding) simpleName.resolveBinding();
 		org.emftext.language.java.classifiers.Classifier proxy;
-		if (binding == null) {
+		if (binding == null || binding.isRecovered()) {
 			proxy = JDTResolverUtility.getClass(simpleName.getIdentifier());
 		} else {
-			proxy = JDTResolverUtility.getClassifier((ITypeBinding) simpleName.resolveBinding());
+			proxy = JDTResolverUtility.getClassifier(binding);
 		}
 		proxy.setName(simpleName.getIdentifier());
 		ref.setTarget(proxy);
