@@ -16,7 +16,7 @@
 
 package org.emftext.language.java.test.bugs;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -30,9 +30,6 @@ import org.emftext.language.java.containers.ContainersFactory;
 import org.junit.Test;
 
 public class Bug1819Test extends AbstractBugTestCase {
-	
-	private final static String LINE_BREAK = System.getProperty("line.separator");
-	
 	@Test
 	public void testDefaultPackage() throws IOException {
 		String className = "TestName";
@@ -51,7 +48,7 @@ public class Bug1819Test extends AbstractBugTestCase {
 		r.save(os , null);
 		String result = new String(os.toByteArray()).trim();
 	
-		assertEquals("class " + className + " {" + LINE_BREAK + "}", result);
+		assertTrue(result.matches("class\\s++" + className + "\\s++\\u007b\\s++\\u007d\\s*+"));
 	}
 	
 	@Test
@@ -63,6 +60,9 @@ public class Bug1819Test extends AbstractBugTestCase {
 		Resource resource = rs.createResource(URI.createHierarchicalURI(
 			"empty", "JaMoPP-Class", null, new String[] {packageName + "." + className + ".java"}, null, null));
 		CompilationUnit cu = ContainersFactory.eINSTANCE.createCompilationUnit();
+		cu.getNamespaces().add("a");
+		cu.getNamespaces().add("b");
+		cu.getNamespaces().add("c");
 		org.emftext.language.java.classifiers.Class clazz = ClassifiersFactory.eINSTANCE.createClass();
 		clazz.setName(className);
 		cu.getClassifiers().add(clazz);
@@ -73,8 +73,7 @@ public class Bug1819Test extends AbstractBugTestCase {
 		resource.save(os , null);
 		String result = new String(os.toByteArray()).trim();
 		
-		assertEquals("package " + packageName + ";" + LINE_BREAK + LINE_BREAK
-				+ LINE_BREAK + "class " + className + " {" + LINE_BREAK + "}",
-				result);
+		assertTrue(result.matches("package\\s++" + packageName + "\\u003b\\s++"
+						+ "class\\s++" + className + "\\s++\\u007b\\s++\\u007d\\s*+"));
 	}
 }
