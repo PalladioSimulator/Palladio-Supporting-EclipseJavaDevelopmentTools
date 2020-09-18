@@ -26,6 +26,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -350,7 +351,7 @@ public abstract class AbstractJaMoPPTests {
 	private String readTextContents(InputStream inputStream) {
 		StringBuffer contents = new StringBuffer();
 		try {
-			BufferedReader input = new BufferedReader(new InputStreamReader(inputStream));
+			BufferedReader input = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
 			try {
 				String line = null; // not declared within while loop
 				while ((line = input.readLine()) != null) {
