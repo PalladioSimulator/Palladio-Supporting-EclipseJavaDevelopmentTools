@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -27,7 +28,7 @@ import org.emftext.language.java.containers.JavaRoot;
 import jamopp.parser.api.JaMoPPParserAPI;
 
 public class JaMoPPJDTParser implements JaMoPPParserAPI {
-	private final String DEFAULT_ENCODING = "UTF-8";
+	private final String DEFAULT_ENCODING = StandardCharsets.UTF_8.toString();
 	private ResourceSet resourceSet;
 
 	@Override
