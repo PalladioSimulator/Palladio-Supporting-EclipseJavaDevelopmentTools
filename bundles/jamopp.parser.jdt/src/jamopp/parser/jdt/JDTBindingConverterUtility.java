@@ -506,6 +506,7 @@ class JDTBindingConverterUtility {
 	
 	static org.emftext.language.java.containers.Package convertToPackage(IPackageBinding binding) {
 		org.emftext.language.java.containers.Package pack = JDTResolverUtility.getPackage(binding);
+		pack.setModule(JDTResolverUtility.getModule(binding.getModule()));
 		if (pack.getAnnotations().size() > 0) {
 			return pack;
 		}
@@ -517,7 +518,6 @@ class JDTBindingConverterUtility {
 		for (IAnnotationBinding annotBind : binding.getAnnotations()) {
 			pack.getAnnotations().add(convertToAnnotationInstance(annotBind));
 		}
-		pack.setModule(JDTResolverUtility.getModule(binding.getModule()));
 		return pack;
 	}
 	
