@@ -241,37 +241,59 @@ public abstract class AbstractJaMoPPTests {
 		File file = new File(path);
 		parseAndReprint(file, inputFolderName, outputFolderName);
 	}
-
-	protected void parseAndReprint(File file, String inputFolderName, String outputFolderName) throws Exception {
-		File inputFile = file;
-		assertTrue("File " + inputFile.getAbsolutePath() + " exists.", inputFile.exists());
-		String outputFileName = calculateOutputFilename(inputFile, inputFolderName, outputFolderName);
+	
+	protected void testReprint(ResourceSet set) throws Exception {
+		for (Resource res : set.getResources()) {
+			if (res instanceof JavaResource2) {
+				testReprint((JavaResource2) res);
+			}
+		}
+	}
+	
+	protected void testReprint(JavaResource2 resource) throws Exception {
+		testReprint(resource, this.getTestInputFolder());
+	}
+	
+	protected void testReprint(JavaResource2 resource, String outputFolderName) throws Exception {
+		String inputFile = resource.getURI().toFileString();
+		if (inputFile == null) {
+			return;
+		}
+		File input = new File(inputFile);
+		String outputFileName = calculateOutputFilename(input, input.getParentFile().getName(), outputFolderName);
 		File outputFile = prepareOutputFile(outputFileName);
-
-		Resource resource = getResourceSet().createResource(URI.createFileURI(inputFile.getAbsolutePath().toString()));
-		resource.load(getLoadOptions());
-
-		assertNoErrors(resource.getURI().toString(), (JavaResource2) resource);
-
-		if (!ignoreSemanticErrors(file.getPath())) {
+		
+		assertNoErrors(resource.getURI().toString(), resource);
+		
+		if (!ignoreSemanticErrors(inputFile)) {
 			// This will not work if external resources are not yet registered (order of tests)
 			assertResolveAllProxies(resource);
 			// Default EMF validation should not fail
 			assertModelValid(resource);
 		}
-
-		if (isExcludedFromReprintTest(file.getPath())) {
+		
+		if (isExcludedFromReprintTest(inputFile)) {
 			return;
 		}
-
+		
 		resource.setURI(URI.createFileURI(outputFileName));
 		resource.save(null);
-
+		
 		assertTrue("File " + outputFile.getAbsolutePath() + " exists.",
 				outputFile.exists());
-
-		compareTextContents(new FileInputStream(inputFile), inputFile.getPath().endsWith("module-info.java"),
+		
+		compareTextContents(new FileInputStream(inputFile), inputFile.endsWith("module-info.java"),
 			new FileInputStream(outputFile), outputFile.getPath().endsWith("module-info.java"));
+	}
+
+	protected void parseAndReprint(File file, String inputFolderName, String outputFolderName) throws Exception {
+		File inputFile = file;
+		assertTrue("File " + inputFile.getAbsolutePath() + " exists.", inputFile.exists());
+		
+		Resource resource = getResourceSet().createResource(URI.createFileURI(inputFile.getAbsolutePath().toString()));
+		resource.load(getLoadOptions());
+		
+		testReprint((JavaResource2) resource, outputFolderName);
 	}
 
 	protected abstract boolean isExcludedFromReprintTest(String filename);

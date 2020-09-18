@@ -19,15 +19,17 @@ public class JaMoPPJDTParserDirectoryTest extends AbstractJaMoPPTests {
 	}
 	
 	@Test
-	public void testSrcInputDirectory() {
+	public void testSrcInputDirectory() throws Exception {
 		ResourceSet set = parser.parseDirectory(Paths.get("src-input"));
 		this.assertModelValid(set);
+		this.testReprint(set);
 	}
 	
 	@Test
-	public void testSrcSevenAndUp() {
+	public void testSrcSevenAndUp() throws Exception {
 		ResourceSet set = parser.parseDirectory(Paths.get("src-sevenandup"));
 		this.assertModelValid(set);
+		this.testReprint(set);
 	}
 
 	@Override
