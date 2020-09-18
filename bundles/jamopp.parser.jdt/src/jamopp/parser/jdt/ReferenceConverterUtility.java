@@ -216,7 +216,11 @@ class ReferenceConverterUtility {
 		if (methBind != null) {
 			 methodProxy = JDTResolverUtility.getMethod(methBind);
 		} else {
-			if (arr.getExpression() == null || arr.getExpression().getNodeType() == ASTNode.METHOD_INVOCATION) {
+			if (arr.getExpression() == null || arr.getExpression().getNodeType() == ASTNode.METHOD_INVOCATION
+				|| ((arr.getName().getIdentifier().equals("notify") || arr.getName().getIdentifier().equals("notifyAll")
+					|| arr.getName().getIdentifier().equals("getClass") || arr.getName().getIdentifier().equals("wait"))
+					&& arr.arguments().size() == 0)
+					|| (arr.getName().getIdentifier().equals("wait") && (arr.arguments().size() == 1 || arr.arguments().size() == 2))) {
 				methodProxy = JDTResolverUtility.getClassMethod(arr.getName().getIdentifier());
 				methodProxy.setName(arr.getName().getIdentifier());
 			} else {
