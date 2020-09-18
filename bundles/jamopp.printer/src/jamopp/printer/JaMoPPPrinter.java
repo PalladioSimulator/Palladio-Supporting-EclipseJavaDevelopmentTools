@@ -193,6 +193,7 @@ import org.emftext.language.java.references.Reference;
 import org.emftext.language.java.references.ReflectiveClassReference;
 import org.emftext.language.java.references.SelfReference;
 import org.emftext.language.java.references.StringReference;
+import org.emftext.language.java.references.TextBlockReference;
 import org.emftext.language.java.statements.Assert;
 import org.emftext.language.java.statements.Block;
 import org.emftext.language.java.statements.Break;
@@ -1416,6 +1417,8 @@ public final class JaMoPPPrinter {
 			printArrayInstantiation((ArrayInstantiation) element, writer);
 		} else if (element instanceof Instantiation) {
 			printInstantiation((Instantiation) element, writer);
+		} else if (element instanceof TextBlockReference) {
+			printTextBlockReference((TextBlockReference) element, writer);
 		} else {
 			printElementReference((ElementReference) element, writer);
 		}
@@ -1426,6 +1429,12 @@ public final class JaMoPPPrinter {
 			writer.append(".");
 			printReference(element.getNext(), writer);
 		}
+	}
+	
+	private static void printTextBlockReference(TextBlockReference element, BufferedWriter writer) throws IOException {
+		writer.append("\"\"\"\n");
+		writer.append(element.getValue());
+		writer.append("\n\"\"\"");
 	}
 	
 	private static void printArraySelector(ArraySelector element, BufferedWriter writer) throws IOException {
