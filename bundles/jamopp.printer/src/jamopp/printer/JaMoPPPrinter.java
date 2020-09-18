@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -246,7 +247,7 @@ public final class JaMoPPPrinter {
 	 * @param output the output for printing.
 	 */
 	public static void print(JavaRoot root, OutputStream output) {
-		try (OutputStreamWriter outWriter = new OutputStreamWriter(output); BufferedWriter buffWriter = new BufferedWriter(outWriter)) {
+		try (OutputStreamWriter outWriter = new OutputStreamWriter(output, StandardCharsets.UTF_8); BufferedWriter buffWriter = new BufferedWriter(outWriter)) {
 			printJavaRoot(root, buffWriter);
 		} catch (IOException e) {
 		}
@@ -477,6 +478,8 @@ public final class JaMoPPPrinter {
 			writer.append("? extends ");
 			printTypeReference(arg.getExtendType(), writer);
 		}
+		printArrayDimensions(element.getArrayDimensionsBefore(), writer);
+		printArrayDimensions(element.getArrayDimensionsAfter(), writer);
 	}
 	
 	private static void printUsesModuleDirective(UsesModuleDirective element, BufferedWriter writer) throws IOException {
