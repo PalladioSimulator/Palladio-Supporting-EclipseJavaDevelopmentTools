@@ -19,6 +19,7 @@ package org.emftext.language.java.test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
@@ -1117,6 +1118,18 @@ public class OldJaMoPPParserTests extends AbstractJaMoPPTests {
 		registerInClassPath("Import1" + JAVA_FILE_EXTENSION);
 
 		parseAndReprint(filename);
+	}
+	
+	@Test
+	public void testSpecialHierarchy() {
+		try {
+			CompilationUnit model = (CompilationUnit) parseResource("spechier" + File.separator + "SubClass.java");
+			assertNumberOfClassifiers(model, 1);
+			registerInClassPath("spechier"+ File.separator + "ClassC.java");
+			parseAndReprint("spechier" + File.separator + "SubClass.java");
+		} catch (Exception e) {
+			fail(e.getMessage());
+		}
 	}
 
 	@Test
