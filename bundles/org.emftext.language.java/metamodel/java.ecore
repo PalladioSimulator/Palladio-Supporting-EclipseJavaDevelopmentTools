@@ -1335,6 +1335,10 @@
       <eStructuralFeatures xsi:type="ecore:EReference" name="self" lowerBound="1"
           eType="#//literals/Self" containment="true"/>
     </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="TextBlockReference" eSuperTypes="#//references/Reference">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" lowerBound="1"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eClassifiers>
   </eSubpackages>
   <eSubpackages xmi:id="_Wo2Yy9z1Ed2bJ_pQViWxFg" name="statements" nsURI="http://www.emftext.org/java/statements"
       nsPrefix="statements">
