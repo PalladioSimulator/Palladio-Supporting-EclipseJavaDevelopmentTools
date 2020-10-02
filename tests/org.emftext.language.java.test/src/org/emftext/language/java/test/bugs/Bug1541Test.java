@@ -15,7 +15,7 @@
  ******************************************************************************/
 package org.emftext.language.java.test.bugs;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -28,14 +28,13 @@ import org.emftext.language.java.containers.CompilationUnit;
 import org.emftext.language.java.containers.ContainersFactory;
 import org.emftext.language.java.members.ClassMethod;
 import org.emftext.language.java.members.MembersFactory;
+import org.emftext.language.java.statements.Block;
 import org.emftext.language.java.statements.Return;
 import org.emftext.language.java.statements.StatementsFactory;
 import org.emftext.language.java.types.TypesFactory;
 import org.junit.Test;
 
 public class Bug1541Test extends AbstractBugTestCase {
-
-	private static final String LB = System.getProperty("line.separator");
 
 	@Test
 	public void testPrinting() throws IOException {
@@ -54,8 +53,12 @@ public class Bug1541Test extends AbstractBugTestCase {
 		m1.makePublic();
 		classA.getMembers().add(m1);
 		
+		Block cont = StatementsFactory.eINSTANCE.createBlock();
+		cont.setName("");
+		
 		Return returnStatement = StatementsFactory.eINSTANCE.createReturn();
-		m1.getStatements().add(returnStatement);
+		cont.getStatements().add(returnStatement);
+		m1.setStatement(cont);
 		
 		Resource r = createResourceSet().createResource(URI.createURI("ClassA.java"));
 		
@@ -64,15 +67,11 @@ public class Bug1541Test extends AbstractBugTestCase {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		r.save(out, null);
 		System.out.println("Test1541.testPrinting() " + out.toString());
-		assertEquals(
-			"package org.my.namespace1;" + LB +
-			LB +
-			LB +
-			"class ClassA {" + LB +
-			"\t" + "public void m1() {" + LB +
-			"\t\t" + "return;" + LB +
-			"\t" + "}" + LB + // the tab at the beginning of this line was missing
-			"}" + LB + LB + LB + LB, 
-			out.toString());
+		assertTrue(out.toString().matches( // \\u003b is ; \\u007b is { \\u007d is }
+				"package\\s++org\\.my\\.namespace1\\u003b\\s++class\\s++ClassA\\s++\\u007b" +
+				"\\s++public\\s++void\\s++m1\\(\\)\\s++\\u007b" +
+				"\\s++return\\u003b" +
+				"\\s++\\u007d" +
+				"\\s++\\u007d\\s++"));
 	}
 }

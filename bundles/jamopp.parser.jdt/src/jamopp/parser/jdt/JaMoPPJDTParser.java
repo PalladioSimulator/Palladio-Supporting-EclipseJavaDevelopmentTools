@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -21,16 +22,21 @@ import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.FileASTRequestor;
+import org.emftext.language.java.JavaClasspath;
 import org.emftext.language.java.containers.JavaRoot;
 
 import jamopp.parser.api.JaMoPPParserAPI;
 
 public class JaMoPPJDTParser implements JaMoPPParserAPI {
-	private final String DEFAULT_ENCODING = "UTF-8";
+	private final String DEFAULT_ENCODING = StandardCharsets.UTF_8.toString();
 	private ResourceSet resourceSet;
 
 	@Override
 	public JavaRoot parse(String fileName, InputStream input) {
+		Resource r = JavaClasspath.get().getResource(URI.createFileURI(fileName));
+		if (r != null) {
+			return (JavaRoot) r.getContents().get(0);
+		}
 		this.setUpResourceSet();
 		StringBuilder builder = new StringBuilder();
 		String lineSep = System.getProperty("line.separator");
@@ -58,8 +64,12 @@ public class JaMoPPJDTParser implements JaMoPPParserAPI {
 	
 	@Override
 	public Resource parseFile(Path file) {
+		Resource result = JavaClasspath.get().getResource(URI.createFileURI(file.toAbsolutePath().toString()));
+		if (result != null) {
+			return result;
+		}
 		this.setUpResourceSet();
-		Resource result = this.parseFilesWithJDT(new String[] {}, new String[] { file.toAbsolutePath().toString() },
+		result = this.parseFilesWithJDT(new String[] {}, new String[] { file.toAbsolutePath().toString() },
 			new String[] { DEFAULT_ENCODING }).get(0).eResource();
 		this.resourceSet = null;
 		return result;
@@ -70,7 +80,14 @@ public class JaMoPPJDTParser implements JaMoPPParserAPI {
 		this.setUpResourceSet();
 		try {
 			String[] sources = Files.walk(dir).filter(path -> Files.isRegularFile(path) && path.getFileName().toString().endsWith("java"))
-				.map(Path::toAbsolutePath).map(Path::toString).toArray(i -> new String[i]);
+				.map(Path::toAbsolutePath).map(Path::toString).filter(p -> {
+					Resource r = JavaClasspath.get().getResource(URI.createFileURI(p));
+					if (r != null) {
+						JaMoPPJDTParser.this.resourceSet.getResources().add(r);
+						return false;
+					}
+					return true;
+				}).toArray(i -> new String[i]);
 			String[] encodings = new String[sources.length];
 			for (int index = 0; index < encodings.length; index++) {
 				encodings[index] = DEFAULT_ENCODING;

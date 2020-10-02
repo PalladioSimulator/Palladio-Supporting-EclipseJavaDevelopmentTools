@@ -30,6 +30,7 @@ class PackageJDTASTVisitorAndConverter extends AbstractAndEmptyModelJDTASTVisito
 		if (node.getPackage() != null) {
 			node.getPackage().annotations().forEach(obj -> finalRoot.getAnnotations().add(AnnotationInstanceOrModifierConverterUtility
 				.convertToAnnotationInstance((Annotation) obj)));
+			root.getNamespaces().clear();
 			BaseConverterUtility.convertToNamespacesAndSet(node.getPackage().getName(), root);
 		}
 		super.visit(node);

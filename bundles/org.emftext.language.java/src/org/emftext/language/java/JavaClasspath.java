@@ -21,6 +21,7 @@ package org.emftext.language.java;
 import java.util.HashSet;
 
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.resource.Resource;
 import org.emftext.language.java.classifiers.ConcreteClassifier;
 import org.emftext.language.java.containers.CompilationUnit;
 
@@ -99,6 +100,26 @@ public class JavaClasspath {
 			if (classifier.eContainer() != null) {
 				return (CompilationUnit) classifier.eContainer();
 			}
+		}
+		return null;
+	}
+	
+	public Resource getResource(URI resourceURI) {
+		ConcreteClassifier classifier = getConcreteClassifier(resourceURI);
+		if (classifier != null) {
+			return classifier.eResource();
+		}
+		org.emftext.language.java.containers.Package pack = packages.stream().filter(p -> p.eResource() != null)
+			.filter(p -> p.eResource().getURI().toString().equals(resourceURI.toString()))
+			.findFirst().orElse(null);
+		if (pack != null) {
+			return pack.eResource();
+		}
+		org.emftext.language.java.containers.Module mod = modules.stream().filter(m -> m.eResource() != null)
+			.filter(m -> m.eResource().getURI().toString().equals(resourceURI.toString()))
+			.findFirst().orElse(null);
+		if (mod != null) {
+			return mod.eResource();
 		}
 		return null;
 	}

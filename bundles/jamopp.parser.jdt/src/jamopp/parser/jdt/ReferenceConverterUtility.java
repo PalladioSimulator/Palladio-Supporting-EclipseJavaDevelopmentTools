@@ -84,7 +84,7 @@ class ReferenceConverterUtility {
 			} else {
 				org.emftext.language.java.arrays.ArrayInstantiationBySize result = org.emftext.language.java.arrays.ArraysFactory.eINSTANCE.createArrayInstantiationBySize();
 				result.setTypeReference(BaseConverterUtility.convertToTypeReference(arr.getType()));
-				BaseConverterUtility.convertToArrayDimensionsAndSet(arr.getType(), result);
+				BaseConverterUtility.convertToArrayDimensionsAndSet(arr.getType(), result, arr.dimensions().size());
 				arr.dimensions().forEach(obj -> result.getSizes().add(ExpressionConverterUtility.convertToExpression((Expression) obj)));
 				LayoutInformationConverter.convertToMinimalLayoutInformation(result, arr);
 				return result;
@@ -140,7 +140,7 @@ class ReferenceConverterUtility {
 		} else if (expr.getNodeType() == ASTNode.STRING_LITERAL) {
 			StringLiteral arr = (StringLiteral) expr;
 			org.emftext.language.java.references.StringReference result = org.emftext.language.java.references.ReferencesFactory.eINSTANCE.createStringReference();
-			result.setValue(arr.getLiteralValue());
+			result.setValue(arr.getEscapedValue().substring(1, arr.getEscapedValue().length() - 1));
 			LayoutInformationConverter.convertToMinimalLayoutInformation(result, arr);
 			return result;
 		} else if (expr.getNodeType() == ASTNode.SUPER_FIELD_ACCESS) {
@@ -216,7 +216,11 @@ class ReferenceConverterUtility {
 		if (methBind != null) {
 			 methodProxy = JDTResolverUtility.getMethod(methBind);
 		} else {
-			if (arr.getExpression() == null || arr.getExpression().getNodeType() == ASTNode.METHOD_INVOCATION) {
+			if (arr.getExpression() == null || arr.getExpression().getNodeType() == ASTNode.METHOD_INVOCATION
+				|| ((arr.getName().getIdentifier().equals("notify") || arr.getName().getIdentifier().equals("notifyAll")
+					|| arr.getName().getIdentifier().equals("getClass") || arr.getName().getIdentifier().equals("wait"))
+					&& arr.arguments().size() == 0)
+					|| (arr.getName().getIdentifier().equals("wait") && (arr.arguments().size() == 1 || arr.arguments().size() == 2))) {
 				methodProxy = JDTResolverUtility.getClassMethod(arr.getName().getIdentifier());
 				methodProxy.setName(arr.getName().getIdentifier());
 			} else {

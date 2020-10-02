@@ -180,12 +180,18 @@ public class ConcreteClassifierExtension {
 	 * Returns the qualified name of this concrete classifier.
 	 */
 	public static String getQualifiedName(ConcreteClassifier me) {
-			
 		StringBuilder qualifiedName = new StringBuilder();
-		List<String> packageParts = me.getContainingPackageName();
-		for (String packagePart : packageParts) {
-			qualifiedName.append(packagePart);
+		if (me.eContainer() instanceof ConcreteClassifier) {
+			qualifiedName.append(((ConcreteClassifier) me.eContainer()).getQualifiedName());
 			qualifiedName.append(".");
+		} else {
+			List<String> packageParts = me.getContainingPackageName();
+			if (packageParts != null) {
+				for (String packagePart : packageParts) {
+					qualifiedName.append(packagePart);
+					qualifiedName.append(".");
+				}
+			}
 		}
 		qualifiedName.append(me.getName());
 		return qualifiedName.toString();

@@ -192,7 +192,7 @@ class ExpressionConverterUtility {
 					VariableDeclarationFragment frag = (VariableDeclarationFragment) obj;
 					org.emftext.language.java.parameters.OrdinaryParameter nextParam = JDTResolverUtility.getOrdinaryParameter(frag.resolveBinding());
 					nextParam.setName(frag.getName().getIdentifier());
-					nextParam.setTypeReference(BaseConverterUtility.convertToTypeReferences(frag.resolveBinding().getType()).get(0));
+					nextParam.setTypeReference(JDTBindingConverterUtility.convertToTypeReferences(frag.resolveBinding().getType()).get(0));
 					param.getParameters().add(nextParam);
 				});
 				result.setParameters(param);
@@ -258,7 +258,7 @@ class ExpressionConverterUtility {
 		org.emftext.language.java.expressions.EqualityExpression result = org.emftext.language.java.expressions.ExpressionsFactory.eINSTANCE.createEqualityExpression();
 		mergeEqualityExpressionAndExpression(result, convertToExpression(expr.getLeftOperand()));
 		result.getEqualityOperators().add(convertToEqualityOperator(expr.getOperator()));
-		mergeEqualityExpressionAndExpression(result, convertToExpression(expr.getLeftOperand()));
+		mergeEqualityExpressionAndExpression(result, convertToExpression(expr.getRightOperand()));
 		expr.extendedOperands().forEach(obj -> {
 			result.getEqualityOperators().add(convertToEqualityOperator(expr.getOperator()));
 			mergeEqualityExpressionAndExpression(result, convertToExpression((Expression) obj));
@@ -527,7 +527,7 @@ class ExpressionConverterUtility {
 		} else if (expr.getNodeType() == ASTNode.CHARACTER_LITERAL) {
 			CharacterLiteral lit = (CharacterLiteral) expr;
 			org.emftext.language.java.literals.CharacterLiteral result = org.emftext.language.java.literals.LiteralsFactory.eINSTANCE.createCharacterLiteral();
-			result.setValue(lit.charValue());
+			result.setValue(lit.getEscapedValue().substring(1, lit.getEscapedValue().length() - 1));
 			LayoutInformationConverter.convertToMinimalLayoutInformation(result, lit);
 			return result;
 		} else if (expr.getNodeType() == ASTNode.NUMBER_LITERAL) {

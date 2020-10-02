@@ -214,6 +214,7 @@ class StatementConverterUtility {
 			varSt.modifiers().forEach(obj -> locVar.getAnnotationsAndModifiers().add(AnnotationInstanceOrModifierConverterUtility
 				.converToModifierOrAnnotationInstance((IExtendedModifier) obj)));
 			locVar.setTypeReference(BaseConverterUtility.convertToTypeReference(varSt.getType()));
+			BaseConverterUtility.convertToArrayDimensionsAndSet(varSt.getType(), locVar);
 			frag.extraDimensions().forEach(obj -> BaseConverterUtility.convertToArrayDimensionAfterAndSet((Dimension) obj, locVar));
 			if (frag.getInitializer() != null) {
 				locVar.setInitialValue(ExpressionConverterUtility.convertToExpression(frag.getInitializer()));
@@ -233,6 +234,7 @@ class StatementConverterUtility {
 			return result;
 		} else if (statement.getNodeType() == ASTNode.YIELD_STATEMENT) {
 			YieldStatement yieldSt = (YieldStatement) statement;
+			
 			org.emftext.language.java.statements.YieldStatement result = org.emftext.language.java.statements.StatementsFactory.eINSTANCE.createYieldStatement();
 			if (yieldSt.getExpression() != null) {
 				result.setYieldExpression(ExpressionConverterUtility.convertToExpression(yieldSt.getExpression()));
@@ -262,6 +264,12 @@ class StatementConverterUtility {
 			if (st.getNodeType() == ASTNode.SWITCH_CASE) {
 				currentCase = convertToSwitchCase((SwitchCase) st);
 				switchExprSt.getCases().add(currentCase);
+			} else if (currentCase instanceof org.emftext.language.java.statements.SwitchRule &&
+				st.getNodeType() == ASTNode.YIELD_STATEMENT) {
+				YieldStatement ys = (YieldStatement) st;
+				org.emftext.language.java.statements.ExpressionStatement exprSt = org.emftext.language.java.statements.StatementsFactory.eINSTANCE.createExpressionStatement();
+				exprSt.setExpression(ExpressionConverterUtility.convertToExpression(ys.getExpression()));
+				currentCase.getStatements().add(exprSt);
 			} else {
 				currentCase.getStatements().add(convertToStatement(st));
 			}
@@ -338,6 +346,7 @@ class StatementConverterUtility {
 		expr.modifiers().forEach(obj -> loc.getAnnotationsAndModifiers().add(AnnotationInstanceOrModifierConverterUtility
 			.converToModifierOrAnnotationInstance((IExtendedModifier) obj)));
 		loc.setTypeReference(BaseConverterUtility.convertToTypeReference(expr.getType()));
+		BaseConverterUtility.convertToArrayDimensionsAndSet(expr.getType(), loc);
 		frag.extraDimensions().forEach(obj -> BaseConverterUtility.convertToArrayDimensionAfterAndSet((Dimension) obj, loc));
 		if (frag.getInitializer() != null) {
 			loc.setInitialValue(ExpressionConverterUtility.convertToExpression(frag.getInitializer()));
