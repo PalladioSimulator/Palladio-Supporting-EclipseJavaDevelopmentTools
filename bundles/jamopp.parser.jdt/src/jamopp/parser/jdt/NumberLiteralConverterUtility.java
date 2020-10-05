@@ -75,7 +75,7 @@ class NumberLiteralConverterUtility {
 			org.emftext.language.java.literals.DecimalDoubleLiteral lit = org.emftext.language.java.literals.LiteralsFactory.eINSTANCE.createDecimalDoubleLiteral();
 			lit.setDecimalValue(Double.parseDouble(string));
 			result = lit;
-		} else if (string.equals("0L") || (!string.startsWith(OCT_PREFIX) && string.endsWith(LONG_SUFFIX))) {
+		} else if (string.equals("0l") || (!string.startsWith(OCT_PREFIX) && string.endsWith(LONG_SUFFIX))) {
 			org.emftext.language.java.literals.DecimalLongLiteral lit = org.emftext.language.java.literals.LiteralsFactory.eINSTANCE.createDecimalLongLiteral();
 			lit.setDecimalValue(new BigInteger(string.substring(0, string.length() - LONG_SUFFIX.length()), DEC_BASE));
 			result = lit;
