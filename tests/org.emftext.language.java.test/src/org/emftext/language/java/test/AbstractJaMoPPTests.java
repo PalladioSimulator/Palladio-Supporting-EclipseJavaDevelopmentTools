@@ -251,7 +251,7 @@ public abstract class AbstractJaMoPPTests {
 	}
 	
 	protected void testReprint(JavaResource2 resource) throws Exception {
-		testReprint(resource, this.getTestInputFolder());
+		testReprint(resource, TEST_OUTPUT_FOLDER);
 	}
 	
 	protected void testReprint(JavaResource2 resource, String outputFolderName) throws Exception {
