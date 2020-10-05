@@ -1,0 +1,3 @@
+[submodule "tests/org.emftext.language.java.test/JaMoPP-BulkTest"]
+	path = tests/org.emftext.language.java.test/JaMoPP-BulkTest
+	url = https://github.com/DevBoost/JaMoPP-BulkTest
