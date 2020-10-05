@@ -493,8 +493,10 @@ public class JDTResolverUtility {
 			return nameToField.get(varName);
 		} else {
 			variableBindings.add(binding);
-			org.emftext.language.java.classifiers.ConcreteClassifier potClass =
-				(org.emftext.language.java.classifiers.ConcreteClassifier) getClassifier(binding.getDeclaringClass());
+			org.emftext.language.java.classifiers.ConcreteClassifier potClass = null;
+			if (binding.getDeclaringClass() != null) {
+				potClass = (org.emftext.language.java.classifiers.ConcreteClassifier) getClassifier(binding.getDeclaringClass());
+			}
 			org.emftext.language.java.members.Field result = null;
 			if (potClass != null) {
 				for (org.emftext.language.java.members.Member mem : potClass.getMembers()) {
@@ -802,7 +804,9 @@ public class JDTResolverUtility {
 			if (field.eContainer() == null) {
 				IVariableBinding varBind = variableBindings.stream().filter(var -> fieldName.equals(convertToFieldName(var)))
 					.findFirst().get();
-				if (!varBind.getDeclaringClass().isAnonymous()) {
+				if (varBind.getDeclaringClass() == null) {
+					
+				} else if (!varBind.getDeclaringClass().isAnonymous()) {
 					getClassifier(varBind.getDeclaringClass());
 				}
 			}
