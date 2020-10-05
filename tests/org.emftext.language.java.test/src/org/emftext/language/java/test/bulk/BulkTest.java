@@ -184,6 +184,9 @@ public class BulkTest extends AbstractJaMoPPTests {
 		Path file = Paths.get(getSrcZip());
 		if (Files.exists(file)) {
 			Path target = Paths.get(getTestInputFolder());
+			if (Files.exists(target)) {
+				return;
+			}
 			try {
 				new Expander().expand(ArchiveStreamFactory.ZIP, file.toFile(), target.toFile());
 			} catch (IOException | ArchiveException e) {
