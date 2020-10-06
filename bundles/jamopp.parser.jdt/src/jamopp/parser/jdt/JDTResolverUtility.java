@@ -95,9 +95,9 @@ public class JDTResolverUtility {
 		} else if (binding.isLocal()) {
 			IBinding b = binding.getDeclaringMember();
 			if (b instanceof IMethodBinding) {
-				qualifiedName = convertToMethodName((IMethodBinding) b) + "." + binding.getName();
+				return convertToMethodName((IMethodBinding) b) + "." + binding.getKey();
 			}  else {
-				qualifiedName = convertToFieldName((IVariableBinding) b) + "." + binding.getName();
+				return convertToFieldName((IVariableBinding) b) + "." + binding.getKey();
 			}
 		} else {
 			qualifiedName = binding.getQualifiedName();
