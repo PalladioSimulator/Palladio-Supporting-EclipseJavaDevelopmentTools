@@ -43,6 +43,7 @@ public class JDTResolverUtility {
 	private static int uid = 0;
 	private static HashMap<IVariableBinding, Integer> varBindToUid = new HashMap<>();
 	private static HashSet<EObject> objVisited = new HashSet<>();
+	private final static String SYNTH_CLASS = "SyntheticContainerClass";
 	
 	static void setResourceSet(ResourceSet set) {
 		resourceSet = set;
@@ -492,6 +493,16 @@ public class JDTResolverUtility {
 		return convertToTypeName(binding.getDeclaringClass()) + "::" + binding.getName();
 	}
 	
+	static org.emftext.language.java.members.Field getField(String name) {
+		if (nameToField.containsKey(name)) {
+			return nameToField.get(name);
+		} else {
+			org.emftext.language.java.members.Field result = org.emftext.language.java.members.MembersFactory.eINSTANCE.createField();
+			nameToField.put(name, result);
+			return result;
+		}
+	}
+	
 	static org.emftext.language.java.members.Field getField(IVariableBinding binding) {
 		String varName = convertToFieldName(binding);
 		if (nameToField.containsKey(varName)) {
@@ -540,6 +551,16 @@ public class JDTResolverUtility {
 				result = org.emftext.language.java.members.MembersFactory.eINSTANCE.createEnumConstant();
 			}
 			nameToEnumConst.put(enumCN, result);
+			return result;
+		}
+	}
+	
+	static org.emftext.language.java.members.AdditionalField getAdditionalField(String name) {
+		if (nameToAddField.containsKey(name)) {
+			return nameToAddField.get(name);
+		} else {
+			org.emftext.language.java.members.AdditionalField result = org.emftext.language.java.members.MembersFactory.eINSTANCE.createAdditionalField();
+			nameToAddField.put(name, result);
 			return result;
 		}
 	}
@@ -712,7 +733,8 @@ public class JDTResolverUtility {
 	}
 	
 	static org.emftext.language.java.references.ReferenceableElement getReferenceableElementByNameMatching(String name) {
-		IVariableBinding vBinding = variableBindings.stream().filter(var -> var.getName().equals(name)).findFirst().orElse(null);
+		IVariableBinding vBinding = variableBindings.stream().filter(var -> var != null &&
+			var.getName().equals(name)).findFirst().orElse(null);
 		if (vBinding != null) {
 			return getReferencableElement(vBinding);
 		}
@@ -720,7 +742,8 @@ public class JDTResolverUtility {
 		if (mBinding != null) {
 			return getMethod(mBinding);
 		}
-		ITypeBinding tBinding = typeBindings.stream().filter(type -> type.getName().equals(name)).findFirst().orElse(null);
+		ITypeBinding tBinding = typeBindings.stream().filter(type -> type != null &&
+			type.getName().equals(name)).findFirst().orElse(null);
 		if (tBinding != null) {
 			return getClassifier(tBinding);
 		}
@@ -797,8 +820,8 @@ public class JDTResolverUtility {
 	static void completeResolution() {
 		nameToEnumConst.forEach((constName, enConst) -> {
 			if (enConst.eContainer() == null) {
-				IVariableBinding varBind = variableBindings.stream().filter(var -> constName.equals(convertToFieldName(var)))
-					.findFirst().get();
+				IVariableBinding varBind = variableBindings.stream().filter(var -> var != null &&
+					constName.equals(convertToFieldName(var))).findFirst().get();
 				if (!varBind.getDeclaringClass().isAnonymous()) {
 					getEnumeration(varBind.getDeclaringClass());
 				}
@@ -807,10 +830,14 @@ public class JDTResolverUtility {
 		
 		nameToField.forEach((fieldName, field) -> {
 			if (field.eContainer() == null) {
-				IVariableBinding varBind = variableBindings.stream().filter(var -> fieldName.equals(convertToFieldName(var)))
-					.findFirst().get();
-				if (varBind.getDeclaringClass() == null) {
-					
+				IVariableBinding varBind = variableBindings.stream().filter(var -> var != null &&
+					fieldName.equals(convertToFieldName(var))).findFirst().get();
+				if (varBind == null || varBind.getDeclaringClass() == null) {
+					org.emftext.language.java.classifiers.Class container = getClass(SYNTH_CLASS);
+					container.setName(SYNTH_CLASS);
+					if (!container.getMembers().contains(field)) {
+						container.getMembers().add(field);
+					}
 				} else if (!varBind.getDeclaringClass().isAnonymous()) {
 					getClassifier(varBind.getDeclaringClass());
 				}
@@ -875,9 +902,8 @@ public class JDTResolverUtility {
 				}
 				getClassifier(methBind.getDeclaringClass());
 			} else {
-				String synName = "SyntheticContainerClass";
-				org.emftext.language.java.classifiers.Class container = getClass(synName);
-				container.setName(synName);
+				org.emftext.language.java.classifiers.Class container = getClass(SYNTH_CLASS);
+				container.setName(SYNTH_CLASS);
 				if (!container.getMembers().contains(method)) {
 					container.getMembers().add(method);
 				}
@@ -922,7 +948,7 @@ public class JDTResolverUtility {
 		if (potClass == classifier) {
 			return;
 		}
-		ITypeBinding typeBind = typeBindings.stream().filter(type -> typeName.equals(convertToTypeName(type)))
+		ITypeBinding typeBind = typeBindings.stream().filter(type -> type != null && typeName.equals(convertToTypeName(type)))
 			.findFirst().orElse(null);
 		if (typeBind == null) {
 			classifier.setPackage(getPackage(""));
