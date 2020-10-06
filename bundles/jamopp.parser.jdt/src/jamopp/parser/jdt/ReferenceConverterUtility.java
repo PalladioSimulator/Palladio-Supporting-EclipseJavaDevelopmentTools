@@ -289,11 +289,13 @@ class ReferenceConverterUtility {
 		if (ref instanceof org.emftext.language.java.types.ClassifierReference) {
 			return (org.emftext.language.java.classifiers.ConcreteClassifier)
 				((org.emftext.language.java.types.ClassifierReference) ref).getTarget();
-		} else {
+		} else if (ref instanceof org.emftext.language.java.types.NamespaceClassifierReference) {
 			org.emftext.language.java.types.NamespaceClassifierReference nr =
 				(org.emftext.language.java.types.NamespaceClassifierReference) ref;
 			return (org.emftext.language.java.classifiers.ConcreteClassifier)
 				nr.getClassifierReferences().get(nr.getClassifierReferences().size() - 1).getTarget();
+		} else {
+			return null;
 		}
 	}
 	
