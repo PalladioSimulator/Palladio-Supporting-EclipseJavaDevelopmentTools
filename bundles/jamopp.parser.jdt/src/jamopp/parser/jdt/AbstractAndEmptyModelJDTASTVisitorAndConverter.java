@@ -17,6 +17,7 @@ import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.IBinding;
 import org.eclipse.jdt.core.dom.IMethodBinding;
+import org.eclipse.jdt.core.dom.IPackageBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.ImportDeclaration;
@@ -56,12 +57,17 @@ class AbstractAndEmptyModelJDTASTVisitorAndConverter extends ASTVisitor {
 		if (!importDecl.isOnDemand() && !importDecl.isStatic()) {
 			org.emftext.language.java.imports.ClassifierImport convertedImport =
 				org.emftext.language.java.imports.ImportsFactory.eINSTANCE.createClassifierImport();
-			ITypeBinding binding = (ITypeBinding) importDecl.getName().resolveBinding();
 			org.emftext.language.java.classifiers.Classifier proxy = null;
-			if (binding.isRecovered()) {
+			IBinding b = importDecl.getName().resolveBinding();
+			if (b instanceof IPackageBinding) {
 				proxy = JDTResolverUtility.getClass(importDecl.getName().getFullyQualifiedName());
 			} else {
-				proxy = JDTResolverUtility.getClassifier((ITypeBinding) importDecl.getName().resolveBinding());
+				ITypeBinding binding = (ITypeBinding) b;
+				if (binding.isRecovered()) {
+					proxy = JDTResolverUtility.getClass(importDecl.getName().getFullyQualifiedName());
+				} else {
+					proxy = JDTResolverUtility.getClassifier((ITypeBinding) importDecl.getName().resolveBinding());
+				}
 			}
 			convertedImport.setClassifier((org.emftext.language.java.classifiers.ConcreteClassifier) proxy);
 			BaseConverterUtility.convertToNamespacesAndSimpleNameAndSet(importDecl.getName(), convertedImport, proxy);
