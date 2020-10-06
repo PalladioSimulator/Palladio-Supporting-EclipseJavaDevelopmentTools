@@ -232,6 +232,9 @@ public class JDTResolverUtility {
 		builder.append("(");
 		for (ITypeBinding p : binding.getParameterTypes()) {
 			builder.append(convertToTypeName(p));
+			for (int i = 0; i < p.getDimensions(); i++) {
+				builder.append("[]");
+			}
 		}
 		builder.append(")");
 		if (builder.toString().equals("java.lang.Object::clone()") && binding.getReturnType().isArray()) {
