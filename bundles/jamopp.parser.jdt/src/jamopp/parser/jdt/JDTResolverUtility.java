@@ -363,8 +363,10 @@ public class JDTResolverUtility {
 					return null;
 				}
 				for (int i = 0; i < binding.getParameterTypes().length; i++) {
-					if (!convertToTypeName(binding.getParameterTypes()[i]).equals(
-						convertToTypeName(meth.getParameters().get(i + receiveOffset).getTypeReference()))) {
+					ITypeBinding currentParamType = binding.getParameterTypes()[i];
+					org.emftext.language.java.parameters.Parameter currentParam = meth.getParameters().get(i + receiveOffset);
+					if (!convertToTypeName(currentParamType).equals(convertToTypeName(currentParam.getTypeReference()))
+						|| currentParamType.getDimensions() != currentParam.getArrayDimension()) {
 						return null;
 					}
 				}
