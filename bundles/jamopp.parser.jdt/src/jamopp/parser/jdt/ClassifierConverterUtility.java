@@ -25,6 +25,8 @@ import org.eclipse.jdt.core.dom.EnumDeclaration;
 import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.IExtendedModifier;
+import org.eclipse.jdt.core.dom.IMethodBinding;
+import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.Initializer;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.Modifier;
@@ -120,7 +122,13 @@ class ClassifierConverterUtility {
 	@SuppressWarnings("unchecked")
 	private static org.emftext.language.java.members.Field convertToField(FieldDeclaration fieldDecl) {
 		VariableDeclarationFragment firstFragment = (VariableDeclarationFragment) fieldDecl.fragments().get(0);
-		org.emftext.language.java.members.Field result = JDTResolverUtility.getField(firstFragment.resolveBinding());
+		org.emftext.language.java.members.Field result;
+		IVariableBinding binding = firstFragment.resolveBinding();
+		if (binding != null) {
+			result = JDTResolverUtility.getField(binding);
+		} else {
+			result = JDTResolverUtility.getField(firstFragment.getName().getIdentifier());
+		}
 		BaseConverterUtility.convertToSimpleNameOnlyAndSet(firstFragment.getName(), result);
 		fieldDecl.modifiers().forEach(obj -> result.getAnnotationsAndModifiers().add(AnnotationInstanceOrModifierConverterUtility
 			.converToModifierOrAnnotationInstance((IExtendedModifier) obj)));
@@ -139,7 +147,13 @@ class ClassifierConverterUtility {
 	
 	@SuppressWarnings("unchecked")
 	private static org.emftext.language.java.members.AdditionalField convertToAdditionalField(VariableDeclarationFragment frag) {
-		org.emftext.language.java.members.AdditionalField result = JDTResolverUtility.getAdditionalField(frag.resolveBinding());
+		org.emftext.language.java.members.AdditionalField result;
+		IVariableBinding binding = frag.resolveBinding();
+		if (binding != null) {
+			result = JDTResolverUtility.getAdditionalField(frag.resolveBinding());
+		} else {
+			result = JDTResolverUtility.getAdditionalField(frag.getName().getIdentifier());
+		}
 		BaseConverterUtility.convertToSimpleNameOnlyAndSet(frag.getName(), result);
 		frag.extraDimensions().forEach(obj -> BaseConverterUtility.convertToArrayDimensionAfterAndSet((Dimension) obj, result));
 		if (frag.getInitializer() != null) {
@@ -212,7 +226,13 @@ class ClassifierConverterUtility {
 			LayoutInformationConverter.convertToMinimalLayoutInformation(result, methodDecl);
 			return result;
 		} else {
-			org.emftext.language.java.members.ClassMethod result = JDTResolverUtility.getClassMethod(methodDecl.resolveBinding());
+			org.emftext.language.java.members.ClassMethod result;
+			IMethodBinding binding = methodDecl.resolveBinding();
+			if (binding != null) {
+				result = JDTResolverUtility.getClassMethod(binding);
+			} else {
+				result = JDTResolverUtility.getClassMethod(methodDecl.getName().getIdentifier());
+			}
 			methodDecl.modifiers().forEach(obj -> result.getAnnotationsAndModifiers().add(AnnotationInstanceOrModifierConverterUtility
 				.converToModifierOrAnnotationInstance((IExtendedModifier) obj)));
 			methodDecl.typeParameters().forEach(obj -> result.getTypeParameters().add(convertToTypeParameter((TypeParameter) obj)));
