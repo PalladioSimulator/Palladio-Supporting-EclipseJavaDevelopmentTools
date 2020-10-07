@@ -3,6 +3,7 @@ package jamopp.parser.jdt;
 import java.util.HashMap;
 import java.util.HashSet;
 
+import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -864,6 +865,8 @@ public class JDTResolverUtility {
 		
 		typeBindToClass.values().forEach(clazz -> JavaClasspath.get().registerConcreteClassifier(clazz));
 		
+		escapeAllIdentifiers();
+		
 		modBindToMod.clear();
 		nameToPackage.clear();
 		typeBindToAnnot.clear();
@@ -1035,5 +1038,34 @@ public class JDTResolverUtility {
 		Resource newResource = resourceSet.createResource(URI.createHierarchicalURI("empty", "JaMoPP-Module", null,
 			new String[] {modName, "module-info.java"}, null, null));
 		newResource.getContents().add(module);
+	}
+	
+	private static void escapeAllIdentifiers() {
+		modBindToMod.values().forEach(JDTResolverUtility::escapeIdentifiers);
+		nameToPackage.values().forEach(JDTResolverUtility::escapeIdentifiers);
+		typeBindToAnnot.values().forEach(JDTResolverUtility::escapeIdentifiers);
+		typeBindToEnum.values().forEach(JDTResolverUtility::escapeIdentifiers);
+		typeBindToClass.values().forEach(JDTResolverUtility::escapeIdentifiers);
+		typeBindToInterface.values().forEach(JDTResolverUtility::escapeIdentifiers);
+	}
+	
+	private static void escapeIdentifiers(EObject obj) {
+		obj.eAllContents().forEachRemaining(JDTResolverUtility::escapeIdentifier);
+	}
+	
+	private static void escapeIdentifier(Notifier not) {
+		if (not instanceof org.emftext.language.java.commons.NamedElement) {
+			org.emftext.language.java.commons.NamedElement ele = (org.emftext.language.java.commons.NamedElement) not;
+			StringBuilder builder = new StringBuilder();
+			String name = ele.getName();
+			name.codePoints().forEach(i -> {
+				if (!Character.isAlphabetic(i)) {
+					builder.append("\\u" + Integer.toHexString(i));
+				} else {
+					builder.appendCodePoint(i);
+				}
+			});
+			ele.setName(builder.toString());
+		}
 	}
 }
