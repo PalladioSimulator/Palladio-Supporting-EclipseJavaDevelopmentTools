@@ -27,6 +27,7 @@ import org.apache.commons.compress.archivers.ArchiveStreamFactory;
 import org.apache.commons.compress.archivers.examples.Expander;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.emftext.language.java.test.AbstractJaMoPPTests;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import jamopp.parser.jdt.JaMoPPJDTParser;
@@ -38,6 +39,20 @@ public class BulkTest extends AbstractJaMoPPTests {
 	private final static String END_SRC = File.separator + "src";
 	private String inputFolder;
 	private String generalInputFolder;
+	
+	@BeforeClass
+	public static void setUpBeforeTests() {
+		try {
+			Files.walk(Paths.get(BASE_ZIP)).filter(Files::isRegularFile)
+				.filter(path -> path.endsWith("bin.jar") || path.endsWith("rt.jar")).forEach(path -> {
+					try {
+						Files.delete(path);
+					} catch (IOException e) {
+					}
+				});
+		} catch (IOException e) {
+		}
+	}
 	
 	@Test
 	public void testAndroMDA_3_3() {
@@ -158,7 +173,7 @@ public class BulkTest extends AbstractJaMoPPTests {
 
 	@Override
 	protected String getTestInputFolder() {
-		return generalInputFolder == null ? BASE_ZIP + inputFolder + END_SRC : generalInputFolder;
+		return generalInputFolder == null ? BASE_ZIP + inputFolder : generalInputFolder;
 	}
 	
 	private String getSrcZip() {
@@ -183,7 +198,7 @@ public class BulkTest extends AbstractJaMoPPTests {
 	private void decompressZipFile() {
 		Path file = Paths.get(getSrcZip());
 		if (Files.exists(file)) {
-			Path target = Paths.get(getTestInputFolder());
+			Path target = Paths.get(getTestInputFolder(), END_SRC);
 			if (Files.exists(target)) {
 				return;
 			}
