@@ -980,15 +980,15 @@ public class JDTResolverUtility {
 		if (potPack == pack) {
 			return;
 		}
-		if (pack.eResource() != null) {
-			return;
-		}
 		IPackageBinding binding = packageBindings.stream().filter(b -> packageName.equals(b.getName())).findFirst().orElse(null);
 		if (binding == null) {
 			pack.setName("");
 			pack.setModule(getModule(""));
 		} else {
 			JDTBindingConverterUtility.convertToPackage(binding);
+		}
+		if (pack.eResource() != null) {
+			return;
 		}
 		Resource newResource = resourceSet.createResource(URI.createHierarchicalURI("empty", "JaMoPP-Package", null,
 			new String[] {packageName, "package-info.java"}, null, null));
