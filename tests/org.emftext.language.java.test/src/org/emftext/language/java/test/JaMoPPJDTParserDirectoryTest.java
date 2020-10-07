@@ -34,7 +34,7 @@ public class JaMoPPJDTParserDirectoryTest extends AbstractJaMoPPTests {
 
 	@Override
 	protected boolean isExcludedFromReprintTest(String filename) {
-		return true;
+		return false;
 	}
 
 	@Override
