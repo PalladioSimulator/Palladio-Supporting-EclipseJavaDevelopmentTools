@@ -128,11 +128,12 @@ public class JaMoPPJDTParser implements JaMoPPParserAPI {
 		}, null);
 		TypeInstructionSeparationUtility.convertAll();
 		JDTResolverUtility.completeResolution();
-		for (int index = 0; index < this.resourceSet.getResources().size(); index++) {
-			Resource res = this.resourceSet.getResources().get(index);
+		for (Resource res : new ArrayList<>(this.resourceSet.getResources())) {
 			if (res.getContents().isEmpty()) {
-				this.resourceSet.getResources().remove(res);
-				index--;
+				try {
+					res.delete(this.resourceSet.getLoadOptions());
+				} catch (IOException e) {
+				}
 			}
 		}
 		return result;
