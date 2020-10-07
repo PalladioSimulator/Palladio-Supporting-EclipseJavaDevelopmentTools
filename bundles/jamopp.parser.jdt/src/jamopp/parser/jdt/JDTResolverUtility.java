@@ -1059,7 +1059,7 @@ public class JDTResolverUtility {
 			StringBuilder builder = new StringBuilder();
 			String name = ele.getName();
 			name.codePoints().forEach(i -> {
-				if (!Character.isAlphabetic(i)) {
+				if (i <= 0 || (Character.MIN_SURROGATE <= i && i <= Character.MAX_SURROGATE)) {
 					builder.append("\\u" + Integer.toHexString(i));
 				} else {
 					builder.appendCodePoint(i);
