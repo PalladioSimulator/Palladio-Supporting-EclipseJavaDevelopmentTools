@@ -112,8 +112,9 @@ class ClassifierConverterUtility {
 	
 	@SuppressWarnings("unchecked")
 	private static org.emftext.language.java.statements.Block convertToBlock(Initializer init) {
-		JDTResolverUtility.prepareNextUid();
-		org.emftext.language.java.statements.Block result = StatementConverterUtility.convertToBlock(init.getBody());
+		org.emftext.language.java.statements.Block result = org.emftext.language.java.statements.StatementsFactory.eINSTANCE.createBlock();
+		result.setName("");
+		TypeInstructionSeparationUtility.addInitializer(init.getBody(), result);
 		init.modifiers().forEach(obj -> result.getModifiers().add(AnnotationInstanceOrModifierConverterUtility
 			.convertToModifier((Modifier) obj)));
 		return result;
@@ -136,7 +137,7 @@ class ClassifierConverterUtility {
 		BaseConverterUtility.convertToArrayDimensionsAndSet(fieldDecl.getType(), result);
 		firstFragment.extraDimensions().forEach(obj -> BaseConverterUtility.convertToArrayDimensionAfterAndSet((Dimension) obj, result));
 		if (firstFragment.getInitializer() != null) {
-			result.setInitialValue(ExpressionConverterUtility.convertToExpression(firstFragment.getInitializer()));
+			TypeInstructionSeparationUtility.addField(firstFragment.getInitializer(), result);
 		}
 		for (int index = 1; index < fieldDecl.fragments().size(); index++) {
 			result.getAdditionalFields().add(convertToAdditionalField((VariableDeclarationFragment) fieldDecl.fragments().get(index)));
@@ -157,7 +158,7 @@ class ClassifierConverterUtility {
 		BaseConverterUtility.convertToSimpleNameOnlyAndSet(frag.getName(), result);
 		frag.extraDimensions().forEach(obj -> BaseConverterUtility.convertToArrayDimensionAfterAndSet((Dimension) obj, result));
 		if (frag.getInitializer() != null) {
-			result.setInitialValue(ExpressionConverterUtility.convertToExpression(frag.getInitializer()));
+			TypeInstructionSeparationUtility.addAdditionalField(frag.getInitializer(), result);
 		}
 		LayoutInformationConverter.convertToMinimalLayoutInformation(result, frag);
 		return result;
@@ -199,7 +200,7 @@ class ClassifierConverterUtility {
 			methodDecl.thrownExceptionTypes().forEach(obj -> result.getExceptions().add(
 				wrapInNamespaceClassifierReference(BaseConverterUtility.convertToTypeReference((Type) obj))));
 			if (methodDecl.getBody() != null) {
-				result.setStatement(StatementConverterUtility.convertToBlock(methodDecl.getBody()));
+				TypeInstructionSeparationUtility.addMethod(methodDecl.getBody(), result);
 			} else {
 				result.setStatement(org.emftext.language.java.statements.StatementsFactory.eINSTANCE.createEmptyStatement());
 			}
@@ -222,7 +223,7 @@ class ClassifierConverterUtility {
 			methodDecl.parameters().forEach(obj -> result.getParameters().add(convertToParameter((SingleVariableDeclaration) obj)));
 			methodDecl.thrownExceptionTypes().forEach(obj -> result.getExceptions().add(
 				wrapInNamespaceClassifierReference(BaseConverterUtility.convertToTypeReference((Type) obj))));
-			result.setBlock(StatementConverterUtility.convertToBlock(methodDecl.getBody()));
+			TypeInstructionSeparationUtility.addConstructor(methodDecl.getBody(), result);
 			LayoutInformationConverter.convertToMinimalLayoutInformation(result, methodDecl);
 			return result;
 		} else {
@@ -247,7 +248,7 @@ class ClassifierConverterUtility {
 			methodDecl.thrownExceptionTypes().forEach(obj -> result.getExceptions().add(
 				wrapInNamespaceClassifierReference(BaseConverterUtility.convertToTypeReference((Type) obj))));
 			if (methodDecl.getBody() != null) {
-				result.setStatement(StatementConverterUtility.convertToBlock(methodDecl.getBody()));
+				TypeInstructionSeparationUtility.addMethod(methodDecl.getBody(), result);
 			} else {
 				result.setStatement(org.emftext.language.java.statements.StatementsFactory.eINSTANCE.createEmptyStatement());
 			}
