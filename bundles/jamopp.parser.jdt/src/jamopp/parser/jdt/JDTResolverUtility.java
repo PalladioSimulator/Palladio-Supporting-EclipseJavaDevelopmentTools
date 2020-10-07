@@ -614,26 +614,8 @@ public class JDTResolverUtility {
 		return prefix + "::" + binding.getName() + "::" + binding.getVariableId();
 	}
 	
-	private static String convertToLocalVariableName(IVariableBinding binding, boolean register) {
-		if (binding == null) {
-			return "";
-		}
-		String prefix = "";
-		if (binding.getDeclaringMethod() != null) {
-			prefix = convertToMethodName(binding.getDeclaringMethod());
-		} else if (varBindToUid.containsKey(binding)) {
-			prefix = varBindToUid.get(binding) + "";
-		} else {
-			prefix = uid + "";
-			if (register) {
-				varBindToUid.put(binding, uid);
-			}
-		}
-		return prefix + "::" + binding.getName() + "::" + binding.getVariableId();
-	}
-	
 	static org.emftext.language.java.variables.LocalVariable getLocalVariable(IVariableBinding binding) {
-		String varName = convertToLocalVariableName(binding, true);
+		String varName = convertToParameterName(binding, true);
 		if (nameToLocVar.containsKey(varName)) {
 			return nameToLocVar.get(varName);
 		} else {
@@ -645,7 +627,7 @@ public class JDTResolverUtility {
 	}
 	
 	static org.emftext.language.java.variables.AdditionalLocalVariable getAdditionalLocalVariable(IVariableBinding binding) {
-		String varName = convertToLocalVariableName(binding, true);
+		String varName = convertToParameterName(binding, true);
 		if (nameToAddLocVar.containsKey(varName)) {
 			return nameToAddLocVar.get(varName);
 		} else {
@@ -721,12 +703,12 @@ public class JDTResolverUtility {
 			String paramName = convertToParameterName(binding, false);
 			if (nameToCatchParam.containsKey(paramName)) {
 				return nameToCatchParam.get(paramName);
-			}
-			String varName = convertToLocalVariableName(binding, false);
-			if (nameToLocVar.containsKey(varName)) {
-				return nameToLocVar.get(varName);
-			} else if (nameToAddLocVar.containsKey(varName)) {
-				return nameToAddLocVar.get(varName);
+			} else if (nameToLocVar.containsKey(paramName)) {
+				return nameToLocVar.get(paramName);
+			} else if (nameToAddLocVar.containsKey(paramName)) {
+				return nameToAddLocVar.get(paramName);
+			} else if (nameToOrdParam.containsKey(paramName)) {
+				return nameToOrdParam.get(paramName);
 			} else {
 				return getLocalVariable(binding);
 			}
