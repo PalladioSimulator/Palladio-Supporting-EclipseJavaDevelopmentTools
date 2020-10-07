@@ -173,7 +173,7 @@ class ClassifierConverterUtility {
 		BaseConverterUtility.convertToArrayDimensionsAndSet(annDecl.getType(), result);
 		BaseConverterUtility.convertToSimpleNameOnlyAndSet(annDecl.getName(), result);
 		if (annDecl.getDefault() != null) {
-			result.setDefaultValue(AnnotationInstanceOrModifierConverterUtility.convertToAnnotationValue(annDecl.getDefault()));
+			TypeInstructionSeparationUtility.addAnnotationMethod(annDecl.getDefault(), result);
 		}
 		result.setStatement(org.emftext.language.java.statements.StatementsFactory.eINSTANCE.createEmptyStatement());
 		LayoutInformationConverter.convertToMinimalLayoutInformation(result, annDecl);

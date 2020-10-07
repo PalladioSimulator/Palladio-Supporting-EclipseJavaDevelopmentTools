@@ -74,7 +74,7 @@ class AnnotationInstanceOrModifierConverterUtility {
 				.createSingleAnnotationParameter();
 			result.setParameter(param);
 			SingleMemberAnnotation singleAnnot = (SingleMemberAnnotation) annot;
-			param.setValue(convertToAnnotationValue(singleAnnot.getValue()));
+			TypeInstructionSeparationUtility.addSingleAnnotationParameter(singleAnnot.getValue(), param);
 		} else if (annot.isNormalAnnotation()) {
 			org.emftext.language.java.annotations.AnnotationParameterList param = org.emftext.language.java.annotations.AnnotationsFactory.eINSTANCE
 				.createAnnotationParameterList();
@@ -95,7 +95,7 @@ class AnnotationInstanceOrModifierConverterUtility {
 				}
 				BaseConverterUtility.convertToSimpleNameOnlyAndSet(memVal.getName(), methodProxy);
 				attrSet.setAttribute(methodProxy);
-				attrSet.setValue(convertToAnnotationValue(memVal.getValue()));
+				TypeInstructionSeparationUtility.addAnnotationAttributeSetting(memVal.getValue(), attrSet);
 				LayoutInformationConverter.convertToMinimalLayoutInformation(attrSet, memVal);
 				param.getSettings().add(attrSet);
 			});
