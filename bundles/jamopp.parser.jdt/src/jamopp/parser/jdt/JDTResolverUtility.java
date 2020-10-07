@@ -965,6 +965,7 @@ public class JDTResolverUtility {
 				org.emftext.language.java.classifiers.ConcreteClassifier parentClassifier =
 					(org.emftext.language.java.classifiers.ConcreteClassifier) getClassifier(typeBind.getDeclaringClass());
 				convertPureTypeBinding(convertToTypeName(typeBind.getDeclaringClass()), parentClassifier);
+				classifier.setPackage(getPackage(typeBind.getPackage()));
 			} else if (typeBind.isArray()) {
 				ITypeBinding elementType = typeBind.getElementType();
 				if (!elementType.isPrimitive() && !elementType.isTypeVariable()) {
