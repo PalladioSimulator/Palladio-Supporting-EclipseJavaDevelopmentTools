@@ -28,6 +28,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -259,8 +261,10 @@ public abstract class AbstractJaMoPPTests {
 		if (inputFile == null) {
 			return;
 		}
-		File input = new File(inputFile);
-		String outputFileName = calculateOutputFilename(input, input.getParentFile().getName(), outputFolderName);
+		Path input = Paths.get(inputFile);
+		Path localDir = Paths.get(".").toAbsolutePath();
+		String outputFileName = calculateOutputFilename(input.toFile(), localDir.relativize(input).getName(0).toString(),
+			outputFolderName);
 		File outputFile = prepareOutputFile(outputFileName);
 		
 		assertNoErrors(resource.getURI().toString(), resource);
@@ -353,11 +357,10 @@ public abstract class AbstractJaMoPPTests {
 	}
 
 	protected String calculateOutputFilename(File inputFile, String inputFolderName, String outputFolderName) {
-		File inputPath = new File("." + File.separator + inputFolderName);
-		int trimOffset = inputPath.getAbsolutePath().length();
-		File outputFolder = new File("." + File.separator + outputFolderName);
-		File outputFile = new File(outputFolder + File.separator
-				+ inputFile.getAbsolutePath().substring(trimOffset));
+		File inputPath = new File(".", inputFolderName);
+		int trimOffset = inputPath.getAbsolutePath().length() - inputFolderName.length() - 2;
+		File outputFolder = new File(".", outputFolderName);
+		File outputFile = new File(outputFolder, inputFile.getAbsolutePath().substring(trimOffset));
 		return outputFile.getAbsolutePath();
 	}
 
