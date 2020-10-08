@@ -59,23 +59,22 @@ class ClassifierConverterUtility {
 	
 	@SuppressWarnings("unchecked")
 	private static org.emftext.language.java.classifiers.ConcreteClassifier convertToClassOrInterface(TypeDeclaration typeDecl) {
-		org.emftext.language.java.classifiers.ConcreteClassifier result;
 		if (typeDecl.isInterface()) {
 			org.emftext.language.java.classifiers.Interface interfaceObj = JDTResolverUtility.getInterface(typeDecl.resolveBinding());
+			typeDecl.typeParameters().forEach(obj -> interfaceObj.getTypeParameters().add(convertToTypeParameter((TypeParameter) obj)));
 			typeDecl.superInterfaceTypes().forEach(obj -> interfaceObj.getExtends().add(BaseConverterUtility.convertToTypeReference((Type) obj)));
 			typeDecl.bodyDeclarations().forEach(obj -> interfaceObj.getMembers().add(convertToInterfaceMember((BodyDeclaration) obj)));
-			result = interfaceObj;
+			return interfaceObj;
 		} else {
 			org.emftext.language.java.classifiers.Class classObj = JDTResolverUtility.getClass(typeDecl.resolveBinding());
+			typeDecl.typeParameters().forEach(obj -> classObj.getTypeParameters().add(convertToTypeParameter((TypeParameter) obj)));
 			if (typeDecl.getSuperclassType() != null) {
 				classObj.setExtends(BaseConverterUtility.convertToTypeReference(typeDecl.getSuperclassType()));
 			}
 			typeDecl.superInterfaceTypes().forEach(obj -> classObj.getImplements().add(BaseConverterUtility.convertToTypeReference((Type) obj)));
 			typeDecl.bodyDeclarations().forEach(obj -> classObj.getMembers().add(convertToClassMember((BodyDeclaration) obj)));
-			result = classObj;
+			return classObj;
 		}
-		typeDecl.typeParameters().forEach(obj -> result.getTypeParameters().add(convertToTypeParameter((TypeParameter) obj)));
-		return result;
 	}
 	
 	@SuppressWarnings("unchecked")
