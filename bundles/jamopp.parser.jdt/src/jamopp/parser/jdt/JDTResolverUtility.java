@@ -671,11 +671,14 @@ public class JDTResolverUtility {
 	}
 	
 	static org.emftext.language.java.variables.LocalVariable getLocalVariable(IVariableBinding binding) {
-		String varName = convertToParameterName(binding, true);
+		variableBindings.add(binding);
+		return getLocalVariable(convertToParameterName(binding, true));
+	}
+	
+	static org.emftext.language.java.variables.LocalVariable getLocalVariable(String varName) {
 		if (nameToLocVar.containsKey(varName)) {
 			return nameToLocVar.get(varName);
 		} else {
-			variableBindings.add(binding);
 			org.emftext.language.java.variables.LocalVariable result = org.emftext.language.java.variables.VariablesFactory.eINSTANCE.createLocalVariable();
 			nameToLocVar.put(varName, result);
 			return result;
@@ -683,11 +686,14 @@ public class JDTResolverUtility {
 	}
 	
 	static org.emftext.language.java.variables.AdditionalLocalVariable getAdditionalLocalVariable(IVariableBinding binding) {
-		String varName = convertToParameterName(binding, true);
+		variableBindings.add(binding);
+		return getAdditionalLocalVariable(convertToParameterName(binding, true));
+	}
+	
+	static org.emftext.language.java.variables.AdditionalLocalVariable getAdditionalLocalVariable(String varName) {
 		if (nameToAddLocVar.containsKey(varName)) {
 			return nameToAddLocVar.get(varName);
 		} else {
-			variableBindings.add(binding);
 			org.emftext.language.java.variables.AdditionalLocalVariable result = org.emftext.language.java.variables.VariablesFactory.eINSTANCE.createAdditionalLocalVariable();
 			nameToAddLocVar.put(varName, result);
 			return result;
@@ -719,11 +725,14 @@ public class JDTResolverUtility {
 	}
 	
 	static org.emftext.language.java.parameters.CatchParameter getCatchParameter(IVariableBinding binding) {
-		String paramName = convertToParameterName(binding, true);
+		variableBindings.add(binding);
+		return getCatchParameter(convertToParameterName(binding, true));
+	}
+	
+	static org.emftext.language.java.parameters.CatchParameter getCatchParameter(String paramName) {
 		if (nameToCatchParam.containsKey(paramName)) {
 			return nameToCatchParam.get(paramName);
 		} else {
-			variableBindings.add(binding);
 			org.emftext.language.java.parameters.CatchParameter result = org.emftext.language.java.parameters.ParametersFactory.eINSTANCE.createCatchParameter();
 			nameToCatchParam.put(paramName, result);
 			return result;
