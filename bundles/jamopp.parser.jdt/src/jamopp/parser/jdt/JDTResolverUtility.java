@@ -113,11 +113,14 @@ public class JDTResolverUtility {
 	}
 	
 	static org.emftext.language.java.classifiers.Annotation getAnnotation(ITypeBinding binding) {
-		String annotName = convertToTypeName(binding);
+		typeBindings.add(binding);
+		return getAnnotation(convertToTypeName(binding));
+	}
+	
+	static org.emftext.language.java.classifiers.Annotation getAnnotation(String annotName) {
 		if (typeBindToAnnot.containsKey(annotName)) {
 			return typeBindToAnnot.get(annotName);
 		} else {
-			typeBindings.add(binding);
 			org.emftext.language.java.classifiers.Annotation result;
 			org.emftext.language.java.classifiers.ConcreteClassifier potClass = JavaClasspath.get().getConcreteClassifier(annotName);
 			if (potClass instanceof org.emftext.language.java.classifiers.Annotation) {
@@ -439,8 +442,10 @@ public class JDTResolverUtility {
 								continue outerLoop;
 							}
 							for (int i = 0; i < binding.getParameterTypes().length; i++) {
-								if (!convertToTypeName(binding.getParameterTypes()[i]).equals(
-									convertToTypeName(con.getParameters().get(i + receiveOffset).getTypeReference()))) {
+								ITypeBinding currentType = binding.getParameterTypes()[i];
+								org.emftext.language.java.parameters.Parameter currentParam = con.getParameters().get(i + receiveOffset);
+								if (!convertToTypeName(currentType).equals(convertToTypeName(currentParam.getTypeReference()))
+									|| currentType.getDimensions() != currentParam.getArrayDimension()) {
 									continue outerLoop;
 								}
 							}
@@ -457,6 +462,21 @@ public class JDTResolverUtility {
 				block.setName("");
 				result.setBlock(block);
 			}
+			methBindToConstr.put(methName, result);
+			return result;
+		}
+	}
+	
+	static org.emftext.language.java.members.Constructor getConstructor(String methName) {
+		if (methBindToConstr.containsKey(methName)) {
+			return methBindToConstr.get(methName);
+		} else {
+			org.emftext.language.java.members.Constructor result =
+				org.emftext.language.java.members.MembersFactory.eINSTANCE.createConstructor();
+			org.emftext.language.java.statements.Block block =
+				org.emftext.language.java.statements.StatementsFactory.eINSTANCE.createBlock();
+			block.setName("");
+			result.setBlock(block);
 			methBindToConstr.put(methName, result);
 			return result;
 		}
@@ -551,6 +571,16 @@ public class JDTResolverUtility {
 			if (result == null) {
 				result = org.emftext.language.java.members.MembersFactory.eINSTANCE.createEnumConstant();
 			}
+			nameToEnumConst.put(enumCN, result);
+			return result;
+		}
+	}
+	
+	static org.emftext.language.java.members.EnumConstant getEnumConstant(String enumCN) {
+		if (nameToEnumConst.containsKey(enumCN)) {
+			return nameToEnumConst.get(enumCN);
+		} else {
+			org.emftext.language.java.members.EnumConstant result = org.emftext.language.java.members.MembersFactory.eINSTANCE.createEnumConstant();
 			nameToEnumConst.put(enumCN, result);
 			return result;
 		}
@@ -758,7 +788,7 @@ public class JDTResolverUtility {
 			return enumConst;
 		}
 		org.emftext.language.java.members.Field field = nameToField.values().stream()
-			.filter(param -> param.getName().equals(name)).findFirst().orElse(null);
+			.filter(param -> param != null && param.getName().equals(name)).findFirst().orElse(null);
 		if (field != null) {
 			return field;
 		}

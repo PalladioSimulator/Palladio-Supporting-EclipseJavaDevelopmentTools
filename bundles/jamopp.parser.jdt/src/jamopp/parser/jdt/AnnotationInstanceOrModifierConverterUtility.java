@@ -17,6 +17,7 @@ import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.Annotation;
 import org.eclipse.jdt.core.dom.ArrayInitializer;
 import org.eclipse.jdt.core.dom.Expression;
+import org.eclipse.jdt.core.dom.IAnnotationBinding;
 import org.eclipse.jdt.core.dom.IExtendedModifier;
 import org.eclipse.jdt.core.dom.MemberValuePair;
 import org.eclipse.jdt.core.dom.Modifier;
@@ -67,7 +68,13 @@ class AnnotationInstanceOrModifierConverterUtility {
 	static org.emftext.language.java.annotations.AnnotationInstance convertToAnnotationInstance(Annotation annot) {
 		org.emftext.language.java.annotations.AnnotationInstance result = org.emftext.language.java.annotations.AnnotationsFactory.eINSTANCE.createAnnotationInstance();
 		BaseConverterUtility.convertToNamespacesAndSet(annot.getTypeName(), result);
-		org.emftext.language.java.classifiers.Annotation proxyClass = JDTResolverUtility.getAnnotation(annot.resolveAnnotationBinding().getAnnotationType());
+		org.emftext.language.java.classifiers.Annotation proxyClass;
+		IAnnotationBinding binding = annot.resolveAnnotationBinding();
+		if (binding == null) {
+			proxyClass = JDTResolverUtility.getAnnotation(annot.getTypeName().getFullyQualifiedName());
+		} else {
+			proxyClass = JDTResolverUtility.getAnnotation(binding.getAnnotationType()); 
+		}
 		result.setAnnotation(proxyClass);
 		if (annot.isSingleMemberAnnotation()) {
 			org.emftext.language.java.annotations.SingleAnnotationParameter param = org.emftext.language.java.annotations.AnnotationsFactory.eINSTANCE

@@ -63,7 +63,7 @@ class AbstractAndEmptyModelJDTASTVisitorAndConverter extends ASTVisitor {
 				proxy = JDTResolverUtility.getClass(importDecl.getName().getFullyQualifiedName());
 			} else {
 				ITypeBinding binding = (ITypeBinding) b;
-				if (binding.isRecovered()) {
+				if (binding == null || binding.isRecovered()) {
 					proxy = JDTResolverUtility.getClass(importDecl.getName().getFullyQualifiedName());
 				} else {
 					proxy = JDTResolverUtility.getClassifier((ITypeBinding) importDecl.getName().resolveBinding());

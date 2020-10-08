@@ -185,7 +185,13 @@ class ClassifierConverterUtility {
 		if (methodDecl.isConstructor()) {
 			return convertToClassMethodOrConstructor(methodDecl);
 		} else {
-			org.emftext.language.java.members.InterfaceMethod result = JDTResolverUtility.getInterfaceMethod(methodDecl.resolveBinding());
+			org.emftext.language.java.members.InterfaceMethod result;
+			IMethodBinding binding = methodDecl.resolveBinding();
+			if (binding == null) {
+				result = JDTResolverUtility.getInterfaceMethod(methodDecl.getName().getIdentifier());
+			} else {
+				result = JDTResolverUtility.getInterfaceMethod(binding);
+			}
 			methodDecl.modifiers().forEach(obj -> result.getAnnotationsAndModifiers().add(AnnotationInstanceOrModifierConverterUtility
 				.converToModifierOrAnnotationInstance((IExtendedModifier) obj)));
 			methodDecl.typeParameters().forEach(obj -> result.getTypeParameters().add(convertToTypeParameter((TypeParameter) obj)));
@@ -212,7 +218,13 @@ class ClassifierConverterUtility {
 	@SuppressWarnings("unchecked")
 	private static org.emftext.language.java.members.Member convertToClassMethodOrConstructor(MethodDeclaration methodDecl) {
 		if (methodDecl.isConstructor()) {
-			org.emftext.language.java.members.Constructor result = JDTResolverUtility.getConstructor(methodDecl.resolveBinding());
+			org.emftext.language.java.members.Constructor result;
+			IMethodBinding binding = methodDecl.resolveBinding();
+			if (binding == null) {
+				result = JDTResolverUtility.getConstructor(methodDecl.getName().getIdentifier());
+			} else {
+				result = JDTResolverUtility.getConstructor(binding);
+			}
 			methodDecl.modifiers().forEach(obj -> result.getAnnotationsAndModifiers().add(AnnotationInstanceOrModifierConverterUtility
 				.converToModifierOrAnnotationInstance((IExtendedModifier) obj)));
 			methodDecl.typeParameters().forEach(obj -> result.getTypeParameters().add(convertToTypeParameter((TypeParameter) obj)));
@@ -270,7 +282,13 @@ class ClassifierConverterUtility {
 	
 	@SuppressWarnings("unchecked")
 	private static org.emftext.language.java.members.EnumConstant convertToEnumConstant(EnumConstantDeclaration enDecl) {
-		org.emftext.language.java.members.EnumConstant result = JDTResolverUtility.getEnumConstant(enDecl.resolveVariable());
+		org.emftext.language.java.members.EnumConstant result;
+		IVariableBinding binding = enDecl.resolveVariable();
+		if (binding == null) {
+			result = JDTResolverUtility.getEnumConstant(enDecl.getName().getIdentifier());
+		} else {
+			result = JDTResolverUtility.getEnumConstant(binding);
+		}
 		enDecl.modifiers().forEach(obj -> result.getAnnotations().add(AnnotationInstanceOrModifierConverterUtility
 			.convertToAnnotationInstance((Annotation) obj)));
 		BaseConverterUtility.convertToSimpleNameOnlyAndSet(enDecl.getName(), result);
