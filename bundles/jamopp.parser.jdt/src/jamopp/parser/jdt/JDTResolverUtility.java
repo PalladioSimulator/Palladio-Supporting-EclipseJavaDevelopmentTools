@@ -44,6 +44,7 @@ public class JDTResolverUtility {
 	private static int uid = 0;
 	private static HashMap<IVariableBinding, Integer> varBindToUid = new HashMap<>();
 	private static HashSet<EObject> objVisited = new HashSet<>();
+	private static HashMap<IBinding, String> nameCache = new HashMap<>();
 	private final static String SYNTH_CLASS = "SyntheticContainerClass";
 	
 	static void setResourceSet(ResourceSet set) {
@@ -90,16 +91,21 @@ public class JDTResolverUtility {
 		if (binding == null) {
 			return "";
 		}
+		if (nameCache.containsKey(binding)) {
+			return nameCache.get(binding);
+		}
 		String qualifiedName;
 		if (binding.isMember()) {
 			qualifiedName = convertToTypeName(binding.getDeclaringClass()) + "." + binding.getName();
 		} else if (binding.isLocal()) {
 			IBinding b = binding.getDeclaringMember();
 			if (b instanceof IMethodBinding) {
-				return convertToMethodName((IMethodBinding) b) + "." + binding.getKey();
+				qualifiedName = convertToMethodName((IMethodBinding) b) + "." + binding.getKey();
 			}  else {
-				return convertToFieldName((IVariableBinding) b) + "." + binding.getKey();
+				qualifiedName = convertToFieldName((IVariableBinding) b) + "." + binding.getKey();
 			}
+			nameCache.put(binding, qualifiedName);
+			return qualifiedName;
 		} else {
 			qualifiedName = binding.getQualifiedName();
 		}
@@ -109,6 +115,7 @@ public class JDTResolverUtility {
 		if (qualifiedName.contains("[")) {
 			qualifiedName = qualifiedName.substring(0, qualifiedName.indexOf("["));
 		}
+		nameCache.put(binding, qualifiedName);
 		return qualifiedName;
 	}
 	
@@ -178,6 +185,9 @@ public class JDTResolverUtility {
 		if (binding == null) {
 			return "";
 		}
+		if (nameCache.containsKey(binding)) {
+			return nameCache.get(binding);
+		}
 		String name = "";
 		if (binding.getDeclaringClass() != null) {
 			name += convertToTypeName(binding.getDeclaringClass());
@@ -185,6 +195,7 @@ public class JDTResolverUtility {
 			name += convertToMethodName(binding.getDeclaringMethod());
 		}
 		name += "." + binding.getName();
+		nameCache.put(binding, name);
 		return name;
 	}
 	
@@ -229,6 +240,9 @@ public class JDTResolverUtility {
 		if (binding == null) {
 			return "";
 		}
+		if (nameCache.containsKey(binding)) {
+			return nameCache.get(binding);
+		}
 		binding = binding.getMethodDeclaration();
 		StringBuilder builder = new StringBuilder();
 		builder.append(convertToTypeName(binding.getDeclaringClass()));
@@ -247,7 +261,9 @@ public class JDTResolverUtility {
 		} else {
 			builder.append(convertToTypeName(binding.getReturnType()));
 		}
-		return builder.toString();
+		String name = builder.toString();
+		nameCache.put(binding, name);
+		return name;
 	}
 	
 	static org.emftext.language.java.members.InterfaceMethod getInterfaceMethod(String methodName) {
@@ -511,7 +527,12 @@ public class JDTResolverUtility {
 		if (binding == null || !binding.isField()) {
 			return "";
 		}
-		return convertToTypeName(binding.getDeclaringClass()) + "::" + binding.getName();
+		if (nameCache.containsKey(binding)) {
+			return nameCache.get(binding);
+		}
+		String name = convertToTypeName(binding.getDeclaringClass()) + "::" + binding.getName();
+		nameCache.put(binding, name);
+		return name;
 	}
 	
 	static org.emftext.language.java.members.Field getField(String name) {
@@ -630,6 +651,9 @@ public class JDTResolverUtility {
 		if (binding == null) {
 			return "";
 		}
+		if (nameCache.containsKey(binding)) {
+			return nameCache.get(binding);
+		}
 		String prefix = "";
 		if (binding.getDeclaringMethod() != null) {
 			prefix = convertToMethodName(binding.getDeclaringMethod());
@@ -641,7 +665,9 @@ public class JDTResolverUtility {
 				varBindToUid.put(binding, uid);
 			}
 		}
-		return prefix + "::" + binding.getName() + "::" + binding.getVariableId();
+		String name = prefix + "::" + binding.getName() + "::" + binding.getVariableId();
+		nameCache.put(binding, name);
+		return name;
 	}
 	
 	static org.emftext.language.java.variables.LocalVariable getLocalVariable(IVariableBinding binding) {
@@ -905,6 +931,7 @@ public class JDTResolverUtility {
 		uid = 0;
 		varBindToUid.clear();
 		objVisited.clear();
+		nameCache.clear();
 	}
 	
 	private static void completeMethod(String methodName, org.emftext.language.java.members.Member method) {
@@ -1072,8 +1099,8 @@ public class JDTResolverUtility {
 			StringBuilder builder = new StringBuilder();
 			String name = ele.getName();
 			name.codePoints().forEach(i -> {
-				if (i <= 0 || (Character.MIN_SURROGATE <= i && i <= Character.MAX_SURROGATE)) {
-					builder.append("\\u" + Integer.toHexString(i));
+				if (i <= 0x20 || (Character.MIN_SURROGATE <= i && i <= Character.MAX_SURROGATE)) {
+					builder.append("\\u" + String.format("%04x", i));
 				} else {
 					builder.appendCodePoint(i);
 				}
