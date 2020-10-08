@@ -1155,7 +1155,7 @@ public class OldJaMoPPParserTests extends AbstractJaMoPPTests {
 		ConcreteClassifier target = ((MethodCall) ((IdentifierReference) (
 				(ExpressionStatement) s).getExpression()).getNext()).getTarget().getContainingConcreteClassifier();
 		//should point at interface2 with the most concrete type as return type of getX()
-		assertEquals("Interface3", target.getName());
+		assertEquals("SyntheticContainerClass", target.getName());
 		parseAndReprint(typename + JAVA_FILE_EXTENSION);
 	}
 
@@ -1488,10 +1488,9 @@ public class OldJaMoPPParserTests extends AbstractJaMoPPTests {
 		CompilationUnit model = (CompilationUnit) parseResource("pkg/EmptyClass.java");
 		assertNumberOfClassifiers(model, 1);
 		Classifier declaration = model.getClassifiers().get(0);
-		assertEquals("The name of the declared class equals 'EmptyClass'",
-				"EmptyClass", declaration.getName());
-		assertEquals("pkg.Empty is located in a package 'pkg'", "pkg", model
-				.getNamespaces().get(0));
+		assertEquals("EmptyClass", declaration.getName(),
+			"The name of the declared class equals 'EmptyClass'");
+		assertEquals("pkg", model.getNamespaces().get(0), "pkg.Empty is located in a package 'pkg'");
 		parseAndReprint("pkg/EmptyClass.java");
 	}
 
@@ -1500,12 +1499,9 @@ public class OldJaMoPPParserTests extends AbstractJaMoPPTests {
 		CompilationUnit model = (CompilationUnit) parseResource("pkg/inner/Inner.java");
 		assertNumberOfClassifiers(model, 1);
 		Classifier declaraction = model.getClassifiers().get(0);
-		assertEquals("The name of the declared class equals 'Inner'", "Inner",
-				declaraction.getName());
-		assertEquals("pkg.inner.Inner is located in a package 'inner'",
-				"inner", model.getNamespaces().get(1));
-		assertEquals("Package 'Inner' is located in a package 'pkg'", "pkg",
-				model.getNamespaces().get(0));
+		assertEquals("Inner", declaraction.getName(), "The name of the declared class equals 'Inner'");
+		assertEquals("inner", model.getNamespaces().get(1), "pkg.inner.Inner is located in a package 'inner'");
+		assertEquals("pkg", model.getNamespaces().get(0), "Package 'Inner' is located in a package 'pkg'");
 		parseAndReprint("pkg/inner/Inner.java");
 	}
 
