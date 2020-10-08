@@ -21,7 +21,7 @@ import org.emftext.language.java.references.MethodCall;
 import org.emftext.language.java.references.ReferencesFactory;
 import org.emftext.language.java.statements.Return;
 import org.emftext.language.java.statements.StatementsFactory;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class Bug1818Test extends AbstractBugTestCase {
 	@Test

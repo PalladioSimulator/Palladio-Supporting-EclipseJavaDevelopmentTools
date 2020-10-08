@@ -15,7 +15,7 @@
  ******************************************************************************/
 package org.emftext.language.java.test.bulk;
 
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,8 +27,8 @@ import org.apache.commons.compress.archivers.ArchiveStreamFactory;
 import org.apache.commons.compress.archivers.examples.Expander;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.emftext.language.java.test.AbstractJaMoPPTests;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import jamopp.parser.jdt.JaMoPPJDTParser;
 
@@ -40,7 +40,7 @@ public class BulkTest extends AbstractJaMoPPTests {
 	private String inputFolder;
 	private String generalInputFolder;
 	
-	@BeforeClass
+	@BeforeAll
 	public static void setUpBeforeTests() {
 		try {
 			Files.walk(Paths.get(BASE_ZIP)).filter(Files::isRegularFile)

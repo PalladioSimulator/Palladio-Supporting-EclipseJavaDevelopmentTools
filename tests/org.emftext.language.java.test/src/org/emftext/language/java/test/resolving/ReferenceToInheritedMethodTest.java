@@ -17,7 +17,7 @@ package org.emftext.language.java.test.resolving;
 
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * A test for resolving method calls to the respective inherited method.
@@ -40,6 +40,7 @@ public class ReferenceToInheritedMethodTest extends AbstractResolverTestCase {
 	//needs to know each other in this test.
 	ResourceSet rs = new ResourceSetImpl();
 	
+	@Override
 	protected ResourceSet getResourceSet() {
 		rs.getLoadOptions().putAll(getLoadOptions());
 		return rs;

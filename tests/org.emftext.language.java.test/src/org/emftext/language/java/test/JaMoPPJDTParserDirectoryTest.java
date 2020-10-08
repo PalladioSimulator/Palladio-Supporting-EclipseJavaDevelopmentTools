@@ -2,8 +2,8 @@ package org.emftext.language.java.test;
 
 import java.nio.file.Paths;
 import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import jamopp.parser.jdt.JaMoPPJDTParser;
 
@@ -13,8 +13,9 @@ import jamopp.parser.jdt.JaMoPPJDTParser;
 public class JaMoPPJDTParserDirectoryTest extends AbstractJaMoPPTests {
 	private JaMoPPJDTParser parser;
 	
-	@Before
+	@BeforeEach
 	public void setUp() {
+		super.initResourceFactory();
 		parser = new JaMoPPJDTParser();
 	}
 	
