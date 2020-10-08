@@ -16,13 +16,14 @@
 
 package org.emftext.language.java.test.xmi;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.emf.common.util.URI;
@@ -38,49 +39,28 @@ import org.emftext.language.java.containers.CompilationUnit;
 import org.emftext.language.java.containers.JavaRoot;
 import org.emftext.language.java.containers.Package;
 import org.emftext.language.java.test.AbstractJaMoPPTests;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import jamopp.parser.jdt.JaMoPPJDTParser;
 
 public class JavaXMISerializationTest extends AbstractJaMoPPTests {
 
 	protected static final String TEST_INPUT_FOLDER_NAME = "src-input";
 	protected static final String TEST_OUTPUT_FOLDER_NAME = "output";
 	
-	// The following files can not be saved to XMI, because they contain
-	// characters XML (1.0) does not support.
-	protected static final String[] filesWithInvalidCharacters = new String [] {
-		"EscapedStrings.java", "UnicodeIdentifiers.java", "SpecialCharacters.java", 
-		"StaticImports.java", //because it depends on EscapedStrings
-		"MoreUnicodeCharacters.java", 
-		"ControlZ.java", "UnicodeSurrogateCharacters.java" //here the issue exists only in the layout information
-	};
-	
 	@Test
 	public void testXMISerialization() throws Exception {
 		File inputFolder = new File("./" + TEST_INPUT_FOLDER_NAME);
 		List<File> allTestFiles = collectAllFilesRecursive(inputFolder, "java");
-		
-		for (final File file : allTestFiles) {
-			if (!Arrays.asList(filesWithInvalidCharacters).contains(file.getName())) {
-				load(file);
-			}
-		}
+
+		JaMoPPJDTParser parser = new JaMoPPJDTParser();
+		parser.setResourceSet(getResourceSet());
+		parser.parseDirectory(inputFolder.toPath());
 
 		transferToXMI();
 		
 		for (final File file : allTestFiles) {
-			if (!Arrays.asList(filesWithInvalidCharacters).contains(file.getName())) {
-				compare(file);
-			}
-		}
-	}
-
-	private void load(final File file) {
-		try {
-			loadResource(file.getAbsolutePath());
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-			fail(e.getClass() +  ": " + e.getMessage());
+			compare(file);
 		}
 	}
 	
@@ -118,7 +98,8 @@ public class JavaXMISerializationTest extends AbstractJaMoPPTests {
 			}
 			File outputFile = new File("." + File.separator + TEST_OUTPUT_FOLDER_NAME + File.separator + outputFileName);
 			URI xmiFileURI = URI.createFileURI(outputFile.getAbsolutePath()).appendFileExtension("xmi");	
-			Resource xmiResource = rs.createResource(xmiFileURI);
+			XMIResource xmiResource = (XMIResource) rs.createResource(xmiFileURI);
+			xmiResource.setEncoding(StandardCharsets.UTF_8.toString());
 			xmiResource.getContents().addAll(javaResource.getContents());
 
 		}
@@ -136,13 +117,16 @@ public class JavaXMISerializationTest extends AbstractJaMoPPTests {
 	
 	protected void compare(File file) throws Exception {
 		ResourceSet rs = getResourceSet();
-		String outputXMIFileName = calculateOutputFilename(file,
-				getTestInputFolder(), TEST_OUTPUT_FOLDER);
+		String outputXMIFileName =
+			Paths.get(".", TEST_OUTPUT_FOLDER).resolve(Paths.get(getTestInputFolder()).relativize(file.toPath()))
+			.toAbsolutePath().toString();
 		URI xmiFileURI = URI.createFileURI(outputXMIFileName).trimFileExtension().appendFileExtension("xmi");
 		Resource xmiResource = rs.getResource(xmiFileURI, false);
+		if (xmiResource == null) {
+			System.out.println("h");
+		}
 		assertNotNull(xmiResource);
 		EObject root = xmiResource.getContents().get(0);
-		xmiResource.save(rs.getLoadOptions());
 		
 		//reload
 		ResourceSet reloadeSet = super.getResourceSet();
@@ -157,8 +141,7 @@ public class JavaXMISerializationTest extends AbstractJaMoPPTests {
 		for (Diagnostic d : reloadedResource.getErrors()) {
 			System.out.println(d.getMessage());
 		}
-		assertTrue("Parsed XMI contains errors", 
-				reloadedResource.getErrors().isEmpty());
+		assertTrue(reloadedResource.getErrors().isEmpty(), "Parsed XMI contains errors");
 		
 		EObject reloadedRoot = reloadedResource.getContents().get(0);
 	    EqualityHelper equalityHelper = new EqualityHelper() {
@@ -184,8 +167,7 @@ public class JavaXMISerializationTest extends AbstractJaMoPPTests {
 	    	}
 	    };
 	    
-	    assertTrue("Original and reloaded XMI are not equal",
-	    		equalityHelper.equals(root, reloadedRoot));
+	    assertTrue(equalityHelper.equals(root, reloadedRoot), "Original and reloaded XMI are not equal");
 	}
 	
 	private ResourceSet sharedRS;
