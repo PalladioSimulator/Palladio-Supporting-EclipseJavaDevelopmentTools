@@ -1,10 +1,8 @@
 package org.emftext.language.java.test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.nio.file.Paths;
-
-import static org.junit.Assert.assertEquals;
-
-import java.nio.file.Path;
 
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.emftext.language.java.classifiers.ConcreteClassifier;
@@ -13,9 +11,9 @@ import org.emftext.language.java.members.ClassMethod;
 import org.emftext.language.java.references.MethodCall;
 import org.emftext.language.java.statements.ExpressionStatement;
 import org.emftext.language.java.statements.Statement;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import jamopp.parser.jdt.JaMoPPJDTParser;
 
@@ -29,8 +27,9 @@ public class JaMoPPParserAPITest extends AbstractJaMoPPTests {
 	private static final String JAVA_FILE_EXTENSION = ".java";
 	protected static final String TEST_INPUT_FOLDER = "src-input";
 	
-	@Before
+	@BeforeEach
 	public void setUp() {
+		super.initResourceFactory();
 		parser = new JaMoPPJDTParser();
 		
 	}
@@ -39,7 +38,7 @@ public class JaMoPPParserAPITest extends AbstractJaMoPPTests {
 	//Bekomme ich aus dem resource set irgendwie wieder classifier raus? 
 	// oder die Assert Parser nutzen aus dem old JamoPP project? 
 	
-	@Ignore
+	@Disabled
 	public void testIsClass() throws Exception {
 		//ResourceSet set = parser.parseDirectory(Paths.get("scr-input/ClassA"));
 		//set.getResources().get(index)
@@ -51,13 +50,14 @@ public class JaMoPPParserAPITest extends AbstractJaMoPPTests {
 		//this.assertParsesToType(typename, "Class")
 	}
 	
-	@Ignore
+	@Disabled
 	void testNameOfClass() {
 		
 		//this.assertClassifierName(declaration, expectedName);
 	}
 	
-	@Test 
+	@Test
+	@Disabled
 	public void testMethodOverwriting()throws Exception {
 		//System.out.print("setup");
 		String filenameParent = "scr-input/ClassB" + JAVA_FILE_EXTENSION;
@@ -89,22 +89,19 @@ public class JaMoPPParserAPITest extends AbstractJaMoPPTests {
 	}
 	
 	
-	@Ignore
+	@Disabled
 	public void testSrcSevenAndUp() {
 		ResourceSet set = parser.parseDirectory(Paths.get("src-sevenandup"));
 		this.assertModelValid(set);
 	}
 
-	@Ignore
+	@Override
 	protected boolean isExcludedFromReprintTest(String filename) {
 		return true;
 	}
 
-	@Ignore
+	@Override
 	protected String getTestInputFolder() {
 		return "";
 	}
-
 }
-
-
