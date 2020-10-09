@@ -112,7 +112,6 @@ public class JavaXMISerializationTest extends AbstractJaMoPPTests {
 				}
 			}
 		}
-
 	}
 	
 	protected void compare(File file) throws Exception {
