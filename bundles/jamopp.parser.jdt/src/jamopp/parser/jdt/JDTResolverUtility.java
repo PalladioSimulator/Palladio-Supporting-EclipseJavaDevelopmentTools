@@ -786,7 +786,8 @@ public class JDTResolverUtility {
 		if (vBinding != null) {
 			return getReferencableElement(vBinding);
 		}
-		IMethodBinding mBinding = methodBindings.stream().filter(meth -> meth.getName().equals(name)).findFirst().orElse(null);
+		IMethodBinding mBinding = methodBindings.stream().filter(meth -> !meth.isConstructor() && meth.getName().equals(name))
+			.findFirst().orElse(null);
 		if (mBinding != null) {
 			return getMethod(mBinding);
 		}

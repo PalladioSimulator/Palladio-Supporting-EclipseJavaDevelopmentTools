@@ -171,10 +171,6 @@ class ReferenceConverterUtility {
 			} else {
 				proxy = JDTResolverUtility.getClassMethod(arr.getName().getIdentifier());
 				proxy.setName(arr.getName().getIdentifier());
-				org.emftext.language.java.statements.Block block = org.emftext.language.java.statements.StatementsFactory.eINSTANCE.createBlock();
-				block.setName("");
-				proxy.setStatement(block);
-				proxy.setTypeReference(org.emftext.language.java.types.TypesFactory.eINSTANCE.createVoid());
 			}
 			BaseConverterUtility.convertToSimpleNameOnlyAndSet(arr.getName(), proxy);
 			partTwo.setTarget(proxy);
@@ -244,7 +240,9 @@ class ReferenceConverterUtility {
 		org.emftext.language.java.references.IdentifierReference result = org.emftext.language.java.references.ReferencesFactory.eINSTANCE.createIdentifierReference();
 		IBinding b = name.resolveBinding();
 		org.emftext.language.java.references.ReferenceableElement target = null;
-		if (b instanceof ITypeBinding) {
+		if (b == null || b.isRecovered()) {
+			target = JDTResolverUtility.getReferenceableElementByNameMatching(name.getIdentifier());
+		} else if (b instanceof ITypeBinding) {
 			target = JDTResolverUtility.getClassifier((ITypeBinding) b);
 		} else if (b instanceof IVariableBinding) {
 			target = JDTResolverUtility.getReferencableElement((IVariableBinding) b);
