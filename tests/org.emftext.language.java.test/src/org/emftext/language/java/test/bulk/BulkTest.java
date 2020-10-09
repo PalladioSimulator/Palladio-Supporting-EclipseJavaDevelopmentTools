@@ -44,7 +44,8 @@ public class BulkTest extends AbstractJaMoPPTests {
 	public static void setUpBeforeTests() {
 		try {
 			Files.walk(Paths.get(BASE_ZIP)).filter(Files::isRegularFile)
-				.filter(path -> path.endsWith("bin.jar") || path.endsWith("rt.jar")).forEach(path -> {
+				.filter(path -> path.endsWith("bin.jar") || path.endsWith("rt.jar")
+						|| path.endsWith("jsse.jar")).forEach(path -> {
 					try {
 						Files.delete(path);
 					} catch (IOException e) {
