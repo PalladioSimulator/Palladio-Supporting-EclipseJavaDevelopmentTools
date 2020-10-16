@@ -719,11 +719,15 @@ public class JDTResolverUtility {
 	}
 	
 	static org.emftext.language.java.parameters.OrdinaryParameter getOrdinaryParameter(IVariableBinding binding) {
+		variableBindings.add(binding);
 		String paramName = convertToParameterName(binding, true);
+		return getOrdinaryParameter(paramName);
+	}
+	
+	static org.emftext.language.java.parameters.OrdinaryParameter getOrdinaryParameter(String paramName) {
 		if (nameToOrdParam.containsKey(paramName)) {
 			return nameToOrdParam.get(paramName);
 		} else {
-			variableBindings.add(binding);
 			org.emftext.language.java.parameters.OrdinaryParameter result = org.emftext.language.java.parameters.ParametersFactory.eINSTANCE.createOrdinaryParameter();
 			nameToOrdParam.put(paramName, result);
 			return result;

@@ -23,6 +23,7 @@ import org.eclipse.jdt.core.dom.ConditionalExpression;
 import org.eclipse.jdt.core.dom.CreationReference;
 import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.ExpressionMethodReference;
+import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.InfixExpression;
 import org.eclipse.jdt.core.dom.InstanceofExpression;
 import org.eclipse.jdt.core.dom.IntersectionType;
@@ -215,9 +216,17 @@ class ExpressionConverterUtility {
 				}
 				lambda.parameters().forEach(obj -> {
 					VariableDeclarationFragment frag = (VariableDeclarationFragment) obj;
-					org.emftext.language.java.parameters.OrdinaryParameter nextParam = JDTResolverUtility.getOrdinaryParameter(frag.resolveBinding());
+					IVariableBinding binding = frag.resolveBinding();
+					org.emftext.language.java.parameters.OrdinaryParameter nextParam;
+					if (binding != null) {
+						nextParam = JDTResolverUtility.getOrdinaryParameter(binding);
+						nextParam.setTypeReference(JDTBindingConverterUtility.convertToTypeReferences(
+							binding.getType()).get(0));
+					} else {
+						nextParam = JDTResolverUtility.getOrdinaryParameter(frag.getName().getIdentifier());
+						nextParam.setTypeReference(org.emftext.language.java.types.TypesFactory.eINSTANCE.createVoid());
+					}
 					nextParam.setName(frag.getName().getIdentifier());
-					nextParam.setTypeReference(JDTBindingConverterUtility.convertToTypeReferences(frag.resolveBinding().getType()).get(0));
 					param.getParameters().add(nextParam);
 				});
 				result.setParameters(param);
