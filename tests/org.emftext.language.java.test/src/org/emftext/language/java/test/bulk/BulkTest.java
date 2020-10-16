@@ -27,7 +27,6 @@ import org.apache.commons.compress.archivers.ArchiveStreamFactory;
 import org.apache.commons.compress.archivers.examples.Expander;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.emftext.language.java.test.AbstractJaMoPPTests;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import jamopp.parser.jdt.JaMoPPJDTParser;
@@ -39,21 +38,6 @@ public class BulkTest extends AbstractJaMoPPTests {
 	private final static String END_SRC = File.separator + "src";
 	private String inputFolder;
 	private String generalInputFolder;
-	
-	@BeforeAll
-	public static void setUpBeforeTests() {
-		try {
-			Files.walk(Paths.get(BASE_ZIP)).filter(Files::isRegularFile)
-				.filter(path -> path.endsWith("bin.jar") || path.endsWith("rt.jar")
-						|| path.endsWith("jsse.jar")).forEach(path -> {
-					try {
-						Files.delete(path);
-					} catch (IOException e) {
-					}
-				});
-		} catch (IOException e) {
-		}
-	}
 	
 	@Test
 	public void testAndroMDA_3_3() {
@@ -200,11 +184,20 @@ public class BulkTest extends AbstractJaMoPPTests {
 		Path file = Paths.get(getSrcZip());
 		if (Files.exists(file)) {
 			Path target = Paths.get(getTestInputFolder(), END_SRC);
-			if (Files.exists(target)) {
-				return;
-			}
 			try {
 				new Expander().expand(ArchiveStreamFactory.ZIP, file.toFile(), target.toFile());
+				Path start = Paths.get(getTestInputFolder());
+				Files.walk(start).filter(Files::isRegularFile)
+				.filter(path -> path.endsWith("bin.jar") || path.endsWith("rt.jar") || path.endsWith("jsse.jar")
+						|| start.relativize(path).toString().contains(File.separator + "test" + File.separator)
+						|| start.relativize(path).toString().contains(File.separator + "tests" + File.separator)
+						|| path.toAbsolutePath().toString().matches(".*?apache\\-tomcat\\-6\\.0\\.18.*?WEB\\-INF.*?Clock2\\.java"))
+				.forEach(path -> {
+					try {
+						Files.delete(path);
+					} catch (IOException e) {
+					}
+				});
 			} catch (IOException | ArchiveException e) {
 				fail(e.getMessage());
 			}
