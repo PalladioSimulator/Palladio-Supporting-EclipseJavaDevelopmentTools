@@ -188,11 +188,25 @@ public class BulkTest extends AbstractJaMoPPTests {
 	
 	private void testProject() {
 		JaMoPPJDTParser parser = new JaMoPPJDTParser();
-		Path target = null;
 		if (generalInputFolder == null) {
 			decompressZipFile();
 		}
-		target = Paths.get(getTestInputFolder());
+		Path target = Paths.get(getTestInputFolder());
+		try {
+			Files.walk(target).filter(Files::isRegularFile)
+			.filter(path -> path.endsWith("bin.jar") || path.endsWith("rt.jar") || path.endsWith("jsse.jar")
+					|| target.relativize(path).toString().contains(File.separator + "test" + File.separator)
+					|| target.relativize(path).toString().contains(File.separator + "tests" + File.separator)
+					|| path.toAbsolutePath().toString().matches(".*?apache\\-tomcat\\-6\\.0\\.18.*?WEB\\-INF.*?Clock2\\.java"))
+			.forEach(path -> {
+				try {
+					Files.delete(path);
+				} catch (IOException e) {
+				}
+			});
+		} catch (IOException e) {
+			fail(e.getMessage());
+		}
 		ResourceSet set = parser.parseDirectory(target);
 		try {
 			this.testReprint(set);
@@ -207,18 +221,6 @@ public class BulkTest extends AbstractJaMoPPTests {
 			Path target = Paths.get(getTestInputFolder(), END_SRC);
 			try {
 				new Expander().expand(ArchiveStreamFactory.ZIP, file.toFile(), target.toFile());
-				Path start = Paths.get(getTestInputFolder());
-				Files.walk(start).filter(Files::isRegularFile)
-				.filter(path -> path.endsWith("bin.jar") || path.endsWith("rt.jar") || path.endsWith("jsse.jar")
-						|| start.relativize(path).toString().contains(File.separator + "test" + File.separator)
-						|| start.relativize(path).toString().contains(File.separator + "tests" + File.separator)
-						|| path.toAbsolutePath().toString().matches(".*?apache\\-tomcat\\-6\\.0\\.18.*?WEB\\-INF.*?Clock2\\.java"))
-				.forEach(path -> {
-					try {
-						Files.delete(path);
-					} catch (IOException e) {
-					}
-				});
 			} catch (IOException | ArchiveException e) {
 				fail(e.getMessage());
 			}
