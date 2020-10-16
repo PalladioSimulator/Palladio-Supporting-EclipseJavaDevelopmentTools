@@ -7,3 +7,6 @@
 [submodule "tests/org.emftext.language.java.test/teammates"]
 	path = tests/org.emftext.language.java.test/teammates
 	url = https://github.com/TEAMMATES/teammates
+[submodule "tests/org.emftext.language.java.test/microservice"]
+	path = tests/org.emftext.language.java.test/microservice
+	url = https://github.com/ewolff/microservice
