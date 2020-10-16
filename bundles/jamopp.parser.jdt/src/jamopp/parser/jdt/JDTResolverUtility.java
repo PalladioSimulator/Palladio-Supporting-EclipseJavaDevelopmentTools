@@ -36,6 +36,7 @@ public class JDTResolverUtility {
 	private static HashMap<String, org.emftext.language.java.parameters.VariableLengthParameter> nameToVarLenParam = new HashMap<>();
 	private static HashMap<String, org.emftext.language.java.parameters.OrdinaryParameter> nameToOrdParam = new HashMap<>();
 	private static HashMap<String, org.emftext.language.java.parameters.CatchParameter> nameToCatchParam = new HashMap<>();
+	private static HashMap<String, org.emftext.language.java.classifiers.AnonymousClass> nameToAnonymousClass = new HashMap<>();
 	private static HashSet<IModuleBinding> moduleBindings = new HashSet<>();
 	private static HashSet<IPackageBinding> packageBindings = new HashSet<>();
 	private static HashSet<ITypeBinding> typeBindings = new HashSet<>();
@@ -104,8 +105,10 @@ public class JDTResolverUtility {
 			IBinding b = binding.getDeclaringMember();
 			if (b instanceof IMethodBinding) {
 				qualifiedName = convertToMethodName((IMethodBinding) b) + "." + binding.getKey();
-			}  else {
+			}  else if (b instanceof IVariableBinding) {
 				qualifiedName = convertToFieldName((IVariableBinding) b) + "." + binding.getKey();
+			} else {
+				qualifiedName = binding.getKey();
 			}
 			nameCache.put(binding, qualifiedName);
 			return qualifiedName;
@@ -220,7 +223,8 @@ public class JDTResolverUtility {
 		if (potClass != null) {
 			return potClass;
 		}
-		if (binding.isAnonymous()) {
+		if (binding.isAnonymous() || (binding.isLocal() && binding.getDeclaringMember() == null)
+				|| nameToAnonymousClass.containsKey(convertToTypeName(binding))) {
 			return null;
 		}
 		if (binding.isAnnotation()) {
@@ -522,6 +526,17 @@ public class JDTResolverUtility {
 				result = org.emftext.language.java.classifiers.ClassifiersFactory.eINSTANCE.createClass();
 			}
 			typeBindToClass.put(typeName, result);
+			return result;
+		}
+	}
+	
+	static org.emftext.language.java.classifiers.AnonymousClass getAnonymousClass(ITypeBinding binding) {
+		String typeName = convertToTypeName(binding);
+		if (nameToAnonymousClass.containsKey(typeName)) {
+			return nameToAnonymousClass.get(typeName);
+		} else {
+			org.emftext.language.java.classifiers.AnonymousClass result = org.emftext.language.java.classifiers.ClassifiersFactory.eINSTANCE.createAnonymousClass();
+			nameToAnonymousClass.put(typeName, result);
 			return result;
 		}
 	}
@@ -885,13 +900,20 @@ public class JDTResolverUtility {
 				IVariableBinding varBind = variableBindings.stream().filter(var -> var != null &&
 					fieldName.equals(convertToFieldName(var))).findFirst().get();
 				if (varBind == null || varBind.getDeclaringClass() == null) {
-					org.emftext.language.java.classifiers.Class container = getClass(SYNTH_CLASS);
-					container.setName(SYNTH_CLASS);
-					if (!container.getMembers().contains(field)) {
-						container.getMembers().add(field);
+					addToSyntheticClass(field);
+				} else {
+					org.emftext.language.java.classifiers.Classifier cla = getClassifier(varBind.getDeclaringClass());
+					if (cla == null) {
+						String typeName = convertToTypeName(varBind.getDeclaringClass());
+						if (nameToAnonymousClass.containsKey(typeName)) {
+							org.emftext.language.java.classifiers.AnonymousClass anonClass = nameToAnonymousClass.get(typeName);
+							if (!anonClass.getMembers().contains(field)) {
+								anonClass.getMembers().add(field);
+							}
+						} else {
+							addToSyntheticClass(field);
+						}
 					}
-				} else if (!varBind.getDeclaringClass().isAnonymous()) {
-					getClassifier(varBind.getDeclaringClass());
 				}
 			}
 		});
@@ -945,6 +967,7 @@ public class JDTResolverUtility {
 		varBindToUid.clear();
 		objVisited.clear();
 		nameCache.clear();
+		nameToAnonymousClass.clear();
 	}
 	
 	private static void completeMethod(String methodName, org.emftext.language.java.members.Member method) {
@@ -952,17 +975,29 @@ public class JDTResolverUtility {
 			IMethodBinding methBind = methodBindings.stream().filter(meth -> methodName.equals(convertToMethodName(meth)))
 				.findFirst().orElse(null);
 			if (methBind != null) {
-				if (methBind.getDeclaringClass().isAnonymous()) {
-					return;
+				org.emftext.language.java.classifiers.Classifier cla = getClassifier(methBind.getDeclaringClass());
+				if (cla == null) {
+					String typeName = convertToTypeName(methBind.getDeclaringClass());
+					if (nameToAnonymousClass.containsKey(typeName)) {
+						org.emftext.language.java.classifiers.AnonymousClass anonClass = nameToAnonymousClass.get(typeName);
+						if (!anonClass.getMembers().contains(method)) {
+							anonClass.getMembers().add(method);
+						}
+					} else {
+						addToSyntheticClass(method);
+					}
 				}
-				getClassifier(methBind.getDeclaringClass());
 			} else {
-				org.emftext.language.java.classifiers.Class container = getClass(SYNTH_CLASS);
-				container.setName(SYNTH_CLASS);
-				if (!container.getMembers().contains(method)) {
-					container.getMembers().add(method);
-				}
+				addToSyntheticClass(method);
 			}
+		}
+	}
+	
+	private static void addToSyntheticClass(org.emftext.language.java.members.Member member) {
+		org.emftext.language.java.classifiers.Class container = getClass(SYNTH_CLASS);
+		container.setName(SYNTH_CLASS);
+		if (!container.getMembers().contains(member)) {
+			container.getMembers().add(member);
 		}
 	}
 	

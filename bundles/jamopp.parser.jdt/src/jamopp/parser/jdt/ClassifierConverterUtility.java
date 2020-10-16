@@ -311,7 +311,7 @@ class ClassifierConverterUtility {
 	
 	@SuppressWarnings("unchecked")
 	static org.emftext.language.java.classifiers.AnonymousClass convertToAnonymousClass(AnonymousClassDeclaration anon) {
-		org.emftext.language.java.classifiers.AnonymousClass result = org.emftext.language.java.classifiers.ClassifiersFactory.eINSTANCE.createAnonymousClass();
+		org.emftext.language.java.classifiers.AnonymousClass result = JDTResolverUtility.getAnonymousClass(anon.resolveBinding());
 		anon.bodyDeclarations().forEach(obj -> result.getMembers().add(convertToClassMember((BodyDeclaration) obj)));
 		LayoutInformationConverter.convertToMinimalLayoutInformation(result, anon);
 		return result;
