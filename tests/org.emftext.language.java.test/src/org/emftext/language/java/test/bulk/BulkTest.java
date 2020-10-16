@@ -151,6 +151,27 @@ public class BulkTest extends AbstractJaMoPPTests {
 		testProject();
 	}
 	
+	@Test
+	public void testTeaStore() {
+		inputFolder = null;
+		generalInputFolder = "TeaStore";
+		testProject();
+	}
+	
+	@Test
+	public void testTeammates() {
+		inputFolder = null;
+		generalInputFolder = "teammates";
+		testProject();
+	}
+	
+	@Test
+	public void testMicroservice() {
+		inputFolder = null;
+		generalInputFolder = "microservice";
+		testProject();
+	}
+	
 	@Override
 	protected boolean isExcludedFromReprintTest(String filename) {
 		return false;
