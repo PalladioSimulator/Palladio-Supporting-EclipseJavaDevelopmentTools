@@ -4,3 +4,6 @@
 [submodule "tests/org.emftext.language.java.test/TeaStore"]
 	path = tests/org.emftext.language.java.test/TeaStore
 	url = https://github.com/DescartesResearch/TeaStore
+[submodule "tests/org.emftext.language.java.test/teammates"]
+	path = tests/org.emftext.language.java.test/teammates
+	url = https://github.com/TEAMMATES/teammates
