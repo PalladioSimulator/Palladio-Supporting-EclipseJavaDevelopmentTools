@@ -91,6 +91,9 @@ public class JDTResolverUtility {
 		if (binding == null) {
 			return "";
 		}
+		if (binding.isTypeVariable()) {
+			return binding.getName();
+		}
 		if (nameCache.containsKey(binding)) {
 			return nameCache.get(binding);
 		}
