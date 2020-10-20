@@ -119,9 +119,6 @@ public class JDTResolverUtility {
 		if (qualifiedName.contains("<")) {
 			qualifiedName = qualifiedName.substring(0, qualifiedName.indexOf("<"));
 		}
-		if (qualifiedName.contains("[")) {
-			qualifiedName = qualifiedName.substring(0, qualifiedName.indexOf("["));
-		}
 		nameCache.put(binding, qualifiedName);
 		return qualifiedName;
 	}
