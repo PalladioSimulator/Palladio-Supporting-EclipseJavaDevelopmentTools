@@ -186,11 +186,27 @@ public class BulkTest extends AbstractJaMoPPTests {
 		}
 		Path target = Paths.get(getTestInputFolder());
 		try {
+			String jacksPrefix = ".*?jacks\\_javac\\_1\\.6\\.0\\_07\\_passed.*?";
 			Files.walk(target).filter(Files::isRegularFile)
 			.filter(path -> path.endsWith("bin.jar") || path.endsWith("rt.jar") || path.endsWith("jsse.jar")
 					|| target.relativize(path).toString().contains(File.separator + "test" + File.separator)
 					|| target.relativize(path).toString().contains(File.separator + "tests" + File.separator)
-					|| path.toAbsolutePath().toString().matches(".*?apache\\-tomcat\\-6\\.0\\.18.*?WEB\\-INF.*?Clock2\\.java"))
+					|| path.toAbsolutePath().toString().matches(".*?apache\\-tomcat\\-6\\.0\\.18.*?WEB\\-INF.*?Clock2\\.java")
+					// Extensive filtering for the Jacks_1_6_0_07 test case because these files contain duplicated classes
+					// leading to false results.
+					|| path.toAbsolutePath().toString().matches(jacksPrefix + "QualifiedInterfaceMember\\.java")
+					|| path.toAbsolutePath().toString().matches(jacksPrefix + "T125r2\\.java")
+					|| path.toAbsolutePath().toString().matches(jacksPrefix + "T151222a13(a|b)\\.java")
+					|| path.toAbsolutePath().toString().matches(jacksPrefix + "T151222a(3|6a)\\.java")
+					|| path.toAbsolutePath().toString().matches(jacksPrefix + "T1585fe6\\.java")
+					|| path.toAbsolutePath().toString().matches(jacksPrefix + "T1585me(5|8)\\.java")
+					|| path.toAbsolutePath().toString().matches(jacksPrefix + "T1594rc4\\.java")
+					|| path.toAbsolutePath().toString().matches(jacksPrefix + "T71n4a\\.java")
+					|| path.toAbsolutePath().toString().matches(jacksPrefix + "T71n(5|6)a\\.java")
+					|| path.toAbsolutePath().toString().matches(jacksPrefix + "T71u4a\\.java")
+					|| path.toAbsolutePath().toString().matches(jacksPrefix + "T73(5|2)\\.java")
+					|| path.toAbsolutePath().toString().matches(jacksPrefix + "T813nc1\\.java")
+					|| path.toAbsolutePath().toString().matches(jacksPrefix + "T814c2a\\.java"))
 			.forEach(path -> {
 				try {
 					Files.delete(path);
