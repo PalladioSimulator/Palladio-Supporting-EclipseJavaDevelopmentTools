@@ -47,6 +47,7 @@ public class JDTResolverUtility {
 	private static HashSet<EObject> objVisited = new HashSet<>();
 	private static HashMap<IBinding, String> nameCache = new HashMap<>();
 	private final static String SYNTH_CLASS = "SyntheticContainerClass";
+	private final static boolean extractAdditionalInformationFromTypeBindings = true;
 	
 	static void setResourceSet(ResourceSet set) {
 		resourceSet = set;
@@ -888,13 +889,17 @@ public class JDTResolverUtility {
 		return JDTResolverUtility.getClass(name);
 	}
 	
+	@SuppressWarnings("unused")
 	static void completeResolution() {
 		nameToEnumConst.forEach((constName, enConst) -> {
 			if (enConst.eContainer() == null) {
 				IVariableBinding varBind = variableBindings.stream().filter(var -> var != null &&
 					constName.equals(convertToFieldName(var))).findFirst().get();
 				if (!varBind.getDeclaringClass().isAnonymous()) {
-					getEnumeration(varBind.getDeclaringClass());
+					var en = getEnumeration(varBind.getDeclaringClass());
+					if (!extractAdditionalInformationFromTypeBindings && !en.getConstants().contains(enConst)) {
+						en.getConstants().add(enConst);
+					}
 				}
 			}
 		});
@@ -916,6 +921,12 @@ public class JDTResolverUtility {
 							}
 						} else {
 							addToSyntheticClass(field);
+						}
+					} else if (!extractAdditionalInformationFromTypeBindings
+							&& cla instanceof org.emftext.language.java.classifiers.ConcreteClassifier) {
+						var i = (org.emftext.language.java.classifiers.ConcreteClassifier) cla;
+						if (!i.getMembers().contains(field)) {
+							i.getMembers().add(field);
 						}
 					}
 				}
@@ -974,6 +985,7 @@ public class JDTResolverUtility {
 		nameToAnonymousClass.clear();
 	}
 	
+	@SuppressWarnings("unused")
 	private static void completeMethod(String methodName, org.emftext.language.java.members.Member method) {
 		if (method.eContainer() == null) {
 			IMethodBinding methBind = methodBindings.stream().filter(meth -> methodName.equals(convertToMethodName(meth)))
@@ -989,6 +1001,12 @@ public class JDTResolverUtility {
 						}
 					} else {
 						addToSyntheticClass(method);
+					}
+				} else if (!extractAdditionalInformationFromTypeBindings
+						&& cla instanceof org.emftext.language.java.classifiers.ConcreteClassifier) {
+					var i = (org.emftext.language.java.classifiers.ConcreteClassifier) cla;
+					if(!i.getMembers().contains(method)) {
+						i.getMembers().add(method);
 					}
 				}
 			} else {
@@ -1051,7 +1069,7 @@ public class JDTResolverUtility {
 			}
 		} else {
 			if (typeBind.isTopLevel()) {
-				JDTBindingConverterUtility.convertToConcreteClassifier(typeBind);
+				JDTBindingConverterUtility.convertToConcreteClassifier(typeBind, extractAdditionalInformationFromTypeBindings);
 			} else if (typeBind.isNested()) {
 				org.emftext.language.java.classifiers.ConcreteClassifier parentClassifier =
 					(org.emftext.language.java.classifiers.ConcreteClassifier) getClassifier(typeBind.getDeclaringClass());

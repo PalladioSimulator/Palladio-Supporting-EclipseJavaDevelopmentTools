@@ -98,7 +98,8 @@ class JDTBindingConverterUtility {
 		}
 	}
 	
-	static org.emftext.language.java.classifiers.ConcreteClassifier convertToConcreteClassifier(ITypeBinding binding) {
+	static org.emftext.language.java.classifiers.ConcreteClassifier convertToConcreteClassifier(ITypeBinding binding,
+			boolean extractAdditionalInformation) {
 		binding = binding.getTypeDeclaration();
 		org.emftext.language.java.classifiers.ConcreteClassifier result = null;
 		if (binding.isAnnotation()) {
@@ -128,9 +129,11 @@ class JDTBindingConverterUtility {
 				for (ITypeBinding typeBind : binding.getInterfaces()) {
 					resultEnum.getImplements().addAll(convertToTypeReferences(typeBind));
 				}
-				for (IVariableBinding varBind : binding.getDeclaredFields()) {
-					if (varBind.isEnumConstant()) {
-						resultEnum.getConstants().add(convertToEnumConstant(varBind));
+				if (extractAdditionalInformation) {
+					for (IVariableBinding varBind : binding.getDeclaredFields()) {
+						if (varBind.isEnumConstant()) {
+							resultEnum.getConstants().add(convertToEnumConstant(varBind));
+						}
 					}
 				}
 			}
@@ -138,8 +141,10 @@ class JDTBindingConverterUtility {
 		}
 		result.setPackage(JDTResolverUtility.getPackage(binding.getPackage()));
 		if (result.eContainer() == null) {
-			for (IAnnotationBinding annotBind : binding.getAnnotations()) {
-				result.getAnnotationsAndModifiers().add(convertToAnnotationInstance(annotBind));
+			if (extractAdditionalInformation) {
+				for (IAnnotationBinding annotBind : binding.getAnnotations()) {
+					result.getAnnotationsAndModifiers().add(convertToAnnotationInstance(annotBind));
+				}
 			}
 			for (ITypeBinding typeBind : binding.getTypeParameters()) {
 				result.getTypeParameters().add(convertToTypeParameter(typeBind));
@@ -147,33 +152,35 @@ class JDTBindingConverterUtility {
 			result.getAnnotationsAndModifiers().addAll(convertToModifiers(binding.getModifiers()));
 			convertToNameAndSet(binding, result);
 		}
-		org.emftext.language.java.members.Member member;
-		for (IVariableBinding varBind : binding.getDeclaredFields()) {
-			if (varBind.isEnumConstant()) {
-				continue;
+		if (extractAdditionalInformation) {
+			org.emftext.language.java.members.Member member;
+			for (IVariableBinding varBind : binding.getDeclaredFields()) {
+				if (varBind.isEnumConstant()) {
+					continue;
+				}
+				member = convertToField(varBind);
+				if (!result.getMembers().contains(member)) {
+					result.getMembers().add(member);
+				}
 			}
-			member = convertToField(varBind);
-			if (!result.getMembers().contains(member)) {
-				result.getMembers().add(member);
+			for (IMethodBinding methBind : binding.getDeclaredMethods()) {
+				if (methBind.isDefaultConstructor()) {
+					continue;
+				}
+				if (methBind.isConstructor()) {
+					member = convertToConstructor(methBind);
+				} else {
+					member = convertToMethod(methBind);
+				}
+				if (!result.getMembers().contains(member)) {
+					result.getMembers().add(member);
+				}
 			}
-		}
-		for (IMethodBinding methBind : binding.getDeclaredMethods()) {
-			if (methBind.isDefaultConstructor()) {
-				continue;
-			}
-			if (methBind.isConstructor()) {
-				member = convertToConstructor(methBind);
-			} else {
-				member = convertToMethod(methBind);
-			}
-			if (!result.getMembers().contains(member)) {
-				result.getMembers().add(member);
-			}
-		}
-		for (ITypeBinding typeBind : binding.getDeclaredTypes()) {
-			member = convertToConcreteClassifier(typeBind);
-			if (!result.getMembers().contains(member)) {
-				result.getMembers().add(member);
+			for (ITypeBinding typeBind : binding.getDeclaredTypes()) {
+				member = convertToConcreteClassifier(typeBind, extractAdditionalInformation);
+				if (!result.getMembers().contains(member)) {
+					result.getMembers().add(member);
+				}
 			}
 		}
 		return result;
