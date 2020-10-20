@@ -138,13 +138,6 @@ public class BulkTest extends AbstractJaMoPPTests {
 	}
 	
 	@Test
-	public void testSunJDK_1_5_0_16() {
-		inputFolder = "sun_jdk_1.5.0_16";
-		generalInputFolder = null;
-		testProject();
-	}
-	
-	@Test
 	public void testXerces_2_9_1() {
 		inputFolder = "Xerces-J-2.9.1";
 		generalInputFolder = null;
