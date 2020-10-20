@@ -528,8 +528,7 @@ public class JDTResolverUtility {
 		}
 	}
 	
-	static org.emftext.language.java.classifiers.AnonymousClass getAnonymousClass(ITypeBinding binding) {
-		String typeName = convertToTypeName(binding);
+	static org.emftext.language.java.classifiers.AnonymousClass getAnonymousClass(String typeName) {
 		if (nameToAnonymousClass.containsKey(typeName)) {
 			return nameToAnonymousClass.get(typeName);
 		} else {
@@ -537,6 +536,11 @@ public class JDTResolverUtility {
 			nameToAnonymousClass.put(typeName, result);
 			return result;
 		}
+	}
+	
+	static org.emftext.language.java.classifiers.AnonymousClass getAnonymousClass(ITypeBinding binding) {
+		String typeName = convertToTypeName(binding);
+		return getAnonymousClass(typeName);
 	}
 	
 	private static String convertToFieldName(IVariableBinding binding) {

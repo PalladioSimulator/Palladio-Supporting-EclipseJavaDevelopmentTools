@@ -26,6 +26,7 @@ import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.IExtendedModifier;
 import org.eclipse.jdt.core.dom.IMethodBinding;
+import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.Initializer;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
@@ -311,7 +312,13 @@ class ClassifierConverterUtility {
 	
 	@SuppressWarnings("unchecked")
 	static org.emftext.language.java.classifiers.AnonymousClass convertToAnonymousClass(AnonymousClassDeclaration anon) {
-		org.emftext.language.java.classifiers.AnonymousClass result = JDTResolverUtility.getAnonymousClass(anon.resolveBinding());
+		ITypeBinding binding = anon.resolveBinding();
+		org.emftext.language.java.classifiers.AnonymousClass result;
+		if (binding != null) {
+			result = JDTResolverUtility.getAnonymousClass(binding);
+		} else {
+			result = JDTResolverUtility.getAnonymousClass("" + anon.hashCode());
+		}
 		anon.bodyDeclarations().forEach(obj -> result.getMembers().add(convertToClassMember((BodyDeclaration) obj)));
 		LayoutInformationConverter.convertToMinimalLayoutInformation(result, anon);
 		return result;
