@@ -166,7 +166,13 @@ class ClassifierConverterUtility {
 	
 	@SuppressWarnings("unchecked")
 	private static org.emftext.language.java.members.InterfaceMethod convertToInterfaceMethod(AnnotationTypeMemberDeclaration annDecl) {
-		org.emftext.language.java.members.InterfaceMethod result = JDTResolverUtility.getInterfaceMethod(annDecl.resolveBinding());
+		IMethodBinding binding = annDecl.resolveBinding();
+		org.emftext.language.java.members.InterfaceMethod result;
+		if (binding != null) {
+			result = JDTResolverUtility.getInterfaceMethod(annDecl.resolveBinding());
+		} else {
+			result = JDTResolverUtility.getInterfaceMethod(annDecl.getName().getIdentifier());
+		}
 		annDecl.modifiers().forEach(obj -> result.getAnnotationsAndModifiers().add(AnnotationInstanceOrModifierConverterUtility
 			.converToModifierOrAnnotationInstance((IExtendedModifier) obj)));
 		result.setTypeReference(BaseConverterUtility.convertToTypeReference(annDecl.getType()));

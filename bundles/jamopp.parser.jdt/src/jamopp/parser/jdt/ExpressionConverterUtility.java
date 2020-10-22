@@ -223,7 +223,7 @@ class ExpressionConverterUtility {
 						nextParam.setTypeReference(JDTBindingConverterUtility.convertToTypeReferences(
 							binding.getType()).get(0));
 					} else {
-						nextParam = JDTResolverUtility.getOrdinaryParameter(frag.getName().getIdentifier());
+						nextParam = JDTResolverUtility.getOrdinaryParameter(frag.getName().getIdentifier() + frag.hashCode());
 						nextParam.setTypeReference(org.emftext.language.java.types.TypesFactory.eINSTANCE.createVoid());
 					}
 					nextParam.setName(frag.getName().getIdentifier());

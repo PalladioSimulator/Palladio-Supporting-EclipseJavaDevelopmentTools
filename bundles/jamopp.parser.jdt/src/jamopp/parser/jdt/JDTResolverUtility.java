@@ -685,7 +685,7 @@ public class JDTResolverUtility {
 				varBindToUid.put(binding, uid);
 			}
 		}
-		String name = prefix + "::" + binding.getName() + "::" + binding.getVariableId();
+		String name = prefix + "::" + binding.getName() + "::" + binding.getVariableId() + binding.hashCode();
 		nameCache.put(binding, name);
 		return name;
 	}
@@ -908,7 +908,7 @@ public class JDTResolverUtility {
 		nameToField.forEach((fieldName, field) -> {
 			if (field.eContainer() == null) {
 				IVariableBinding varBind = variableBindings.stream().filter(var -> var != null &&
-					fieldName.equals(convertToFieldName(var))).findFirst().get();
+					fieldName.equals(convertToFieldName(var))).findFirst().orElse(null);
 				if (varBind == null || varBind.getDeclaringClass() == null) {
 					addToSyntheticClass(field);
 				} else {
