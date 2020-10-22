@@ -103,13 +103,6 @@ public class BulkTest extends AbstractJaMoPPTests {
 	}
 	
 	@Test
-	public void testJDTTestFiles() {
-		inputFolder = "jdt_test_files";
-		generalInputFolder = null;
-		testProject();
-	}
-	
-	@Test
 	public void testMantissa_7_2() {
 		inputFolder = "mantissa-7.2";
 		generalInputFolder = null;
