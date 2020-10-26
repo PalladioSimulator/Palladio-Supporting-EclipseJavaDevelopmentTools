@@ -158,6 +158,13 @@ public class BulkTest extends AbstractJaMoPPTests {
 		testProject();
 	}
 	
+	@Test
+	public void testESDA() {
+		inputFolder = null;
+		generalInputFolder = "esda";
+		testProject();
+	}
+	
 	@Override
 	protected boolean isExcludedFromReprintTest(String filename) {
 		return false;
