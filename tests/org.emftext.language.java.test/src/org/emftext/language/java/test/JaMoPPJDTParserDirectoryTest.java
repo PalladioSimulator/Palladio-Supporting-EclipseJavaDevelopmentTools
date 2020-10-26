@@ -3,6 +3,7 @@ package org.emftext.language.java.test;
 import java.nio.file.Paths;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import jamopp.parser.jdt.JaMoPPJDTParser;
@@ -27,6 +28,7 @@ public class JaMoPPJDTParserDirectoryTest extends AbstractJaMoPPTests {
 	}
 	
 	@Test
+	@Disabled("JDT puts break statements into Blocks on the right side of a SwitchRule.")
 	public void testSrcSevenAndUp() throws Exception {
 		ResourceSet set = parser.parseDirectory(Paths.get("src-sevenandup"));
 		this.assertModelValid(set);
