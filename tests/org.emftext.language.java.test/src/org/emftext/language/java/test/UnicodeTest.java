@@ -16,8 +16,8 @@
 
 package org.emftext.language.java.test;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
 import java.util.Collections;
@@ -26,7 +26,7 @@ import java.util.Map;
 import jamopp.resource.JavaResource2;
 
 import org.eclipse.emf.common.util.URI;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * A separate test case for the input files that contain Unicode escape
@@ -61,7 +61,7 @@ public class UnicodeTest extends AbstractJaMoPPTests {
 		String filename = File.separator + typename + ".java";
 		File inputFolder = new File("./" + getTestInputFolder());
 		File file = new File(inputFolder, filename);
-		assertTrue("File " + file + " should exist.", file.exists());
+		assertTrue(file.exists(), "File " + file + " should exist.");
 		URI fileURI = URI.createFileURI(file.getAbsolutePath());
 		JavaResource2 resource = (JavaResource2) getResourceSet().createResource(fileURI);
 		resource.load(loadOptions);

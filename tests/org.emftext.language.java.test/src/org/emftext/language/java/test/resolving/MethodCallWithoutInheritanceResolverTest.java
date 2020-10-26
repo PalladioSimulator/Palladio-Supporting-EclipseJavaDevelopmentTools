@@ -15,24 +15,19 @@
  ******************************************************************************/
 package org.emftext.language.java.test.resolving;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.List;
 
 import org.emftext.language.java.members.ClassMethod;
 import org.emftext.language.java.members.Member;
 import org.emftext.language.java.statements.Statement;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * A test for resolving method calls to the respective method.
  */
 public class MethodCallWithoutInheritanceResolverTest extends AbstractResolverTestCase {
-
-	@Before
-	public void setUp() {
-	}
 
 	@Test
 	public void testReferencing() throws Exception {

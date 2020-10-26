@@ -16,7 +16,8 @@
 
 package org.emftext.language.java.test.bugs;
 
-import static org.junit.Assert.assertTrue;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -27,7 +28,7 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.emftext.language.java.classifiers.ClassifiersFactory;
 import org.emftext.language.java.containers.CompilationUnit;
 import org.emftext.language.java.containers.ContainersFactory;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class Bug1819Test extends AbstractBugTestCase {
 	@Test

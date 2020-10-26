@@ -13,11 +13,11 @@
 
 package org.emftext.language.java.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
 
@@ -58,8 +58,8 @@ import org.emftext.language.java.statements.YieldStatement;
 import org.emftext.language.java.types.InferableType;
 import org.emftext.language.java.types.Int;
 import org.emftext.language.java.types.TypeReference;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test class for the features of Java 7+.
@@ -436,7 +436,7 @@ public class JavaSevenAndUpTest extends AbstractJaMoPPTests {
 		}
 	}
 	
-	@Ignore("JDT puts break statements into Blocks on the right side of a SwitchRule.")
+	@Disabled("JDT puts break statements into Blocks on the right side of a SwitchRule.")
 	@Test
 	public void testSimpleClassWithSwitch() {
 		try {

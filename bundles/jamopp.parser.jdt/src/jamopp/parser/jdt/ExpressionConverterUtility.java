@@ -23,6 +23,7 @@ import org.eclipse.jdt.core.dom.ConditionalExpression;
 import org.eclipse.jdt.core.dom.CreationReference;
 import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.ExpressionMethodReference;
+import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.InfixExpression;
 import org.eclipse.jdt.core.dom.InstanceofExpression;
 import org.eclipse.jdt.core.dom.IntersectionType;
@@ -55,45 +56,70 @@ class ExpressionConverterUtility {
 		} else if (expr.getNodeType() == ASTNode.INFIX_EXPRESSION) {
 			InfixExpression infix = (InfixExpression) expr;
 			if (infix.getOperator() == InfixExpression.Operator.CONDITIONAL_OR) {
-				org.emftext.language.java.expressions.ConditionalOrExpression result = org.emftext.language.java.expressions.ExpressionsFactory
-					.eINSTANCE.createConditionalOrExpression();
-				result.getChildren().add((org.emftext.language.java.expressions.ConditionalOrExpressionChild) convertToExpression(infix.getLeftOperand()));
+				org.emftext.language.java.expressions.ConditionalOrExpression result;
+				org.emftext.language.java.expressions.Expression ex = convertToExpression(infix.getLeftOperand());
+				if (ex instanceof org.emftext.language.java.expressions.ConditionalOrExpression) {
+					result = (org.emftext.language.java.expressions.ConditionalOrExpression) ex;
+				} else {
+					result = org.emftext.language.java.expressions.ExpressionsFactory.eINSTANCE.createConditionalOrExpression();
+					result.getChildren().add((org.emftext.language.java.expressions.ConditionalOrExpressionChild) ex);
+				}
 				result.getChildren().add((org.emftext.language.java.expressions.ConditionalOrExpressionChild) convertToExpression(infix.getRightOperand()));
 				infix.extendedOperands().forEach(obj -> result.getChildren().add((org.emftext.language.java.expressions.ConditionalOrExpressionChild)
 					convertToExpression((Expression) obj)));
 				LayoutInformationConverter.convertToMinimalLayoutInformation(result, infix);
 				return result;
 			} else if (infix.getOperator() == InfixExpression.Operator.CONDITIONAL_AND) {
-				org.emftext.language.java.expressions.ConditionalAndExpression result = org.emftext.language.java.expressions.ExpressionsFactory
-					.eINSTANCE.createConditionalAndExpression();
-				result.getChildren().add((org.emftext.language.java.expressions.ConditionalAndExpressionChild) convertToExpression(infix.getLeftOperand()));
+				org.emftext.language.java.expressions.ConditionalAndExpression result;
+				org.emftext.language.java.expressions.Expression ex = convertToExpression(infix.getLeftOperand());
+				if (ex instanceof org.emftext.language.java.expressions.ConditionalAndExpression) {
+					result = (org.emftext.language.java.expressions.ConditionalAndExpression) ex;
+				} else {
+					result = org.emftext.language.java.expressions.ExpressionsFactory.eINSTANCE.createConditionalAndExpression();
+					result.getChildren().add((org.emftext.language.java.expressions.ConditionalAndExpressionChild) ex);
+				}
 				result.getChildren().add((org.emftext.language.java.expressions.ConditionalAndExpressionChild) convertToExpression(infix.getRightOperand()));
 				infix.extendedOperands().forEach(obj -> result.getChildren().add((org.emftext.language.java.expressions.ConditionalAndExpressionChild)
 					convertToExpression((Expression) obj)));
 				LayoutInformationConverter.convertToMinimalLayoutInformation(result, infix);
 				return result;
 			} else if (infix.getOperator() == InfixExpression.Operator.OR) {
-				org.emftext.language.java.expressions.InclusiveOrExpression result = org.emftext.language.java.expressions.ExpressionsFactory
-					.eINSTANCE.createInclusiveOrExpression();
-				result.getChildren().add((org.emftext.language.java.expressions.InclusiveOrExpressionChild) convertToExpression(infix.getLeftOperand()));
+				org.emftext.language.java.expressions.InclusiveOrExpression result;
+				org.emftext.language.java.expressions.Expression ex = convertToExpression(infix.getLeftOperand());
+				if (ex instanceof org.emftext.language.java.expressions.InclusiveOrExpression) {
+					result = (org.emftext.language.java.expressions.InclusiveOrExpression) ex;
+				} else {
+					result = org.emftext.language.java.expressions.ExpressionsFactory.eINSTANCE.createInclusiveOrExpression();
+					result.getChildren().add((org.emftext.language.java.expressions.InclusiveOrExpressionChild) ex);
+				}
 				result.getChildren().add((org.emftext.language.java.expressions.InclusiveOrExpressionChild) convertToExpression(infix.getRightOperand()));
 				infix.extendedOperands().forEach(obj -> result.getChildren().add((org.emftext.language.java.expressions.InclusiveOrExpressionChild)
 					convertToExpression((Expression) obj)));
 				LayoutInformationConverter.convertToMinimalLayoutInformation(result, infix);
 				return result;
 			} else if (infix.getOperator() == InfixExpression.Operator.XOR) {
-				org.emftext.language.java.expressions.ExclusiveOrExpression result = org.emftext.language.java.expressions.ExpressionsFactory
-					.eINSTANCE.createExclusiveOrExpression();
-				result.getChildren().add((org.emftext.language.java.expressions.ExclusiveOrExpressionChild) convertToExpression(infix.getLeftOperand()));
+				org.emftext.language.java.expressions.ExclusiveOrExpression result;
+				org.emftext.language.java.expressions.Expression ex = convertToExpression(infix.getLeftOperand());
+				if (ex instanceof org.emftext.language.java.expressions.ExclusiveOrExpression) {
+					result = (org.emftext.language.java.expressions.ExclusiveOrExpression) ex;
+				} else {
+					result = org.emftext.language.java.expressions.ExpressionsFactory.eINSTANCE.createExclusiveOrExpression();
+					result.getChildren().add((org.emftext.language.java.expressions.ExclusiveOrExpressionChild) ex);
+				}
 				result.getChildren().add((org.emftext.language.java.expressions.ExclusiveOrExpressionChild) convertToExpression(infix.getRightOperand()));
 				infix.extendedOperands().forEach(obj -> result.getChildren().add((org.emftext.language.java.expressions.ExclusiveOrExpressionChild)
 					convertToExpression((Expression) obj)));
 				LayoutInformationConverter.convertToMinimalLayoutInformation(result, infix);
 				return result;
 			} else if (infix.getOperator() == InfixExpression.Operator.AND) {
-				org.emftext.language.java.expressions.AndExpression result = org.emftext.language.java.expressions.ExpressionsFactory
-					.eINSTANCE.createAndExpression();
-				result.getChildren().add((org.emftext.language.java.expressions.AndExpressionChild) convertToExpression(infix.getLeftOperand()));
+				org.emftext.language.java.expressions.AndExpression result;
+				org.emftext.language.java.expressions.Expression ex = convertToExpression(infix.getLeftOperand());
+				if (ex instanceof org.emftext.language.java.expressions.AndExpression) {
+					result = (org.emftext.language.java.expressions.AndExpression) ex;
+				} else {
+					result = org.emftext.language.java.expressions.ExpressionsFactory.eINSTANCE.createAndExpression();
+					result.getChildren().add((org.emftext.language.java.expressions.AndExpressionChild) ex);					
+				}
 				result.getChildren().add((org.emftext.language.java.expressions.AndExpressionChild) convertToExpression(infix.getRightOperand()));
 				infix.extendedOperands().forEach(obj -> result.getChildren().add((org.emftext.language.java.expressions.AndExpressionChild)
 					convertToExpression((Expression) obj)));
@@ -190,9 +216,17 @@ class ExpressionConverterUtility {
 				}
 				lambda.parameters().forEach(obj -> {
 					VariableDeclarationFragment frag = (VariableDeclarationFragment) obj;
-					org.emftext.language.java.parameters.OrdinaryParameter nextParam = JDTResolverUtility.getOrdinaryParameter(frag.resolveBinding());
+					IVariableBinding binding = frag.resolveBinding();
+					org.emftext.language.java.parameters.OrdinaryParameter nextParam;
+					if (binding != null) {
+						nextParam = JDTResolverUtility.getOrdinaryParameter(binding);
+						nextParam.setTypeReference(JDTBindingConverterUtility.convertToTypeReferences(
+							binding.getType()).get(0));
+					} else {
+						nextParam = JDTResolverUtility.getOrdinaryParameter(frag.getName().getIdentifier() + frag.hashCode());
+						nextParam.setTypeReference(org.emftext.language.java.types.TypesFactory.eINSTANCE.createVoid());
+					}
 					nextParam.setName(frag.getName().getIdentifier());
-					nextParam.setTypeReference(JDTBindingConverterUtility.convertToTypeReferences(frag.resolveBinding().getType()).get(0));
 					param.getParameters().add(nextParam);
 				});
 				result.setParameters(param);

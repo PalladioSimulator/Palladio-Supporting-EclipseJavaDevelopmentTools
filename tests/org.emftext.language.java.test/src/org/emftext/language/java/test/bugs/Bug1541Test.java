@@ -15,7 +15,8 @@
  ******************************************************************************/
 package org.emftext.language.java.test.bugs;
 
-import static org.junit.Assert.assertTrue;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -32,7 +33,7 @@ import org.emftext.language.java.statements.Block;
 import org.emftext.language.java.statements.Return;
 import org.emftext.language.java.statements.StatementsFactory;
 import org.emftext.language.java.types.TypesFactory;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class Bug1541Test extends AbstractBugTestCase {
 

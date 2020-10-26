@@ -16,9 +16,9 @@
 
 package org.emftext.language.java.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -28,6 +28,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -71,7 +73,7 @@ import org.emftext.language.java.members.MemberContainer;
 import org.emftext.language.java.members.Method;
 import org.emftext.language.java.modifiers.Public;
 import org.emftext.language.java.types.NamespaceClassifierReference;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 import jamopp.resource.JavaResource2;
 import jamopp.resource.JavaResource2Factory;
@@ -83,7 +85,7 @@ public abstract class AbstractJaMoPPTests {
 
 	protected static final String TEST_OUTPUT_FOLDER = "output";
 
-	@Before
+	@BeforeEach
 	public final void initResourceFactory() {
 		Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap().put("java", new JavaResource2Factory());
 		JavaClasspath.get().clear();
@@ -102,7 +104,7 @@ public abstract class AbstractJaMoPPTests {
 	protected JavaRoot parseResource(String filename, String inputFolderName) throws Exception {
 		File inputFolder = new File("." + File.separator + inputFolderName);
 		File file = new File(inputFolder, filename);
-		assertTrue("File " + file + " must exist.", file.exists());
+		assertTrue(file.exists(), "File " + file + " must exist.");
 
 		return loadResource(file.getAbsolutePath());
 	}
@@ -124,10 +126,10 @@ public abstract class AbstractJaMoPPTests {
 		assertNoWarnings(uri.toString(), resource);
 		
 		EList<EObject> contents = resource.getContents();
-		assertEquals("The resource must have one content element.", 1, contents.size());
+		assertEquals(1, contents.size(), "The resource must have one content element.");
 		
 		EObject content = contents.get(0);
-		assertTrue("File '" + uri.toString() + "' was parsed to JavaRoot.", content instanceof JavaRoot);
+		assertTrue(content instanceof JavaRoot, "File '" + uri.toString() + "' was parsed to JavaRoot.");
 		JavaRoot root = (JavaRoot) content;
 		return root;
 	}
@@ -157,13 +159,13 @@ public abstract class AbstractJaMoPPTests {
 	private void assertNoErrors(String fileIdentifier, JavaResource2 resource) {
 		List<Diagnostic> errors = new BasicEList<Diagnostic>(resource.getErrors());
 		printErrors(fileIdentifier, errors);
-		assertTrue("The resource should be parsed without errors.", errors.isEmpty());
+		assertTrue(errors.isEmpty(), "The resource should be parsed without errors.");
 	}
 
 	private void assertNoWarnings(String fileIdentifier, JavaResource2 resource) {
 		List<Diagnostic> warnings = resource.getWarnings();
 		printWarnings(fileIdentifier, warnings);
-		assertTrue("The resource should be parsed without warnings.", warnings.isEmpty());
+		assertTrue(warnings.isEmpty(), "The resource should be parsed without warnings.");
 	}
 
 	protected void printErrors(String filename, List<Diagnostic> errors) {
@@ -218,7 +220,7 @@ public abstract class AbstractJaMoPPTests {
 		resource.setURI(URI.createFileURI(outputFile.getAbsolutePath()));
 		resource.save(null);
 
-		assertTrue("File " + outputFile.getAbsolutePath() + " must exist.", outputFile.exists());
+		assertTrue(outputFile.exists(), "File " + outputFile.getAbsolutePath() + " must exist.");
 		compareTextContents(file.getInputStream(entry), entryName.endsWith("module-info.java"),
 			new FileInputStream(outputFile), outputFile.getPath().endsWith("module-info.java"));
 	}
@@ -241,37 +243,60 @@ public abstract class AbstractJaMoPPTests {
 		File file = new File(path);
 		parseAndReprint(file, inputFolderName, outputFolderName);
 	}
-
-	protected void parseAndReprint(File file, String inputFolderName, String outputFolderName) throws Exception {
-		File inputFile = file;
-		assertTrue("File " + inputFile.getAbsolutePath() + " exists.", inputFile.exists());
-		String outputFileName = calculateOutputFilename(inputFile, inputFolderName, outputFolderName);
+	
+	protected void testReprint(ResourceSet set) throws Exception {
+		for (Resource res : set.getResources()) {
+			if (res instanceof JavaResource2) {
+				testReprint((JavaResource2) res);
+			}
+		}
+	}
+	
+	protected void testReprint(JavaResource2 resource) throws Exception {
+		testReprint(resource, TEST_OUTPUT_FOLDER);
+	}
+	
+	protected void testReprint(JavaResource2 resource, String outputFolderName) throws Exception {
+		String inputFile = resource.getURI().toFileString();
+		if (inputFile == null) {
+			return;
+		}
+		Path input = Paths.get(inputFile);
+		Path localDir = Paths.get(".").toAbsolutePath();
+		String outputFileName = calculateOutputFilename(input.toFile(), localDir.relativize(input).getName(0).toString(),
+			outputFolderName);
 		File outputFile = prepareOutputFile(outputFileName);
-
-		Resource resource = getResourceSet().createResource(URI.createFileURI(inputFile.getAbsolutePath().toString()));
-		resource.load(getLoadOptions());
-
-		assertNoErrors(resource.getURI().toString(), (JavaResource2) resource);
-
-		if (!ignoreSemanticErrors(file.getPath())) {
+		
+		assertNoErrors(resource.getURI().toString(), resource);
+		
+		if (!ignoreSemanticErrors(inputFile)) {
 			// This will not work if external resources are not yet registered (order of tests)
 			assertResolveAllProxies(resource);
 			// Default EMF validation should not fail
 			assertModelValid(resource);
 		}
-
-		if (isExcludedFromReprintTest(file.getPath())) {
+		
+		if (isExcludedFromReprintTest(inputFile)) {
 			return;
 		}
-
+		
 		resource.setURI(URI.createFileURI(outputFileName));
 		resource.save(null);
-
-		assertTrue("File " + outputFile.getAbsolutePath() + " exists.",
-				outputFile.exists());
-
-		compareTextContents(new FileInputStream(inputFile), inputFile.getPath().endsWith("module-info.java"),
+		
+		assertTrue(outputFile.exists(), "File " + outputFile.getAbsolutePath() + " exists.");
+		
+		compareTextContents(new FileInputStream(inputFile), inputFile.endsWith("module-info.java"),
 			new FileInputStream(outputFile), outputFile.getPath().endsWith("module-info.java"));
+	}
+
+	protected void parseAndReprint(File file, String inputFolderName, String outputFolderName) throws Exception {
+		File inputFile = file;
+		assertTrue(inputFile.exists(), "File " + inputFile.getAbsolutePath() + " exists.");
+		
+		Resource resource = getResourceSet().createResource(URI.createFileURI(inputFile.getAbsolutePath().toString()));
+		resource.load(getLoadOptions());
+		
+		testReprint((JavaResource2) resource, outputFolderName);
 	}
 
 	protected abstract boolean isExcludedFromReprintTest(String filename);
@@ -293,7 +318,7 @@ public abstract class AbstractJaMoPPTests {
 		TalkativeASTMatcher matcher = new TalkativeASTMatcher(true);
 		boolean result = unit1.subtreeMatch(matcher, unit2);
 
-		assertTrue("Reprint not equal: " + matcher.getDiff(), result);
+		assertTrue(result, "Reprint not equal: " + matcher.getDiff());
 
 		return result;
 	}
@@ -320,6 +345,7 @@ public abstract class AbstractJaMoPPTests {
 	private void removeJavadoc(org.eclipse.jdt.core.dom.CompilationUnit result1) {
 		final List<Javadoc> javadocNodes = new ArrayList<Javadoc>();
 		result1.accept(new ASTVisitor() {
+			@Override
 			public boolean visit(Javadoc node) {
 				javadocNodes.add(node);
 				return true;
@@ -331,11 +357,10 @@ public abstract class AbstractJaMoPPTests {
 	}
 
 	protected String calculateOutputFilename(File inputFile, String inputFolderName, String outputFolderName) {
-		File inputPath = new File("." + File.separator + inputFolderName);
-		int trimOffset = inputPath.getAbsolutePath().length();
-		File outputFolder = new File("." + File.separator + outputFolderName);
-		File outputFile = new File(outputFolder + File.separator
-				+ inputFile.getAbsolutePath().substring(trimOffset));
+		File inputPath = new File(".", inputFolderName);
+		int trimOffset = inputPath.getAbsolutePath().length() - inputFolderName.length() - 2;
+		File outputFolder = new File(".", outputFolderName);
+		File outputFile = new File(outputFolder, inputFile.getAbsolutePath().substring(trimOffset));
 		return outputFile.getAbsolutePath();
 	}
 
@@ -385,54 +410,48 @@ public abstract class AbstractJaMoPPTests {
 		assertType(member, org.emftext.language.java.classifiers.Class.class);
 		org.emftext.language.java.classifiers.Class clazz = (org.emftext.language.java.classifiers.Class) member;
 		List<TypeParameter> typeParameters = clazz.getTypeParameters();
-		assertEquals("Expected " + expectedNumberOfTypeArguments
-				+ " type parameter(s).", expectedNumberOfTypeArguments,
-				typeParameters.size());
+		assertEquals(expectedNumberOfTypeArguments, typeParameters.size(),
+			"Expected " + expectedNumberOfTypeArguments + " type parameter(s).");
 	}
 
 	protected void assertInterfaceTypeParameterCount(Member member, int expectedNumberOfTypeArguments) {
 		assertType(member, Interface.class);
 		Interface interfaze = (Interface) member;
 		List<TypeParameter> typeParameters = interfaze.getTypeParameters();
-		assertEquals("Expected " + expectedNumberOfTypeArguments
-				+ " type parameter(s).", expectedNumberOfTypeArguments,
-				typeParameters.size());
+		assertEquals(expectedNumberOfTypeArguments, typeParameters.size(),
+			"Expected " + expectedNumberOfTypeArguments + " type parameter(s).");
 	}
 
 	protected void assertMethodThrowsCount(Member member, int expectedNumberOfThrownExceptions) {
 		assertType(member, Method.class);
 		Method method = (Method) member;
 		List<NamespaceClassifierReference> exceptions = method.getExceptions();
-		assertEquals("Expected " + expectedNumberOfThrownExceptions
-				+ " exception(s).", expectedNumberOfThrownExceptions,
-				exceptions.size());
+		assertEquals(expectedNumberOfThrownExceptions, exceptions.size(),
+			"Expected " + expectedNumberOfThrownExceptions + " exception(s).");
 	}
 
 	protected void assertMethodTypeParameterCount(Member member, int expectedNumberOfTypeArguments) {
 		assertType(member, Method.class);
 		Method method = (Method) member;
 		List<TypeParameter> typeParameters = method.getTypeParameters();
-		assertEquals("Expected " + expectedNumberOfTypeArguments
-				+ " type parameter(s).", expectedNumberOfTypeArguments,
-				typeParameters.size());
+		assertEquals(expectedNumberOfTypeArguments, typeParameters.size(),
+			"Expected " + expectedNumberOfTypeArguments + " type parameter(s).");
 	}
 
 	protected void assertConstructorThrowsCount(Member member, int expectedNumberOfThrownExceptions) {
 		assertType(member, Constructor.class);
 		Constructor constructor = (Constructor) member;
 		List<NamespaceClassifierReference> exceptions = constructor.getExceptions();
-		assertEquals("Expected " + expectedNumberOfThrownExceptions
-				+ " exception(s).", expectedNumberOfThrownExceptions,
-				exceptions.size());
+		assertEquals(expectedNumberOfThrownExceptions, exceptions.size(),
+			"Expected " + expectedNumberOfThrownExceptions + " exception(s).");
 	}
 
 	protected void assertConstructorTypeParameterCount(Member member, int expectedNumberOfTypeArguments) {
 		assertType(member, Constructor.class);
 		Constructor constructor = (Constructor) member;
 		List<TypeParameter> typeParameters = constructor.getTypeParameters();
-		assertEquals("Expected " + expectedNumberOfTypeArguments
-				+ " type parameter(s).", expectedNumberOfTypeArguments,
-				typeParameters.size());
+		assertEquals(expectedNumberOfTypeArguments, typeParameters.size(),
+			"Expected " + expectedNumberOfTypeArguments + " type parameter(s).");
 	}
 
 	protected void assertIsClass(Classifier classifier) {
@@ -449,29 +468,28 @@ public abstract class AbstractJaMoPPTests {
 	}
 
 	protected void assertType(EObject object, Class<?> expectedType) {
-		assertTrue("The object should have type '" + expectedType.getSimpleName() + "', but was "
-			+ object.getClass().getSimpleName(), expectedType.isInstance(object));
+		assertTrue(expectedType.isInstance(object),
+			"The object should have type '" + expectedType.getSimpleName() + "', but was "
+			+ object.getClass().getSimpleName());
 	}
 
 	protected void assertClassifierName(Classifier declaration, String expectedName) {
-		assertEquals("The name of the declared classifier should equal '"
-				+ expectedName + "'", expectedName, declaration.getName());
+		assertEquals(expectedName, declaration.getName(),
+			"The name of the declared classifier should equal '" + expectedName + "'");
 	}
 
 	protected void assertNumberOfClassifiers(CompilationUnit model, int expectedCount) {
-		assertEquals("The compilation unit should contain " + expectedCount
-			+ " classifier declaration(s).", expectedCount, model.getClassifiers().size());
+		assertEquals(expectedCount, model.getClassifiers().size(),
+			"The compilation unit should contain " + expectedCount + " classifier declaration(s).");
 	}
 
 	protected void assertModifierCount(Method method, int expectedNumberOfModifiers) {
-		assertEquals("Method '" + method.getName() + "' should have "
-				+ expectedNumberOfModifiers + " modifier(s).",
-				expectedNumberOfModifiers, method.getModifiers().size());
+		assertEquals(expectedNumberOfModifiers, method.getModifiers().size(),
+				"Method '" + method.getName() + "' should have " + expectedNumberOfModifiers + " modifier(s).");
 	}
 
 	protected void assertIsPublic(Method method) {
-		assertTrue("Method '" + method.getName() + "' should be public.",
-			method.getModifiers().get(0) instanceof Public);
+		assertTrue(method.getModifiers().get(0) instanceof Public, "Method '" + method.getName() + "' should be public.");
 	}
 
 	protected Enumeration assertParsesToEnumeration(String typename) throws Exception {
@@ -559,8 +577,8 @@ public abstract class AbstractJaMoPPTests {
 		if (container instanceof NamedElement) {
 			name = ((NamedElement) container).getName();
 		}
-		assertEquals(name + " should have " + expectedCount
-				+ " member(s).", expectedCount, container.getMembers().size());
+		assertEquals(expectedCount, container.getMembers().size(),
+				name + " should have " + expectedCount + " member(s).");
 	}
 	
 	protected void assertParsesToClass(String typename, int expectedMembers)
@@ -572,8 +590,8 @@ public abstract class AbstractJaMoPPTests {
 			throws Exception, IOException, BadLocationException {
 		String filename = typename + ".java";
 		org.emftext.language.java.classifiers.Class clazz = assertParsesToClass(pkgFolder, typename);
-		assertEquals(typename + " should have " + expectedMembers
-				+ " member(s).", expectedMembers, clazz.getMembers().size());
+		assertEquals(expectedMembers, clazz.getMembers().size(),
+				typename + " should have " + expectedMembers + " member(s).");
 
 		parseAndReprint(filename);
 	}
@@ -592,7 +610,7 @@ public abstract class AbstractJaMoPPTests {
 		StringBuffer msg = new StringBuffer();
 		resource.getAllContents().forEachRemaining(obj -> {
 			InternalEObject element = (InternalEObject) obj;
-			assertFalse("Can not resolve: " + element.eProxyURI(), element.eIsProxy());
+			assertFalse(element.eIsProxy(), "Can not resolve: " + element.eProxyURI());
 			for (EObject crElement : element.eCrossReferences()) {
 				crElement = EcoreUtil.resolve(crElement, resource);
 				if (crElement.eIsProxy()) {
@@ -601,7 +619,7 @@ public abstract class AbstractJaMoPPTests {
 			}
 		});
 		String finalMsg = msg.toString();
-		assertFalse(finalMsg, finalMsg.length() != 0);
+		assertFalse(finalMsg.length() != 0, finalMsg);
 		return finalMsg.length() != 0;
 	}
 	
@@ -612,7 +630,7 @@ public abstract class AbstractJaMoPPTests {
 		for (org.eclipse.emf.common.util.Diagnostic childResult : result.getChildren()) {
 			msg += "\n" + childResult.getMessage();
 		}
-		assertTrue(msg, result.getChildren().isEmpty());
+		assertTrue(result.getChildren().isEmpty(), msg);
 	}
 	
 	protected void assertModelValid(ResourceSet set) {
@@ -629,6 +647,6 @@ public abstract class AbstractJaMoPPTests {
 				}
 			}
 		}
-		assertTrue(builder.toString(), builder.length() == 0);
+		assertTrue(builder.length() == 0, builder.toString());
 	}
 }

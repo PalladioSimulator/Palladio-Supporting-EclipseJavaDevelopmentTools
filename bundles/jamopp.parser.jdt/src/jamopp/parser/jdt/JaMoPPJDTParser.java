@@ -49,6 +49,7 @@ public class JaMoPPJDTParser implements JaMoPPParserAPI {
 		OrdinaryCompilationUnitJDTASTVisitorAndConverter converter = new OrdinaryCompilationUnitJDTASTVisitorAndConverter();
 		converter.setSource(src);
 		ast.accept(converter);
+		TypeInstructionSeparationUtility.convertAll();
 		JDTResolverUtility.completeResolution();
 		this.resourceSet = null;
 		return converter.getConvertedElement();
@@ -125,12 +126,14 @@ public class JaMoPPJDTParser implements JaMoPPParserAPI {
 				result.add(root);
 			}
 		}, null);
+		TypeInstructionSeparationUtility.convertAll();
 		JDTResolverUtility.completeResolution();
-		for (int index = 0; index < this.resourceSet.getResources().size(); index++) {
-			Resource res = this.resourceSet.getResources().get(index);
+		for (Resource res : new ArrayList<>(this.resourceSet.getResources())) {
 			if (res.getContents().isEmpty()) {
-				this.resourceSet.getResources().remove(res);
-				index--;
+				try {
+					res.delete(this.resourceSet.getLoadOptions());
+				} catch (IOException e) {
+				}
 			}
 		}
 		return result;

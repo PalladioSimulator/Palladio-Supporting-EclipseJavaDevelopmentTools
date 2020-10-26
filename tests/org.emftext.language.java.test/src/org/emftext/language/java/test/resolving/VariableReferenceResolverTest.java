@@ -15,8 +15,8 @@
  ******************************************************************************/
 package org.emftext.language.java.test.resolving;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.List;
 
@@ -28,7 +28,7 @@ import org.emftext.language.java.statements.ExpressionStatement;
 import org.emftext.language.java.statements.LocalVariableStatement;
 import org.emftext.language.java.statements.Statement;
 import org.emftext.language.java.variables.LocalVariable;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class VariableReferenceResolverTest extends AbstractResolverTestCase {
 

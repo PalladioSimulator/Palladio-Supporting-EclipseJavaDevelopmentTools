@@ -12,7 +12,8 @@
 
 package org.emftext.language.java.test.resolving;
 
-import static org.junit.Assert.*;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.io.File;
 
@@ -20,7 +21,7 @@ import org.eclipse.emf.common.util.EList;
 import org.emftext.language.java.classifiers.ConcreteClassifier;
 import org.emftext.language.java.containers.JavaRoot;
 import org.emftext.language.java.imports.Import;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test case to test the resolving of imports and imported classifiers.
@@ -43,6 +44,6 @@ public class ImportResolverTest extends AbstractResolverTestCase {
 
         ConcreteClassifier classifier = imports.get(0).getClassifier();
 
-        assertFalse("Failed to resolve classifier (Enum BigDecimalLayoutForm)", classifier.eIsProxy());
+        assertFalse(classifier.eIsProxy(), "Failed to resolve classifier (Enum BigDecimalLayoutForm)");
     }
 }

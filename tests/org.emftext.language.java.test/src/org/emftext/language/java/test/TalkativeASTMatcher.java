@@ -403,6 +403,21 @@ public class TalkativeASTMatcher extends ASTMatcher {
 	}
 
 	private String normalizeNumberToken(String token) {
+		if (token.contains("\\u")) {
+			StringBuilder actualLiteral = new StringBuilder();
+			for (int index = 0; index < token.length(); index++) {
+				char currentChar = token.charAt(index);
+				if (currentChar == '\\') {
+					int codePoint = Integer.parseInt(token.substring(index + 2, index + 6), 16);
+					actualLiteral.append(Character.toString(codePoint));
+					index += 5;
+				} else {
+					actualLiteral.append(currentChar);
+				}
+			}
+			token = actualLiteral.toString();
+		}
+		
 		token = token.toLowerCase();
 		token = token.replaceAll("_", "");
 		

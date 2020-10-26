@@ -29,6 +29,7 @@ import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.ExpressionStatement;
 import org.eclipse.jdt.core.dom.ForStatement;
 import org.eclipse.jdt.core.dom.IExtendedModifier;
+import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.IfStatement;
 import org.eclipse.jdt.core.dom.LabeledStatement;
 import org.eclipse.jdt.core.dom.ReturnStatement;
@@ -209,7 +210,13 @@ class StatementConverterUtility {
 			VariableDeclarationStatement varSt = (VariableDeclarationStatement) statement;
 			org.emftext.language.java.statements.LocalVariableStatement result = org.emftext.language.java.statements.StatementsFactory.eINSTANCE.createLocalVariableStatement();
 			VariableDeclarationFragment frag = (VariableDeclarationFragment) varSt.fragments().get(0);
-			org.emftext.language.java.variables.LocalVariable locVar = JDTResolverUtility.getLocalVariable(frag.resolveBinding());
+			org.emftext.language.java.variables.LocalVariable locVar;
+			IVariableBinding binding = frag.resolveBinding();
+			if (binding == null) {
+				locVar = JDTResolverUtility.getLocalVariable(frag.getName().getIdentifier() + "-" + frag.hashCode());
+			} else {
+				locVar = JDTResolverUtility.getLocalVariable(binding);
+			}
 			BaseConverterUtility.convertToSimpleNameOnlyAndSet(frag.getName(), locVar);
 			varSt.modifiers().forEach(obj -> locVar.getAnnotationsAndModifiers().add(AnnotationInstanceOrModifierConverterUtility
 				.converToModifierOrAnnotationInstance((IExtendedModifier) obj)));
@@ -306,8 +313,14 @@ class StatementConverterUtility {
 	@SuppressWarnings("unchecked")
 	private static org.emftext.language.java.statements.CatchBlock convertToCatchBlock(CatchClause block) {
 		org.emftext.language.java.statements.CatchBlock result = org.emftext.language.java.statements.StatementsFactory.eINSTANCE.createCatchBlock();
-		org.emftext.language.java.parameters.CatchParameter param = JDTResolverUtility.getCatchParameter(block.getException().resolveBinding());
 		SingleVariableDeclaration decl = block.getException();
+		org.emftext.language.java.parameters.CatchParameter param;
+		IVariableBinding binding = decl.resolveBinding();
+		if (binding == null) {
+			param = JDTResolverUtility.getCatchParameter(decl.getName().getIdentifier() + "-" + block.hashCode());
+		} else {
+			param = JDTResolverUtility.getCatchParameter(binding);
+		}
 		decl.modifiers().forEach(obj -> param.getAnnotationsAndModifiers().add(AnnotationInstanceOrModifierConverterUtility
 			.converToModifierOrAnnotationInstance((IExtendedModifier) obj)));
 		if (decl.getType().isUnionType()) {
@@ -328,7 +341,13 @@ class StatementConverterUtility {
 	
 	@SuppressWarnings("unchecked")
 	private static org.emftext.language.java.variables.AdditionalLocalVariable convertToAdditionalLocalVariable(VariableDeclarationFragment frag) {
-		org.emftext.language.java.variables.AdditionalLocalVariable result = JDTResolverUtility.getAdditionalLocalVariable(frag.resolveBinding());
+		org.emftext.language.java.variables.AdditionalLocalVariable result;
+		IVariableBinding binding = frag.resolveBinding();
+		if (binding == null) {
+			result = JDTResolverUtility.getAdditionalLocalVariable(frag.getName().getIdentifier() + "-" + frag.hashCode());
+		} else {
+			result = JDTResolverUtility.getAdditionalLocalVariable(frag.resolveBinding());
+		}
 		BaseConverterUtility.convertToSimpleNameOnlyAndSet(frag.getName(), result);
 		frag.extraDimensions().forEach(obj -> BaseConverterUtility.convertToArrayDimensionAfterAndSet((Dimension) obj, result));
 		if (frag.getInitializer() != null) {
@@ -341,7 +360,13 @@ class StatementConverterUtility {
 	@SuppressWarnings("unchecked")
 	private static org.emftext.language.java.variables.LocalVariable convertToLocalVariable(VariableDeclarationExpression expr) {
 		VariableDeclarationFragment frag = (VariableDeclarationFragment) expr.fragments().get(0);
-		org.emftext.language.java.variables.LocalVariable loc = JDTResolverUtility.getLocalVariable(frag.resolveBinding());
+		org.emftext.language.java.variables.LocalVariable loc;
+		IVariableBinding binding = frag.resolveBinding();
+		if (binding == null) {
+			loc = JDTResolverUtility.getLocalVariable(frag.getName().getIdentifier() + "-" + frag.hashCode());
+		} else {
+			loc = JDTResolverUtility.getLocalVariable(binding);
+		}
 		BaseConverterUtility.convertToSimpleNameOnlyAndSet(frag.getName(), loc);
 		expr.modifiers().forEach(obj -> loc.getAnnotationsAndModifiers().add(AnnotationInstanceOrModifierConverterUtility
 			.converToModifierOrAnnotationInstance((IExtendedModifier) obj)));

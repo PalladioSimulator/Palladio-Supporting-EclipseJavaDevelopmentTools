@@ -9,13 +9,16 @@ Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.emftext.language.java.test.JaMoPPTestPlugin
 Automatic-Module-Name: org.emftext.language.java.test
 Require-Bundle: org.eclipse.core.runtime,
- org.junit,
  org.eclipse.jdt.core,
  org.eclipse.text,
  org.emftext.language.java,
  org.eclipse.emf.ecore.xmi,
  org.eclipse.core.resources,
  org.eclipse.jface.text,
- jamopp.resource;bundle-version="4.3.0"
+ jamopp.resource;bundle-version="4.3.0",
+ org.apache.commons.compress,
+ org.junit.jupiter.api,
+ org.junit.jupiter.engine,
+ org.junit.jupiter.params
 Export-Package: org.emftext.language.java.test
 Import-Package: jamopp.parser.jdt

@@ -15,7 +15,8 @@
  ******************************************************************************/
 package org.emftext.language.java.test.bugs;
 
-import static org.junit.Assert.assertTrue;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -25,14 +26,14 @@ import java.io.InputStream;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 public class Bug1834Test extends AbstractBugTestCase {
 
 	private static final String NL = System.getProperty("line.separator");
 
-	@Ignore("This test is deactivated because the respective feature is not implemented yet")
+	@Disabled("This test is deactivated because the respective feature is not implemented yet")
 	@Test
 	public void testDefaultMethodPrinting() throws IOException {
 		
@@ -52,6 +53,6 @@ public class Bug1834Test extends AbstractBugTestCase {
 			"\tpublic void m() {" + NL +
 			"\t}" + NL + 
 			"}";
-		assertTrue("Print result must contain expected code.", printResult.contains(expected));
+		assertTrue(printResult.contains(expected), "Print result must contain expected code.");
 	}
 }

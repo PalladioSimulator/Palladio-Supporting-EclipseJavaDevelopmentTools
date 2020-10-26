@@ -19,6 +19,7 @@ import org.eclipse.jdt.core.dom.CompilationUnit;
 class OrdinaryCompilationUnitJDTASTVisitorAndConverter extends ModuleJDTASTVisitorAndConverter {
 	@Override
 	public boolean visit(CompilationUnit node) {
+		this.setConvertedElement(null);
 		if (node.types().size() > 0) {
 			this.setConvertedElement(this.convertToCompilationUnit(node));
 		}

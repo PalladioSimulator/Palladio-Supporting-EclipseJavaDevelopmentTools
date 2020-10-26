@@ -17,6 +17,7 @@ import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.IBinding;
 import org.eclipse.jdt.core.dom.IMethodBinding;
+import org.eclipse.jdt.core.dom.IPackageBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.ImportDeclaration;
@@ -47,6 +48,7 @@ class AbstractAndEmptyModelJDTASTVisitorAndConverter extends ASTVisitor {
 	public boolean visit(CompilationUnit node) {
 		if (this.convertedRootElement == null) {
 			this.convertedRootElement = org.emftext.language.java.containers.ContainersFactory.eINSTANCE.createEmptyModel();
+			this.convertedRootElement.setName("");
 		}
 		node.imports().forEach(obj -> this.convertedRootElement.getImports().add(this.convertToImport((ImportDeclaration) obj)));
 		return false;
@@ -56,12 +58,17 @@ class AbstractAndEmptyModelJDTASTVisitorAndConverter extends ASTVisitor {
 		if (!importDecl.isOnDemand() && !importDecl.isStatic()) {
 			org.emftext.language.java.imports.ClassifierImport convertedImport =
 				org.emftext.language.java.imports.ImportsFactory.eINSTANCE.createClassifierImport();
-			ITypeBinding binding = (ITypeBinding) importDecl.getName().resolveBinding();
 			org.emftext.language.java.classifiers.Classifier proxy = null;
-			if (binding.isRecovered()) {
+			IBinding b = importDecl.getName().resolveBinding();
+			if (b instanceof IPackageBinding) {
 				proxy = JDTResolverUtility.getClass(importDecl.getName().getFullyQualifiedName());
 			} else {
-				proxy = JDTResolverUtility.getClassifier((ITypeBinding) importDecl.getName().resolveBinding());
+				ITypeBinding binding = (ITypeBinding) b;
+				if (binding == null || binding.isRecovered()) {
+					proxy = JDTResolverUtility.getClass(importDecl.getName().getFullyQualifiedName());
+				} else {
+					proxy = JDTResolverUtility.getClassifier((ITypeBinding) importDecl.getName().resolveBinding());
+				}
 			}
 			convertedImport.setClassifier((org.emftext.language.java.classifiers.ConcreteClassifier) proxy);
 			BaseConverterUtility.convertToNamespacesAndSimpleNameAndSet(importDecl.getName(), convertedImport, proxy);
@@ -75,7 +82,9 @@ class AbstractAndEmptyModelJDTASTVisitorAndConverter extends ASTVisitor {
 			IBinding b = qualifiedName.resolveBinding();
 			org.emftext.language.java.references.ReferenceableElement proxyMember = null;
 			org.emftext.language.java.classifiers.Classifier proxyClass = null;
-			if (b instanceof IMethodBinding) {
+			if (b == null || b.isRecovered()) {
+				proxyMember = JDTResolverUtility.getField(qualifiedName.getFullyQualifiedName());
+			} else if (b instanceof IMethodBinding) {
 				proxyMember = JDTResolverUtility.getMethod((IMethodBinding) b);
 			} else if (b instanceof IVariableBinding) {
 				proxyMember = JDTResolverUtility.getReferencableElement((IVariableBinding) b);
@@ -84,23 +93,31 @@ class AbstractAndEmptyModelJDTASTVisitorAndConverter extends ASTVisitor {
 				org.emftext.language.java.classifiers.ConcreteClassifier conCl =
 					(org.emftext.language.java.classifiers.ConcreteClassifier) proxyClass;
 				for (org.emftext.language.java.members.Member m : conCl.getMembers()) {
-					if (m.getName().equals(qualifiedName.getName().getIdentifier())) {
+					if (!(m instanceof org.emftext.language.java.members.Constructor)
+							&& m.getName().equals(qualifiedName.getName().getIdentifier())) {
 						proxyMember = (org.emftext.language.java.references.ReferenceableElement) m;
 						break;
 					}
 				}
 				if (proxyMember == null) {
-					proxyMember = JDTResolverUtility.getClassMethod(qualifiedName.getName().getIdentifier());
+					proxyMember = JDTResolverUtility.getClassMethod(qualifiedName.getFullyQualifiedName());
 					proxyMember.setName(qualifiedName.getName().getIdentifier());
 					((org.emftext.language.java.members.Method) proxyMember).setTypeReference(
 						org.emftext.language.java.types.TypesFactory.eINSTANCE.createVoid());
 					conCl.getMembers().add((org.emftext.language.java.members.Member) proxyMember);
 				}
+			} else {
+				proxyMember = JDTResolverUtility.getField(qualifiedName.getFullyQualifiedName());
 			}
 			proxyMember.setName(qualifiedName.getName().getIdentifier());
 			convertedImport.getStaticMembers().add(proxyMember);
 			if (proxyClass == null) {
-				proxyClass = JDTResolverUtility.getClassifier((ITypeBinding) qualifiedName.getQualifier().resolveBinding());
+				IBinding binding = qualifiedName.getQualifier().resolveBinding();
+				if (binding == null || binding.isRecovered() || !(binding instanceof ITypeBinding)) {
+					proxyClass = JDTResolverUtility.getClass(qualifiedName.getQualifier().getFullyQualifiedName());
+				} else {
+					proxyClass = JDTResolverUtility.getClassifier((ITypeBinding) binding);
+				}
 			}
 			convertedImport.setClassifier((org.emftext.language.java.classifiers.ConcreteClassifier) proxyClass);
 			BaseConverterUtility.convertToNamespacesAndSimpleNameAndSet(qualifiedName.getQualifier(), convertedImport, proxyClass);
@@ -114,12 +131,12 @@ class AbstractAndEmptyModelJDTASTVisitorAndConverter extends ASTVisitor {
 		} else { // importDecl.isOnDemand() && importDecl.isStatic()
 			org.emftext.language.java.imports.StaticClassifierImport convertedImport = org.emftext.language.java.imports.ImportsFactory.eINSTANCE.createStaticClassifierImport();
 			convertedImport.setStatic(org.emftext.language.java.modifiers.ModifiersFactory.eINSTANCE.createStatic());
-			ITypeBinding binding = (ITypeBinding) importDecl.getName().resolveBinding();
+			IBinding binding = importDecl.getName().resolveBinding();
 			org.emftext.language.java.classifiers.Classifier proxyClass = null;
-			if (binding.isRecovered()) {
+			if (binding == null || binding.isRecovered() || !(binding instanceof ITypeBinding)) {
 				proxyClass = JDTResolverUtility.getClass(importDecl.getName().getFullyQualifiedName());
 			} else {
-				proxyClass = JDTResolverUtility.getClassifier(binding);
+				proxyClass = JDTResolverUtility.getClassifier((ITypeBinding) binding);
 			}
 			convertedImport.setClassifier((org.emftext.language.java.classifiers.ConcreteClassifier) proxyClass);
 			BaseConverterUtility.convertToNamespacesAndSimpleNameAndSet(importDecl.getName(), convertedImport, proxyClass);
