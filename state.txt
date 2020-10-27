@@ -1,12 +1,8 @@
 State
 
-- Open: no printer implementation.
-- Open: tests for all JaMoPPParserAPI methods are missing.
-- Open: Bug1415Test does not work correct.
-- Open: reprinting does not consider modules (uses JDT for parsing and comparing results which needs special care for modules when setting up the JDT parser).
-
-- Support for Java up to 14.
+- Complete support for Java up to 14 and support of Java 15 in meta-model and printer implementation.
 - Removed loading of class files and old reference resolution and parser.
 - For parsing and reference resolution, JDT is used.
+- New printer.
 - Replaced the JavaResource with a new, simple JavaResource2 implementation.
-- Updated and extended nearly all test cases.
+- Updated and extended all test cases.

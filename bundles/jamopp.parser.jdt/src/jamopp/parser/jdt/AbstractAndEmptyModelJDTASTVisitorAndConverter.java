@@ -89,22 +89,26 @@ class AbstractAndEmptyModelJDTASTVisitorAndConverter extends ASTVisitor {
 			} else if (b instanceof IVariableBinding) {
 				proxyMember = JDTResolverUtility.getReferencableElement((IVariableBinding) b);
 			} else if (b instanceof ITypeBinding) {
-				proxyClass = JDTResolverUtility.getClassifier((ITypeBinding) b);
-				org.emftext.language.java.classifiers.ConcreteClassifier conCl =
-					(org.emftext.language.java.classifiers.ConcreteClassifier) proxyClass;
-				for (org.emftext.language.java.members.Member m : conCl.getMembers()) {
-					if (!(m instanceof org.emftext.language.java.members.Constructor)
-							&& m.getName().equals(qualifiedName.getName().getIdentifier())) {
-						proxyMember = (org.emftext.language.java.references.ReferenceableElement) m;
-						break;
+				ITypeBinding typeBinding = (ITypeBinding) b;
+				if (!typeBinding.isNested()) {
+					proxyClass = JDTResolverUtility.getClassifier(typeBinding);
+					org.emftext.language.java.classifiers.ConcreteClassifier conCl =
+						(org.emftext.language.java.classifiers.ConcreteClassifier) proxyClass;
+					for (org.emftext.language.java.members.Member m : conCl.getMembers()) {
+						if (!(m instanceof org.emftext.language.java.members.Constructor)
+								&& m.getName().equals(qualifiedName.getName().getIdentifier())) {
+							proxyMember = (org.emftext.language.java.references.ReferenceableElement) m;
+							break;
+						}
 					}
-				}
-				if (proxyMember == null) {
-					proxyMember = JDTResolverUtility.getClassMethod(qualifiedName.getFullyQualifiedName());
-					proxyMember.setName(qualifiedName.getName().getIdentifier());
-					((org.emftext.language.java.members.Method) proxyMember).setTypeReference(
-						org.emftext.language.java.types.TypesFactory.eINSTANCE.createVoid());
-					conCl.getMembers().add((org.emftext.language.java.members.Member) proxyMember);
+					if (proxyMember == null) {
+						proxyMember = JDTResolverUtility.getClassMethod(qualifiedName.getFullyQualifiedName());
+						proxyMember.setName(qualifiedName.getName().getIdentifier());
+						conCl.getMembers().add((org.emftext.language.java.members.Member) proxyMember);
+					}
+				} else {
+					proxyMember = JDTResolverUtility.getClassifier(typeBinding);
+					proxyClass = JDTResolverUtility.getClassifier(typeBinding.getDeclaringClass());
 				}
 			} else {
 				proxyMember = JDTResolverUtility.getField(qualifiedName.getFullyQualifiedName());

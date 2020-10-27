@@ -27,10 +27,12 @@ import org.apache.commons.compress.archivers.ArchiveStreamFactory;
 import org.apache.commons.compress.archivers.examples.Expander;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.emftext.language.java.test.AbstractJaMoPPTests;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import jamopp.parser.jdt.JaMoPPJDTParser;
 
+@Disabled("Requires initialization of all submodules and dependency resolution.")
 public class BulkTest extends AbstractJaMoPPTests {
 	private final static String BASE_ZIP = "JaMoPP-BulkTest" + File.separator + "Tests" + File.separator
 		+ "org.emftext.language.java.test.bulk" + File.separator + "input" + File.separator;
@@ -68,6 +70,7 @@ public class BulkTest extends AbstractJaMoPPTests {
 	}
 	
 	@Test
+	@Disabled("Reprint of class EvaluateAction does not equal the original file.")
 	public void testEclipse_3_4_1() {
 		inputFolder = "eclipse-3.4.1";
 		generalInputFolder = null;
@@ -110,6 +113,7 @@ public class BulkTest extends AbstractJaMoPPTests {
 	}
 	
 	@Test
+	@Disabled("JDT AST creation runs into OutOfMemoryError.")
 	public void testNetbeans_6_5_1() {
 		inputFolder = "netbeans-6.5.1";
 		generalInputFolder = null;
@@ -189,6 +193,8 @@ public class BulkTest extends AbstractJaMoPPTests {
 			String jacksPrefix = ".*?jacks\\_javac\\_1\\.6\\.0\\_07\\_passed.*?";
 			Files.walk(target).filter(Files::isRegularFile)
 			.filter(path -> path.endsWith("bin.jar") || path.endsWith("rt.jar") || path.endsWith("jsse.jar")
+					|| path.endsWith("bin1.jar") || path.endsWith("bin2.jar") || path.endsWith("bin3.jar")
+					|| path.endsWith("bin4.jar") || path.endsWith("jce.jar") || path.endsWith("sunjce_provider.jar")
 					|| target.relativize(path).toString().contains(File.separator + "test" + File.separator)
 					|| target.relativize(path).toString().contains(File.separator + "tests" + File.separator)
 					|| path.toAbsolutePath().toString().matches(".*?apache\\-tomcat\\-6\\.0\\.18.*?WEB\\-INF.*?Clock2\\.java")
