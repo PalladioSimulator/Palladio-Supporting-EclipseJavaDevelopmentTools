@@ -151,7 +151,7 @@ class ClassifierConverterUtility {
 		org.emftext.language.java.members.AdditionalField result;
 		IVariableBinding binding = frag.resolveBinding();
 		if (binding != null) {
-			result = JDTResolverUtility.getAdditionalField(frag.resolveBinding());
+			result = JDTResolverUtility.getAdditionalField(binding);
 		} else {
 			result = JDTResolverUtility.getAdditionalField(frag.getName().getIdentifier());
 		}
@@ -169,7 +169,7 @@ class ClassifierConverterUtility {
 		IMethodBinding binding = annDecl.resolveBinding();
 		org.emftext.language.java.members.InterfaceMethod result;
 		if (binding != null) {
-			result = JDTResolverUtility.getInterfaceMethod(annDecl.resolveBinding());
+			result = JDTResolverUtility.getInterfaceMethod(binding);
 		} else {
 			result = JDTResolverUtility.getInterfaceMethod(annDecl.getName().getIdentifier());
 		}

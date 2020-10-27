@@ -95,11 +95,7 @@ class NumberLiteralConverterUtility {
 			result = lit;
 		} else if (string.equals("0") || !string.startsWith(OCT_PREFIX)) {
 			org.emftext.language.java.literals.DecimalIntegerLiteral lit = org.emftext.language.java.literals.LiteralsFactory.eINSTANCE.createDecimalIntegerLiteral();
-			try {
 			lit.setDecimalValue(new BigInteger(string, DEC_BASE));
-			} catch (NumberFormatException e) {
-				e.printStackTrace();
-			}
 			result = lit;
 		} else if (string.endsWith(LONG_SUFFIX)) {
 			org.emftext.language.java.literals.OctalLongLiteral lit = org.emftext.language.java.literals.LiteralsFactory.eINSTANCE.createOctalLongLiteral();

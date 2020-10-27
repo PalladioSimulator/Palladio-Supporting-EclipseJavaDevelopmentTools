@@ -22,8 +22,8 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.eclipse.emf.common.util.URI;
@@ -47,6 +47,7 @@ public class JavaXMISerializationTest extends AbstractJaMoPPTests {
 
 	protected static final String TEST_INPUT_FOLDER_NAME = "src-input";
 	protected static final String TEST_OUTPUT_FOLDER_NAME = "output";
+	private HashMap<String, String> inputFileToOutputFile = new HashMap<>();
 	
 	@Test
 	public void testXMISerialization() throws Exception {
@@ -62,6 +63,8 @@ public class JavaXMISerializationTest extends AbstractJaMoPPTests {
 		for (final File file : allTestFiles) {
 			compare(file);
 		}
+		
+		inputFileToOutputFile.clear();
 	}
 	
 	private void transferToXMI() throws Exception {
@@ -101,7 +104,10 @@ public class JavaXMISerializationTest extends AbstractJaMoPPTests {
 			XMIResource xmiResource = (XMIResource) rs.createResource(xmiFileURI);
 			xmiResource.setEncoding(StandardCharsets.UTF_8.toString());
 			xmiResource.getContents().addAll(javaResource.getContents());
-
+			
+			if (javaResource.getURI().isFile()) {
+				inputFileToOutputFile.put(javaResource.getURI().toFileString(), outputFile.getAbsolutePath());
+			}
 		}
 		for (Resource xmiResource : rs.getResources()) {
 			if (xmiResource instanceof XMIResource) {
@@ -116,13 +122,11 @@ public class JavaXMISerializationTest extends AbstractJaMoPPTests {
 	
 	protected void compare(File file) throws Exception {
 		ResourceSet rs = getResourceSet();
-		String outputXMIFileName =
-			Paths.get(".", TEST_OUTPUT_FOLDER).resolve(Paths.get(getTestInputFolder()).relativize(file.toPath()))
-			.toAbsolutePath().toString();
+		String outputXMIFileName = inputFileToOutputFile.get(file.getAbsolutePath());
 		URI xmiFileURI = URI.createFileURI(outputXMIFileName).trimFileExtension().appendFileExtension("xmi");
 		Resource xmiResource = rs.getResource(xmiFileURI, false);
 		if (xmiResource == null) {
-			System.out.println("h");
+			System.out.print("");
 		}
 		assertNotNull(xmiResource);
 		EObject root = xmiResource.getContents().get(0);
