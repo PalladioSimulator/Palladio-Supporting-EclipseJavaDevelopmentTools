@@ -111,6 +111,7 @@ class ClassifierConverterUtility {
 	@SuppressWarnings("unchecked")
 	private static org.emftext.language.java.statements.Block convertToBlock(Initializer init) {
 		org.emftext.language.java.statements.Block result = StatementConverterUtility.convertToBlock(init.getBody());
+		result.setName("");
 		init.modifiers().forEach(obj -> result.getModifiers().add(AnnotationInstanceOrModifierConverterUtility
 			.convertToModifier((Modifier) obj)));
 		return result;
@@ -280,6 +281,7 @@ class ClassifierConverterUtility {
 	
 	private static org.emftext.language.java.parameters.ReceiverParameter convertToReceiverParameter(MethodDeclaration methodDecl) {
 		org.emftext.language.java.parameters.ReceiverParameter result = org.emftext.language.java.parameters.ParametersFactory.eINSTANCE.createReceiverParameter();
+		result.setName("");
 		result.setTypeReference(BaseConverterUtility.convertToTypeReference(methodDecl.getReceiverType()));
 		if (methodDecl.getReceiverQualifier() != null) {
 			result.setOuterTypeReference(BaseConverterUtility.convertToClassifierReference(methodDecl.getReceiverQualifier()));

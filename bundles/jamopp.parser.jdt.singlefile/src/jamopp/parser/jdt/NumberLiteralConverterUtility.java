@@ -35,6 +35,20 @@ class NumberLiteralConverterUtility {
 	static org.emftext.language.java.literals.Literal convertToLiteral(NumberLiteral literal) {
 		org.emftext.language.java.literals.Literal result = null;
 		String string = literal.getToken();
+		if (string.contains("\\u")) {
+			StringBuilder actualLiteral = new StringBuilder();
+			for (int index = 0; index < string.length(); index++) {
+				char currentChar = string.charAt(index);
+				if (currentChar == '\\') {
+					int codePoint = Integer.parseInt(string.substring(index + 2, index + 6), 16);
+					actualLiteral.append(Character.toString(codePoint));
+					index += 5;
+				} else {
+					actualLiteral.append(currentChar);
+				}
+			}
+			string = actualLiteral.toString();
+		}
 		string = string.replaceAll(UNDER_SCORE, "");
 		string = string.toLowerCase();
 		if (string.startsWith(BIN_PREFIX) && string.endsWith(LONG_SUFFIX)) {
@@ -75,7 +89,7 @@ class NumberLiteralConverterUtility {
 			org.emftext.language.java.literals.DecimalDoubleLiteral lit = org.emftext.language.java.literals.LiteralsFactory.eINSTANCE.createDecimalDoubleLiteral();
 			lit.setDecimalValue(Double.parseDouble(string));
 			result = lit;
-		} else if (string.equals("0L") || (!string.startsWith(OCT_PREFIX) && string.endsWith(LONG_SUFFIX))) {
+		} else if (string.equals(OCT_PREFIX + LONG_SUFFIX) || (!string.startsWith(OCT_PREFIX) && string.endsWith(LONG_SUFFIX))) {
 			org.emftext.language.java.literals.DecimalLongLiteral lit = org.emftext.language.java.literals.LiteralsFactory.eINSTANCE.createDecimalLongLiteral();
 			lit.setDecimalValue(new BigInteger(string.substring(0, string.length() - LONG_SUFFIX.length()), DEC_BASE));
 			result = lit;

@@ -24,8 +24,9 @@ class LayoutInformationConverter
 	private static MinimalLayoutInformation currentRootLayout;
 	
 	static void convertJavaRootLayoutInformation(JavaRoot root, ASTNode rootSource, String sourceCode) {
+		currentRootLayout = null;
 		currentRootLayout = LayoutFactory.eINSTANCE.createMinimalLayoutInformation();
-		currentRootLayout.setVisibleTokenText(sourceCode);
+		currentRootLayout.setVisibleTokenText(sourceCode == null ? "" : sourceCode);
 		currentRootLayout.setStartOffset(rootSource.getStartPosition());
 		currentRootLayout.setLength(rootSource.getLength());
 		currentRootLayout.setObject(root);
@@ -34,11 +35,13 @@ class LayoutInformationConverter
 	}
 	
 	static void convertToMinimalLayoutInformation(Commentable target, ASTNode source) {
-		MinimalLayoutInformation li = LayoutFactory.eINSTANCE.createMinimalLayoutInformation();
-		li.setStartOffset(source.getStartPosition());
-		li.setLength(source.getLength());
-		li.setObject(target);
-		li.setRootLayout(currentRootLayout);
-		target.getLayoutInformations().add(li);
+		if (currentRootLayout != null) {
+			MinimalLayoutInformation li = LayoutFactory.eINSTANCE.createMinimalLayoutInformation();
+			li.setStartOffset(source.getStartPosition());
+			li.setLength(source.getLength());
+			li.setObject(target);
+			li.setRootLayout(currentRootLayout);
+			target.getLayoutInformations().add(li);
+		}
 	}
 }

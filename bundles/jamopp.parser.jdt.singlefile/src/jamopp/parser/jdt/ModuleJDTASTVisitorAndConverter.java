@@ -45,6 +45,7 @@ class ModuleJDTASTVisitorAndConverter extends PackageJDTASTVisitorAndConverter {
 		}
 		LayoutInformationConverter.convertJavaRootLayoutInformation(module, node, this.getSource());
 		BaseConverterUtility.convertToNamespacesAndSet(node.getName(), module);
+		module.setName("");
 		node.annotations().forEach(obj -> module.getAnnotations().add(AnnotationInstanceOrModifierConverterUtility
 			.convertToAnnotationInstance((Annotation) obj)));
 		node.moduleStatements().forEach(obj -> module.getTarget().add(this.convertToDirective((ModuleDirective) obj)));

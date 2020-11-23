@@ -1,0 +1,152 @@
+package jamopp.parser.jdt;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
+import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jdt.core.dom.AST;
+import org.eclipse.jdt.core.dom.ASTNode;
+import org.eclipse.jdt.core.dom.ASTParser;
+import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.eclipse.jdt.core.dom.FileASTRequestor;
+import org.emftext.language.java.JavaClasspath;
+import org.emftext.language.java.containers.JavaRoot;
+
+import jamopp.parser.api.JaMoPPParserAPI;
+
+public class JaMoPPJDTSingleFileParser implements JaMoPPParserAPI {
+	private final String DEFAULT_ENCODING = StandardCharsets.UTF_8.toString();
+	private ResourceSet resourceSet;
+
+	@Override
+	public JavaRoot parse(String fileName, InputStream input) {
+		Resource r = JavaClasspath.get().getResource(URI.createFileURI(fileName));
+		if (r != null) {
+			return (JavaRoot) r.getContents().get(0);
+		}
+		this.setUpResourceSet();
+		StringBuilder builder = new StringBuilder();
+		String lineSep = System.getProperty("line.separator");
+		try(InputStreamReader inReader = new InputStreamReader(input); BufferedReader buffReader = new BufferedReader(inReader)) {
+			buffReader.lines().forEach(line -> builder.append(line + lineSep));
+		} catch (IOException e) {
+		}
+		String src = builder.toString();
+		ASTNode ast = parseFileWithJDT(src, fileName);
+		OrdinaryCompilationUnitJDTASTVisitorAndConverter converter = new OrdinaryCompilationUnitJDTASTVisitorAndConverter();
+		converter.setSource(src);
+		ast.accept(converter);
+		this.resourceSet = null;
+		return converter.getConvertedElement();
+	}
+	
+	private ASTNode parseFileWithJDT(String fileContent, String fileName) {
+		ASTParser parser = setUpParser();
+		parser.setUnitName(fileName);
+		parser.setEnvironment(new String[] {}, new String[] {}, new String[] {}, true);
+		parser.setSource(fileContent.toCharArray());
+		return parser.createAST(null);
+	}
+	
+	@Override
+	public Resource parseFile(Path file) {
+		Resource result = JavaClasspath.get().getResource(URI.createFileURI(file.toAbsolutePath().toString()));
+		if (result != null) {
+			return result;
+		}
+		this.setUpResourceSet();
+		result = this.parseFilesWithJDT(new String[] {}, new String[] { file.toAbsolutePath().toString() },
+			new String[] { DEFAULT_ENCODING }).get(0).eResource();
+		this.resourceSet = null;
+		return result;
+	}
+	
+	@Override
+	public ResourceSet parseDirectory(Path dir) {
+		this.setUpResourceSet();
+		try {
+			String[] sources = Files.walk(dir).filter(path -> Files.isRegularFile(path) && path.getFileName().toString().endsWith("java"))
+				.map(Path::toAbsolutePath).map(Path::toString).filter(p -> {
+					Resource r = JavaClasspath.get().getResource(URI.createFileURI(p));
+					if (r != null) {
+						JaMoPPJDTSingleFileParser.this.resourceSet.getResources().add(r);
+						return false;
+					}
+					return true;
+				}).toArray(i -> new String[i]);
+			String[] encodings = new String[sources.length];
+			for (int index = 0; index < encodings.length; index++) {
+				encodings[index] = DEFAULT_ENCODING;
+			}
+			String[] classpathEntries = {};
+			this.parseFilesWithJDT(classpathEntries, sources, encodings);
+		} catch (IOException e) {
+		}
+		ResourceSet result = this.resourceSet;
+		this.resourceSet = null;
+		return result;
+	}
+	
+	private List<JavaRoot> parseFilesWithJDT(String[] classpathEntries, String[] sources, String[] encodings) {
+		ArrayList<JavaRoot> result = new ArrayList<>();
+		ASTParser parser = setUpParser();
+		parser.setEnvironment(classpathEntries, new String[] {}, new String[] {}, true);
+		OrdinaryCompilationUnitJDTASTVisitorAndConverter converter = new OrdinaryCompilationUnitJDTASTVisitorAndConverter();
+		parser.createASTs(sources, encodings, new String[] {}, new FileASTRequestor() {
+			@Override
+			public void acceptAST(String sourceFilePath, CompilationUnit node) {
+				node.accept(converter);
+				JavaRoot root = converter.getConvertedElement();
+				Resource newResource;
+				if (root.eResource() == null) {
+					newResource = JaMoPPJDTSingleFileParser.this.resourceSet.createResource(URI.createFileURI(sourceFilePath));
+					newResource.getContents().add(root);
+				} else {
+					newResource = root.eResource();
+					if (!newResource.getURI().toFileString().equals(sourceFilePath)) {
+						newResource.setURI(URI.createFileURI(sourceFilePath));
+					}
+				}
+				result.add(root);
+			}
+		}, null);
+		return result;
+	}
+	
+	private void setUpResourceSet() {
+		if (this.resourceSet == null) {
+			this.resourceSet = new ResourceSetImpl();
+		}
+	}
+	
+	private ASTParser setUpParser() {
+		ASTParser parser = ASTParser.newParser(AST.JLS14);
+		parser.setResolveBindings(true);
+		parser.setBindingsRecovery(true);
+		parser.setStatementsRecovery(true);
+		Map<String, String> options = new HashMap<>();
+		options.put(JavaCore.COMPILER_SOURCE, JavaCore.VERSION_14);
+		options.put(JavaCore.COMPILER_COMPLIANCE, JavaCore.VERSION_14);
+		options.put(JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, JavaCore.VERSION_14);
+		parser.setCompilerOptions(options);
+		return parser;
+	}
+
+	@Override
+	public void setResourceSet(ResourceSet set) {
+		this.resourceSet = set;
+	}
+}

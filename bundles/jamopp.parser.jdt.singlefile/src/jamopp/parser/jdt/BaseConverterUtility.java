@@ -111,8 +111,7 @@ class BaseConverterUtility {
 			LayoutInformationConverter.convertToMinimalLayoutInformation(convertedType, primType);
 			return convertedType;
 		} else if (t.isVar()) {
-			org.emftext.language.java.types.ClassifierReference ref = org.emftext.language.java.types.TypesFactory.eINSTANCE.createClassifierReference();
-			ref.setTarget(org.emftext.language.java.types.TypesFactory.eINSTANCE.createInferableType());
+			org.emftext.language.java.types.InferableType ref = org.emftext.language.java.types.TypesFactory.eINSTANCE.createInferableType();
 			LayoutInformationConverter.convertToMinimalLayoutInformation(ref, t);
 			return ref;
 		} else if (t.isArrayType()) {
@@ -150,7 +149,13 @@ class BaseConverterUtility {
 		} else if (t.isNameQualifiedType()) {
 			NameQualifiedType nqT = (NameQualifiedType) t;
 			org.emftext.language.java.types.NamespaceClassifierReference result = org.emftext.language.java.types.TypesFactory.eINSTANCE.createNamespaceClassifierReference();
-			convertToNamespacesAndSet(nqT.getQualifier(), result);
+			org.emftext.language.java.types.TypeReference parentRef = convertToClassifierOrNamespaceClassifierReference(nqT.getQualifier());
+			if (parentRef instanceof org.emftext.language.java.types.ClassifierReference) {
+				result = org.emftext.language.java.types.TypesFactory.eINSTANCE.createNamespaceClassifierReference();
+				result.getClassifierReferences().add((org.emftext.language.java.types.ClassifierReference) parentRef);
+			} else {
+				result = (org.emftext.language.java.types.NamespaceClassifierReference) parentRef;
+			}
 			org.emftext.language.java.types.ClassifierReference child = convertToClassifierReference(nqT.getName());
 			nqT.annotations().forEach(obj -> child.getAnnotations().add(AnnotationInstanceOrModifierConverterUtility
 				.convertToAnnotationInstance((Annotation) obj)));
@@ -209,11 +214,18 @@ class BaseConverterUtility {
 		}
 	}
 	
-	@SuppressWarnings("unchecked")
 	static void convertToArrayDimensionsAndSet(Type t, org.emftext.language.java.arrays.ArrayTypeable arrDimContainer) {
+		convertToArrayDimensionsAndSet(t, arrDimContainer, 0);
+	}
+	
+	static void convertToArrayDimensionsAndSet(Type t, org.emftext.language.java.arrays.ArrayTypeable arrDimContainer,
+			int ignoreDimensions) {
 		if (t.isArrayType()) {
 			ArrayType arrT = (ArrayType) t;
-			arrT.dimensions().forEach(obj -> arrDimContainer.getArrayDimensionsBefore().add(convertToArrayDimension((Dimension) obj)));
+			for (int i = ignoreDimensions; i < arrT.dimensions().size(); i++) {
+				arrDimContainer.getArrayDimensionsBefore().add(convertToArrayDimension((Dimension)
+					arrT.dimensions().get(i)));
+			}
 		}
 	}
 	

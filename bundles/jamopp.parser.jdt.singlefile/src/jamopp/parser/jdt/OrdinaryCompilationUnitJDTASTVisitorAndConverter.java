@@ -19,6 +19,7 @@ import org.eclipse.jdt.core.dom.CompilationUnit;
 class OrdinaryCompilationUnitJDTASTVisitorAndConverter extends ModuleJDTASTVisitorAndConverter {
 	@Override
 	public boolean visit(CompilationUnit node) {
+		this.setConvertedElement(null);
 		if (node.types().size() > 0) {
 			this.setConvertedElement(this.convertToCompilationUnit(node));
 		}
@@ -29,6 +30,7 @@ class OrdinaryCompilationUnitJDTASTVisitorAndConverter extends ModuleJDTASTVisit
 	@SuppressWarnings("unchecked")
 	private org.emftext.language.java.containers.CompilationUnit convertToCompilationUnit(CompilationUnit cu) {
 		org.emftext.language.java.containers.CompilationUnit result = org.emftext.language.java.containers.ContainersFactory.eINSTANCE.createCompilationUnit();
+		result.setName("");
 		LayoutInformationConverter.convertJavaRootLayoutInformation(result, cu, getSource());
 		cu.types().forEach(obj -> result.getClassifiers().add(ClassifierConverterUtility.convertToConcreteClassifier((AbstractTypeDeclaration) obj)));
 		return result;

@@ -44,6 +44,7 @@ class AbstractAndEmptyModelJDTASTVisitorAndConverter extends ASTVisitor {
 	public boolean visit(CompilationUnit node) {
 		if (this.convertedRootElement == null) {
 			this.convertedRootElement = org.emftext.language.java.containers.ContainersFactory.eINSTANCE.createEmptyModel();
+			this.convertedRootElement.setName("");
 		}
 		node.imports().forEach(obj -> this.convertedRootElement.getImports().add(this.convertToImport((ImportDeclaration) obj)));
 		return false;

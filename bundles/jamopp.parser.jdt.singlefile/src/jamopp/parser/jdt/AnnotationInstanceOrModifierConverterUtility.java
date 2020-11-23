@@ -111,7 +111,8 @@ class AnnotationInstanceOrModifierConverterUtility {
 		} else if (expr.getNodeType() == ASTNode.ARRAY_INITIALIZER) {
 			return convertToArrayInitializer((ArrayInitializer) expr);
 		} else if (expr.getNodeType() == ASTNode.CONDITIONAL_EXPRESSION) {
-			return ExpressionConverterUtility.convertToConditionalExpression((ConditionalExpression) expr);
+			return (org.emftext.language.java.expressions.AssignmentExpressionChild)
+				ExpressionConverterUtility.convertToExpression((Expression) expr);
 		}
 		return null;
 	}
