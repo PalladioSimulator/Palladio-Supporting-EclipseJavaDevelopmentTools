@@ -17,7 +17,10 @@ package org.emftext.language.java.extensions.imports;
 
 import org.eclipse.emf.common.util.ECollections;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.common.util.UniqueEList;
 import org.emftext.language.java.classifiers.ConcreteClassifier;
+import org.emftext.language.java.classifiers.Enumeration;
+import org.emftext.language.java.commons.NamedElement;
 import org.emftext.language.java.imports.Import;
 
 public class ImportExtension {
@@ -37,6 +40,29 @@ public class ImportExtension {
 		
 		String fullQualifiedName = containerName + "." + name;
 		return me.getConcreteClassifier(fullQualifiedName);
+	}
+	
+	/**
+	 * Returns all imported members assuming the import's namespace
+	 * identifies a classifier.
+	 * 
+	 * @return list of imported classifiers (proxies)
+	 */
+	public static EList<NamedElement> getImportedMembers(Import me) {
+		ConcreteClassifier concreteClassifier = me.getClassifierAtNamespaces();
+		
+		if (concreteClassifier == null || concreteClassifier.eIsProxy()) {
+			return ECollections.emptyEList();
+		}
+		
+		EList<NamedElement> result = new UniqueEList<NamedElement>();
+		result.addAll(concreteClassifier.getAllMembers(me));
+		if (concreteClassifier instanceof Enumeration) {
+			Enumeration enumeration = (Enumeration) concreteClassifier;
+			result.addAll(enumeration.getConstants());
+		}
+		
+		return result;
 	}
 	
 	/**

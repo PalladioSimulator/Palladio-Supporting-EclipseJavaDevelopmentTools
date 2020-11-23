@@ -443,6 +443,8 @@
         </genOperations>
         <genOperations ecoreOperation="java.ecore#//imports/Import/getImportedClassifiers"
             body="return org.emftext.language.java.extensions.imports.ImportExtension.getImportedClassifiers((org.emftext.language.java.imports.Import) this);"/>
+        <genOperations ecoreOperation="java.ecore#//imports/Import/getImportedMembers"
+            body="return org.emftext.language.java.extensions.imports.ImportExtension.getImportedMembers((org.emftext.language.java.imports.Import) this);"/>
       </genClasses>
       <genClasses image="false" ecoreClass="java.ecore#//imports/ImportingElement">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//imports/ImportingElement/imports"/>

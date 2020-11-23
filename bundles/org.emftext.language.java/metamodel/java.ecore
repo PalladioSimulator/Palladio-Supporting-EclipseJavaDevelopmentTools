@@ -822,6 +822,11 @@
           <details key="documentation" value=""/>
         </eAnnotations>
       </eOperations>
+      <eOperations name="getImportedMembers" upperBound="-1" eType="#//commons/NamedElement">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return org.emftext.language.java.extensions.imports.ImportExtension.getImportedMembers((org.emftext.language.java.imports.Import) this);"/>
+        </eAnnotations>
+      </eOperations>
       <eStructuralFeatures xsi:type="ecore:EReference" name="classifier" eType="#//classifiers/ConcreteClassifier"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="ImportingElement" abstract="true"
