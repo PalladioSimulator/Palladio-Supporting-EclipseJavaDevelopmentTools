@@ -41,8 +41,8 @@ import org.emftext.language.java.imports.PackageImport;
 import org.emftext.language.java.imports.StaticClassifierImport;
 import org.emftext.language.java.imports.StaticMemberImport;
 import org.emftext.language.java.members.Member;
+import org.emftext.language.java.references.IdentifierReference;
 import org.emftext.language.java.references.MethodCall;
-import org.emftext.language.java.references.PackageReference;
 import org.emftext.language.java.references.Reference;
 import org.emftext.language.java.resource.java.analysis.helper.ScopedTreeWalker;
 import org.emftext.language.java.statements.StatementsPackage;
@@ -83,11 +83,10 @@ public class ConcreteClassifierDecider extends AbstractDecider {
 	public EList<? extends EObject> getAdditionalCandidates(String identifier, EObject container) {
 		EList<EObject> resultList = new BasicEList<EObject>();
 
-		if (container instanceof PackageReference) {
-			PackageReference p = (PackageReference) container;
+		if (container instanceof IdentifierReference) {
+			IdentifierReference p = (IdentifierReference) container;
 			String packageName = packageName(p);
-			resultList.addAll(JavaClasspath.get(resource).getClassifiers(
-					packageName, "*"));
+			resultList.addAll(JavaClasspath.get().getConcreteClassifiers(packageName));
 		}
 
 		if(container instanceof Classifier
@@ -170,8 +169,7 @@ public class ConcreteClassifierDecider extends AbstractDecider {
 									outerName = outerName.subSequence(
 											0, outerName.length() - JavaUniquePathConstructor.JAVA_FILE_EXTENSION.length()) + "$";	
 								}
-								for(EObject innerClassifierProxy : JavaClasspath.get(container).getClassifiers(
-										outerName, "*")) {
+								for(EObject innerClassifierProxy : JavaClasspath.get().getConcreteClassifiers(outerName)) {
 									innerClassifiers.add((ConcreteClassifier) EcoreUtil.resolve(
 											innerClassifierProxy, container));
 								}
@@ -190,13 +188,13 @@ public class ConcreteClassifierDecider extends AbstractDecider {
 		return resultList;
 	}
 
-	private String packageName(PackageReference p) {
+	private String packageName(IdentifierReference p) {
 		String s = "";
 		while (p != null) {
-			s =  p.getName() + "." + s;
+			s =  p.getTarget().getName() + "." + s;
 			EObject container = p.eContainer();
-			if (container instanceof PackageReference) {
-				p = (PackageReference) container;
+			if (container instanceof IdentifierReference) {
+				p = (IdentifierReference) container;
 			} else {
 				p = null;
 			}
@@ -247,10 +245,6 @@ public class ConcreteClassifierDecider extends AbstractDecider {
 			//the last imported package has priority over the previous
 			//ECollections.reverse(packageImports);
 			resultList.addAll(packageImports);
-		}
-		//5) java.lang
-		if(container instanceof JavaRoot || container.eContainer() == null) {
-			resultList.addAll(org.emftext.language.java.JavaClasspath.get(container).getDefaultImports());
 		}
 	}
 

@@ -23,7 +23,6 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.util.EcoreUtil;
-import org.emftext.language.java.JavaClasspath;
 import org.emftext.language.java.classifiers.Classifier;
 import org.emftext.language.java.classifiers.ConcreteClassifier;
 import org.emftext.language.java.containers.CompilationUnit;
@@ -32,7 +31,6 @@ import org.emftext.language.java.expressions.NestedExpression;
 import org.emftext.language.java.instantiations.NewConstructorCall;
 import org.emftext.language.java.references.ElementReference;
 import org.emftext.language.java.references.IdentifierReference;
-import org.emftext.language.java.references.PackageReference;
 import org.emftext.language.java.references.Reference;
 import org.emftext.language.java.references.ReferenceableElement;
 import org.emftext.language.java.references.ReferencesPackage;
@@ -66,12 +64,7 @@ public class ElementReferenceTargetReferenceResolver implements
 		if (element instanceof ConcreteClassifier) {
 			ConcreteClassifier concreteClassifier = (ConcreteClassifier) element;
 
-			Object fullNamesOption = container.eResource().getResourceSet().getLoadOptions().get(
-					JavaClasspath.OPTION_ALWAYS_USE_FULLY_QUALIFIED_NAMES);
-			if (!(fullNamesOption instanceof Boolean)) {
-				fullNamesOption = Boolean.FALSE;
-			}
-			if (container.getPrevious() == null && Boolean.TRUE.equals(fullNamesOption)) {
+			if (container.getPrevious() == null) {
 				String packageName = "";
 				String fullClassName = concreteClassifier.getName();
 				EObject parent = concreteClassifier.eContainer();
@@ -100,7 +93,7 @@ public class ElementReferenceTargetReferenceResolver implements
 			//a follow up reference: different scope
 			parentReference = (Reference) container.eContainer();
 			if (parentReference instanceof IdentifierReference &&
-					((IdentifierReference) parentReference).getTarget() instanceof PackageReference) {
+					((IdentifierReference) parentReference).getTarget() instanceof org.emftext.language.java.containers.Package) {
 				startingPoint = ((IdentifierReference)parentReference).getTarget();
 			}
 			else {

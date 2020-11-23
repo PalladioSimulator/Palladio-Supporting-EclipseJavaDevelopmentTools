@@ -64,12 +64,7 @@ public class ClassifierReferenceTargetReferenceResolver implements
 			if(container.eContainer() instanceof NamespaceClassifierReference) {
 				namespaceMissing = ((NamespaceClassifierReference)container.eContainer()).getNamespaces().isEmpty();
 			}
-			Object fullNamesOption = Boolean.FALSE;
-			if (container.eResource() != null && container.eResource().getResourceSet() !=null) {
-				fullNamesOption = container.eResource().getResourceSet().getLoadOptions().get(
-						JavaClasspath.OPTION_ALWAYS_USE_FULLY_QUALIFIED_NAMES);
-			}
-			if (namespaceMissing && Boolean.TRUE.equals(fullNamesOption)) {
+			if (namespaceMissing) {
 				String packageName = "";
 				String fullClassName = concreteClassifier.getName();
 				EObject parent = concreteClassifier.eContainer();
@@ -212,7 +207,7 @@ public class ClassifierReferenceTargetReferenceResolver implements
 			if (containerName.contains("$")) {
 				String firstClassName = containerName.substring(0, containerName.indexOf("$"));
 				ConcreteClassifier firstClass = (ConcreteClassifier) EcoreUtil.resolve(
-						JavaClasspath.get(ncr).getClassifier(firstClassName), container.eResource());
+						JavaClasspath.get().getConcreteClassifier(firstClassName), container.eResource());
 				target = ConcreteClassifierDecider.resolveRelativeNamespace(
 						ncr, ncr.getNamespaces().indexOf(firstClass.getName()) + 1, firstClass, container, reference);
 				if (target != null) {
@@ -226,7 +221,7 @@ public class ClassifierReferenceTargetReferenceResolver implements
 			}
 			else {
 				target = (Classifier) EcoreUtil.resolve(
-						JavaClasspath.get(ncr).getClassifier(containerName + identifier), container.eResource());
+						JavaClasspath.get().getConcreteClassifier(containerName + identifier), container.eResource());
 			}
 
 			return target;

@@ -18,7 +18,9 @@
 
 package org.emftext.language.java;
 
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.stream.Collectors;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -85,6 +87,10 @@ public class JavaClasspath {
 	
 	public ConcreteClassifier getConcreteClassifier(String fullQualifiedClassifierName) {
 		return classifiers.stream().filter(c -> c.getQualifiedName().equals(fullQualifiedClassifierName)).findFirst().orElse(null);
+	}
+	
+	public Collection<ConcreteClassifier> getConcreteClassifiers(String packageName) {
+		return classifiers.stream().filter(c -> c.getQualifiedName().startsWith(packageName)).collect(Collectors.toList());
 	}
 	
 	public ConcreteClassifier getFirstConcreteClassifier(String simpleClassifierName) {
