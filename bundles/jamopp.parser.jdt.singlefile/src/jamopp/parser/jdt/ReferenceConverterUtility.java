@@ -13,7 +13,6 @@
 
 package jamopp.parser.jdt;
 
-import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.Annotation;
 import org.eclipse.jdt.core.dom.ArrayAccess;
@@ -40,6 +39,8 @@ import org.eclipse.jdt.core.dom.SuperMethodInvocation;
 import org.eclipse.jdt.core.dom.ThisExpression;
 import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeLiteral;
+import org.emftext.language.java.resource.java.IJavaContextDependentURIFragmentWrapper;
+import org.emftext.language.java.resource.java.JavaContextDependentURIFragmentFactoryFactory;
 
 class ReferenceConverterUtility {
 	static org.emftext.language.java.references.Reference convertToReference(Expression expr) {
@@ -121,8 +122,9 @@ class ReferenceConverterUtility {
 			arr.typeArguments().forEach(obj -> result.getCallTypeArguments().add(BaseConverterUtility.convertToTypeArgument((Type) obj)));
 			arr.arguments().forEach(obj -> result.getArguments().add(ExpressionConverterUtility.convertToExpression((Expression) obj)));
 			org.emftext.language.java.members.Method methodProxy = org.emftext.language.java.members.MembersFactory.eINSTANCE.createClassMethod();
-			((InternalEObject) methodProxy).eSetProxyURI(null);
 			BaseConverterUtility.convertToSimpleNameOnlyAndSet(arr.getName(), methodProxy);
+			IJavaContextDependentURIFragmentWrapper.GLOBAL_INSTANCE.registerContextDependentProxy(JavaContextDependentURIFragmentFactoryFactory.ELEMENT_REFERENCE_TARGET_REFERENCE_FACTORY,
+				result, org.emftext.language.java.references.ReferencesPackage.Literals.ELEMENT_REFERENCE__TARGET, methodProxy.getName(), methodProxy, -1);
 			result.setTarget(methodProxy);
 			LayoutInformationConverter.convertToMinimalLayoutInformation(result, arr);
 			if (arr.getExpression() != null) {
@@ -174,8 +176,9 @@ class ReferenceConverterUtility {
 			arr.typeArguments().forEach(obj -> partTwo.getCallTypeArguments().add(BaseConverterUtility.convertToTypeArgument((Type) obj)));
 			arr.arguments().forEach(obj -> partTwo.getArguments().add(ExpressionConverterUtility.convertToExpression((Expression) obj)));
 			org.emftext.language.java.members.Method proxy = org.emftext.language.java.members.MembersFactory.eINSTANCE.createClassMethod();
-			((InternalEObject) proxy).eSetProxyURI(null);
 			BaseConverterUtility.convertToSimpleNameOnlyAndSet(arr.getName(), proxy);
+			IJavaContextDependentURIFragmentWrapper.GLOBAL_INSTANCE.registerContextDependentProxy(JavaContextDependentURIFragmentFactoryFactory.ELEMENT_REFERENCE_TARGET_REFERENCE_FACTORY,
+					partTwo, org.emftext.language.java.references.ReferencesPackage.Literals.ELEMENT_REFERENCE__TARGET, proxy.getName(), proxy, -1);
 			partTwo.setTarget(proxy);
 			partOne.setNext(partTwo);
 			LayoutInformationConverter.convertToMinimalLayoutInformation(partTwo, arr);
@@ -210,18 +213,11 @@ class ReferenceConverterUtility {
 	private static org.emftext.language.java.references.IdentifierReference createProxyIdentifierReference(String name) {
 		org.emftext.language.java.references.IdentifierReference result = org.emftext.language.java.references.ReferencesFactory.eINSTANCE.createIdentifierReference();
 		org.emftext.language.java.members.Field proxy = org.emftext.language.java.members.MembersFactory.eINSTANCE.createField();
-		((InternalEObject) proxy).eSetProxyURI(null);
 		proxy.setName(name);
+		IJavaContextDependentURIFragmentWrapper.GLOBAL_INSTANCE.registerContextDependentProxy(JavaContextDependentURIFragmentFactoryFactory.ELEMENT_REFERENCE_TARGET_REFERENCE_FACTORY,
+				result, org.emftext.language.java.references.ReferencesPackage.Literals.ELEMENT_REFERENCE__TARGET, proxy.getName(), proxy, -1);
 		result.setTarget(proxy);
 		return result;
-	}
-	
-	private static org.emftext.language.java.references.IdentifierReference convertToIdentifierReference(org.emftext.language.java.types.ClassifierReference ref) {
-		org.emftext.language.java.references.IdentifierReference temp = org.emftext.language.java.references.ReferencesFactory.eINSTANCE.createIdentifierReference();
-		temp.setTarget(ref.getTarget());
-		temp.getTypeArguments().addAll(ref.getTypeArguments());
-		temp.getAnnotations().addAll(ref.getAnnotations());
-		return temp;
 	}
 	
 	static org.emftext.language.java.references.Reference convertToReference(Type t) {

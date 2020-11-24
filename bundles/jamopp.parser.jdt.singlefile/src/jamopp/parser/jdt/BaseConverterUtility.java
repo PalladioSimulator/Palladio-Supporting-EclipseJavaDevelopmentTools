@@ -13,7 +13,6 @@
 
 package jamopp.parser.jdt;
 
-import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.jdt.core.dom.Annotation;
 import org.eclipse.jdt.core.dom.ArrayType;
 import org.eclipse.jdt.core.dom.Dimension;
@@ -27,6 +26,8 @@ import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.SimpleType;
 import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.WildcardType;
+import org.emftext.language.java.resource.java.IJavaContextDependentURIFragmentWrapper;
+import org.emftext.language.java.resource.java.JavaContextDependentURIFragmentFactoryFactory;
 
 class BaseConverterUtility {
 	static org.emftext.language.java.types.TypeReference convertToClassifierOrNamespaceClassifierReference(Name name) {
@@ -44,8 +45,9 @@ class BaseConverterUtility {
 	static org.emftext.language.java.types.ClassifierReference convertToClassifierReference(SimpleName simpleName) {
 		org.emftext.language.java.types.ClassifierReference ref = org.emftext.language.java.types.TypesFactory.eINSTANCE.createClassifierReference();
 		org.emftext.language.java.classifiers.Class proxy = org.emftext.language.java.classifiers.ClassifiersFactory.eINSTANCE.createClass();
-		((InternalEObject) proxy).eSetProxyURI(null);
 		proxy.setName(simpleName.getIdentifier());
+		IJavaContextDependentURIFragmentWrapper.GLOBAL_INSTANCE.registerContextDependentProxy(JavaContextDependentURIFragmentFactoryFactory.CLASSIFIER_REFERENCE_TARGET_REFERENCE_FACTORY,
+			ref, org.emftext.language.java.types.TypesPackage.Literals.CLASSIFIER_REFERENCE__TARGET, proxy.getName(), proxy, -1);
 		ref.setTarget(proxy);
 		return ref;
 	}

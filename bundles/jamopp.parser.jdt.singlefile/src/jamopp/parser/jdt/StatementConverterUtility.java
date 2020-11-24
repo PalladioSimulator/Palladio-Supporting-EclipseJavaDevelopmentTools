@@ -15,8 +15,6 @@ package jamopp.parser.jdt;
 
 import java.util.HashSet;
 import java.util.List;
-
-import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.AssertStatement;
 import org.eclipse.jdt.core.dom.Block;
