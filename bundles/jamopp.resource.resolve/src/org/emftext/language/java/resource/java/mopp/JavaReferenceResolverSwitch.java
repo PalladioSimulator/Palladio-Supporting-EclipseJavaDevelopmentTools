@@ -30,9 +30,8 @@ public class JavaReferenceResolverSwitch implements org.emftext.language.java.re
 	protected org.emftext.language.java.resource.java.analysis.AnnotationAttributeSettingAttributeReferenceResolver annotationAttributeSettingAttributeReferenceResolver = new org.emftext.language.java.resource.java.analysis.AnnotationAttributeSettingAttributeReferenceResolver();
 	protected org.emftext.language.java.resource.java.analysis.ClassifierReferenceTargetReferenceResolver classifierReferenceTargetReferenceResolver = new org.emftext.language.java.resource.java.analysis.ClassifierReferenceTargetReferenceResolver();
 	protected org.emftext.language.java.resource.java.analysis.ElementReferenceTargetReferenceResolver elementReferenceTargetReferenceResolver = new org.emftext.language.java.resource.java.analysis.ElementReferenceTargetReferenceResolver();
-	protected org.emftext.language.java.resource.java.analysis.JumpTargetReferenceResolver jumpTargetReferenceResolver = new org.emftext.language.java.resource.java.analysis.JumpTargetReferenceResolver();
 	
-	public org.emftext.language.java.resource.java.IJavaReferenceResolver<org.emftext.language.java.imports.ClassifierImport, org.emftext.language.java.classifiers.ConcreteClassifier> getClassifierImportClassifierReferenceResolver() {
+	public org.emftext.language.java.resource.java.IJavaReferenceResolver<org.emftext.language.java.imports.Import, org.emftext.language.java.classifiers.ConcreteClassifier> getClassifierImportClassifierReferenceResolver() {
 		return getResolverChain(org.emftext.language.java.imports.ImportsPackage.eINSTANCE.getImport_Classifier(), classifierImportClassifierReferenceResolver);
 	}
 	
@@ -56,10 +55,6 @@ public class JavaReferenceResolverSwitch implements org.emftext.language.java.re
 		return getResolverChain(org.emftext.language.java.references.ReferencesPackage.eINSTANCE.getElementReference_Target(), elementReferenceTargetReferenceResolver);
 	}
 	
-	public org.emftext.language.java.resource.java.IJavaReferenceResolver<org.emftext.language.java.statements.Jump, org.emftext.language.java.statements.JumpLabel> getJumpTargetReferenceResolver() {
-		return getResolverChain(org.emftext.language.java.statements.StatementsPackage.eINSTANCE.getJump_Target(), jumpTargetReferenceResolver);
-	}
-	
 	public void setOptions(java.util.Map<?, ?> options) {
 		if (options != null) {
 			this.options = new java.util.LinkedHashMap<Object, Object>();
@@ -71,7 +66,6 @@ public class JavaReferenceResolverSwitch implements org.emftext.language.java.re
 		annotationAttributeSettingAttributeReferenceResolver.setOptions(options);
 		classifierReferenceTargetReferenceResolver.setOptions(options);
 		elementReferenceTargetReferenceResolver.setOptions(options);
-		jumpTargetReferenceResolver.setOptions(options);
 	}
 	
 	public void resolveFuzzy(String identifier, org.eclipse.emf.ecore.EObject container, org.eclipse.emf.ecore.EReference reference, int position, org.emftext.language.java.resource.java.IJavaReferenceResolveResult<org.eclipse.emf.ecore.EObject> result) {
@@ -126,14 +120,6 @@ public class JavaReferenceResolverSwitch implements org.emftext.language.java.re
 				elementReferenceTargetReferenceResolver.resolve(identifier, (org.emftext.language.java.references.ElementReference) container, (org.eclipse.emf.ecore.EReference) feature, position, true, frr);
 			}
 		}
-		if (org.emftext.language.java.statements.StatementsPackage.eINSTANCE.getJump().isInstance(container)) {
-			JavaFuzzyResolveResult<org.emftext.language.java.statements.JumpLabel> frr = new JavaFuzzyResolveResult<org.emftext.language.java.statements.JumpLabel>(result);
-			String referenceName = reference.getName();
-			org.eclipse.emf.ecore.EStructuralFeature feature = container.eClass().getEStructuralFeature(referenceName);
-			if (feature != null && feature instanceof org.eclipse.emf.ecore.EReference && referenceName != null && referenceName.equals("target")) {
-				jumpTargetReferenceResolver.resolve(identifier, (org.emftext.language.java.statements.Jump) container, (org.eclipse.emf.ecore.EReference) feature, position, true, frr);
-			}
-		}
 	}
 	
 	public org.emftext.language.java.resource.java.IJavaReferenceResolver<? extends org.eclipse.emf.ecore.EObject, ? extends org.eclipse.emf.ecore.EObject> getResolver(org.eclipse.emf.ecore.EStructuralFeature reference) {
@@ -154,9 +140,6 @@ public class JavaReferenceResolverSwitch implements org.emftext.language.java.re
 		}
 		if (reference == org.emftext.language.java.references.ReferencesPackage.eINSTANCE.getElementReference_Target()) {
 			return getResolverChain(reference, elementReferenceTargetReferenceResolver);
-		}
-		if (reference == org.emftext.language.java.statements.StatementsPackage.eINSTANCE.getJump_Target()) {
-			return getResolverChain(reference, jumpTargetReferenceResolver);
 		}
 		return null;
 	}

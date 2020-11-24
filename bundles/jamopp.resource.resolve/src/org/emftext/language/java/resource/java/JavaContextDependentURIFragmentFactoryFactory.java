@@ -4,7 +4,7 @@ import org.emftext.language.java.annotations.AnnotationAttributeSetting;
 import org.emftext.language.java.annotations.AnnotationInstance;
 import org.emftext.language.java.classifiers.Classifier;
 import org.emftext.language.java.classifiers.ConcreteClassifier;
-import org.emftext.language.java.imports.ClassifierImport;
+import org.emftext.language.java.imports.Import;
 import org.emftext.language.java.imports.StaticMemberImport;
 import org.emftext.language.java.members.InterfaceMethod;
 import org.emftext.language.java.references.ElementReference;
@@ -28,7 +28,7 @@ public final class JavaContextDependentURIFragmentFactoryFactory {
 	public static final IJavaContextDependentURIFragmentFactory<AnnotationAttributeSetting, InterfaceMethod> ANNOTATION_ATTRIBUTE_SETTING_INTERFACE_METHOD_FACTORY
 		= new JavaContextDependentURIFragmentFactory<>(new AnnotationAttributeSettingAttributeReferenceResolver());
 	
-	public static final IJavaContextDependentURIFragmentFactory<ClassifierImport, ConcreteClassifier> CLASSIFIER_IMPORT_CLASSIFIER_REFERENCE_FACTORY
+	public static final IJavaContextDependentURIFragmentFactory<Import, ConcreteClassifier> CLASSIFIER_IMPORT_CLASSIFIER_REFERENCE_FACTORY
 		= new JavaContextDependentURIFragmentFactory<>(new ClassifierImportClassifierReferenceResolver());
 	
 	public static final IJavaContextDependentURIFragmentFactory<ClassifierReference, Classifier> CLASSIFIER_REFERENCE_TARGET_REFERENCE_FACTORY

@@ -19,24 +19,23 @@ import java.util.Map;
 
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.emftext.language.java.classifiers.ConcreteClassifier;
-import org.emftext.language.java.imports.ClassifierImport;
+import org.emftext.language.java.imports.Import;
 import org.emftext.language.java.resource.java.IJavaReferenceResolveResult;
 import org.emftext.language.java.resource.java.IJavaReferenceResolver;
 
 public class ClassifierImportClassifierReferenceResolver implements
-	IJavaReferenceResolver<ClassifierImport, ConcreteClassifier> {
+	IJavaReferenceResolver<Import, ConcreteClassifier> {
 
-	JavaDefaultResolverDelegate<ClassifierImport, ConcreteClassifier> delegate =
-		new JavaDefaultResolverDelegate<ClassifierImport, ConcreteClassifier>();
+	JavaDefaultResolverDelegate<Import, ConcreteClassifier> delegate = new JavaDefaultResolverDelegate<>();
 
-	public java.lang.String deResolve(ConcreteClassifier element, ClassifierImport container, org.eclipse.emf.ecore.EReference reference) {
+	public java.lang.String deResolve(ConcreteClassifier element, Import container, org.eclipse.emf.ecore.EReference reference) {
 		if (element.eIsProxy()) {
 			return delegate.deResolve(element, container, reference);
 		}
 		return element.getName();
 	}
 
-	public void resolve(java.lang.String identifier, ClassifierImport theImport, org.eclipse.emf.ecore.EReference reference, int position, boolean resolveFuzzy, IJavaReferenceResolveResult<ConcreteClassifier> result) {
+	public void resolve(java.lang.String identifier, Import theImport, org.eclipse.emf.ecore.EReference reference, int position, boolean resolveFuzzy, IJavaReferenceResolveResult<ConcreteClassifier> result) {
 		ConcreteClassifier importedClassifier = theImport.getImportedClassifier(identifier);
 		if (importedClassifier != null) {
 			importedClassifier = (ConcreteClassifier) EcoreUtil.resolve(importedClassifier, theImport.eResource());
