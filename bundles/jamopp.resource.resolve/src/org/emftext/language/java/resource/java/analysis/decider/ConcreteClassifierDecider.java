@@ -26,7 +26,7 @@ import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.emftext.language.java.JavaClasspath;
-import org.emftext.language.java.JavaUniquePathConstructor;
+import org.emftext.language.java.LogicalJavaURIGenerator;
 import org.emftext.language.java.classifiers.AnonymousClass;
 import org.emftext.language.java.classifiers.Classifier;
 import org.emftext.language.java.classifiers.ConcreteClassifier;
@@ -135,8 +135,8 @@ public class ConcreteClassifierDecider extends AbstractDecider {
 		addImportsAndInnerClasses(container, resultList);
 
 		//this is required for classes that contain '$' in their name
-		if(container instanceof CompilationUnit && identifier.contains(JavaUniquePathConstructor.CLASSIFIER_SEPARATOR)) {
-			String[] path = identifier.split("\\" + JavaUniquePathConstructor.CLASSIFIER_SEPARATOR, -1);
+		if(container instanceof CompilationUnit && identifier.contains(LogicalJavaURIGenerator.CLASSIFIER_SEPARATOR)) {
+			String[] path = identifier.split("\\" + LogicalJavaURIGenerator.CLASSIFIER_SEPARATOR, -1);
 			EList<EObject> innerClassifiers = new BasicEList<EObject>(resultList);
 			String outerName = null;
 			outer: for(int i = 0; i < path.length; i++) {
@@ -165,9 +165,9 @@ public class ConcreteClassifierDecider extends AbstractDecider {
 								//class does not exist as such.
 								if (outerName == null) {
 									outerName = ((InternalEObject) innerClassifier).eProxyURI().trimFragment().toString().substring(
-											JavaUniquePathConstructor.JAVA_CLASSIFIER_PATHMAP.length());
+											LogicalJavaURIGenerator.JAVA_CLASSIFIER_PATHMAP.length());
 									outerName = outerName.subSequence(
-											0, outerName.length() - JavaUniquePathConstructor.JAVA_FILE_EXTENSION.length()) + "$";	
+											0, outerName.length() - LogicalJavaURIGenerator.JAVA_FILE_EXTENSION.length()) + "$";	
 								}
 								for(EObject innerClassifierProxy : JavaClasspath.get().getConcreteClassifiers(outerName)) {
 									innerClassifiers.add((ConcreteClassifier) EcoreUtil.resolve(

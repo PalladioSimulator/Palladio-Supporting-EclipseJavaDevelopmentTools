@@ -16,16 +16,14 @@
 package org.emftext.language.java;
 
 import java.util.regex.Pattern;
-
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.emftext.language.java.commons.NamespaceAwareElement;
 
 /**
- * This provides functionality to construct unique identifier
- * (i.e., logical URI strings) for Java classes represented as EMF-models.
+ * This class provides functionality to construct unique logical URIs 
+ * for Java classes, packages and modules represented as EMF-models.
  */
-public class JavaUniquePathConstructor {
+public class LogicalJavaURIGenerator {
 
 	/**
 	 * Pathmap (URI scheme + first segment) for Java classes.
@@ -36,6 +34,11 @@ public class JavaUniquePathConstructor {
 	 * Pathmap (URI scheme + first segment) for Java classes.
 	 */
 	public static final String JAVA_PACKAGE_PATHMAP    = "pathmap:/javapackage/";
+	
+	/**
+	 * Pathmap (URI scheme + first segment) for Java modules.
+	 */
+	public static final String JAVA_MODULE_PATHMAP = "pathmap:/javamodule/";
 
 	/**
 	 * Start of a URI fragment part pointing at a classifier contained in a
@@ -75,16 +78,26 @@ public class JavaUniquePathConstructor {
 	public static final String JAVA_CLASS_FILE_EXTENSION = ".class";
 	
 	/**
+	 * File name of a module declaration.
+	 */
+	public static final String JAVA_MODULE_FILE_NAME = "module-info.java";
+	
+	/**
+	 * File name of a package declaration.
+	 */
+	public static final String JAVA_PACKAGE_FILE_NAME = "package-info.java";
+	
+	/**
 	 * We cache this regular expression because it is used very frequently.
 	 */
 	private static final Pattern CLASSIFIER_SEPARATOR_REGEX_PATTERN = Pattern.compile("\\" + CLASSIFIER_SEPARATOR);
 
 	/**
-	 * Constructs an URI from a fully qualified classifier name
-	 * pointing at the resource containing the classifier.
+	 * Constructs a logical URI from a fully qualified classifier name
+	 * pointing to the resource containing the classifier.
 	 *
-	 * @param fullQualifiedName
-	 * @return the logical URI for the classifier
+	 * @param fullQualifiedName the fully qualified classifier name.
+	 * @return the logical URI for the classifier.
 	 */
 	public static URI getJavaFileResourceURI(String fullQualifiedName) {
 		StringBuilder logicalUriString = new StringBuilder(JAVA_CLASSIFIER_PATHMAP);
@@ -150,6 +163,30 @@ public class JavaUniquePathConstructor {
 			return fullQualifiedName.substring(idx2 + 1);
 		}
 	}
+	
+	/**
+	 * Creates a logical URI 
+	 * 
+	 * @param moduleName
+	 * @return
+	 */
+	public static URI getModuleURI(String moduleName) {
+		StringBuilder uri = new StringBuilder();
+		uri.append(JAVA_MODULE_PATHMAP);
+		uri.append(moduleName);
+		uri.append("/");
+		uri.append(JAVA_MODULE_FILE_NAME);
+		return URI.createURI(uri.toString());
+	}
+	
+	public static URI getPackageURI(String packageName) {
+		StringBuilder uri = new StringBuilder();
+		uri.append(JAVA_PACKAGE_PATHMAP);
+		uri.append(packageName);
+		uri.append("/");
+		uri.append(JAVA_PACKAGE_FILE_NAME);
+		return URI.createURI(uri.toString());
+	}
 
 	/**
 	 * Constructs a single string representation of the given element's
@@ -160,25 +197,6 @@ public class JavaUniquePathConstructor {
 	 * @return
 	 */
 	public static String packageName(NamespaceAwareElement nsaElement) {
-		EList<String> packageNameSegements = nsaElement.getNamespaces();
-		String packageName = packageName(packageNameSegements);
-
-		if (packageName == null) {
-			packageName = "";
-		}
-		return packageName;
-	}
-
-	private static String packageName(EList<String> packageNameSegements) {
-		String packageName = null;
-		for(String packageNamePart : packageNameSegements) {
-			if (packageName == null) {
-				packageName = packageNamePart;
-			}
-			else {
-				packageName = packageName + PACKAGE_SEPARATOR + packageNamePart;
-			}
-		}
-		return packageName;
+		return nsaElement.getNamespacesAsString();
 	}
 }
