@@ -33,10 +33,6 @@ public class JaMoPPJDTSingleFileParser implements JaMoPPParserAPI {
 
 	@Override
 	public JavaRoot parse(String fileName, InputStream input) {
-		Resource r = JavaClasspath.get().getResource(URI.createFileURI(fileName));
-		if (r != null) {
-			return (JavaRoot) r.getContents().get(0);
-		}
 		this.setUpResourceSet();
 		StringBuilder builder = new StringBuilder();
 		String lineSep = System.getProperty("line.separator");
@@ -63,12 +59,8 @@ public class JaMoPPJDTSingleFileParser implements JaMoPPParserAPI {
 	
 	@Override
 	public Resource parseFile(Path file) {
-		Resource result = JavaClasspath.get().getResource(URI.createFileURI(file.toAbsolutePath().toString()));
-		if (result != null) {
-			return result;
-		}
 		this.setUpResourceSet();
-		result = this.parseFilesWithJDT(new String[] {}, new String[] { file.toAbsolutePath().toString() },
+		Resource result = this.parseFilesWithJDT(new String[] {}, new String[] { file.toAbsolutePath().toString() },
 			new String[] { DEFAULT_ENCODING }).get(0).eResource();
 		this.resourceSet = null;
 		return result;
@@ -79,14 +71,7 @@ public class JaMoPPJDTSingleFileParser implements JaMoPPParserAPI {
 		this.setUpResourceSet();
 		try {
 			String[] sources = Files.walk(dir).filter(path -> Files.isRegularFile(path) && path.getFileName().toString().endsWith("java"))
-				.map(Path::toAbsolutePath).map(Path::toString).filter(p -> {
-					Resource r = JavaClasspath.get().getResource(URI.createFileURI(p));
-					if (r != null) {
-						JaMoPPJDTSingleFileParser.this.resourceSet.getResources().add(r);
-						return false;
-					}
-					return true;
-				}).toArray(i -> new String[i]);
+				.map(Path::toAbsolutePath).map(Path::toString).toArray(i -> new String[i]);
 			String[] encodings = new String[sources.length];
 			for (int index = 0; index < encodings.length; index++) {
 				encodings[index] = DEFAULT_ENCODING;
@@ -114,10 +99,12 @@ public class JaMoPPJDTSingleFileParser implements JaMoPPParserAPI {
 				if (root.eResource() == null) {
 					newResource = JaMoPPJDTSingleFileParser.this.resourceSet.createResource(URI.createFileURI(sourceFilePath));
 					newResource.getContents().add(root);
+					JavaClasspath.get().registerJavaRoot(root, newResource.getURI());
 				} else {
 					newResource = root.eResource();
 					if (!newResource.getURI().toFileString().equals(sourceFilePath)) {
 						newResource.setURI(URI.createFileURI(sourceFilePath));
+						JavaClasspath.get().registerJavaRoot(root, newResource.getURI());
 					}
 				}
 				result.add(root);
