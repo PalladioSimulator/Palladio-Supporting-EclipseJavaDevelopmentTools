@@ -246,6 +246,11 @@ public class ConcreteClassifierDecider extends AbstractDecider {
 			//ECollections.reverse(packageImports);
 			resultList.addAll(packageImports);
 		}
+		
+		//5) java.lang
+		if(container instanceof JavaRoot || container.eContainer() == null) {
+			resultList.addAll(JavaClasspath.get().getConcreteClassifiers("java.lang"));
+		}
 	}
 
 	/**
