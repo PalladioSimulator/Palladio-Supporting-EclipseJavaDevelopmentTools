@@ -122,7 +122,13 @@ public class JavaClasspath {
 	}
 	
 	public ConcreteClassifier getConcreteClassifier(String fullQualifiedClassifierName) {
-		return classifiers.stream().filter(c -> c.getQualifiedName().equals(fullQualifiedClassifierName)).findFirst().orElse(getProxyConcreteClassifier(fullQualifiedClassifierName));
+		String actualName;
+		if (fullQualifiedClassifierName.startsWith(LogicalJavaURIGenerator.PACKAGE_SEPARATOR)) {
+			actualName = fullQualifiedClassifierName.substring(1);
+		} else {
+			actualName = fullQualifiedClassifierName;
+		}
+		return classifiers.stream().filter(c -> c.getQualifiedName().equals(actualName)).findFirst().orElse(getProxyConcreteClassifier(fullQualifiedClassifierName));
 	}
 	
 	public Collection<ConcreteClassifier> getConcreteClassifiers(String packageName) {
