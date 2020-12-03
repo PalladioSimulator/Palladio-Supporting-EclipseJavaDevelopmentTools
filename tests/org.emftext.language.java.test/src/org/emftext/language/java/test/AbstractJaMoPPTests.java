@@ -89,6 +89,7 @@ public abstract class AbstractJaMoPPTests {
 	public final void initResourceFactory() {
 		Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap().put("java", new JavaResource2Factory());
 		JavaClasspath.get().clear();
+		JavaClasspath.get().registerStdLib();
 	}
 
 	protected void registerInClassPath(String file) throws Exception {
@@ -99,6 +100,7 @@ public abstract class AbstractJaMoPPTests {
 		CompilationUnit cu = (CompilationUnit) parseResource(inputFile.getPath());
 
 		inputFile = new File(inputFolder + File.separator + file);
+		JavaClasspath.get().registerClassifier(cu, URI.createFileURI(inputFile.getAbsolutePath().toString()));
 	}
 
 	protected JavaRoot parseResource(String filename, String inputFolderName) throws Exception {
@@ -148,7 +150,7 @@ public abstract class AbstractJaMoPPTests {
 			packageName = fullName.substring(0, idx);
 			classifierName = fullName.substring(idx + 1);			
 		}
-//		cp.registerClassifier(packageName, classifierName, URI.createFileURI(file.getAbsolutePath()));
+		cp.registerClassifier(packageName, classifierName, URI.createFileURI(file.getAbsolutePath()));
 	}
 
 	protected Map<? extends Object, ? extends Object> getLoadOptions() {
