@@ -24,6 +24,7 @@ class OrdinaryCompilationUnitJDTASTVisitorAndConverter extends ModuleJDTASTVisit
 			this.setConvertedElement(this.convertToCompilationUnit(node));
 		}
 		super.visit(node);
+		ParsePostProcessor.complete(this.getConvertedElement());
 		return false;
 	}
 	
