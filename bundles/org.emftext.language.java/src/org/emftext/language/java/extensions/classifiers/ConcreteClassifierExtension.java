@@ -20,7 +20,10 @@ import java.util.List;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.UniqueEList;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.util.EcoreUtil;
+import org.emftext.language.java.JavaClasspath;
+import org.emftext.language.java.LogicalJavaURIGenerator;
 import org.emftext.language.java.classifiers.Classifier;
 import org.emftext.language.java.classifiers.ConcreteClassifier;
 import org.emftext.language.java.classifiers.Interface;
@@ -39,6 +42,9 @@ public class ConcreteClassifierExtension {
 		innerClassifierList.addAll(me.getInnerClassifiers());
 
 		for (ConcreteClassifier superClassifier : me.getAllSuperClassifiers()) {
+			if (superClassifier == null) {
+				continue;
+			}
 			List<ConcreteClassifier> superInnerList = superClassifier
 					.getInnerClassifiers();
 
@@ -59,13 +65,18 @@ public class ConcreteClassifierExtension {
 	
 	public static EList<ConcreteClassifier> getInnerClassifiers(ConcreteClassifier me) {
 		if (me.eIsProxy()) {
-			 return null;
+			String uriString = ((InternalEObject) me).eProxyURI().trimFragment().toString();
+			String fullName = uriString.substring(LogicalJavaURIGenerator.JAVA_CLASSIFIER_PATHMAP.length(), 
+				uriString.length() - LogicalJavaURIGenerator.JAVA_FILE_EXTENSION.length());
+			EList<ConcreteClassifier> result = new UniqueEList<>();
+			result.add(JavaClasspath.get().getConcreteClassifier(fullName));
+			return result;
 		} else {
 			String suffix = "";
 			ConcreteClassifier containingClass = me;
 			while (containingClass.eContainer() instanceof ConcreteClassifier) {
 				containingClass = (ConcreteClassifier) containingClass.eContainer();
-				suffix = containingClass.getName() + "." + suffix;
+				suffix = containingClass.getName() + LogicalJavaURIGenerator.CLASSIFIER_SEPARATOR + suffix;
 			}
 			if (containingClass.eContainer() instanceof CompilationUnit) {
 				CompilationUnit compilationUnit = (CompilationUnit) containingClass.eContainer();
@@ -159,6 +170,9 @@ public class ConcreteClassifierExtension {
 		memberList.addAll(concreteClassifier.getAllInnerClassifiers());
 		
 		for (ConcreteClassifier superClassifier : me.getAllSuperClassifiers()) {
+			if (superClassifier == null) {
+				continue;
+			}
 			for (Member member : superClassifier.getMembers()) {
 				if (member instanceof AnnotableAndModifiable) {
 					AnnotableAndModifiable modifiable = (AnnotableAndModifiable) member;
