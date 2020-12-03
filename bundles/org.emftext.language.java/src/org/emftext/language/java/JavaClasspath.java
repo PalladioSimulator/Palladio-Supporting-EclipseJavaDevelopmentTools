@@ -139,7 +139,7 @@ public class JavaClasspath {
 	
 	private ConcreteClassifier getProxyConcreteClassifier(String fullQualifiedClassifierName) {
 		ConcreteClassifier result = ClassifiersFactory.eINSTANCE.createClass();
-		((InternalEObject) result).eSetProxyURI(LogicalJavaURIGenerator.getJavaFileResourceURI(fullQualifiedClassifierName));
+		((InternalEObject) result).eSetProxyURI(LogicalJavaURIGenerator.getClassifierURI(fullQualifiedClassifierName));
 		result.setName(LogicalJavaURIGenerator.getSimpleClassName(fullQualifiedClassifierName));
 		return result;
 	}
