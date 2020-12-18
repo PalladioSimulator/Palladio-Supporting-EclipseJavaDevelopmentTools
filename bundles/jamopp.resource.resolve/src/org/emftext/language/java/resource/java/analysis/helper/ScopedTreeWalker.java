@@ -226,7 +226,7 @@ public class ScopedTreeWalker {
 											}
 										}
 										if (currentBestResult.eResource() == null) {
-											containerResource.getContents().add(currentBestResult);
+//											containerResource.getContents().add(currentBestResult);
 										}
 									}
 								}

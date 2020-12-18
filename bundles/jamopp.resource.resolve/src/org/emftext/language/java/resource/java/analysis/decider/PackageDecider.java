@@ -19,10 +19,10 @@ import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
-import org.emftext.language.java.commons.NamedElement;
-import org.emftext.language.java.containers.ContainersFactory;
+import org.emftext.language.java.JavaClasspath;
 import org.emftext.language.java.containers.JavaRoot;
 import org.emftext.language.java.references.IdentifierReference;
+import org.emftext.language.java.references.Reference;
 import org.emftext.language.java.references.ReferencesPackage;
 
 /**
@@ -60,27 +60,33 @@ public class PackageDecider extends AbstractDecider {
 			EList<EObject> resultList = new BasicEList<EObject>();
 			IdentifierReference parentPackage = (IdentifierReference) container;
 
-			org.emftext.language.java.containers.Package p = null;
-//			for (PackageReference sub : parentPackage.getSubpackages()) {
-//				if (identifier.equals(sub.getName())) {
-//					p = sub;
-//					break;
-//				}
-//			}
-			if (p == null) {
-				p = ContainersFactory.eINSTANCE.createPackage();
-				p.setName(identifier);
+			String pack = parentPackage.getTarget().getName();
+			
+			Reference parent = parentPackage.getPrevious();
+			while (parent != null && parent instanceof IdentifierReference) {
+				IdentifierReference parentCast = (IdentifierReference) parent;
+				if(parentCast.getTarget() instanceof org.emftext.language.java.containers.Package) {
+					pack = ((org.emftext.language.java.containers.Package) parentCast.getTarget()).getNamespacesAsString() + "." + pack;
+					break;
+				} else {
+					pack = parentCast.getTarget().getName() + "." + pack;
+					parent = parentCast.getPrevious();
+				}
 			}
-			resultList.add(p);
+			
+			org.emftext.language.java.containers.Package p = JavaClasspath.get().getPackage(pack);
+			if (p != null) {
+				resultList.add(p);
+			}
 
 			return resultList;
 		}
 		if (container instanceof JavaRoot && container.eResource() != null) {
 			EList<EObject> resultList = new BasicEList<EObject>();
 
-			org.emftext.language.java.containers.Package p = ContainersFactory.eINSTANCE.createPackage();
-			p.setName(identifier);
-			resultList.add(p);
+//			org.emftext.language.java.containers.Package p = ContainersFactory.eINSTANCE.createPackage();
+//			p.setName(identifier);
+//			resultList.add(p);
 
 			return resultList;
 		}
@@ -93,9 +99,9 @@ public class PackageDecider extends AbstractDecider {
 	}
 
 	public boolean isPossibleTarget(String id, EObject element) {
-		if (element instanceof IdentifierReference) {
-			NamedElement ne = (NamedElement) element;
-			return id.equals(ne.getName());
+		if (element instanceof org.emftext.language.java.containers.Package) {
+			org.emftext.language.java.containers.Package ne = (org.emftext.language.java.containers.Package) element;
+			return id.equals(ne.getNamespaces().get(ne.getNamespaces().size() - 1));
 		}
 		return false;
 	}

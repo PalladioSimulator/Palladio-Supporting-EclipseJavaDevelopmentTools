@@ -191,7 +191,12 @@ public class ConcreteClassifierDecider extends AbstractDecider {
 	private String packageName(IdentifierReference p) {
 		String s = "";
 		while (p != null) {
-			s =  p.getTarget().getName() + "." + s;
+			if (p.getTarget() instanceof org.emftext.language.java.containers.Package) {
+				s = ((org.emftext.language.java.containers.Package) p.getTarget()).getNamespacesAsString();
+				break;
+			} else {
+				s =  p.getTarget().getName() + "." + s;
+			}
 			EObject container = p.eContainer();
 			if (container instanceof IdentifierReference) {
 				p = (IdentifierReference) container;

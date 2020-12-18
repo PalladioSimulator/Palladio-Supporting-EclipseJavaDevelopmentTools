@@ -86,11 +86,26 @@ public class JavaClasspath {
 		packages.add(pack);
 		URI logicalURI = LogicalJavaURIGenerator.getPackageURI(pack.getNamespacesAsString());
 		getURIMap().put(logicalURI, uri);
+		List<String> names = pack.getNamespaces();
+		StringBuilder parentName = new StringBuilder();
+		for(int index = 0; index < names.size() - 1; index++) {
+			if (index > 0) {
+				parentName.append(LogicalJavaURIGenerator.PACKAGE_SEPARATOR);
+			}
+			parentName.append(names.get(index));
+			String parentNameString = parentName.toString();
+			if (getPackage(parentNameString) == null) {
+				registerPackage(parentNameString, uri);
+			}
+		}
 	}
 	
 	public void registerPackage(String packageName, URI uri) {
-		org.emftext.language.java.containers.Package pack = ContainersFactory.eINSTANCE.createPackage();
-		setNamespaces(packageName, pack);
+		org.emftext.language.java.containers.Package pack = getPackage(packageName);
+		if (pack == null) {
+			pack = ContainersFactory.eINSTANCE.createPackage();
+			setNamespaces(packageName, pack);
+		}
 		registerPackage(pack, uri);
 	}
 
@@ -107,7 +122,7 @@ public class JavaClasspath {
 	}
 	
 	private void setNamespaces(String namespaces, NamespaceAwareElement element) {
-		String[] parts = namespaces.split(LogicalJavaURIGenerator.PACKAGE_SEPARATOR);
+		String[] parts = namespaces.split("\\.");
 		for (String p : parts) {
 			element.getNamespaces().add(p);
 		}

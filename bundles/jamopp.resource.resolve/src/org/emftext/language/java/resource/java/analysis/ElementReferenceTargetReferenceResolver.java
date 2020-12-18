@@ -94,7 +94,7 @@ public class ElementReferenceTargetReferenceResolver implements
 			parentReference = (Reference) container.eContainer();
 			if (parentReference instanceof IdentifierReference &&
 					((IdentifierReference) parentReference).getTarget() instanceof org.emftext.language.java.containers.Package) {
-				startingPoint = ((IdentifierReference)parentReference).getTarget();
+				startingPoint = container;
 			}
 			else {
 				startingPoint = parentReference.getReferencedType();
