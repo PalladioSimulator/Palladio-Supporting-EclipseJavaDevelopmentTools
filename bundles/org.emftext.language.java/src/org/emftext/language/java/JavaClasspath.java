@@ -88,14 +88,13 @@ public class JavaClasspath {
 		getURIMap().put(logicalURI, uri);
 		List<String> names = pack.getNamespaces();
 		StringBuilder parentName = new StringBuilder();
+		registerPackage("");
 		for(int index = 0; index < names.size() - 1; index++) {
-			if (index > 0) {
-				parentName.append(LogicalJavaURIGenerator.PACKAGE_SEPARATOR);
-			}
 			parentName.append(names.get(index));
+			parentName.append(LogicalJavaURIGenerator.PACKAGE_SEPARATOR);
 			String parentNameString = parentName.toString();
 			if (getPackage(parentNameString) == null) {
-				registerPackage(parentNameString, uri);
+				registerPackage(parentNameString);
 			}
 		}
 	}
@@ -223,13 +222,18 @@ public class JavaClasspath {
 		}
 	}
 	
-	private void registerPackage(String packageName, String className) {
+	private Set<String> registerPackage(String packageName) {
 		packageName = checkPackageName(packageName);
 		Set<String> classesInPackage = packageClassifierMap.get(packageName);
 		if (classesInPackage == null) {
 			classesInPackage = new HashSet<String>();
 			packageClassifierMap.put(packageName, classesInPackage);
 		}
+		return classesInPackage;
+	}
+	
+	private void registerPackage(String packageName, String className) {
+		Set<String> classesInPackage = registerPackage(packageName);
 	
 		if (!classesInPackage.contains(className)) {
 			classesInPackage.add(className);
@@ -406,6 +410,11 @@ public class JavaClasspath {
 
 			getURIMap().remove(logicalUri);
 		}
+	}
+	
+	public boolean isPackageRegistered(String packageName) {
+		packageName = checkPackageName(packageName);
+		return this.packageClassifierMap.containsKey(packageName);
 	}
 
 	public boolean isRegistered(String fullQualifiedName) {
