@@ -749,6 +749,7 @@
       <genClasses image="false" ecoreClass="java.ecore#//references/ElementReference">
         <genFeatures notify="false" createChild="false" propertySortChoices="true"
             ecoreFeature="ecore:EReference java.ecore#//references/ElementReference/target"/>
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//references/ElementReference/containedTarget"/>
       </genClasses>
       <genClasses ecoreClass="java.ecore#//references/IdentifierReference"/>
       <genClasses ecoreClass="java.ecore#//references/MethodCall"/>
@@ -765,6 +766,7 @@
       <genClasses ecoreClass="java.ecore#//references/TextBlockReference">
         <genFeatures createChild="false" ecoreFeature="ecore:EAttribute java.ecore#//references/TextBlockReference/value"/>
       </genClasses>
+      <genClasses ecoreClass="java.ecore#//references/PackageReference"/>
     </nestedGenPackages>
     <nestedGenPackages prefix="Statements" basePackage="org.emftext.language.java"
         disposableProviderFactory="true" ecorePackage="java.ecore#_Wo2Yy9z1Ed2bJ_pQViWxFg">

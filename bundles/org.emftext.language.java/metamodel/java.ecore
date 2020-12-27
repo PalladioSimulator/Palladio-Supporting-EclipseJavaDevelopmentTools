@@ -136,8 +136,7 @@
         </eAnnotations>
         <eParameters name="clazz" lowerBound="1" eType="#//classifiers/ConcreteClassifier"/>
       </eOperations>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="package" lowerBound="1"
-          eType="#//containers/Package"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="package" eType="#//containers/Package"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="Implementor" abstract="true" eSuperTypes="#//commons/Commentable">
       <eStructuralFeatures xsi:type="ecore:EReference" name="implements" upperBound="-1"
@@ -488,8 +487,7 @@
           upperBound="-1" eType="#//classifiers/ConcreteClassifier" containment="true"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="Package" eSuperTypes="#//containers/JavaRoot #//references/ReferenceableElement">
-      <eStructuralFeatures xsi:type="ecore:EReference" name="module" lowerBound="1"
-          eType="#//containers/Module"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="module" eType="#//containers/Module"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="classifiers" upperBound="-1"
           eType="#//classifiers/ConcreteClassifier"/>
     </eClassifiers>
@@ -1322,8 +1320,9 @@
         eSuperTypes="#//commons/NamedElement"/>
     <eClassifiers xsi:type="ecore:EClass" name="ElementReference" abstract="true"
         eSuperTypes="#//references/Reference #//variables/Resource">
-      <eStructuralFeatures xsi:type="ecore:EReference" name="target" lowerBound="1"
-          eType="#//references/ReferenceableElement"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="#//references/ReferenceableElement"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="containedTarget" eType="#//references/ReferenceableElement"
+          containment="true"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="IdentifierReference" eSuperTypes="#//references/ElementReference #//annotations/Annotable #//arrays/ArrayTypeable"/>
     <eClassifiers xsi:type="ecore:EClass" name="MethodCall" eSuperTypes="#//references/ElementReference #//references/Argumentable #//generics/CallTypeArgumentable"/>
@@ -1344,6 +1343,7 @@
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" lowerBound="1"
           eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="PackageReference" eSuperTypes="#//references/ReferenceableElement #//commons/NamespaceAwareElement"/>
   </eSubpackages>
   <eSubpackages xmi:id="_Wo2Yy9z1Ed2bJ_pQViWxFg" name="statements" nsURI="http://www.emftext.org/java/statements"
       nsPrefix="statements">
