@@ -19,6 +19,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.emftext.language.java.JavaClasspath;
 import org.emftext.language.java.classifiers.Annotation;
 import org.emftext.language.java.classifiers.Class;
+import org.emftext.language.java.classifiers.ConcreteClassifier;
 import org.emftext.language.java.classifiers.Enumeration;
 import org.emftext.language.java.classifiers.Interface;
 import org.emftext.language.java.members.MembersFactory;
@@ -55,6 +56,9 @@ public class ParsePostProcessor {
 			}
 			if (element instanceof Annotation) {
 				addMissingAnnotationMembers((Annotation) element);
+			}
+			if (element instanceof ConcreteClassifier) {
+				addMissingPackage((ConcreteClassifier) element);
 			}
 		});
 	}
@@ -156,6 +160,16 @@ public class ParsePostProcessor {
 
 			valueOfMethod.getParameters().add(strParameter);
 			enumeration.getDefaultMembers().add(valueOfMethod);
+		}
+	}
+	
+	private static void addMissingPackage(ConcreteClassifier clazz) {
+		if (clazz.getPackage() == null) {
+			String packageName = clazz.getContainingCompilationUnit().getNamespacesAsString();
+			org.emftext.language.java.containers.Package pack = JavaClasspath.get().getPackage(packageName);
+			if (pack != null) {
+				clazz.setPackage(pack);
+			}
 		}
 	}
 }
