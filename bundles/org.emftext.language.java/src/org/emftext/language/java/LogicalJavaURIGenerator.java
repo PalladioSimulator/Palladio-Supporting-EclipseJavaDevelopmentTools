@@ -101,7 +101,12 @@ public class LogicalJavaURIGenerator {
 	 */
 	public static URI getJavaFileResourceURI(String fullQualifiedName) {
 		StringBuilder logicalUriString = new StringBuilder(JAVA_CLASSIFIER_PATHMAP);
-		logicalUriString.append(fullQualifiedName);
+		String actualName = fullQualifiedName;
+		int index = fullQualifiedName.indexOf(CLASSIFIER_SEPARATOR);
+		if (index >= 0) {
+			actualName = fullQualifiedName.substring(0, index);
+		}
+		logicalUriString.append(actualName);
 		logicalUriString.append(JAVA_FILE_EXTENSION);
 
 		return URI.createURI(logicalUriString.toString());

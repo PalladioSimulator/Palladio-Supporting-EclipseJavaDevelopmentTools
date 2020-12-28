@@ -140,9 +140,11 @@ public class JavaClasspath {
 		if (fullQualifiedClassifierName.startsWith(LogicalJavaURIGenerator.PACKAGE_SEPARATOR)) {
 			actualName = fullQualifiedClassifierName.substring(1);
 		} else {
-			actualName = fullQualifiedClassifierName;
+			actualName = fullQualifiedClassifierName.replaceAll(LogicalJavaURIGenerator.CLASSIFIER_SEPARATOR,
+				LogicalJavaURIGenerator.PACKAGE_SEPARATOR);
 		}
-		return classifiers.stream().filter(c -> c.getQualifiedName().equals(actualName)).findFirst().orElse(getProxyConcreteClassifier(fullQualifiedClassifierName));
+		return classifiers.stream().filter(c -> c.getQualifiedName().equals(actualName))
+			.findFirst().orElse(getProxyConcreteClassifier(fullQualifiedClassifierName));
 	}
 	
 	public Collection<ConcreteClassifier> getConcreteClassifiers(String packageName) {
