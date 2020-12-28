@@ -22,7 +22,9 @@ import org.eclipse.emf.ecore.EReference;
 import org.emftext.language.java.JavaClasspath;
 import org.emftext.language.java.containers.JavaRoot;
 import org.emftext.language.java.references.IdentifierReference;
+import org.emftext.language.java.references.PackageReference;
 import org.emftext.language.java.references.Reference;
+import org.emftext.language.java.references.ReferencesFactory;
 import org.emftext.language.java.references.ReferencesPackage;
 
 /**
@@ -65,7 +67,7 @@ public class PackageDecider extends AbstractDecider {
 			Reference parent = parentPackage.getPrevious();
 			while (parent != null && parent instanceof IdentifierReference) {
 				IdentifierReference parentCast = (IdentifierReference) parent;
-				if(parentCast.getTarget() instanceof org.emftext.language.java.containers.Package) {
+				if (parentCast.getTarget() instanceof org.emftext.language.java.containers.Package) {
 					pack = ((org.emftext.language.java.containers.Package) parentCast.getTarget()).getNamespacesAsString() + "." + pack;
 					break;
 				} else {
@@ -74,9 +76,19 @@ public class PackageDecider extends AbstractDecider {
 				}
 			}
 			
-			org.emftext.language.java.containers.Package p = JavaClasspath.get().getPackage(pack);
-			if (p != null) {
-				resultList.add(p);
+			if (JavaClasspath.get().isPackageRegistered(pack)) {
+				org.emftext.language.java.containers.Package p = JavaClasspath.get().getPackage(pack);
+				if (p!= null) {
+					resultList.add(p);
+				} else {
+					PackageReference pr = ReferencesFactory.eINSTANCE.createPackageReference();
+					for(String namespace : pack.split("\\.")) {
+						pr.getNamespaces().add(namespace);
+					}
+					pr.getNamespaces().remove(pr.getNamespaces().size() - 1);
+					pr.setName(identifier);
+					resultList.add(pr);
+				}
 			}
 
 			return resultList;
@@ -84,9 +96,9 @@ public class PackageDecider extends AbstractDecider {
 		if (container instanceof JavaRoot && container.eResource() != null) {
 			EList<EObject> resultList = new BasicEList<EObject>();
 
-//			org.emftext.language.java.containers.Package p = ContainersFactory.eINSTANCE.createPackage();
-//			p.setName(identifier);
-//			resultList.add(p);
+			PackageReference p = ReferencesFactory.eINSTANCE.createPackageReference();
+			p.setName(identifier);
+			resultList.add(p);
 
 			return resultList;
 		}
@@ -102,6 +114,8 @@ public class PackageDecider extends AbstractDecider {
 		if (element instanceof org.emftext.language.java.containers.Package) {
 			org.emftext.language.java.containers.Package ne = (org.emftext.language.java.containers.Package) element;
 			return id.equals(ne.getNamespaces().get(ne.getNamespaces().size() - 1));
+		} else if (element instanceof PackageReference) {
+			return id.equals(((PackageReference) element).getName());
 		}
 		return false;
 	}

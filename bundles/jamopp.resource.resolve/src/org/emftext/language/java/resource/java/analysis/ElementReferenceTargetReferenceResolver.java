@@ -31,6 +31,7 @@ import org.emftext.language.java.expressions.NestedExpression;
 import org.emftext.language.java.instantiations.NewConstructorCall;
 import org.emftext.language.java.references.ElementReference;
 import org.emftext.language.java.references.IdentifierReference;
+import org.emftext.language.java.references.PackageReference;
 import org.emftext.language.java.references.Reference;
 import org.emftext.language.java.references.ReferenceableElement;
 import org.emftext.language.java.references.ReferencesPackage;
@@ -98,6 +99,11 @@ public class ElementReferenceTargetReferenceResolver implements
 			}
 			else {
 				startingPoint = parentReference.getReferencedType();
+				
+				if (startingPoint == null) {
+					startingPoint = container;
+				}
+				
 				if (parentReference instanceof NestedExpression) {
 					alternativeStartingPoint = ((NestedExpression) parentReference
 							).getExpression().getAlternativeType();
@@ -157,6 +163,9 @@ public class ElementReferenceTargetReferenceResolver implements
 				target = EcoreUtil.resolve(target, container);
 			}
 			if (!target.eIsProxy()) {
+				if (target instanceof PackageReference) {
+					container.setContainedTarget((ReferenceableElement) target);
+				}
 				result.addMapping(identifier, (ReferenceableElement) target);
 			}
 		}
