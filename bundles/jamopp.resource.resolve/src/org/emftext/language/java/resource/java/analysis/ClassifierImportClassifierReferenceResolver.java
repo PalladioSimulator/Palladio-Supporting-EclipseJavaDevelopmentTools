@@ -15,9 +15,12 @@
  ******************************************************************************/
 package org.emftext.language.java.resource.java.analysis;
 
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.emf.ecore.util.EcoreUtil;
+import org.emftext.language.java.JavaClasspath;
+import org.emftext.language.java.LogicalJavaURIGenerator;
 import org.emftext.language.java.classifiers.ConcreteClassifier;
 import org.emftext.language.java.imports.Import;
 import org.emftext.language.java.resource.java.IJavaReferenceResolveResult;
@@ -38,7 +41,30 @@ public class ClassifierImportClassifierReferenceResolver implements
 	public void resolve(java.lang.String identifier, Import theImport, org.eclipse.emf.ecore.EReference reference, int position, boolean resolveFuzzy, IJavaReferenceResolveResult<ConcreteClassifier> result) {
 		ConcreteClassifier importedClassifier = theImport.getImportedClassifier(identifier);
 		if (importedClassifier != null) {
-			importedClassifier = (ConcreteClassifier) EcoreUtil.resolve(importedClassifier, theImport.eResource());
+			if (importedClassifier.eIsProxy()) {
+				importedClassifier = (ConcreteClassifier) EcoreUtil.resolve(importedClassifier, theImport.eResource());
+			}
+			if (importedClassifier.eIsProxy()) {
+				StringBuilder builder = new StringBuilder();
+				List<String> namespaces = theImport.getNamespaces();
+				for (int i = namespaces.size() - 1; i >= 0; i--) {
+					builder.delete(0, builder.length());
+					for (int j = 0; j < i; j++) {
+						builder.append(namespaces.get(j));
+						builder.append(LogicalJavaURIGenerator.PACKAGE_SEPARATOR);
+					}
+					for (int j = i; j < namespaces.size(); j++) {
+						builder.append(namespaces.get(j));
+						builder.append(LogicalJavaURIGenerator.CLASSIFIER_SEPARATOR);
+					}
+					builder.append(identifier);
+					importedClassifier = (ConcreteClassifier) EcoreUtil.resolve(
+						JavaClasspath.get().getConcreteClassifier(builder.toString()), theImport.eResource());
+					if (!importedClassifier.eIsProxy()) {
+						break;
+					}
+				}
+			}
 			if (!importedClassifier.eIsProxy()) {
 				result.addMapping(identifier, importedClassifier);
 			}
