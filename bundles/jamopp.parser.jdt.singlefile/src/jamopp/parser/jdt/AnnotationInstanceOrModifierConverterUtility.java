@@ -21,6 +21,7 @@ import org.eclipse.jdt.core.dom.IExtendedModifier;
 import org.eclipse.jdt.core.dom.MemberValuePair;
 import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.core.dom.NormalAnnotation;
+import org.eclipse.jdt.core.dom.QualifiedName;
 import org.eclipse.jdt.core.dom.SingleMemberAnnotation;
 import org.emftext.language.java.resource.java.IJavaContextDependentURIFragmentWrapper;
 import org.emftext.language.java.resource.java.JavaContextDependentURIFragmentFactoryFactory;
@@ -70,6 +71,10 @@ class AnnotationInstanceOrModifierConverterUtility {
 		org.emftext.language.java.annotations.AnnotationInstance result = org.emftext.language.java.annotations.AnnotationsFactory.eINSTANCE.createAnnotationInstance();
 		org.emftext.language.java.classifiers.Class proxyClass = org.emftext.language.java.classifiers.ClassifiersFactory.eINSTANCE.createClass();
 		BaseConverterUtility.convertToSimpleNameOnlyAndSet(annot.getTypeName(), proxyClass);
+		if (annot.getTypeName() instanceof QualifiedName) {
+			BaseConverterUtility.convertToNamespacesAndSet(
+				((QualifiedName) annot.getTypeName()).getQualifier(), result);
+		}
 		IJavaContextDependentURIFragmentWrapper.GLOBAL_INSTANCE.registerContextDependentProxy(JavaContextDependentURIFragmentFactoryFactory.ANNOTATION_INSTANCE_ANNOTATION_REFERENCE_FACTORY, result,
 			org.emftext.language.java.annotations.AnnotationsPackage.Literals.ANNOTATION_INSTANCE__ANNOTATION, proxyClass.getName(), proxyClass, -1);
 		result.setAnnotation(proxyClass);
@@ -107,11 +112,9 @@ class AnnotationInstanceOrModifierConverterUtility {
 			return convertToAnnotationInstance((Annotation) expr);
 		} else if (expr.getNodeType() == ASTNode.ARRAY_INITIALIZER) {
 			return convertToArrayInitializer((ArrayInitializer) expr);
-		} else if (expr.getNodeType() == ASTNode.CONDITIONAL_EXPRESSION) {
-			return (org.emftext.language.java.expressions.AssignmentExpressionChild)
-				ExpressionConverterUtility.convertToExpression((Expression) expr);
 		}
-		return null;
+		return (org.emftext.language.java.expressions.AssignmentExpressionChild)
+			ExpressionConverterUtility.convertToExpression((Expression) expr);
 	}
 	
 	@SuppressWarnings("unchecked")
