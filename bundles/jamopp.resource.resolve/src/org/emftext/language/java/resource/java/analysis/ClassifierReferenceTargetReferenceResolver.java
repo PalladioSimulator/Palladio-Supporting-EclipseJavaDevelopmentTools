@@ -26,6 +26,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.emftext.language.java.JavaClasspath;
+import org.emftext.language.java.LogicalJavaURIGenerator;
 import org.emftext.language.java.classifiers.Classifier;
 import org.emftext.language.java.classifiers.ConcreteClassifier;
 import org.emftext.language.java.commons.NamedElement;
@@ -115,8 +116,10 @@ public class ClassifierReferenceTargetReferenceResolver implements
 
 		if (target == null) {
 			//new constructor call can be part of reference chain
-			if (startingPoint == null && container.eContainer().eContainer() instanceof NewConstructorCall) {
-				NewConstructorCall ncc = (NewConstructorCall) container.eContainer().eContainer();
+			if (startingPoint == null && (container.eContainer().eContainer() instanceof NewConstructorCall
+				|| container.eContainer() instanceof NewConstructorCall)) {
+				NewConstructorCall ncc = container.eContainer() instanceof NewConstructorCall ?
+					(NewConstructorCall) container.eContainer() : (NewConstructorCall) container.eContainer().eContainer();
 				if (ncc.eContainmentFeature().equals(ReferencesPackage.Literals.REFERENCE__NEXT)) {
 					startingPoint = ((Reference) ncc.eContainer()).getReferencedType();
 
@@ -202,26 +205,25 @@ public class ClassifierReferenceTargetReferenceResolver implements
 		int idx = ncr.getClassifierReferences().indexOf(container);
 		if(ncr.getNamespaces().size() > 0 && idx == 0) {
 			EObject target = null;
-			//if the reference is qualified, the target can be directly found
-			String containerName = ncr.getNamespacesAsString();
-			if (containerName.contains("$")) {
-				String firstClassName = containerName.substring(0, containerName.indexOf("$"));
-				ConcreteClassifier firstClass = (ConcreteClassifier) EcoreUtil.resolve(
-						JavaClasspath.get().getConcreteClassifier(firstClassName), container.eResource());
-				target = ConcreteClassifierDecider.resolveRelativeNamespace(
-						ncr, ncr.getNamespaces().indexOf(firstClass.getName()) + 1, firstClass, container, reference);
-				if (target != null) {
-					for(ConcreteClassifier cand : ((ConcreteClassifier)target).getAllInnerClassifiers()) {
-						if (identifier.equals(cand.getName())) {
-							target = cand;
-							break;
-						}
-					}
+			StringBuilder builder = new StringBuilder();
+			for (int i = ncr.getNamespaces().size() - 1; i >= -1; i--) {
+				builder.delete(0, builder.length());
+				for (int j = 0; j <= i; j++) {
+					builder.append(ncr.getNamespaces().get(j));
+					builder.append(LogicalJavaURIGenerator.PACKAGE_SEPARATOR);
 				}
-			}
-			else {
-				target = (Classifier) EcoreUtil.resolve(
-						JavaClasspath.get().getConcreteClassifier(containerName + identifier), container.eResource());
+				for (int j = i + 1; j < ncr.getNamespaces().size(); j++) {
+					builder.append(ncr.getNamespaces().get(j));
+					builder.append(LogicalJavaURIGenerator.CLASSIFIER_SEPARATOR);
+				}
+				builder.append(identifier);
+				target = (ConcreteClassifier) EcoreUtil.resolve(
+					JavaClasspath.get().getConcreteClassifier(builder.toString()), container);
+				if (!target.eIsProxy()) {
+					break;
+				} else {
+					target = null;
+				}
 			}
 
 			return target;
