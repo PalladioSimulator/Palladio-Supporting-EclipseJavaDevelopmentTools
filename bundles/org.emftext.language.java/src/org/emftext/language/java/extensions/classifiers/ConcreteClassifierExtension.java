@@ -28,7 +28,6 @@ import org.emftext.language.java.classifiers.Classifier;
 import org.emftext.language.java.classifiers.ConcreteClassifier;
 import org.emftext.language.java.classifiers.Interface;
 import org.emftext.language.java.commons.Commentable;
-import org.emftext.language.java.containers.CompilationUnit;
 import org.emftext.language.java.members.Member;
 import org.emftext.language.java.modifiers.AnnotableAndModifiable;
 import org.emftext.language.java.types.ClassifierReference;
@@ -71,18 +70,6 @@ public class ConcreteClassifierExtension {
 			EList<ConcreteClassifier> result = new UniqueEList<>();
 			result.add(JavaClasspath.get().getConcreteClassifier(fullName));
 			return result;
-		} else {
-			String suffix = "";
-			ConcreteClassifier containingClass = me;
-			while (containingClass.eContainer() instanceof ConcreteClassifier) {
-				containingClass = (ConcreteClassifier) containingClass.eContainer();
-				suffix = containingClass.getName() + LogicalJavaURIGenerator.CLASSIFIER_SEPARATOR + suffix;
-			}
-			if (containingClass.eContainer() instanceof CompilationUnit) {
-				CompilationUnit compilationUnit = (CompilationUnit) containingClass.eContainer();
-			    String fullName = compilationUnit.getNamespacesAsString() + suffix + me.getName();
-			    return me.getConcreteClassifiers(fullName, "*");
-			}
 		}
 
 		// For classes declared locally inside methods that are not registered
@@ -93,13 +80,7 @@ public class ConcreteClassifierExtension {
 		for (Member member : me.getMembers()) {
 			if (member instanceof ConcreteClassifier) {
 				result.add((ConcreteClassifier) member);
-			}
-		}
-		for (ConcreteClassifier superClassifier : me.getAllSuperClassifiers()) {
-			for (Member member : superClassifier.getMembers()) {
-				if (member instanceof ConcreteClassifier) {
-					result.add((ConcreteClassifier) member);
-				}
+				result.addAll(((ConcreteClassifier) member).getInnerClassifiers());
 			}
 		}
 		
@@ -172,6 +153,9 @@ public class ConcreteClassifierExtension {
 		for (ConcreteClassifier superClassifier : me.getAllSuperClassifiers()) {
 			if (superClassifier == null) {
 				continue;
+			}
+			if (superClassifier.eIsProxy()) {
+				superClassifier = (ConcreteClassifier) EcoreUtil.resolve(superClassifier, context);
 			}
 			for (Member member : superClassifier.getMembers()) {
 				if (member instanceof AnnotableAndModifiable) {

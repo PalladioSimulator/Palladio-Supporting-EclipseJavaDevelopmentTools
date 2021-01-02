@@ -27,6 +27,7 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.emftext.language.java.JavaClasspath;
+import org.emftext.language.java.LogicalJavaURIGenerator;
 import org.emftext.language.java.annotations.AnnotationInstance;
 import org.emftext.language.java.classifiers.AnonymousClass;
 import org.emftext.language.java.classifiers.ConcreteClassifier;
@@ -201,7 +202,9 @@ public class CommentableExtension {
 	 */
 	public static EList<ConcreteClassifier> getConcreteClassifiers(
 			Commentable me, String packageName, String classifierQuery) {
-		packageName += ".";
+		if (!packageName.endsWith(LogicalJavaURIGenerator.PACKAGE_SEPARATOR)) {
+			packageName += LogicalJavaURIGenerator.PACKAGE_SEPARATOR;
+		}
 		EList<ConcreteClassifier> result = new UniqueEList<ConcreteClassifier>();
 		if (classifierQuery.equals("*")) {
 			Collection<ConcreteClassifier> classi = JavaClasspath.get().getConcreteClassifiers(packageName);
