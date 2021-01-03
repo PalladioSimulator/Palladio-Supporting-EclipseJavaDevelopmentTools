@@ -213,6 +213,7 @@ class StatementConverterUtility {
 			locVar.setTypeReference(BaseConverterUtility.convertToTypeReference(varSt.getType()));
 			VariableDeclarationFragment frag = (VariableDeclarationFragment) varSt.fragments().get(0);
 			BaseConverterUtility.convertToSimpleNameOnlyAndSet(frag.getName(), locVar);
+			BaseConverterUtility.convertToArrayDimensionsAndSet(varSt.getType(), locVar);
 			frag.extraDimensions().forEach(obj -> BaseConverterUtility.convertToArrayDimensionAfterAndSet((Dimension) obj, locVar));
 			if (frag.getInitializer() != null) {
 				locVar.setInitialValue(ExpressionConverterUtility.convertToExpression(frag.getInitializer()));
@@ -343,6 +344,7 @@ class StatementConverterUtility {
 		loc.setTypeReference(BaseConverterUtility.convertToTypeReference(expr.getType()));
 		VariableDeclarationFragment frag = (VariableDeclarationFragment) expr.fragments().get(0);
 		BaseConverterUtility.convertToSimpleNameOnlyAndSet(frag.getName(), loc);
+		BaseConverterUtility.convertToArrayDimensionsAndSet(expr.getType(), loc);
 		frag.extraDimensions().forEach(obj -> BaseConverterUtility.convertToArrayDimensionAfterAndSet((Dimension) obj, loc));
 		if (frag.getInitializer() != null) {
 			loc.setInitialValue(ExpressionConverterUtility.convertToExpression(frag.getInitializer()));
