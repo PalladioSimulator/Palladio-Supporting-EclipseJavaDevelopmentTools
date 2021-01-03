@@ -284,7 +284,7 @@ class ExpressionConverterUtility {
 		org.emftext.language.java.expressions.EqualityExpression result = org.emftext.language.java.expressions.ExpressionsFactory.eINSTANCE.createEqualityExpression();
 		mergeEqualityExpressionAndExpression(result, convertToExpression(expr.getLeftOperand()));
 		result.getEqualityOperators().add(convertToEqualityOperator(expr.getOperator()));
-		mergeEqualityExpressionAndExpression(result, convertToExpression(expr.getLeftOperand()));
+		mergeEqualityExpressionAndExpression(result, convertToExpression(expr.getRightOperand()));
 		expr.extendedOperands().forEach(obj -> {
 			result.getEqualityOperators().add(convertToEqualityOperator(expr.getOperator()));
 			mergeEqualityExpressionAndExpression(result, convertToExpression((Expression) obj));
