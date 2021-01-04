@@ -68,6 +68,7 @@ import org.emftext.language.java.operators.LessThan;
 import org.emftext.language.java.parameters.VariableLengthParameter;
 import org.emftext.language.java.references.IdentifierReference;
 import org.emftext.language.java.references.MethodCall;
+import org.emftext.language.java.references.PackageReference;
 import org.emftext.language.java.references.StringReference;
 import org.emftext.language.java.statements.Block;
 import org.emftext.language.java.statements.ExpressionStatement;
@@ -427,7 +428,7 @@ public class OldJaMoPPParserTests extends AbstractJaMoPPTests {
 		String typename = "AnnotationsForEnums";
 		String filename = typename + JAVA_FILE_EXTENSION;
 		org.emftext.language.java.classifiers.Enumeration eenum = assertParsesToEnumeration(typename);
-		assertMemberCount(eenum, 2);
+		assertMemberCount(eenum, 0);
 
 		parseAndReprint(filename);
 	}
@@ -438,7 +439,7 @@ public class OldJaMoPPParserTests extends AbstractJaMoPPTests {
 		String filename = typename + JAVA_FILE_EXTENSION;
 		Enumeration enumeration = assertParsesToEnumeration(typename);
 		// assert no members because enumeration constants are not members
-		assertMemberCount(enumeration, 2);
+		assertMemberCount(enumeration, 0);
 
 		parseAndReprint(filename);
 	}
@@ -449,7 +450,7 @@ public class OldJaMoPPParserTests extends AbstractJaMoPPTests {
 		String filename = typename + JAVA_FILE_EXTENSION;
 		Enumeration enumeration = assertParsesToEnumeration(typename);
 		// assert one member (the constructor) because enumeration constants are not members
-		assertMemberCount(enumeration, 3);
+		assertMemberCount(enumeration, 1);
 
 		parseAndReprint(filename);
 	}
@@ -763,7 +764,7 @@ public class OldJaMoPPParserTests extends AbstractJaMoPPTests {
 		String typename = "EmptyEnum";
 		String filename = typename + JAVA_FILE_EXTENSION;
 		Enumeration enumeration = assertParsesToEnumeration(typename);
-		assertEquals(2, enumeration.getMembers().size(), typename + " should have no members.");
+		assertEquals(0, enumeration.getMembers().size(), typename + " should have no members.");
 
 		parseAndReprint(filename);
 	}
@@ -802,7 +803,7 @@ public class OldJaMoPPParserTests extends AbstractJaMoPPTests {
 		String filename = typename + JAVA_FILE_EXTENSION;
 		org.emftext.language.java.classifiers.Class clazz = assertParsesToClass(typename);
 		Enumeration enumeration = (Enumeration) clazz.getMembers().get(0);
-		assertMemberCount(enumeration, 2);
+		assertMemberCount(enumeration, 0);
 		parseAndReprint(filename);
 	}
 	
@@ -811,7 +812,7 @@ public class OldJaMoPPParserTests extends AbstractJaMoPPTests {
 		String typename = "EnumWithMember";
 		String filename = typename + JAVA_FILE_EXTENSION;
 		Enumeration enumeration = assertParsesToEnumeration(typename);
-		assertMemberCount(enumeration, 4);
+		assertMemberCount(enumeration, 2);
 
 		parseAndReprint(filename);
 	}
@@ -821,7 +822,7 @@ public class OldJaMoPPParserTests extends AbstractJaMoPPTests {
 		String typename = "EnumWithConstructor";
 		String filename = typename + JAVA_FILE_EXTENSION;
 		Enumeration enumeration = assertParsesToEnumeration(typename);
-		assertMemberCount(enumeration, 3);
+		assertMemberCount(enumeration, 1);
 
 		parseAndReprint(filename);
 	}
@@ -961,21 +962,21 @@ public class OldJaMoPPParserTests extends AbstractJaMoPPTests {
 		
 		ExpressionStatement statement = (ExpressionStatement) method.getStatements().get(0);
 		IdentifierReference ref = (IdentifierReference) statement.getExpression();
-		assertType(ref.getTarget(), org.emftext.language.java.containers.Package.class);
-		org.emftext.language.java.containers.Package p1 = (org.emftext.language.java.containers.Package) ref.getTarget();
-		assertEquals(1, p1.getNamespaces().size());
-		assertEquals("java", p1.getNamespaces().get(0));
+		assertType(ref.getTarget(), PackageReference.class);
+		PackageReference p1 = (PackageReference) ref.getTarget();
+		assertEquals(0, p1.getNamespaces().size());
+		assertEquals("java", p1.getName());
 		
 		ref = (IdentifierReference) ref.getNext();
 		assertType(ref.getTarget(), org.emftext.language.java.containers.Package.class);
-		p1 = (org.emftext.language.java.containers.Package) ref.getTarget();
-		assertEquals(2, p1.getNamespaces().size());
-		assertEquals("java", p1.getNamespaces().get(0));
-		assertEquals("lang", p1.getNamespaces().get(1));
+		org.emftext.language.java.containers.Package p2 = (org.emftext.language.java.containers.Package) ref.getTarget();
+		assertEquals(2, p2.getNamespaces().size());
+		assertEquals("java", p2.getNamespaces().get(0));
+		assertEquals("lang", p2.getNamespaces().get(1));
 		
 		ref = (IdentifierReference) ref.getNext();
 		assertType(ref.getTarget(), org.emftext.language.java.containers.Package.class);
-		p1 = (org.emftext.language.java.containers.Package) ref.getTarget();
+		p2 = (org.emftext.language.java.containers.Package) ref.getTarget();
 		assertEquals(3, p1.getNamespaces().size());
 		assertEquals("annotation", p1.getNamespaces().get(2));
 		
@@ -1120,7 +1121,8 @@ public class OldJaMoPPParserTests extends AbstractJaMoPPTests {
 		try {
 			CompilationUnit model = (CompilationUnit) parseResource("spechier" + File.separator + "SubClass.java");
 			assertNumberOfClassifiers(model, 1);
-			registerInClassPath("spechier"+ File.separator + "ClassC.java");
+			registerInClassPath("spechier" + File.separator + "ClassC.java");
+			registerInClassPath("spechier" + File.separator + "SuperClass.java");
 			parseAndReprint("spechier" + File.separator + "SubClass.java");
 		} catch (Exception e) {
 			fail(e.getMessage());
@@ -1155,7 +1157,7 @@ public class OldJaMoPPParserTests extends AbstractJaMoPPTests {
 		ConcreteClassifier target = ((MethodCall) ((IdentifierReference) (
 				(ExpressionStatement) s).getExpression()).getNext()).getTarget().getContainingConcreteClassifier();
 		//should point at interface2 with the most concrete type as return type of getX()
-		assertEquals("SyntheticContainerClass", target.getName());
+		assertEquals("Interface2", target.getName());
 		parseAndReprint(typename + JAVA_FILE_EXTENSION);
 	}
 

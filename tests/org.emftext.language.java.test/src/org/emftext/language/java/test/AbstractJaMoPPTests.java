@@ -87,6 +87,7 @@ public abstract class AbstractJaMoPPTests {
 
 	@BeforeEach
 	public final void initResourceFactory() {
+		this.createNewResourceSet();
 		Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap().put("java", new JavaResource2Factory());
 		JavaClasspath.get().clear();
 		JavaClasspath.get().registerStdLib();
@@ -601,11 +602,16 @@ public abstract class AbstractJaMoPPTests {
 	protected void assertResolveAllProxies(EObject element) {
 		assertResolveAllProxies(element.eResource());
 	}
+	
+	private ResourceSet testSet;
+	
+	private void createNewResourceSet() {
+		testSet = new ResourceSetImpl();
+		testSet.getLoadOptions().putAll(getLoadOptions());
+	}
 
 	protected ResourceSet getResourceSet() throws Exception {
-		ResourceSet rs = new ResourceSetImpl();
-		rs.getLoadOptions().putAll(getLoadOptions());
-		return rs;
+		return testSet;
 	}
 
 	protected boolean assertResolveAllProxies(Resource resource) {
