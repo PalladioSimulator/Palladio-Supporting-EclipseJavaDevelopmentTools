@@ -57,7 +57,6 @@ public class ConcreteClassifierDecider extends AbstractDecider {
 	protected Resource resource;
 
 	private EList<ConcreteClassifier> innerTypeSuperTypeList = new BasicEList<ConcreteClassifier>();
-	private ConcreteClassifier baseClassifier = null;
 	private boolean insideDefiningClassifier = true;
 
 	private Commentable reference = null;
@@ -89,8 +88,7 @@ public class ConcreteClassifierDecider extends AbstractDecider {
 			resultList.addAll(JavaClasspath.get().getConcreteClassifiers(packageName));
 		}
 
-		if(container instanceof Classifier
-				&& !container.equals(baseClassifier)) { //not if we come down from the extends reference
+		if(container instanceof Classifier) {
 			Classifier classifier = (Classifier) container;
 
 			//classifier itself has first priority
@@ -297,11 +295,6 @@ public class ConcreteClassifierDecider extends AbstractDecider {
 		}
 
 		resource = referenceContainer.eResource();
-		if(referenceContainer instanceof ClassifierReference) {
-			if (referenceContainer.eContainer().eContainer() instanceof ConcreteClassifier) {
-				baseClassifier = (ConcreteClassifier) referenceContainer.eContainer().eContainer();
-			}
-		}
 
 		if(referenceContainer instanceof MethodCall) {
 			return false;
