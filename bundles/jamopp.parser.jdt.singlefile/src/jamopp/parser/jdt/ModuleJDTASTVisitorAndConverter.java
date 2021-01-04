@@ -13,7 +13,6 @@
 
 package jamopp.parser.jdt;
 
-import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.Annotation;
 import org.eclipse.jdt.core.dom.CompilationUnit;
@@ -98,10 +97,7 @@ class ModuleJDTASTVisitorAndConverter extends PackageJDTASTVisitorAndConverter {
 	
 	private org.emftext.language.java.modules.ModuleReference convertToModuleReference(Name name) {
 		org.emftext.language.java.modules.ModuleReference ref = org.emftext.language.java.modules.ModulesFactory.eINSTANCE.createModuleReference();
-		org.emftext.language.java.containers.Module modProxy = org.emftext.language.java.containers.ContainersFactory.eINSTANCE.createModule();
-		((InternalEObject) modProxy).eSetProxyURI(null);
-		ref.setTarget(modProxy);
-		BaseConverterUtility.convertToNamespacesAndSet(name, modProxy);
+		BaseConverterUtility.convertToNamespacesAndSet(name, ref);
 		return ref;
 	}
 }
