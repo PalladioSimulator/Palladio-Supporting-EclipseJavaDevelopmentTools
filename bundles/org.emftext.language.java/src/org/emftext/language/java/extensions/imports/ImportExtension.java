@@ -49,7 +49,7 @@ public class ImportExtension {
 	 * @return list of imported classifiers (proxies)
 	 */
 	public static EList<NamedElement> getImportedMembers(Import me) {
-		ConcreteClassifier concreteClassifier = me.getClassifierAtNamespaces();
+		ConcreteClassifier concreteClassifier = me.getClassifier();
 		
 		if (concreteClassifier == null || concreteClassifier.eIsProxy()) {
 			return ECollections.emptyEList();
