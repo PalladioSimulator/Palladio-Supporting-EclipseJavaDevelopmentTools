@@ -1320,7 +1320,8 @@
         eSuperTypes="#//commons/NamedElement"/>
     <eClassifiers xsi:type="ecore:EClass" name="ElementReference" abstract="true"
         eSuperTypes="#//references/Reference #//variables/Resource">
-      <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="#//references/ReferenceableElement"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="target" lowerBound="1"
+          eType="#//references/ReferenceableElement"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="containedTarget" eType="#//references/ReferenceableElement"
           containment="true"/>
     </eClassifiers>
@@ -1674,8 +1675,7 @@
         eSuperTypes="#//modules/ModuleDirective #//commons/NamespaceAwareElement">
       <eStructuralFeatures xsi:type="ecore:EReference" name="modules" upperBound="-1"
           eType="#//modules/ModuleReference" containment="true"/>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="accessablePackage" lowerBound="1"
-          eType="#//containers/Package"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="accessablePackage" eType="#//containers/Package"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="RequiresModuleDirective" eSuperTypes="#//modules/ModuleDirective">
       <eStructuralFeatures xsi:type="ecore:EReference" name="modifier" eType="#//modifiers/ModuleRequiresModifier"
@@ -1685,9 +1685,8 @@
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="OpensModuleDirective" eSuperTypes="#//modules/AccessProvidingModuleDirective"/>
     <eClassifiers xsi:type="ecore:EClass" name="ExportsModuleDirective" eSuperTypes="#//modules/AccessProvidingModuleDirective"/>
-    <eClassifiers xsi:type="ecore:EClass" name="ModuleReference" eSuperTypes="#//commons/Commentable">
-      <eStructuralFeatures xsi:type="ecore:EReference" name="target" lowerBound="1"
-          eType="#//containers/Module"/>
+    <eClassifiers xsi:type="ecore:EClass" name="ModuleReference" eSuperTypes="#//commons/NamespaceAwareElement">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="#//containers/Module"/>
     </eClassifiers>
   </eSubpackages>
 </ecore:EPackage>
