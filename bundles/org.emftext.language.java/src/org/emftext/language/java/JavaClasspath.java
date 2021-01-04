@@ -34,9 +34,7 @@ import org.eclipse.emf.common.util.UniqueEList;
 import org.eclipse.emf.ecore.resource.URIConverter;
 import org.emftext.language.java.classifiers.ClassifiersFactory;
 import org.emftext.language.java.classifiers.ConcreteClassifier;
-import org.emftext.language.java.commons.NamespaceAwareElement;
 import org.emftext.language.java.containers.CompilationUnit;
-import org.emftext.language.java.containers.ContainersFactory;
 import org.emftext.language.java.containers.JavaRoot;
 import org.emftext.language.java.members.Member;
 import org.eclipse.emf.ecore.InternalEObject;
@@ -101,11 +99,11 @@ public class JavaClasspath {
 	
 	public void registerPackage(String packageName, URI uri) {
 		org.emftext.language.java.containers.Package pack = getPackage(packageName);
-		if (pack == null) {
-			pack = ContainersFactory.eINSTANCE.createPackage();
-			setNamespaces(packageName, pack);
+		if (pack != null) {
+			registerPackage(pack, uri);
+		} else {
+			getURIMap().put(LogicalJavaURIGenerator.getPackageURI(packageName), uri);
 		}
-		registerPackage(pack, uri);
 	}
 
 	public void registerModule(org.emftext.language.java.containers.Module module, URI uri) {
@@ -115,15 +113,11 @@ public class JavaClasspath {
 	}
 	
 	public void registerModule(String moduleName, URI uri) {
-		org.emftext.language.java.containers.Module mod = ContainersFactory.eINSTANCE.createModule();
-		setNamespaces(moduleName, mod);
-		registerModule(mod, uri);
-	}
-	
-	private void setNamespaces(String namespaces, NamespaceAwareElement element) {
-		String[] parts = namespaces.split("\\.");
-		for (String p : parts) {
-			element.getNamespaces().add(p);
+		org.emftext.language.java.containers.Module mod = getModule(moduleName);
+		if (mod != null) {
+			registerModule(mod, uri);
+		} else {
+			getURIMap().put(LogicalJavaURIGenerator.getModuleURI(moduleName), uri);
 		}
 	}
 	

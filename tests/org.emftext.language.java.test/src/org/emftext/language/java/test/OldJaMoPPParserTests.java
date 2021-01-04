@@ -968,17 +968,17 @@ public class OldJaMoPPParserTests extends AbstractJaMoPPTests {
 		assertEquals("java", p1.getName());
 		
 		ref = (IdentifierReference) ref.getNext();
-		assertType(ref.getTarget(), org.emftext.language.java.containers.Package.class);
-		org.emftext.language.java.containers.Package p2 = (org.emftext.language.java.containers.Package) ref.getTarget();
-		assertEquals(2, p2.getNamespaces().size());
-		assertEquals("java", p2.getNamespaces().get(0));
-		assertEquals("lang", p2.getNamespaces().get(1));
+		assertType(ref.getTarget(), PackageReference.class);
+		p1 = (PackageReference) ref.getTarget();
+		assertEquals(1, p1.getNamespaces().size());
+		assertEquals("java", p1.getNamespaces().get(0));
+		assertEquals("lang", p1.getName());
 		
 		ref = (IdentifierReference) ref.getNext();
-		assertType(ref.getTarget(), org.emftext.language.java.containers.Package.class);
-		p2 = (org.emftext.language.java.containers.Package) ref.getTarget();
-		assertEquals(3, p1.getNamespaces().size());
-		assertEquals("annotation", p1.getNamespaces().get(2));
+		assertType(ref.getTarget(), PackageReference.class);
+		p1 = (PackageReference) ref.getTarget();
+		assertEquals(2, p1.getNamespaces().size());
+		assertEquals("annotation", p1.getName());
 		
 		parseAndReprint(filename);
 	}
