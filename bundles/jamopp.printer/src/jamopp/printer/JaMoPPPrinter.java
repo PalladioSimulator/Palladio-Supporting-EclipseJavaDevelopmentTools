@@ -141,6 +141,7 @@ import org.emftext.language.java.modifiers.Volatile;
 import org.emftext.language.java.modules.AccessProvidingModuleDirective;
 import org.emftext.language.java.modules.ExportsModuleDirective;
 import org.emftext.language.java.modules.ModuleDirective;
+import org.emftext.language.java.modules.ModuleReference;
 import org.emftext.language.java.modules.OpensModuleDirective;
 import org.emftext.language.java.modules.ProvidesModuleDirective;
 import org.emftext.language.java.modules.RequiresModuleDirective;
@@ -516,7 +517,11 @@ public final class JaMoPPPrinter {
 				writer.append("transitive ");
 			}
 		}
-		writer.append(element.getRequiredModule().getTarget().getNamespacesAsString());
+		if (element.getRequiredModule().getTarget() != null) {
+			writer.append(element.getRequiredModule().getTarget().getNamespacesAsString());
+		} else {
+			writer.append(element.getRequiredModule().getNamespacesAsString());
+		}
 		writer.append(";\n");
 	}
 	
@@ -532,13 +537,27 @@ public final class JaMoPPPrinter {
 	
 	private static void printRemainingAccessProvidingModuleDirective(AccessProvidingModuleDirective element, BufferedWriter writer)
 		throws IOException {
-		writer.append(element.getAccessablePackage().getNamespacesAsString());
+		if (element.getAccessablePackage() != null) {
+			writer.append(element.getAccessablePackage().getNamespacesAsString());
+		} else {
+			writer.append(element.getNamespacesAsString());
+		}
 		if (element.getModules().size() > 0) {
 			writer.append(" to ");
-			writer.append(element.getModules().get(0).getTarget().getNamespacesAsString());
+			ModuleReference m = element.getModules().get(0);
+			if (m.getTarget() != null) {
+				writer.append(m.getTarget().getNamespacesAsString());
+			} else {
+				writer.append(m.getNamespacesAsString());
+			}
 			for (int index = 1; index < element.getModules().size(); index++) {
 				writer.append(", ");
-				writer.append(element.getModules().get(index).getTarget().getNamespacesAsString());
+				m = element.getModules().get(index);
+				if (m.getTarget() != null) {
+					writer.append(m.getTarget().getNamespacesAsString());
+				} else {
+					writer.append(m.getNamespacesAsString());
+				}
 			}
 		}
 		writer.append(";\n");
