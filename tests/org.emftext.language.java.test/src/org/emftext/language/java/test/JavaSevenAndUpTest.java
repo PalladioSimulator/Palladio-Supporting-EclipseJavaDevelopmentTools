@@ -80,6 +80,7 @@ public class JavaSevenAndUpTest extends AbstractJaMoPPTests {
 	@Test
 	public void testModuleInfo() {
 		try {
+			this.registerInClassPath("pkg2" + File.separator + "SimpleInterfaceWithDefaultMethods.java");
 			String file = "module-info.java";
 			JavaRoot root = this.parseResource(file);
 			this.assertType(root, Module.class);
