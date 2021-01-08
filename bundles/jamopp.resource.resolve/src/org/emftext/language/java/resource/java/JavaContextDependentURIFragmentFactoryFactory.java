@@ -9,12 +9,12 @@ import org.emftext.language.java.imports.StaticMemberImport;
 import org.emftext.language.java.members.InterfaceMethod;
 import org.emftext.language.java.references.ElementReference;
 import org.emftext.language.java.references.ReferenceableElement;
-import org.emftext.language.java.resource.java.analysis.AnnotationAttributeSettingAttributeReferenceResolver;
-import org.emftext.language.java.resource.java.analysis.AnnotationInstanceAnnotationReferenceResolver;
-import org.emftext.language.java.resource.java.analysis.ClassifierImportClassifierReferenceResolver;
-import org.emftext.language.java.resource.java.analysis.ClassifierReferenceTargetReferenceResolver;
-import org.emftext.language.java.resource.java.analysis.ElementReferenceTargetReferenceResolver;
-import org.emftext.language.java.resource.java.analysis.StaticMemberImportStaticMembersReferenceResolver;
+import org.emftext.language.java.resolver.AnnotationAttributeSettingAttributeReferenceResolver;
+import org.emftext.language.java.resolver.AnnotationInstanceAnnotationReferenceResolver;
+import org.emftext.language.java.resolver.ClassifierImportClassifierReferenceResolver;
+import org.emftext.language.java.resolver.ClassifierReferenceTargetReferenceResolver;
+import org.emftext.language.java.resolver.ElementReferenceTargetReferenceResolver;
+import org.emftext.language.java.resolver.StaticMemberImportStaticMembersReferenceResolver;
 import org.emftext.language.java.resource.java.mopp.JavaContextDependentURIFragmentFactory;
 import org.emftext.language.java.types.ClassifierReference;
 

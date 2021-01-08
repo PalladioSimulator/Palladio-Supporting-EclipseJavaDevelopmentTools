@@ -15,7 +15,7 @@
  *   Martin Armbruster
  *      - Extension for Java 7-13
  ******************************************************************************/
-package org.emftext.language.java.resource.java;
+package org.emftext.language.java.resolver;
 
 /**
  * A reference resolver tries to resolve a reference to one or many model elements

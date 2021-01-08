@@ -15,7 +15,7 @@
  *   Martin Armbruster
  *      - Extension with the treatment of "var"
  ******************************************************************************/
-package org.emftext.language.java.resource.java.analysis;
+package org.emftext.language.java.resolver;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,12 +37,11 @@ import org.emftext.language.java.generics.TypeParameter;
 import org.emftext.language.java.instantiations.NewConstructorCall;
 import org.emftext.language.java.references.Reference;
 import org.emftext.language.java.references.ReferencesPackage;
+import org.emftext.language.java.resolver.decider.ConcreteClassifierDecider;
+import org.emftext.language.java.resolver.decider.IResolutionTargetDecider;
+import org.emftext.language.java.resolver.decider.ScopedTreeWalker;
+import org.emftext.language.java.resolver.decider.TypeParameterDecider;
 import org.emftext.language.java.resource.java.IJavaReferenceResolveResult;
-import org.emftext.language.java.resource.java.IJavaReferenceResolver;
-import org.emftext.language.java.resource.java.analysis.decider.ConcreteClassifierDecider;
-import org.emftext.language.java.resource.java.analysis.decider.IResolutionTargetDecider;
-import org.emftext.language.java.resource.java.analysis.decider.TypeParameterDecider;
-import org.emftext.language.java.resource.java.analysis.helper.ScopedTreeWalker;
 import org.emftext.language.java.types.ClassifierReference;
 import org.emftext.language.java.types.NamespaceClassifierReference;
 import org.emftext.language.java.types.TypeReference;

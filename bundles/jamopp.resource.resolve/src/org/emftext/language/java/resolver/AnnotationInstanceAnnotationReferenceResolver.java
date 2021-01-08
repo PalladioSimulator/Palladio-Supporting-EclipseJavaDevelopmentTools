@@ -13,7 +13,7 @@
  *   DevBoost GmbH - Berlin, Germany
  *      - initial API and implementation
  ******************************************************************************/
-package org.emftext.language.java.resource.java.analysis;
+package org.emftext.language.java.resolver;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,11 +27,10 @@ import org.emftext.language.java.annotations.AnnotationInstance;
 import org.emftext.language.java.classifiers.Annotation;
 import org.emftext.language.java.classifiers.Classifier;
 import org.emftext.language.java.classifiers.ConcreteClassifier;
+import org.emftext.language.java.resolver.decider.ConcreteClassifierDecider;
+import org.emftext.language.java.resolver.decider.IResolutionTargetDecider;
+import org.emftext.language.java.resolver.decider.ScopedTreeWalker;
 import org.emftext.language.java.resource.java.IJavaReferenceResolveResult;
-import org.emftext.language.java.resource.java.IJavaReferenceResolver;
-import org.emftext.language.java.resource.java.analysis.decider.ConcreteClassifierDecider;
-import org.emftext.language.java.resource.java.analysis.decider.IResolutionTargetDecider;
-import org.emftext.language.java.resource.java.analysis.helper.ScopedTreeWalker;
 
 public class AnnotationInstanceAnnotationReferenceResolver implements
 	IJavaReferenceResolver<org.emftext.language.java.annotations.AnnotationInstance, org.emftext.language.java.classifiers.Classifier> {

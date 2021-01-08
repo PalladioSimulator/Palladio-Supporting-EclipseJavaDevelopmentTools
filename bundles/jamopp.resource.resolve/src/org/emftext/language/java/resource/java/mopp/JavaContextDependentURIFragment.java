@@ -58,7 +58,7 @@ public abstract class JavaContextDependentURIFragment<ContainerType extends org.
 			// set an initial default error message
 			result.setErrorMessage(getStdErrorMessage());
 			
-			org.emftext.language.java.resource.java.IJavaReferenceResolver<ContainerType, ReferenceType> resolver = getResolver();
+			org.emftext.language.java.resolver.IJavaReferenceResolver<ContainerType, ReferenceType> resolver = getResolver();
 			// do the actual resolving
 			resolver.resolve(getIdentifier(), getContainer(), getReference(), getPositionInReference(), false, result);
 			
@@ -72,7 +72,7 @@ public abstract class JavaContextDependentURIFragment<ContainerType extends org.
 		return result;
 	}
 	
-	public abstract org.emftext.language.java.resource.java.IJavaReferenceResolver<ContainerType, ReferenceType> getResolver();
+	public abstract org.emftext.language.java.resolver.IJavaReferenceResolver<ContainerType, ReferenceType> getResolver();
 	
 	private void handleMultipleResults() {
 		org.eclipse.emf.common.util.EList<org.eclipse.emf.ecore.EObject> list = null;

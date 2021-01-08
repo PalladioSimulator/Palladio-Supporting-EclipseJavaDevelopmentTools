@@ -24,34 +24,34 @@ public class JavaReferenceResolverSwitch implements org.emftext.language.java.re
 	 */
 	private java.util.Map<Object, Object> options;
 	
-	protected org.emftext.language.java.resource.java.analysis.ClassifierImportClassifierReferenceResolver classifierImportClassifierReferenceResolver = new org.emftext.language.java.resource.java.analysis.ClassifierImportClassifierReferenceResolver();
-	protected org.emftext.language.java.resource.java.analysis.StaticMemberImportStaticMembersReferenceResolver staticMemberImportStaticMembersReferenceResolver = new org.emftext.language.java.resource.java.analysis.StaticMemberImportStaticMembersReferenceResolver();
-	protected org.emftext.language.java.resource.java.analysis.AnnotationInstanceAnnotationReferenceResolver annotationInstanceAnnotationReferenceResolver = new org.emftext.language.java.resource.java.analysis.AnnotationInstanceAnnotationReferenceResolver();
-	protected org.emftext.language.java.resource.java.analysis.AnnotationAttributeSettingAttributeReferenceResolver annotationAttributeSettingAttributeReferenceResolver = new org.emftext.language.java.resource.java.analysis.AnnotationAttributeSettingAttributeReferenceResolver();
-	protected org.emftext.language.java.resource.java.analysis.ClassifierReferenceTargetReferenceResolver classifierReferenceTargetReferenceResolver = new org.emftext.language.java.resource.java.analysis.ClassifierReferenceTargetReferenceResolver();
-	protected org.emftext.language.java.resource.java.analysis.ElementReferenceTargetReferenceResolver elementReferenceTargetReferenceResolver = new org.emftext.language.java.resource.java.analysis.ElementReferenceTargetReferenceResolver();
+	protected org.emftext.language.java.resolver.ClassifierImportClassifierReferenceResolver classifierImportClassifierReferenceResolver = new org.emftext.language.java.resolver.ClassifierImportClassifierReferenceResolver();
+	protected org.emftext.language.java.resolver.StaticMemberImportStaticMembersReferenceResolver staticMemberImportStaticMembersReferenceResolver = new org.emftext.language.java.resolver.StaticMemberImportStaticMembersReferenceResolver();
+	protected org.emftext.language.java.resolver.AnnotationInstanceAnnotationReferenceResolver annotationInstanceAnnotationReferenceResolver = new org.emftext.language.java.resolver.AnnotationInstanceAnnotationReferenceResolver();
+	protected org.emftext.language.java.resolver.AnnotationAttributeSettingAttributeReferenceResolver annotationAttributeSettingAttributeReferenceResolver = new org.emftext.language.java.resolver.AnnotationAttributeSettingAttributeReferenceResolver();
+	protected org.emftext.language.java.resolver.ClassifierReferenceTargetReferenceResolver classifierReferenceTargetReferenceResolver = new org.emftext.language.java.resolver.ClassifierReferenceTargetReferenceResolver();
+	protected org.emftext.language.java.resolver.ElementReferenceTargetReferenceResolver elementReferenceTargetReferenceResolver = new org.emftext.language.java.resolver.ElementReferenceTargetReferenceResolver();
 	
-	public org.emftext.language.java.resource.java.IJavaReferenceResolver<org.emftext.language.java.imports.Import, org.emftext.language.java.classifiers.ConcreteClassifier> getClassifierImportClassifierReferenceResolver() {
+	public org.emftext.language.java.resolver.IJavaReferenceResolver<org.emftext.language.java.imports.Import, org.emftext.language.java.classifiers.ConcreteClassifier> getClassifierImportClassifierReferenceResolver() {
 		return getResolverChain(org.emftext.language.java.imports.ImportsPackage.eINSTANCE.getImport_Classifier(), classifierImportClassifierReferenceResolver);
 	}
 	
-	public org.emftext.language.java.resource.java.IJavaReferenceResolver<org.emftext.language.java.imports.StaticMemberImport, org.emftext.language.java.references.ReferenceableElement> getStaticMemberImportStaticMembersReferenceResolver() {
+	public org.emftext.language.java.resolver.IJavaReferenceResolver<org.emftext.language.java.imports.StaticMemberImport, org.emftext.language.java.references.ReferenceableElement> getStaticMemberImportStaticMembersReferenceResolver() {
 		return getResolverChain(org.emftext.language.java.imports.ImportsPackage.eINSTANCE.getStaticMemberImport_StaticMembers(), staticMemberImportStaticMembersReferenceResolver);
 	}
 	
-	public org.emftext.language.java.resource.java.IJavaReferenceResolver<org.emftext.language.java.annotations.AnnotationInstance, org.emftext.language.java.classifiers.Classifier> getAnnotationInstanceAnnotationReferenceResolver() {
+	public org.emftext.language.java.resolver.IJavaReferenceResolver<org.emftext.language.java.annotations.AnnotationInstance, org.emftext.language.java.classifiers.Classifier> getAnnotationInstanceAnnotationReferenceResolver() {
 		return getResolverChain(org.emftext.language.java.annotations.AnnotationsPackage.eINSTANCE.getAnnotationInstance_Annotation(), annotationInstanceAnnotationReferenceResolver);
 	}
 	
-	public org.emftext.language.java.resource.java.IJavaReferenceResolver<org.emftext.language.java.annotations.AnnotationAttributeSetting, org.emftext.language.java.members.InterfaceMethod> getAnnotationAttributeSettingAttributeReferenceResolver() {
+	public org.emftext.language.java.resolver.IJavaReferenceResolver<org.emftext.language.java.annotations.AnnotationAttributeSetting, org.emftext.language.java.members.InterfaceMethod> getAnnotationAttributeSettingAttributeReferenceResolver() {
 		return getResolverChain(org.emftext.language.java.annotations.AnnotationsPackage.eINSTANCE.getAnnotationAttributeSetting_Attribute(), annotationAttributeSettingAttributeReferenceResolver);
 	}
 	
-	public org.emftext.language.java.resource.java.IJavaReferenceResolver<org.emftext.language.java.types.ClassifierReference, org.emftext.language.java.classifiers.Classifier> getClassifierReferenceTargetReferenceResolver() {
+	public org.emftext.language.java.resolver.IJavaReferenceResolver<org.emftext.language.java.types.ClassifierReference, org.emftext.language.java.classifiers.Classifier> getClassifierReferenceTargetReferenceResolver() {
 		return getResolverChain(org.emftext.language.java.types.TypesPackage.eINSTANCE.getClassifierReference_Target(), classifierReferenceTargetReferenceResolver);
 	}
 	
-	public org.emftext.language.java.resource.java.IJavaReferenceResolver<org.emftext.language.java.references.ElementReference, org.emftext.language.java.references.ReferenceableElement> getElementReferenceTargetReferenceResolver() {
+	public org.emftext.language.java.resolver.IJavaReferenceResolver<org.emftext.language.java.references.ElementReference, org.emftext.language.java.references.ReferenceableElement> getElementReferenceTargetReferenceResolver() {
 		return getResolverChain(org.emftext.language.java.references.ReferencesPackage.eINSTANCE.getElementReference_Target(), elementReferenceTargetReferenceResolver);
 	}
 	
@@ -122,7 +122,7 @@ public class JavaReferenceResolverSwitch implements org.emftext.language.java.re
 		}
 	}
 	
-	public org.emftext.language.java.resource.java.IJavaReferenceResolver<? extends org.eclipse.emf.ecore.EObject, ? extends org.eclipse.emf.ecore.EObject> getResolver(org.eclipse.emf.ecore.EStructuralFeature reference) {
+	public org.emftext.language.java.resolver.IJavaReferenceResolver<? extends org.eclipse.emf.ecore.EObject, ? extends org.eclipse.emf.ecore.EObject> getResolver(org.eclipse.emf.ecore.EStructuralFeature reference) {
 		if (reference == org.emftext.language.java.imports.ImportsPackage.eINSTANCE.getImport_Classifier()) {
 			return getResolverChain(reference, classifierImportClassifierReferenceResolver);
 		}
@@ -144,7 +144,7 @@ public class JavaReferenceResolverSwitch implements org.emftext.language.java.re
 		return null;
 	}
 		
-	public <ContainerType extends org.eclipse.emf.ecore.EObject, ReferenceType extends org.eclipse.emf.ecore.EObject> org.emftext.language.java.resource.java.IJavaReferenceResolver<ContainerType, ReferenceType> getResolverChain(org.eclipse.emf.ecore.EStructuralFeature reference, org.emftext.language.java.resource.java.IJavaReferenceResolver<ContainerType, ReferenceType> originalResolver) {
+	public <ContainerType extends org.eclipse.emf.ecore.EObject, ReferenceType extends org.eclipse.emf.ecore.EObject> org.emftext.language.java.resolver.IJavaReferenceResolver<ContainerType, ReferenceType> getResolverChain(org.eclipse.emf.ecore.EStructuralFeature reference, org.emftext.language.java.resolver.IJavaReferenceResolver<ContainerType, ReferenceType> originalResolver) {
 		return originalResolver;
 	}
 }

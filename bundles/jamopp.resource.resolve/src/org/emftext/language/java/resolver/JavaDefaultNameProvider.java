@@ -15,7 +15,7 @@
  *   Martin Armbruster
  *      - Extension for Java 7-13
  ******************************************************************************/
-package org.emftext.language.java.resource.java.analysis;
+package org.emftext.language.java.resolver;
 
 public class JavaDefaultNameProvider implements org.emftext.language.java.resource.java.IJavaNameProvider {
 	

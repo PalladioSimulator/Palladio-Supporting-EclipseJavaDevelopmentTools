@@ -25,11 +25,11 @@ package org.emftext.language.java.resource.java;
  * 
  * @see org.emftext.language.java.resource.java.IJavaOptions
  */
-public interface IJavaDelegatingReferenceResolver<ContainerType extends org.eclipse.emf.ecore.EObject, ReferenceType extends org.eclipse.emf.ecore.EObject> extends org.emftext.language.java.resource.java.IJavaReferenceResolver<ContainerType, ReferenceType> {
+public interface IJavaDelegatingReferenceResolver<ContainerType extends org.eclipse.emf.ecore.EObject, ReferenceType extends org.eclipse.emf.ecore.EObject> extends org.emftext.language.java.resolver.IJavaReferenceResolver<ContainerType, ReferenceType> {
 	
 	/**
 	 * Sets the delegate for this resolver.
 	 */
-	public void setDelegate(org.emftext.language.java.resource.java.IJavaReferenceResolver<ContainerType, ReferenceType> delegate);
+	public void setDelegate(org.emftext.language.java.resolver.IJavaReferenceResolver<ContainerType, ReferenceType> delegate);
 	
 }

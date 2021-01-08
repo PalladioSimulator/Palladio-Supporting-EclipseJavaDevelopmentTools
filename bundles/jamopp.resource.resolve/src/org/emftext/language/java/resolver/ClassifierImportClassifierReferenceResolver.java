@@ -13,7 +13,7 @@
  *   DevBoost GmbH - Berlin, Germany
  *      - initial API and implementation
  ******************************************************************************/
-package org.emftext.language.java.resource.java.analysis;
+package org.emftext.language.java.resolver;
 
 import java.util.List;
 import java.util.Map;
@@ -24,7 +24,6 @@ import org.emftext.language.java.LogicalJavaURIGenerator;
 import org.emftext.language.java.classifiers.ConcreteClassifier;
 import org.emftext.language.java.imports.Import;
 import org.emftext.language.java.resource.java.IJavaReferenceResolveResult;
-import org.emftext.language.java.resource.java.IJavaReferenceResolver;
 
 public class ClassifierImportClassifierReferenceResolver implements
 	IJavaReferenceResolver<Import, ConcreteClassifier> {

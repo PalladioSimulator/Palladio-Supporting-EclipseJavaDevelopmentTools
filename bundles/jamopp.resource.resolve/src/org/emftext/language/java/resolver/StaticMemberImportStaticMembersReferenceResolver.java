@@ -13,7 +13,7 @@
  *   DevBoost GmbH - Berlin, Germany
  *      - initial API and implementation
  ******************************************************************************/
-package org.emftext.language.java.resource.java.analysis;
+package org.emftext.language.java.resolver;
 
 import java.util.Map;
 
@@ -26,7 +26,6 @@ import org.emftext.language.java.members.Member;
 import org.emftext.language.java.modifiers.AnnotableAndModifiable;
 import org.emftext.language.java.references.ReferenceableElement;
 import org.emftext.language.java.resource.java.IJavaReferenceResolveResult;
-import org.emftext.language.java.resource.java.IJavaReferenceResolver;
 
 public class StaticMemberImportStaticMembersReferenceResolver implements
 	IJavaReferenceResolver<StaticMemberImport, ReferenceableElement> {

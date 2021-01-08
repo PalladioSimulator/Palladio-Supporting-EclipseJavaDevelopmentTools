@@ -13,7 +13,7 @@
  *   DevBoost GmbH - Berlin, Germany
  *      - initial API and implementation
  ******************************************************************************/
-package org.emftext.language.java.resource.java.analysis;
+package org.emftext.language.java.resolver;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,11 +22,10 @@ import java.util.Map;
 import org.eclipse.emf.ecore.EObject;
 import org.emftext.language.java.annotations.AnnotationAttributeSetting;
 import org.emftext.language.java.members.InterfaceMethod;
+import org.emftext.language.java.resolver.decider.IResolutionTargetDecider;
+import org.emftext.language.java.resolver.decider.InterfaceMethodDecider;
+import org.emftext.language.java.resolver.decider.ScopedTreeWalker;
 import org.emftext.language.java.resource.java.IJavaReferenceResolveResult;
-import org.emftext.language.java.resource.java.IJavaReferenceResolver;
-import org.emftext.language.java.resource.java.analysis.decider.IResolutionTargetDecider;
-import org.emftext.language.java.resource.java.analysis.decider.InterfaceMethodDecider;
-import org.emftext.language.java.resource.java.analysis.helper.ScopedTreeWalker;
 
 public class AnnotationAttributeSettingAttributeReferenceResolver implements
 	IJavaReferenceResolver<AnnotationAttributeSetting, InterfaceMethod> {

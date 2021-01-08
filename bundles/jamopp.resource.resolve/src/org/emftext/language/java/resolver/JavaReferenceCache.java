@@ -15,7 +15,7 @@
  *   Martin Armbruster
  *      - Extension for Java 7-13
  ******************************************************************************/
-package org.emftext.language.java.resource.java.analysis;
+package org.emftext.language.java.resolver;
 
 /**
  * A ReferenceCache can be used to improve the performance of the reference

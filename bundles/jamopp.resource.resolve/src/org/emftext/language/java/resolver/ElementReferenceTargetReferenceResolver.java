@@ -13,7 +13,7 @@
  *   DevBoost GmbH - Berlin, Germany
  *      - initial API and implementation
  ******************************************************************************/
-package org.emftext.language.java.resource.java.analysis;
+package org.emftext.language.java.resolver;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,18 +35,17 @@ import org.emftext.language.java.references.PackageReference;
 import org.emftext.language.java.references.Reference;
 import org.emftext.language.java.references.ReferenceableElement;
 import org.emftext.language.java.references.ReferencesPackage;
+import org.emftext.language.java.resolver.decider.ConcreteClassifierDecider;
+import org.emftext.language.java.resolver.decider.EnumConstantDecider;
+import org.emftext.language.java.resolver.decider.FieldDecider;
+import org.emftext.language.java.resolver.decider.IResolutionTargetDecider;
+import org.emftext.language.java.resolver.decider.LocalVariableDecider;
+import org.emftext.language.java.resolver.decider.MethodDecider;
+import org.emftext.language.java.resolver.decider.PackageDecider;
+import org.emftext.language.java.resolver.decider.ParameterDecider;
+import org.emftext.language.java.resolver.decider.ScopedTreeWalker;
+import org.emftext.language.java.resolver.decider.TypeParameterDecider;
 import org.emftext.language.java.resource.java.IJavaReferenceResolveResult;
-import org.emftext.language.java.resource.java.IJavaReferenceResolver;
-import org.emftext.language.java.resource.java.analysis.decider.ConcreteClassifierDecider;
-import org.emftext.language.java.resource.java.analysis.decider.EnumConstantDecider;
-import org.emftext.language.java.resource.java.analysis.decider.FieldDecider;
-import org.emftext.language.java.resource.java.analysis.decider.IResolutionTargetDecider;
-import org.emftext.language.java.resource.java.analysis.decider.LocalVariableDecider;
-import org.emftext.language.java.resource.java.analysis.decider.MethodDecider;
-import org.emftext.language.java.resource.java.analysis.decider.PackageDecider;
-import org.emftext.language.java.resource.java.analysis.decider.ParameterDecider;
-import org.emftext.language.java.resource.java.analysis.decider.TypeParameterDecider;
-import org.emftext.language.java.resource.java.analysis.helper.ScopedTreeWalker;
 import org.emftext.language.java.types.PrimitiveType;
 import org.emftext.language.java.util.TemporalCompositeClassifier;
 import org.emftext.language.java.util.TemporalFullNameHolder;

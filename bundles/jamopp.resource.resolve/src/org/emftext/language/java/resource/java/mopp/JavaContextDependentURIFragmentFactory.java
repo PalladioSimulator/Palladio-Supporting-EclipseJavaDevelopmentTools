@@ -28,16 +28,16 @@ package org.emftext.language.java.resource.java.mopp;
  */
 public class JavaContextDependentURIFragmentFactory<ContainerType extends org.eclipse.emf.ecore.EObject, ReferenceType extends org.eclipse.emf.ecore.EObject>  implements org.emftext.language.java.resource.java.IJavaContextDependentURIFragmentFactory<ContainerType, ReferenceType> {
 	
-	private final org.emftext.language.java.resource.java.IJavaReferenceResolver<ContainerType, ReferenceType> resolver;
+	private final org.emftext.language.java.resolver.IJavaReferenceResolver<ContainerType, ReferenceType> resolver;
 	
-	public JavaContextDependentURIFragmentFactory(org.emftext.language.java.resource.java.IJavaReferenceResolver<ContainerType, ReferenceType> resolver) {
+	public JavaContextDependentURIFragmentFactory(org.emftext.language.java.resolver.IJavaReferenceResolver<ContainerType, ReferenceType> resolver) {
 		this.resolver = resolver;
 	}
 	
 	public org.emftext.language.java.resource.java.IJavaContextDependentURIFragment<?> create(String identifier, ContainerType container, org.eclipse.emf.ecore.EReference reference, int positionInReference, org.eclipse.emf.ecore.EObject proxy) {
 		
 		return new org.emftext.language.java.resource.java.mopp.JavaContextDependentURIFragment<ContainerType, ReferenceType>(identifier, container, reference, positionInReference, proxy) {
-			public org.emftext.language.java.resource.java.IJavaReferenceResolver<ContainerType, ReferenceType> getResolver() {
+			public org.emftext.language.java.resolver.IJavaReferenceResolver<ContainerType, ReferenceType> getResolver() {
 				return resolver;
 			}
 		};

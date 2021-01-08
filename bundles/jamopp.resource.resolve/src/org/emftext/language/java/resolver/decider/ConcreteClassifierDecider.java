@@ -13,7 +13,7 @@
  *   DevBoost GmbH - Berlin, Germany
  *      - initial API and implementation
  ******************************************************************************/
-package org.emftext.language.java.resource.java.analysis.decider;
+package org.emftext.language.java.resolver.decider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +44,6 @@ import org.emftext.language.java.members.Member;
 import org.emftext.language.java.references.IdentifierReference;
 import org.emftext.language.java.references.MethodCall;
 import org.emftext.language.java.references.Reference;
-import org.emftext.language.java.resource.java.analysis.helper.ScopedTreeWalker;
 import org.emftext.language.java.statements.StatementsPackage;
 import org.emftext.language.java.types.ClassifierReference;
 import org.emftext.language.java.util.TemporalFullNameHolder;

@@ -15,7 +15,7 @@
  *   Martin Armbruster
  *      - Extension for Java 7-13
  ******************************************************************************/
-package org.emftext.language.java.resource.java.analysis;
+package org.emftext.language.java.resolver;
 
 public class JavaDefaultResolverDelegate<ContainerType extends org.eclipse.emf.ecore.EObject, ReferenceType extends org.eclipse.emf.ecore.EObject> {
 	
@@ -406,13 +406,13 @@ public class JavaDefaultResolverDelegate<ContainerType extends org.eclipse.emf.e
 	
 	protected org.emftext.language.java.resource.java.IJavaReferenceCache getCache(org.eclipse.emf.ecore.EObject object) {
 		org.eclipse.emf.ecore.EObject root = org.eclipse.emf.ecore.util.EcoreUtil.getRootContainer(object);
-		org.eclipse.emf.common.notify.Adapter adapter = org.emftext.language.java.resource.java.util.JavaEObjectUtil.getEAdapter(root, org.emftext.language.java.resource.java.analysis.JavaReferenceCache.class);
-		org.emftext.language.java.resource.java.analysis.JavaReferenceCache cache = org.emftext.language.java.resource.java.util.JavaCastUtil.cast(adapter);
+		org.eclipse.emf.common.notify.Adapter adapter = org.emftext.language.java.resource.java.util.JavaEObjectUtil.getEAdapter(root, org.emftext.language.java.resolver.JavaReferenceCache.class);
+		org.emftext.language.java.resolver.JavaReferenceCache cache = org.emftext.language.java.resource.java.util.JavaCastUtil.cast(adapter);
 		if (cache != null) {
 			return cache;
 		} else {
 			// cache does not exist. create a new one.
-			cache = new org.emftext.language.java.resource.java.analysis.JavaReferenceCache(nameProvider);
+			cache = new org.emftext.language.java.resolver.JavaReferenceCache(nameProvider);
 			cache.initialize(root);
 			root.eAdapters().add(cache);
 			return cache;
