@@ -29,10 +29,12 @@ import org.emftext.language.java.statements.StatementsPackage;
  */
 public class ParameterDecider extends AbstractDecider {
 
+	@Override
 	public boolean continueAfterReference() {
 		return false;
 	}
 
+	@Override
 	public boolean isPossibleTarget(String id, EObject element) {
 		if (element instanceof Parameter) {
 			NamedElement ne = (NamedElement) element;
@@ -41,6 +43,7 @@ public class ParameterDecider extends AbstractDecider {
 		return false;
 	}
 
+	@Override
 	public boolean containsCandidates(EObject container, EReference containingReference) {
 		if (ParametersPackage.Literals.PARAMETRIZABLE__PARAMETERS.equals(containingReference)) {
 			return  true;
@@ -54,13 +57,13 @@ public class ParameterDecider extends AbstractDecider {
 		return false;
 	}
 
+	@Override
 	public boolean walkInto(EObject element) {
 		return false;
 	}
 
-	public boolean canFindTargetsFor(EObject referenceContainer,
-			EReference containingReference) {
+	@Override
+	public boolean canFindTargetsFor(EObject referenceContainer, EReference containingReference) {
 		return referenceContainer instanceof Reference && !(referenceContainer instanceof MethodCall);
 	}
-
 }

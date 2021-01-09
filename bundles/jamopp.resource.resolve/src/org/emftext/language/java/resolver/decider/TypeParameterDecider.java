@@ -29,6 +29,7 @@ import org.emftext.language.java.types.ClassifierReference;
  */
 public class TypeParameterDecider extends AbstractDecider {
 
+	@Override
 	public boolean isPossibleTarget(String id, EObject element) {
 		if (element instanceof TypeParameter) {
 			NamedElement ne = (NamedElement) element;
@@ -37,6 +38,7 @@ public class TypeParameterDecider extends AbstractDecider {
 		return false;
 	}
 
+	@Override
 	public boolean containsCandidates(EObject container, EReference containingReference) {
 		if (GenericsPackage.Literals.TYPE_PARAMETRIZABLE__TYPE_PARAMETERS.equals(containingReference)) {
 			return true;
@@ -44,9 +46,9 @@ public class TypeParameterDecider extends AbstractDecider {
 		return false;
 	}
 
-	public boolean canFindTargetsFor(EObject referenceContainer,
-			EReference containingReference) {
-		return ((referenceContainer instanceof Reference && !(referenceContainer instanceof MethodCall)) ||
-				referenceContainer instanceof ClassifierReference);
+	@Override
+	public boolean canFindTargetsFor(EObject referenceContainer, EReference containingReference) {
+		return ((referenceContainer instanceof Reference && !(referenceContainer instanceof MethodCall))
+			|| referenceContainer instanceof ClassifierReference);
 	}
 }

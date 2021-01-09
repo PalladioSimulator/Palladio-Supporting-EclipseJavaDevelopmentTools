@@ -46,6 +46,7 @@ public class EnumConstantDecider extends AbstractDecider {
 
 	private EObject reference = null;
 
+	@Override
 	public boolean isPossibleTarget(String id, EObject element) {
 		if (element instanceof EnumConstant) {
 			NamedElement ne = (NamedElement) element;
@@ -54,19 +55,20 @@ public class EnumConstantDecider extends AbstractDecider {
 		return false;
 	}
 
+	@Override
 	public EList<? extends EObject> getAdditionalCandidates(String identifier, EObject container) {
-		if (container instanceof Switch &&
-				reference.eContainmentFeature().equals(StatementsPackage.Literals.CONDITIONAL__CONDITION) &&
-				reference.eContainer() instanceof SwitchCase) {
+		if (container instanceof Switch
+				&& reference.eContainmentFeature().equals(StatementsPackage.Literals.CONDITIONAL__CONDITION)
+				&& reference.eContainer() instanceof SwitchCase) {
 			Switch aSwitch = (Switch) container;
 			Type variableType = aSwitch.getVariable().getType();
 			if (variableType instanceof Enumeration) {
-				return ((Enumeration)variableType).getConstants();
+				return ((Enumeration) variableType).getConstants();
 			}
 			if (variableType instanceof TemporalCompositeClassifier) {
-				for(EObject superType : ((TemporalCompositeClassifier)variableType).getSuperTypes()) {
+				for (EObject superType : ((TemporalCompositeClassifier) variableType).getSuperTypes()) {
 					if (superType instanceof Enumeration) {
-						return ((Enumeration)superType).getConstants();
+						return ((Enumeration) superType).getConstants();
 					}
 				}
 			}
@@ -75,14 +77,14 @@ public class EnumConstantDecider extends AbstractDecider {
 			AssignmentExpression assignmentExpression = (AssignmentExpression) container;
 			Type assignmentExpressionType = assignmentExpression.getType();
 			if (assignmentExpressionType instanceof Enumeration) {
-				return ((Enumeration)assignmentExpressionType).getConstants();
+				return ((Enumeration) assignmentExpressionType).getConstants();
 			}
 		}
 		if (container instanceof LocalVariable) {
 			LocalVariable localVariable = (LocalVariable) container;
 			Type assignmentExpressionType = localVariable.getTypeReference().getTarget();
 			if (assignmentExpressionType instanceof Enumeration) {
-				return ((Enumeration)assignmentExpressionType).getConstants();
+				return ((Enumeration) assignmentExpressionType).getConstants();
 			}
 		}
 
@@ -92,19 +94,17 @@ public class EnumConstantDecider extends AbstractDecider {
 	}
 
 	private EList<EObject> addImports(EObject container) {
-		if(container instanceof ImportingElement) {
+		if (container instanceof ImportingElement) {
 			EList<EObject> resultList = new BasicEList<EObject>();
-			for(Import aImport : ((ImportingElement)container).getImports()) {
+			for (Import aImport : ((ImportingElement) container).getImports()) {
 				if (aImport instanceof StaticMemberImport) {
-					resultList.addAll(((StaticMemberImport)aImport).getStaticMembers());
-				}
-				else if (aImport instanceof StaticClassifierImport) {
+					resultList.addAll(((StaticMemberImport) aImport).getStaticMembers());
+				} else if (aImport instanceof StaticClassifierImport) {
 					resultList.addAll(aImport.getImportedMembers());
-				}
-				else if (aImport instanceof ClassifierImport) {
-					for (EObject member : ((ClassifierImport)aImport).getClassifier().getMembers()) {
+				} else if (aImport instanceof ClassifierImport) {
+					for (EObject member : ((ClassifierImport) aImport).getClassifier().getMembers()) {
 						if (member instanceof AnnotableAndModifiable) {
-							if(((AnnotableAndModifiable)member).isStatic()) {
+							if (((AnnotableAndModifiable) member).isStatic()) {
 								resultList.add(member);
 							}
 						}
@@ -116,6 +116,7 @@ public class EnumConstantDecider extends AbstractDecider {
 		return null;
 	}
 
+	@Override
 	public boolean containsCandidates(EObject container, EReference containingReference) {
 		if (ClassifiersPackage.Literals.ENUMERATION__CONSTANTS.equals(containingReference)) {
 			return true;
@@ -123,11 +124,9 @@ public class EnumConstantDecider extends AbstractDecider {
 		return false;
 	}
 
-
-	public boolean canFindTargetsFor(EObject referenceContainer,
-			EReference containingReference) {
+	@Override
+	public boolean canFindTargetsFor(EObject referenceContainer, EReference containingReference) {
 		reference = referenceContainer;
 		return referenceContainer instanceof Reference && !(referenceContainer instanceof MethodCall);
 	}
-
 }

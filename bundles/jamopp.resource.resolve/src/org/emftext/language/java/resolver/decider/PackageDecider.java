@@ -34,29 +34,29 @@ import org.emftext.language.java.references.ReferencesPackage;
  */
 public class PackageDecider extends AbstractDecider {
 
-	public boolean canFindTargetsFor(EObject referenceContainer,
-			EReference crossReference) {
+	@Override
+	public boolean canFindTargetsFor(EObject referenceContainer, EReference crossReference) {
 
 		if (referenceContainer instanceof IdentifierReference) {
 			IdentifierReference idReference = (IdentifierReference) referenceContainer;
 			 //a classifier must follow
-			if(!(idReference.getNext() instanceof IdentifierReference)) {
+			if (!(idReference.getNext() instanceof IdentifierReference)) {
 				return false;
 			}
 			if (!referenceContainer.eContainingFeature().equals(ReferencesPackage.Literals.REFERENCE__NEXT)) {
 				//maybe the root package
 				return true;
 			}
-			if (referenceContainer.eContainingFeature().equals(ReferencesPackage.Literals.REFERENCE__NEXT) &&
-					idReference.eContainer() instanceof IdentifierReference) {
+			if (referenceContainer.eContainingFeature().equals(ReferencesPackage.Literals.REFERENCE__NEXT)
+				&& idReference.eContainer() instanceof IdentifierReference) {
 				//maybe the next sub package
 				return true;
 			}
-
 		}
 		return false;
 	}
 
+	@Override
 	public EList<? extends EObject> getAdditionalCandidates(String identifier, EObject container)  {
 		if (container instanceof IdentifierReference) {
 			EList<EObject> resultList = new BasicEList<EObject>();
@@ -68,7 +68,8 @@ public class PackageDecider extends AbstractDecider {
 			while (parent != null && parent instanceof IdentifierReference) {
 				IdentifierReference parentCast = (IdentifierReference) parent;
 				if (parentCast.getTarget() instanceof org.emftext.language.java.containers.Package) {
-					pack = ((org.emftext.language.java.containers.Package) parentCast.getTarget()).getNamespacesAsString() + "." + pack;
+					pack = ((org.emftext.language.java.containers.Package) parentCast.getTarget())
+						.getNamespacesAsString() + "." + pack;
 					break;
 				} else {
 					pack = parentCast.getTarget().getName() + "." + pack;
@@ -78,11 +79,11 @@ public class PackageDecider extends AbstractDecider {
 			
 			if (JavaClasspath.get().isPackageRegistered(pack)) {
 				org.emftext.language.java.containers.Package p = JavaClasspath.get().getPackage(pack);
-				if (p!= null) {
+				if (p != null) {
 					resultList.add(p);
 				} else {
 					PackageReference pr = ReferencesFactory.eINSTANCE.createPackageReference();
-					for(String namespace : pack.split("\\.")) {
+					for (String namespace : pack.split("\\.")) {
 						pr.getNamespaces().add(namespace);
 					}
 					pr.getNamespaces().remove(pr.getNamespaces().size() - 1);
@@ -105,11 +106,13 @@ public class PackageDecider extends AbstractDecider {
 		return null;
 	}
 
+	@Override
 	public boolean containsCandidates(EObject container,
 			EReference containingReference) {
 		return false;
 	}
 
+	@Override
 	public boolean isPossibleTarget(String id, EObject element) {
 		if (element instanceof org.emftext.language.java.containers.Package) {
 			org.emftext.language.java.containers.Package ne = (org.emftext.language.java.containers.Package) element;

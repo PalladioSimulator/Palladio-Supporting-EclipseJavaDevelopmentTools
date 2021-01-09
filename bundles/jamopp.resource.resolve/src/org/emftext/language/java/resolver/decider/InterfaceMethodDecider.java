@@ -31,22 +31,23 @@ import org.emftext.language.java.members.Method;
  */
 public class InterfaceMethodDecider extends AbstractDecider {
 
-
-	public boolean canFindTargetsFor(EObject referenceContainer,
-			EReference containingReference) {
+	@Override
+	public boolean canFindTargetsFor(EObject referenceContainer, EReference containingReference) {
 		if (referenceContainer instanceof AnnotationAttributeSetting) {
 			return true;
 		}
 		return false;
 	}
 
+	@Override
 	public EList<? extends EObject> getAdditionalCandidates(String identifier, EObject container) {
 		if (container instanceof Classifier) {
-			return ((Classifier)container).getAllMembers((Classifier)container);
+			return ((Classifier) container).getAllMembers((Classifier) container);
 		}
 		return null;
 	}
 
+	@Override
 	public boolean isPossibleTarget(String id, EObject element) {
 		if (element instanceof InterfaceMethod) {
 			Method method = (Method) element;
@@ -58,14 +59,13 @@ public class InterfaceMethodDecider extends AbstractDecider {
 		return false;
 	}
 
+	@Override
 	public boolean containsCandidates(EObject container, EReference containingReference) {
 		if (container instanceof MemberContainer) {
 			if (MembersPackage.Literals.MEMBER_CONTAINER__MEMBERS.equals(containingReference)) {
-				return  true;
+				return true;
 			}
 		}
 		return false;
 	}
-
-
 }

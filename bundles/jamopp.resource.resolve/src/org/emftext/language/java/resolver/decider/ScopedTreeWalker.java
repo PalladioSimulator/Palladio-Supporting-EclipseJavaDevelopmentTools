@@ -22,8 +22,6 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
-import org.eclipse.emf.ecore.resource.Resource;
-import org.emftext.language.java.commons.NamedElement;
 
 /**
  * This class can be used to traverse a model tree after parsing for reference
@@ -52,22 +50,24 @@ public class ScopedTreeWalker {
 	/**
 	 * Main method.
 	 *
-	 * @param startingPoint
-	 * @param identifier
-	 * @param container
-	 * @param crossReference
+	 * @param startingPoint starting point of the search.
+	 * @param identifier name of the target to resolve.
+	 * @param container container of the target to resolve.
+	 * @param crossReference reference in the container to the target.
 	 * @return the target if one was found.
 	 */
-	public EObject walk(EObject startingPoint,
-			String identifier, EObject container,
-			EReference crossReference) {
+	public EObject walk(EObject startingPoint, String identifier, EObject container, EReference crossReference) {
 
 		if (startingPoint == null) {
 			return null;
 		}
+		
+		currentBestResult = null;
+		finished = false;
 
 		//deactivate deciders not suited here at all
-		for(IResolutionTargetDecider decider : deciderList) {
+		for (IResolutionTargetDecider decider : deciderList) {
+			decider.reset();
 			if (!decider.canFindTargetsFor(container, crossReference)) {
 				decider.deactivate();
 			}
@@ -75,32 +75,31 @@ public class ScopedTreeWalker {
 
 		doWalk(identifier, startingPoint, null, -1);
 
-		for(IResolutionTargetDecider decider : deciderList) {
+		for (IResolutionTargetDecider decider : deciderList) {
 			decider.activate();
 		}
 
 		return currentBestResult;
-
 	}
 
 	private void doWalk(String identifier, EObject startingPoint, EReference navOrigin, int posInNavOrigin) {
 
 		searchInDirectChildren(identifier, startingPoint, navOrigin, posInNavOrigin);
-		if(finished) {
+		if (finished) {
 			return;
 		}
 
 		searchInAdditionalContent(identifier, startingPoint, navOrigin, posInNavOrigin);
-		if(finished) {
+		if (finished) {
 			return;
 		}
 
-		for(IResolutionTargetDecider decider : deciderList) {
+		for (IResolutionTargetDecider decider : deciderList) {
 			if (decider.isActive()) {
 				walkDown(decider, identifier, startingPoint, navOrigin, posInNavOrigin);
 			}
 		}
-		if(finished) {
+		if (finished) {
 			return;
 		}
 
@@ -113,7 +112,7 @@ public class ScopedTreeWalker {
 			EReference navOrigin = container.eContainmentFeature();
 			int posInNavOrigin = 0;
 			if (navOrigin.isMany()) {
-				EList<?> value = (EList<?>)container.eContainer().eGet(navOrigin);
+				EList<?> value = (EList<?>) container.eContainer().eGet(navOrigin);
 				posInNavOrigin = value.indexOf(container);
 			}
 
@@ -121,20 +120,20 @@ public class ScopedTreeWalker {
 		}
 	}
 
-	private void walkDown(IResolutionTargetDecider decider, String identifier, EObject container, EReference navOrigin, int posInNavOrigin) {
+	private void walkDown(IResolutionTargetDecider decider, String identifier, EObject container, EReference navOrigin,
+			int posInNavOrigin) {
 		EClass containerClass = container.eClass();
 
-		for(EReference reference : getReferences(containerClass)) {
-			if(reference.isContainment()) {
+		for (EReference reference : getReferences(containerClass)) {
+			if (reference.isContainment()) {
 				EList<EObject> contentList = null;
 				if (decider.continueAfterReference()) {
 					contentList = getContentList(container, reference, null, -1);
-				}
-				else {
+				} else {
 					contentList = getContentList(container, reference, navOrigin, posInNavOrigin);
 				}
-				for(EObject element : contentList) {
-					if(decider.walkInto(element)) {
+				for (EObject element : contentList) {
+					if (decider.walkInto(element)) {
 						searchInDirectChildren(identifier, element, null, -1);
 						//walk further down
 						walkDown(decider, identifier, element, null, -1);
@@ -156,20 +155,20 @@ public class ScopedTreeWalker {
 
 		EClass containerClass = container.eClass();
 
-		for(IResolutionTargetDecider decider : deciderList) {
+		for (IResolutionTargetDecider decider : deciderList) {
 			if (decider.isActive()) {
-				for(EReference reference : getReferences(containerClass)) {
-					if(reference.isContainment()) {
-						if(decider.containsCandidates(container, reference)) {
+				for (EReference reference : getReferences(containerClass)) {
+					if (reference.isContainment()) {
+						if (decider.containsCandidates(container, reference)) {
 							EList<EObject> contentList = null;
 							if (decider.continueAfterReference()) {
 								contentList = getContentList(container, reference, null, -1);
+							} else {
+								contentList = getContentList(container, reference,
+										navOrigin, posInNavOrigin);
 							}
-							else {
-								contentList = getContentList(container, reference, navOrigin, posInNavOrigin);
-							}
-							for(EObject element : contentList) {
-								if(decider.isPossibleTarget(identifier, element)) {
+							for (EObject element : contentList) {
+								if (decider.isPossibleTarget(identifier, element)) {
 									currentBestResult = element;
 								}
 							}
@@ -199,36 +198,16 @@ public class ScopedTreeWalker {
 	 * @param posInNavOrigin
 	 */
 	private void searchInAdditionalContent(String identifier, EObject container, EReference navOrigin, int posInNavOrigin) {
-		for(IResolutionTargetDecider decider : deciderList) {
+		for (IResolutionTargetDecider decider : deciderList) {
 			if (decider.isActive()) {
-				EList<? extends EObject> additionalCandidates = decider.getAdditionalCandidates(identifier, container);
+				EList<? extends EObject> additionalCandidates =
+					decider.getAdditionalCandidates(identifier, container);
 
 				if (additionalCandidates != null) {
-					for(EObject element : additionalCandidates) {
-						if(decider.isPossibleTarget(identifier, element)) {
+					for (EObject element : additionalCandidates) {
+						if (decider.isPossibleTarget(identifier, element)) {
 							currentBestResult = element;
 							if (decider.isSure()) {
-								if (!currentBestResult.eIsProxy() && currentBestResult.eResource() == null) {
-									Resource containerResource = container.eResource();
-									if (containerResource != null) {
-										//for package references and the array length field: 
-										//check if there already is a suitable element in 
-										//the resource, or create one if not.
-										for (EObject content : container.eResource().getContents()) {
-											if (content.eClass().equals(currentBestResult.eClass())) {
-												if (content instanceof NamedElement) {
-													NamedElement cand = (NamedElement) content;
-													if (((NamedElement) content).getName().equals(((NamedElement)currentBestResult).getName())) {
-														currentBestResult = cand;
-													}
-												}
-											}
-										}
-										if (currentBestResult.eResource() == null) {
-//											containerResource.getContents().add(currentBestResult);
-										}
-									}
-								}
 								finished = true;
 								return;
 							}
@@ -242,17 +221,15 @@ public class ScopedTreeWalker {
 	private EList<EObject> getContentList(EObject container, EReference reference, EReference navOrigin, int posInNavOrigin) {
 		EList<EObject> contentList = new BasicEList<EObject>();
 
-		if(!reference.isMany()) {
-			EObject value = (EObject)container.eGet(reference);
+		if (!reference.isMany()) {
+			EObject value = (EObject) container.eGet(reference);
 			contentList.add(value);
-		}
-		else {
+		} else {
 			@SuppressWarnings("unchecked")
-			EList<EObject> value = (EList<EObject>)container.eGet(reference);
+			EList<EObject> value = (EList<EObject>) container.eGet(reference);
 			if (!reference.equals(navOrigin)) {
 				contentList.addAll(value);
-			}
-			else {
+			} else {
 				contentList.addAll(value.subList(0, posInNavOrigin + 1));
 			}
 		}

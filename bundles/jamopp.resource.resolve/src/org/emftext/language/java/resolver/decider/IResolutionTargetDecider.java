@@ -31,7 +31,7 @@ public interface IResolutionTargetDecider {
 	 * Determines if the decider is of any use for the given resolving procedure.
 	 *
 	 * @param referenceContainer
-	 * @param containingReference
+	 * @param crossReference
 	 * @return decision
 	 */
 	boolean canFindTargetsFor(EObject referenceContainer, EReference crossReference);
@@ -86,14 +86,29 @@ public interface IResolutionTargetDecider {
 	 *
 	 * @param identifier
 	 * @param container
-	 * @return
+	 * @return a list of additional candidates.
 	 */
-	public EList<? extends EObject> getAdditionalCandidates(String identifier, EObject container) ;
+	public EList<? extends EObject> getAdditionalCandidates(String identifier, EObject container);
 
-
+	/**
+	 * Activates this decider.
+	 */
 	void activate();
 
+	/**
+	 * Deactivates this decider.
+	 */
 	void deactivate();
 
+	/**
+	 * Indicates if this decider is active.
+	 * 
+	 * @return true if the decider is active. false otherwise.
+	 */
 	boolean isActive();
+	
+	/**
+	 * Resets the state of the decider before a complete new walk takes place.
+	 */
+	void reset();
 }

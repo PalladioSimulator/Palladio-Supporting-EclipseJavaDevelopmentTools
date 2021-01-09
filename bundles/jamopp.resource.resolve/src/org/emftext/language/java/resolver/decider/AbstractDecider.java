@@ -20,7 +20,6 @@ import org.eclipse.emf.ecore.EObject;
 
 /**
  * Default implementation of the interface that provides default behavior for some methods.
- *
  */
 public abstract class AbstractDecider implements IResolutionTargetDecider {
 
@@ -29,20 +28,26 @@ public abstract class AbstractDecider implements IResolutionTargetDecider {
 	/**
 	 * @return true by default
 	 */
+	@Override
 	public boolean continueAfterReference() {
 		return true;
 	}
 
 	/**
+	 * @param element
 	 * @return false by default
 	 */
+	@Override
 	public boolean walkInto(EObject element) {
 		return false;
 	}
 
 	/**
+	 * @param identifier
+	 * @param container
 	 * @return null (corresponds to empty list) by default
 	 */
+	@Override
 	public EList<? extends EObject> getAdditionalCandidates(String identifier, EObject container)  {
 		return null;
 	}
@@ -50,6 +55,7 @@ public abstract class AbstractDecider implements IResolutionTargetDecider {
 	/**
 	 * @return true by default
 	 */
+	@Override
 	public boolean isSure() {
 		return true;
 	}
@@ -57,6 +63,7 @@ public abstract class AbstractDecider implements IResolutionTargetDecider {
 	/**
 	 * Implements the interface specification. Do not override.
 	 */
+	@Override
 	public void activate() {
 		active = true;
 	}
@@ -64,6 +71,7 @@ public abstract class AbstractDecider implements IResolutionTargetDecider {
 	/**
 	 * Implements the interface specification. Do not override.
 	 */
+	@Override
 	public void deactivate() {
 		active = false;
 	}
@@ -71,7 +79,12 @@ public abstract class AbstractDecider implements IResolutionTargetDecider {
 	/**
 	 * Implements the interface specification. Do not override.
 	 */
+	@Override
 	public boolean isActive() {
 		return active;
+	}
+	
+	@Override
+	public void reset() {
 	}
 }

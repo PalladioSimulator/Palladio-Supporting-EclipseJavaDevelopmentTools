@@ -36,10 +36,12 @@ import org.emftext.language.java.variables.VariablesPackage;
  */
 public class LocalVariableDecider extends AbstractDecider {
 
+	@Override
 	public boolean continueAfterReference() {
 		return false;
 	}
 
+	@Override
 	public boolean isPossibleTarget(String id, EObject element) {
 		if (element instanceof LocalVariable || element instanceof AdditionalLocalVariable) {
 			NamedElement ne = (NamedElement) element;
@@ -48,6 +50,7 @@ public class LocalVariableDecider extends AbstractDecider {
 		return false;
 	}
 
+	@Override
 	public boolean containsCandidates(EObject container, EReference containingReference) {
 		if (StatementsPackage.Literals.LOCAL_VARIABLE_STATEMENT__VARIABLE.equals(containingReference)) {
 			return true;
@@ -61,6 +64,7 @@ public class LocalVariableDecider extends AbstractDecider {
 		return false;
 	}
 
+	@Override
 	public boolean walkInto(EObject element) {
 		if (element instanceof LocalVariableStatement) {
 			if (StatementsPackage.Literals.STATEMENT_CONTAINER__STATEMENT.equals(element.eContainmentFeature())) {
@@ -89,8 +93,8 @@ public class LocalVariableDecider extends AbstractDecider {
 		return false;
 	}
 
-	public boolean canFindTargetsFor(EObject referenceContainer,
-			EReference containingReference) {
+	@Override
+	public boolean canFindTargetsFor(EObject referenceContainer, EReference containingReference) {
 		if (referenceContainer instanceof MethodCall) {
 			return false;
 		}
@@ -106,5 +110,4 @@ public class LocalVariableDecider extends AbstractDecider {
 		}
 		return true;
 	}
-
 }

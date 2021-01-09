@@ -62,30 +62,36 @@ public class FieldDecider extends AbstractDecider {
 
 	private boolean insideDefiningClassifier = true;
 	private boolean isStatic = false;
+	
+	@Override
+	public void reset() {
+		insideDefiningClassifier = true;
+	}
 
+	@Override
 	public EList<? extends EObject> getAdditionalCandidates(String identifier, EObject container) {
 		EList<EObject> resultList = new BasicEList<EObject>();
 		if (container instanceof Classifier) {
-			if (container instanceof ConcreteClassifier && insideDefiningClassifier){
-				EList<Member> memberList =
-					((Classifier)container).getAllMembers(fieldReference);
-				for(Member member : memberList) {
+			if (container instanceof ConcreteClassifier && insideDefiningClassifier) {
+				EList<Member> memberList = ((Classifier) container).getAllMembers(fieldReference);
+				for (Member member : memberList) {
 					if (member instanceof Field) {
 						resultList.add(member);
-						resultList.addAll(((Field)member).getAdditionalFields());
+						resultList.addAll(((Field) member).getAdditionalFields());
 					}
 				}
 				insideDefiningClassifier = false;
-				isStatic = ((ConcreteClassifier)container).isStatic();
-			}
-			else {
-				EList<Member> memberList =
-					((Classifier)container).getAllMembers(fieldReference);
-				for(Member member : memberList) {
+				isStatic = ((ConcreteClassifier) container).isStatic();
+			} else {
+				EList<Member> memberList = ((Classifier) container).getAllMembers(fieldReference);
+				for (Member member : memberList) {
 					if (member instanceof Field) {
-						if (!isStatic || ((Field)member).isStatic()) {
+						// If isStatic is true, the defining classifier is static and objects of the defining
+						// classifier have no access to non-static fields of the classifiers in which the defining
+						// classifier is located. Nevertheless, static fields are included.
+						if (!isStatic || ((Field) member).isStatic()) {
 							resultList.add(member);
-							resultList.addAll(((Field)member).getAdditionalFields());
+							resultList.addAll(((Field) member).getAdditionalFields());
 						}
 					}
 				}
@@ -93,47 +99,45 @@ public class FieldDecider extends AbstractDecider {
 		}
 
 		if (container instanceof AnonymousClass) {
-			resultList.addAll(((AnonymousClass)container).getMembers());
+			resultList.addAll(((AnonymousClass) container).getMembers());
 
-			EList<Member> memberList =
-				((AnonymousClass)container).getAllMembers(fieldReference);
-			for(Member member : memberList) {
+			EList<Member> memberList = ((AnonymousClass) container).getAllMembers(fieldReference);
+			for (Member member : memberList) {
 				if (member instanceof Field) {
 					resultList.add(member);
-					resultList.addAll(((Field)member).getAdditionalFields());
+					resultList.addAll(((Field) member).getAdditionalFields());
 				}
 			}
 			return resultList;
 		}
 
-		if(container instanceof CompilationUnit) {
+		if (container instanceof CompilationUnit) {
 			addImports(container, resultList);
-			addArrayLengthFiled(resultList, (CompilationUnit) container);
+			addArrayLengthField(resultList, (CompilationUnit) container);
 		}
 
 		return resultList;
 	}
 
-	private void addArrayLengthFiled(EList<EObject> resultList, Commentable objectContext) {
+	private void addArrayLengthField(EList<EObject> resultList, Commentable objectContext) {
 		//Arrays have the additional member field "length"
 		//We always add the field since we do not know if we have an array or not
 		resultList.add(getArrayLengthFiled(objectContext));
 	}
 
-	private void addImports(EObject container,
-			EList<EObject> resultList) {
-		if(container instanceof ImportingElement) {
-			for(Import aImport : ((ImportingElement)container).getImports()) {
+	private void addImports(EObject container, EList<EObject> resultList) {
+		if (container instanceof ImportingElement) {
+			for (Import aImport : ((ImportingElement) container).getImports()) {
 				if (aImport instanceof StaticMemberImport) {
-					resultList.addAll(((StaticMemberImport)aImport).getStaticMembers());
-				}
-				else if (aImport instanceof StaticClassifierImport) {
+					resultList.addAll(((StaticMemberImport) aImport).getStaticMembers());
+				} else if (aImport instanceof StaticClassifierImport) {
 					resultList.addAll(aImport.getImportedMembers());
 				}
 			}
 		}
 	}
 
+	@Override
 	public boolean isPossibleTarget(String id, EObject element) {
 		if (element instanceof Field || element instanceof AdditionalField) {
 			NamedElement ne = (NamedElement) element;
@@ -142,16 +146,18 @@ public class FieldDecider extends AbstractDecider {
 		return false;
 	}
 
+	@Override
 	public boolean containsCandidates(EObject container, EReference containingReference) {
 		return false;
 	}
 
+	@Override
 	public boolean walkInto(EObject element) {
 		return false;
 	}
 
-	public boolean canFindTargetsFor(EObject referenceContainer,
-			EReference containingReference) {
+	@Override
+	public boolean canFindTargetsFor(EObject referenceContainer, EReference containingReference) {
 		if (referenceContainer instanceof MethodCall) {
 			return false;
 		}
@@ -168,5 +174,4 @@ public class FieldDecider extends AbstractDecider {
 		fieldReference = (Reference) referenceContainer;
 		return true;
 	}
-
 }

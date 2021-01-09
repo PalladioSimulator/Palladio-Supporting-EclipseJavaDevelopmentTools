@@ -40,8 +40,8 @@ public class MethodDecider extends AbstractDecider {
 
 	protected Method lastFound = null;
 
-	public boolean canFindTargetsFor(EObject referenceContainer,
-			EReference containingReference) {
+	@Override
+	public boolean canFindTargetsFor(EObject referenceContainer, EReference containingReference) {
 		if (referenceContainer instanceof MethodCall) {
 			methodCall = (MethodCall) referenceContainer;
 			return true;
@@ -51,27 +51,31 @@ public class MethodDecider extends AbstractDecider {
 
 	private boolean insideDefiningClassifier = true;
 	private boolean isStatic = false;
+	
+	@Override
+	public void reset() {
+		insideDefiningClassifier = true;
+		lastFound = null;
+	}
 
+	@Override
 	public EList<? extends EObject> getAdditionalCandidates(String identifier, EObject container) {
 		EList<EObject> resultList = new BasicEList<EObject>();
 		if (container instanceof Classifier) {
-			if (container instanceof ConcreteClassifier && insideDefiningClassifier){
-				EList<Member> memberList =
-					((Classifier)container).getAllMembers(methodCall);
-				for(Member member : memberList) {
+			if (container instanceof ConcreteClassifier && insideDefiningClassifier) {
+				EList<Member> memberList = ((Classifier) container).getAllMembers(methodCall);
+				for (Member member : memberList) {
 					if (member instanceof Method) {
 						resultList.add(member);
 					}
 				}
 				insideDefiningClassifier = false;
-				isStatic = ((ConcreteClassifier)container).isStatic();
-			}
-			else {
-				EList<Member> memberList =
-					((Classifier)container).getAllMembers(methodCall);
-				for(Member member : memberList) {
+				isStatic = ((ConcreteClassifier) container).isStatic();
+			} else {
+				EList<Member> memberList = ((Classifier) container).getAllMembers(methodCall);
+				for (Member member : memberList) {
 					if (member instanceof Method) {
-						if (!isStatic || ((Method)member).isStatic()) {
+						if (!isStatic || ((Method) member).isStatic()) {
 							resultList.add(member);
 						}
 					}
@@ -80,11 +84,10 @@ public class MethodDecider extends AbstractDecider {
 		}
 
 		if (container instanceof AnonymousClass) {
-			resultList.addAll(((AnonymousClass)container).getMembers());
+			resultList.addAll(((AnonymousClass) container).getMembers());
 
-			EList<Member> memberList =
-				((AnonymousClass)container).getAllMembers(methodCall);
-			for(Member member : memberList) {
+			EList<Member> memberList = ((AnonymousClass) container).getAllMembers(methodCall);
+			for (Member member : memberList) {
 				if (member instanceof Method) {
 					resultList.add(member);
 				}
@@ -92,32 +95,31 @@ public class MethodDecider extends AbstractDecider {
 			return resultList;
 		}
 
-		if(container instanceof CompilationUnit) {
+		if (container instanceof CompilationUnit) {
 			addImports(container, resultList);
 		}
 
 		return resultList;
 	}
 
-	private void addImports(EObject container,
-			EList<EObject> resultList) {
-		if(container instanceof ImportingElement) {
-			for(Import aImport : ((ImportingElement)container).getImports()) {
+	private void addImports(EObject container, EList<EObject> resultList) {
+		if (container instanceof ImportingElement) {
+			for (Import aImport : ((ImportingElement) container).getImports()) {
 				if (aImport instanceof StaticMemberImport) {
-					StaticMemberImport staticMemberImport = (StaticMemberImport)aImport;
+					StaticMemberImport staticMemberImport = (StaticMemberImport) aImport;
 					if (!staticMemberImport.getStaticMembers().isEmpty()) {
 						//access first element to trigger proxy resolution and avoid ConcurrentModificationException
 						staticMemberImport.getStaticMembers().get(0);
 					}
 					resultList.addAll(staticMemberImport.getStaticMembers());
-				}
-				else if (aImport instanceof StaticClassifierImport) {
+				} else if (aImport instanceof StaticClassifierImport) {
 					resultList.addAll(aImport.getImportedMembers());
 				}
 			}
 		}
 	}
 
+	@Override
 	public boolean isPossibleTarget(String id, EObject element) {
 		if (element instanceof Method) {
 			Method method = (Method) element;
@@ -127,26 +129,24 @@ public class MethodDecider extends AbstractDecider {
 						lastFound = method;
 						return true;
 					}
-				}
-				else if (!lastFound.equals(method)) {
+				} else if (!lastFound.equals(method)) {
 					if (method.isBetterMethodForCall(lastFound, methodCall)) {
 						lastFound = method;
 						return true;
 					}
 				}
-
 			}
 		}
 		return false;
 	}
 
+	@Override
 	public boolean isSure() {
 		return false;
 	}
 
+	@Override
 	public boolean containsCandidates(EObject container, EReference containingReference) {
 		return false;
 	}
-
-
 }
