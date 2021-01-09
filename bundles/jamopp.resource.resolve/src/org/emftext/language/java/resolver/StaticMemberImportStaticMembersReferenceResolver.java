@@ -15,8 +15,7 @@
  ******************************************************************************/
 package org.emftext.language.java.resolver;
 
-import java.util.Map;
-
+import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.emftext.language.java.classifiers.ConcreteClassifier;
 import org.emftext.language.java.classifiers.Enumeration;
@@ -29,28 +28,19 @@ import org.emftext.language.java.resource.java.IJavaReferenceResolveResult;
 
 public class StaticMemberImportStaticMembersReferenceResolver implements
 	IJavaReferenceResolver<StaticMemberImport, ReferenceableElement> {
-
-	JavaDefaultResolverDelegate<StaticMemberImport, ReferenceableElement> delegate =
-		new JavaDefaultResolverDelegate<StaticMemberImport, ReferenceableElement>();
-
-	public java.lang.String deResolve(ReferenceableElement element, StaticMemberImport container, org.eclipse.emf.ecore.EReference reference) {
-		if (element.eIsProxy()) {
-			return delegate.deResolve(element, container, reference);
-		}
-		return element.getName();
-	}
-
-	public void resolve(java.lang.String identifier, StaticMemberImport theImport, org.eclipse.emf.ecore.EReference reference, int position, boolean resolveFuzzy, IJavaReferenceResolveResult<ReferenceableElement> result) {
+	@Override
+	public void resolve(String identifier, StaticMemberImport theImport, EReference reference,
+			int position, boolean resolveFuzzy, IJavaReferenceResolveResult<ReferenceableElement> result) {
 		ConcreteClassifier classifier = theImport.getClassifierAtNamespaces();
 		classifier = (ConcreteClassifier) EcoreUtil.resolve(classifier, theImport.eResource());
 		if (classifier != null && !classifier.eIsProxy()) {
-			for(Member member : classifier.getAllMembers(theImport)) {
+			for (Member member : classifier.getAllMembers(theImport)) {
 				if (identifier.equals(member.getName()) && member instanceof ReferenceableElement) {
 					if (member instanceof AnnotableAndModifiable) {
 						if (member.eIsProxy()) {
 							member = (Member) EcoreUtil.resolve(member, theImport);
 						}
-						if(((AnnotableAndModifiable)member).isStatic()) {
+						if (((AnnotableAndModifiable) member).isStatic()) {
 							result.addMapping(identifier, (ReferenceableElement) member);
 						}
 					}
@@ -58,7 +48,7 @@ public class StaticMemberImportStaticMembersReferenceResolver implements
 			}
 
 			if (classifier instanceof Enumeration) {
-				for(EnumConstant enumConstant : ((Enumeration)classifier).getConstants()) {
+				for (EnumConstant enumConstant : ((Enumeration) classifier).getConstants()) {
 					if (identifier.equals(enumConstant.getName())) {
 						result.addMapping(identifier, enumConstant);
 						return;
@@ -66,8 +56,5 @@ public class StaticMemberImportStaticMembersReferenceResolver implements
 				}
 			}
 		}
-	}
-
-	public void setOptions(Map<?, ?> options) {
 	}
 }

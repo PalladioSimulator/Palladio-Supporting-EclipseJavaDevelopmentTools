@@ -15,17 +15,11 @@
  ******************************************************************************/
 package org.emftext.language.java.resolver;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.util.EcoreUtil;
-import org.emftext.language.java.classifiers.Classifier;
-import org.emftext.language.java.classifiers.ConcreteClassifier;
-import org.emftext.language.java.containers.CompilationUnit;
 import org.emftext.language.java.expressions.Expression;
 import org.emftext.language.java.expressions.NestedExpression;
 import org.emftext.language.java.instantiations.NewConstructorCall;
@@ -38,7 +32,6 @@ import org.emftext.language.java.references.ReferencesPackage;
 import org.emftext.language.java.resolver.decider.ConcreteClassifierDecider;
 import org.emftext.language.java.resolver.decider.EnumConstantDecider;
 import org.emftext.language.java.resolver.decider.FieldDecider;
-import org.emftext.language.java.resolver.decider.IResolutionTargetDecider;
 import org.emftext.language.java.resolver.decider.LocalVariableDecider;
 import org.emftext.language.java.resolver.decider.MethodDecider;
 import org.emftext.language.java.resolver.decider.PackageDecider;
@@ -48,42 +41,12 @@ import org.emftext.language.java.resolver.decider.TypeParameterDecider;
 import org.emftext.language.java.resource.java.IJavaReferenceResolveResult;
 import org.emftext.language.java.types.PrimitiveType;
 import org.emftext.language.java.util.TemporalCompositeClassifier;
-import org.emftext.language.java.util.TemporalFullNameHolder;
 
 public class ElementReferenceTargetReferenceResolver implements
 	IJavaReferenceResolver<ElementReference, ReferenceableElement> {
-
-	private JavaDefaultResolverDelegate<ElementReference, ReferenceableElement> delegate =
-		new JavaDefaultResolverDelegate<ElementReference, ReferenceableElement>();
-
-	public String deResolve(ReferenceableElement element, ElementReference container, EReference reference) {
-		if (element.eIsProxy()) {
-			return delegate.deResolve(element, container, reference);
-		}
-		
-		if (element instanceof ConcreteClassifier) {
-			ConcreteClassifier concreteClassifier = (ConcreteClassifier) element;
-
-			if (container.getPrevious() == null) {
-				String packageName = "";
-				String fullClassName = concreteClassifier.getName();
-				EObject parent = concreteClassifier.eContainer();
-				while(parent instanceof Classifier) {
-					fullClassName = ((Classifier)parent).getName() + "." + fullClassName;
-					parent = parent.eContainer();
-				}
-				if (parent instanceof CompilationUnit) {
-					EList<String> namespaces = ((CompilationUnit)parent).getNamespaces();
-					for(String s : namespaces) { packageName += s + "."; }
-				}
-				return packageName + fullClassName;
-			}
-			return TemporalFullNameHolder.getFullName(concreteClassifier);
-		}
-		return element.getName();
-	}
-
-	public void resolve(java.lang.String identifier, ElementReference container, org.eclipse.emf.ecore.EReference reference, int position, boolean resolveFuzzy, IJavaReferenceResolveResult<ReferenceableElement> result) {
+	@Override
+	public void resolve(String identifier, ElementReference container, EReference reference,
+			int position, boolean resolveFuzzy, IJavaReferenceResolveResult<ReferenceableElement> result) {
 		EObject startingPoint = null;
 		EObject alternativeStartingPoint = null;
 		EObject target = null;
@@ -92,11 +55,11 @@ public class ElementReferenceTargetReferenceResolver implements
 		if (container.eContainingFeature().equals(ReferencesPackage.Literals.REFERENCE__NEXT)) {
 			//a follow up reference: different scope
 			parentReference = (Reference) container.eContainer();
-			if (parentReference instanceof IdentifierReference &&
-					((IdentifierReference) parentReference).getTarget() instanceof org.emftext.language.java.containers.Package) {
+			if (parentReference instanceof IdentifierReference
+					&& ((IdentifierReference) parentReference).getTarget()
+						instanceof org.emftext.language.java.containers.Package) {
 				startingPoint = container;
-			}
-			else {
+			} else {
 				startingPoint = parentReference.getReferencedType();
 				
 				if (startingPoint == null) {
@@ -114,40 +77,37 @@ public class ElementReferenceTargetReferenceResolver implements
 				}
 
 				if (parentReference instanceof NestedExpression) {
-					startingPoint = (((NestedExpression)parentReference).getExpression()).getType();
+					startingPoint = (((NestedExpression) parentReference).getExpression()).getType();
 				}
 
 				//special case: anonymous class in constructor call
 				while (parentReference instanceof NestedExpression) {
-					Expression nestedExpression = ((NestedExpression)parentReference).getExpression();
+					Expression nestedExpression = ((NestedExpression) parentReference).getExpression();
 					if (nestedExpression instanceof Reference) {
 						parentReference = (Reference) nestedExpression;
-					}
-					else {
+					} else {
 						parentReference = null;
 					}
 				}
-				if (parentReference instanceof NewConstructorCall &&
-						((NewConstructorCall)parentReference).getAnonymousClass() != null) {
-					startingPoint = ((NewConstructorCall)parentReference).getAnonymousClass();
+				if (parentReference instanceof NewConstructorCall
+						&& ((NewConstructorCall) parentReference).getAnonymousClass() != null) {
+					startingPoint = ((NewConstructorCall) parentReference).getAnonymousClass();
 				}
 
 			}
-		}
-		else {
+		} else {
 			startingPoint = container;
 		}
 
 		if (startingPoint instanceof TemporalCompositeClassifier) {
-			for(EObject superType : ((TemporalCompositeClassifier)startingPoint).getSuperTypes()) {
+			for (EObject superType : ((TemporalCompositeClassifier) startingPoint).getSuperTypes()) {
 				target = searchFromStartingPoint(identifier, container, reference,
 						superType);
 				if (target != null) {
 					break;
 				}
 			}
-		}
-		else {
+		} else {
 			target = searchFromStartingPoint(identifier, container, reference,
 					startingPoint);
 		}
@@ -170,27 +130,11 @@ public class ElementReferenceTargetReferenceResolver implements
 		}
 	}
 
-	private EObject searchFromStartingPoint(String identifier,
-			ElementReference container, EReference reference,
-			EObject startingPoint) {
-		
-		List<IResolutionTargetDecider> deciderList = new ArrayList<IResolutionTargetDecider>();
-		deciderList.add(new EnumConstantDecider());
-		deciderList.add(new FieldDecider());
-		deciderList.add(new LocalVariableDecider());
-		deciderList.add(new ParameterDecider());
-		deciderList.add(new MethodDecider());
-
-		deciderList.add(new ConcreteClassifierDecider());
-		deciderList.add(new TypeParameterDecider());
-
-		deciderList.add(new PackageDecider());
-
-		ScopedTreeWalker treeWalker = new ScopedTreeWalker(deciderList);
-
-		return treeWalker.walk(startingPoint, identifier, container, reference);
-	}
-
-	public void setOptions(Map<?, ?> options) {
+	private EObject searchFromStartingPoint(String identifier, ElementReference container,
+			EReference reference, EObject startingPoint) {
+		ScopedTreeWalker resolutionWalker = new ScopedTreeWalker(List.of(new EnumConstantDecider(),
+				new FieldDecider(), new LocalVariableDecider(), new ParameterDecider(), new MethodDecider(),
+				new ConcreteClassifierDecider(), new TypeParameterDecider(), new PackageDecider()));
+		return resolutionWalker.walk(startingPoint, identifier, container, reference);
 	}
 }

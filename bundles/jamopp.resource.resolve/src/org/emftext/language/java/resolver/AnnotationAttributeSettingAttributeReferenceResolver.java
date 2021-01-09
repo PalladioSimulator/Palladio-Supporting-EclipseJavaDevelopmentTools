@@ -15,47 +15,32 @@
  ******************************************************************************/
 package org.emftext.language.java.resolver;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EReference;
 import org.emftext.language.java.annotations.AnnotationAttributeSetting;
 import org.emftext.language.java.members.InterfaceMethod;
-import org.emftext.language.java.resolver.decider.IResolutionTargetDecider;
 import org.emftext.language.java.resolver.decider.InterfaceMethodDecider;
 import org.emftext.language.java.resolver.decider.ScopedTreeWalker;
 import org.emftext.language.java.resource.java.IJavaReferenceResolveResult;
 
+/**
+ * Resolves the attribute, i. e., the interface method, of an set attribute within an annotation.
+ */
 public class AnnotationAttributeSettingAttributeReferenceResolver implements
 	IJavaReferenceResolver<AnnotationAttributeSetting, InterfaceMethod> {
-
-	JavaDefaultResolverDelegate<AnnotationAttributeSetting, InterfaceMethod> delegate =
-		new JavaDefaultResolverDelegate<AnnotationAttributeSetting, InterfaceMethod>();
-
-	public java.lang.String deResolve(InterfaceMethod element, AnnotationAttributeSetting container, org.eclipse.emf.ecore.EReference reference) {
-		if (element.eIsProxy()) {
-			return delegate.deResolve(element, container, reference);
-		}
-		return element.getName();
-	}
-
-	public void resolve(java.lang.String identifier, AnnotationAttributeSetting container, org.eclipse.emf.ecore.EReference reference, int position, boolean resolveFuzzy, IJavaReferenceResolveResult<InterfaceMethod> result) {
-		List<IResolutionTargetDecider> deciderList = new ArrayList<IResolutionTargetDecider>();
+	@Override
+	public void resolve(String identifier, AnnotationAttributeSetting container, EReference reference,
+			int position, boolean resolveFuzzy, IJavaReferenceResolveResult<InterfaceMethod> result) {
 
 		EObject startingPoint = container.getContainingAnnotationInstance().getAnnotation();
 
-		deciderList.add(new InterfaceMethodDecider());
-
-		ScopedTreeWalker treeWalker = new ScopedTreeWalker(deciderList);
-
-		EObject target = treeWalker.walk(startingPoint, identifier, container, reference);
+		ScopedTreeWalker resolutionWalker = new ScopedTreeWalker(List.of(new InterfaceMethodDecider()));
+		EObject target = resolutionWalker.walk(startingPoint, identifier, container, reference);
 
 		if (target != null) {
 			result.addMapping(identifier, (InterfaceMethod) target);
 		}
-	}
-
-	public void setOptions(Map<?, ?> options) {
 	}
 }

@@ -55,19 +55,6 @@ public class JavaReferenceResolverSwitch implements org.emftext.language.java.re
 		return getResolverChain(org.emftext.language.java.references.ReferencesPackage.eINSTANCE.getElementReference_Target(), elementReferenceTargetReferenceResolver);
 	}
 	
-	public void setOptions(java.util.Map<?, ?> options) {
-		if (options != null) {
-			this.options = new java.util.LinkedHashMap<Object, Object>();
-			this.options.putAll(options);
-		}
-		classifierImportClassifierReferenceResolver.setOptions(options);
-		staticMemberImportStaticMembersReferenceResolver.setOptions(options);
-		annotationInstanceAnnotationReferenceResolver.setOptions(options);
-		annotationAttributeSettingAttributeReferenceResolver.setOptions(options);
-		classifierReferenceTargetReferenceResolver.setOptions(options);
-		elementReferenceTargetReferenceResolver.setOptions(options);
-	}
-	
 	public void resolveFuzzy(String identifier, org.eclipse.emf.ecore.EObject container, org.eclipse.emf.ecore.EReference reference, int position, org.emftext.language.java.resource.java.IJavaReferenceResolveResult<org.eclipse.emf.ecore.EObject> result) {
 		if (container == null) {
 			return;

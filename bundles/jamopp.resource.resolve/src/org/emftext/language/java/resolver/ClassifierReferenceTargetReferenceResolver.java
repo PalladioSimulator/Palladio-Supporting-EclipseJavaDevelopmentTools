@@ -17,11 +17,8 @@
  ******************************************************************************/
 package org.emftext.language.java.resolver;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.util.EcoreUtil;
@@ -29,8 +26,6 @@ import org.emftext.language.java.JavaClasspath;
 import org.emftext.language.java.LogicalJavaURIGenerator;
 import org.emftext.language.java.classifiers.Classifier;
 import org.emftext.language.java.classifiers.ConcreteClassifier;
-import org.emftext.language.java.commons.NamedElement;
-import org.emftext.language.java.containers.CompilationUnit;
 import org.emftext.language.java.expressions.Expression;
 import org.emftext.language.java.expressions.NestedExpression;
 import org.emftext.language.java.generics.TypeParameter;
@@ -38,54 +33,18 @@ import org.emftext.language.java.instantiations.NewConstructorCall;
 import org.emftext.language.java.references.Reference;
 import org.emftext.language.java.references.ReferencesPackage;
 import org.emftext.language.java.resolver.decider.ConcreteClassifierDecider;
-import org.emftext.language.java.resolver.decider.IResolutionTargetDecider;
 import org.emftext.language.java.resolver.decider.ScopedTreeWalker;
 import org.emftext.language.java.resolver.decider.TypeParameterDecider;
 import org.emftext.language.java.resource.java.IJavaReferenceResolveResult;
 import org.emftext.language.java.types.ClassifierReference;
 import org.emftext.language.java.types.NamespaceClassifierReference;
 import org.emftext.language.java.types.TypeReference;
-import org.emftext.language.java.types.TypesFactory;
-import org.emftext.language.java.util.TemporalFullNameHolder;
 
 public class ClassifierReferenceTargetReferenceResolver implements
 	IJavaReferenceResolver<ClassifierReference, Classifier> {
-
-	JavaDefaultResolverDelegate<ClassifierReference, Classifier> delegate =
-		new JavaDefaultResolverDelegate<ClassifierReference, Classifier>();
-
-	public java.lang.String deResolve(Classifier classifier, ClassifierReference container, org.eclipse.emf.ecore.EReference reference) {
-		if (classifier.eIsProxy()) {
-			return delegate.deResolve(classifier, container, reference);
-		}
-		if (classifier instanceof ConcreteClassifier) {
-			ConcreteClassifier concreteClassifier = (ConcreteClassifier) classifier;
-			boolean namespaceMissing = true;
-			if(container.eContainer() instanceof NamespaceClassifierReference) {
-				namespaceMissing = ((NamespaceClassifierReference)container.eContainer()).getNamespaces().isEmpty();
-			}
-			if (namespaceMissing) {
-				String packageName = "";
-				String fullClassName = concreteClassifier.getName();
-				EObject parent = concreteClassifier.eContainer();
-				while(parent instanceof Classifier) {
-					fullClassName = ((Classifier)parent).getName() + "." + fullClassName;
-					parent = parent.eContainer();
-				}
-				if (parent instanceof CompilationUnit) {
-					EList<String> namespaces = ((CompilationUnit)parent).getNamespaces();
-					for(String s : namespaces) { packageName += s + "."; }
-				}
-				return packageName + fullClassName;
-			}
-			return TemporalFullNameHolder.getFullName(concreteClassifier);
-		}
-		return classifier.getName();
-	}
-
-	public void resolve(java.lang.String identifier, ClassifierReference container, org.eclipse.emf.ecore.EReference reference, int position, boolean resolveFuzzy, IJavaReferenceResolveResult<Classifier> result) {
-		List<IResolutionTargetDecider> deciderList = new ArrayList<IResolutionTargetDecider>();
-
+	@Override
+	public void resolve(String identifier, ClassifierReference container, EReference reference,
+			int position, boolean resolveFuzzy, IJavaReferenceResolveResult<Classifier> result) {
 		EObject startingPoint = null;
 		EObject target = null;
 		boolean hasNamespace = false;
@@ -93,19 +52,17 @@ public class ClassifierReferenceTargetReferenceResolver implements
 		if (container.eContainer() instanceof NamespaceClassifierReference) {
 			NamespaceClassifierReference ncr = (NamespaceClassifierReference) container.eContainer();
 			int idx = ncr.getClassifierReferences().indexOf(container);
-			if(idx > 0) {
+			if (idx > 0) {
 				hasNamespace = true;
 				startingPoint = ncr.getClassifierReferences().get(idx - 1).getTarget();
-			}
-			else {
-				if(ncr.getNamespaces().size() > 0) {
+			} else {
+				if (ncr.getNamespaces().size() > 0) {
 					hasNamespace = true;
 					EObject lastClassInNS = ConcreteClassifierDecider.resolveRelativeNamespace(
 							ncr, 0, container, container, reference);
 					if (lastClassInNS != null) {
 						startingPoint = lastClassInNS;
-					}
-					else {
+					} else {
 						//absolute class starting with package
 						target = resolveFullQualifiedTypeReferences(identifier, ncr, container, reference);
 					}
@@ -117,19 +74,19 @@ public class ClassifierReferenceTargetReferenceResolver implements
 			//new constructor call can be part of reference chain
 			if (startingPoint == null && (container.eContainer().eContainer() instanceof NewConstructorCall
 				|| container.eContainer() instanceof NewConstructorCall)) {
-				NewConstructorCall ncc = container.eContainer() instanceof NewConstructorCall ?
-					(NewConstructorCall) container.eContainer() : (NewConstructorCall) container.eContainer().eContainer();
+				NewConstructorCall ncc = container.eContainer() instanceof NewConstructorCall
+					? (NewConstructorCall) container.eContainer()
+					: (NewConstructorCall) container.eContainer().eContainer();
 				if (ncc.eContainmentFeature().equals(ReferencesPackage.Literals.REFERENCE__NEXT)) {
 					startingPoint = ((Reference) ncc.eContainer()).getReferencedType();
 
 					//a ncc can be encapsulated in nested expressions
 					EObject outerContainer = ncc.eContainer();
 					while (outerContainer instanceof NestedExpression) {
-						Expression nestedExpression = ((NestedExpression)outerContainer).getExpression();
+						Expression nestedExpression = ((NestedExpression) outerContainer).getExpression();
 						if (nestedExpression instanceof Reference) {
 							outerContainer = (Reference) nestedExpression;
-						}
-						else {
+						} else {
 							break;
 						}
 					}
@@ -138,8 +95,7 @@ public class ClassifierReferenceTargetReferenceResolver implements
 						NewConstructorCall outerNcc = (NewConstructorCall) outerContainer;
 						if (outerNcc.getAnonymousClass() != null) {
 							startingPoint = outerNcc.getAnonymousClass();
-						}
-						else {
+						} else {
 							startingPoint = outerNcc.getTypeReference().getTarget();
 						}
 					}
@@ -152,17 +108,19 @@ public class ClassifierReferenceTargetReferenceResolver implements
 
 			if (hasNamespace) {
 				if (startingPoint instanceof ConcreteClassifier) {
-					for(ConcreteClassifier cand : ((ConcreteClassifier)startingPoint).getAllInnerClassifiers()) {
+					for (ConcreteClassifier cand
+							: ((ConcreteClassifier) startingPoint).getAllInnerClassifiers()) {
 						if (identifier.equals(cand.getName())) {
 							target = cand;
 							break;
 						}
 					}
-				}
-				else if (startingPoint instanceof TypeParameter) {
-					for(TypeReference extendsClassifierReference : ((TypeParameter)startingPoint).getExtendTypes()) {
-						ConcreteClassifier extendsClassifier = (ConcreteClassifier) extendsClassifierReference.getTarget();
-						for(ConcreteClassifier cand : extendsClassifier.getAllInnerClassifiers()) {
+				} else if (startingPoint instanceof TypeParameter) {
+					for (TypeReference extendsClassifierReference
+							: ((TypeParameter) startingPoint).getExtendTypes()) {
+						ConcreteClassifier extendsClassifier
+							= (ConcreteClassifier) extendsClassifierReference.getTarget();
+						for (ConcreteClassifier cand : extendsClassifier.getAllInnerClassifiers()) {
 							if (identifier.equals(cand.getName())) {
 								target = cand;
 								break;
@@ -171,14 +129,10 @@ public class ClassifierReferenceTargetReferenceResolver implements
 					}
 				}
 
-			}
-			else {
-				deciderList.add(new ConcreteClassifierDecider());
-				deciderList.add(new TypeParameterDecider());
-
-				ScopedTreeWalker treeWalker = new ScopedTreeWalker(deciderList);
-
-				target = treeWalker.walk(startingPoint, identifier, container, reference);
+			} else {
+				ScopedTreeWalker resolutionWalker = new ScopedTreeWalker(
+						List.of(new ConcreteClassifierDecider(), new TypeParameterDecider()));
+				target = resolutionWalker.walk(startingPoint, identifier, container, reference);
 			}
 
 		}
@@ -190,11 +144,6 @@ public class ClassifierReferenceTargetReferenceResolver implements
 			if (!target.eIsProxy()) {
 				result.addMapping(identifier, (Classifier) target);
 			}
-		} else if (identifier.equals("var")) { // There is no classifier with name "var"
-												// so that it is assumed that "var" is used as a type for a local variable.
-			target = TypesFactory.eINSTANCE.createInferableType();
-			((NamedElement) target).setName("var");
-			result.addMapping(identifier, (Classifier) target);
 		}
 	}
 
@@ -202,7 +151,7 @@ public class ClassifierReferenceTargetReferenceResolver implements
 			NamespaceClassifierReference ncr, EObject container, EReference reference) {
 
 		int idx = ncr.getClassifierReferences().indexOf(container);
-		if(ncr.getNamespaces().size() > 0 && idx == 0) {
+		if (ncr.getNamespaces().size() > 0 && idx == 0) {
 			EObject target = null;
 			StringBuilder builder = new StringBuilder();
 			for (int i = ncr.getNamespaces().size() - 1; i >= -1; i--) {
@@ -229,8 +178,5 @@ public class ClassifierReferenceTargetReferenceResolver implements
 		}
 		return null;
 
-	}
-
-	public void setOptions(Map<?, ?> options) {
 	}
 }

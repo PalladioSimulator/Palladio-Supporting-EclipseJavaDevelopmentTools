@@ -16,8 +16,8 @@
 package org.emftext.language.java.resolver;
 
 import java.util.List;
-import java.util.Map;
 
+import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.emftext.language.java.JavaClasspath;
 import org.emftext.language.java.LogicalJavaURIGenerator;
@@ -27,17 +27,9 @@ import org.emftext.language.java.resource.java.IJavaReferenceResolveResult;
 
 public class ClassifierImportClassifierReferenceResolver implements
 	IJavaReferenceResolver<Import, ConcreteClassifier> {
-
-	JavaDefaultResolverDelegate<Import, ConcreteClassifier> delegate = new JavaDefaultResolverDelegate<>();
-
-	public java.lang.String deResolve(ConcreteClassifier element, Import container, org.eclipse.emf.ecore.EReference reference) {
-		if (element.eIsProxy()) {
-			return delegate.deResolve(element, container, reference);
-		}
-		return element.getName();
-	}
-
-	public void resolve(java.lang.String identifier, Import theImport, org.eclipse.emf.ecore.EReference reference, int position, boolean resolveFuzzy, IJavaReferenceResolveResult<ConcreteClassifier> result) {
+	@Override
+	public void resolve(String identifier, Import theImport, EReference reference, int position,
+			boolean resolveFuzzy, IJavaReferenceResolveResult<ConcreteClassifier> result) {
 		ConcreteClassifier importedClassifier = theImport.getImportedClassifier(identifier);
 		if (importedClassifier != null) {
 			if (importedClassifier.eIsProxy()) {
@@ -58,7 +50,8 @@ public class ClassifierImportClassifierReferenceResolver implements
 					}
 					builder.append(identifier);
 					importedClassifier = (ConcreteClassifier) EcoreUtil.resolve(
-						JavaClasspath.get().getConcreteClassifier(builder.toString()), theImport.eResource());
+						JavaClasspath.get().getConcreteClassifier(builder.toString()),
+						theImport.eResource());
 					if (!importedClassifier.eIsProxy()) {
 						break;
 					}
@@ -68,8 +61,5 @@ public class ClassifierImportClassifierReferenceResolver implements
 				result.addMapping(identifier, importedClassifier);
 			}
 		}
-	}
-
-	public void setOptions(Map<?, ?> options) {
 	}
 }
