@@ -15,9 +15,11 @@
  ******************************************************************************/
 package org.emftext.language.java.resolver.decider;
 
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.emftext.language.java.commons.NamedElement;
+import org.emftext.language.java.expressions.LambdaExpression;
 import org.emftext.language.java.parameters.Parameter;
 import org.emftext.language.java.parameters.ParametersPackage;
 import org.emftext.language.java.references.MethodCall;
@@ -33,6 +35,14 @@ public class ParameterDecider extends AbstractDecider {
 	public boolean continueAfterReference() {
 		return false;
 	}
+	
+	@Override
+	public EList<? extends EObject> getAdditionalCandidates(String identifier, EObject container) {
+		if (container instanceof LambdaExpression) {
+			return ((LambdaExpression) container).getParameters().getParameters();
+		}
+		return null;
+	}
 
 	@Override
 	public boolean isPossibleTarget(String id, EObject element) {
@@ -46,13 +56,13 @@ public class ParameterDecider extends AbstractDecider {
 	@Override
 	public boolean containsCandidates(EObject container, EReference containingReference) {
 		if (ParametersPackage.Literals.PARAMETRIZABLE__PARAMETERS.equals(containingReference)) {
-			return  true;
+			return true;
 		}
 		if (StatementsPackage.Literals.CATCH_BLOCK__PARAMETER.equals(containingReference)) {
-			return  true;
+			return true;
 		}
 		if (StatementsPackage.Literals.FOR_EACH_LOOP__NEXT.equals(containingReference)) {
-			return  true;
+			return true;
 		}
 		return false;
 	}

@@ -390,8 +390,6 @@ public class JavaSevenAndUpTest extends AbstractJaMoPPTests {
 					assertEquals(8, method.getBlock().getStatements().size());
 					LocalVariableStatement locStat = (LocalVariableStatement) method.getBlock().getStatements().get(0);
 					this.assertType(locStat.getVariable().getTypeReference(), InferableType.class);
-					TypeReference reference = ((InferableType) locStat.getVariable().getTypeReference()).getActualTargets().get(0);
-					this.assertType(reference, Int.class);
 				}
 			}
 			this.assertResolveAllProxies(root);
@@ -429,7 +427,7 @@ public class JavaSevenAndUpTest extends AbstractJaMoPPTests {
 			TypeReference typeRef = locStat.getVariable().getTypeReference();
 			this.assertType(typeRef, InferableType.class);
 			InferableType inferType = (InferableType) typeRef;
-			assertEquals(1, inferType.getActualTargets().size());
+			assertEquals(0, inferType.getActualTargets().size());
 			this.assertResolveAllProxies(root);
 			this.parseAndReprint(file);
 		} catch (Exception e) {

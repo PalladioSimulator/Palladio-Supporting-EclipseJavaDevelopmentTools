@@ -61,6 +61,9 @@ public class LocalVariableDecider extends AbstractDecider {
 		if (StatementsPackage.Literals.FOR_LOOP__INIT.equals(containingReference)) {
 			return true;
 		}
+		if (StatementsPackage.Literals.TRY_BLOCK__RESOURCES.equals(containingReference)) {
+			return true;
+		}
 		return false;
 	}
 
