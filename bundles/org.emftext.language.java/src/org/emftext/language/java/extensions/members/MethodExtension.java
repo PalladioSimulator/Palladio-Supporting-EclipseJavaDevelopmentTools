@@ -23,6 +23,7 @@ import org.emftext.language.java.classifiers.ConcreteClassifier;
 import org.emftext.language.java.expressions.Expression;
 import org.emftext.language.java.members.Method;
 import org.emftext.language.java.parameters.Parameter;
+import org.emftext.language.java.parameters.ReceiverParameter;
 import org.emftext.language.java.parameters.VariableLengthParameter;
 import org.emftext.language.java.references.MethodCall;
 import org.emftext.language.java.statements.Block;
@@ -90,6 +91,10 @@ public class MethodExtension {
 		EList<Type> argumentTypeList = methodCall.getArgumentTypes();
 		EList<Parameter> parameterList = new BasicEList<Parameter>(me.getParameters());
 		
+		if (parameterList.size() > 0 && parameterList.get(0) instanceof ReceiverParameter) {
+			parameterList.remove(0);
+		}
+		
 		EList<Type> parameterTypeList = new BasicEList<Type>();
 		for (Parameter parameter : parameterList)  {
 			// Determine types before messing with the parameters
@@ -121,10 +126,9 @@ public class MethodExtension {
 			}
 		}
 		
-		// TODO Perform early exit instead
 		if (parameterList.size() == argumentTypeList.size()) { 
 			boolean parametersMatch = true;
-			for (int i = 0; i < argumentTypeList.size(); i++) {
+			for (int i = 0; i < argumentTypeList.size() && parametersMatch; i++) {
 				Parameter parameter = parameterList.get(i);
 				Expression argument = methodCall.getArguments().get(i);
 
@@ -150,10 +154,6 @@ public class MethodExtension {
 				} else {
 					return false;
 				}
-				
-				// TODO Return if parametersMatch is 'false'? There is not need
-				// to check the other parameters because once parametersMatch is
-				// 'false' it wont become true anymore.
 			}
 			return parametersMatch; 
 		}
