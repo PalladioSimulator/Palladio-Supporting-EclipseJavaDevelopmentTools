@@ -155,10 +155,60 @@ public class MethodExtension {
 					return false;
 				}
 			}
-			return parametersMatch; 
+			return parametersMatch;
 		}
 		
 		return false;		
+	}
+	
+	/**
+	 * Checks if the signature, i. e., the parameter types and return type, of two methods match,
+	 * independently of the method and parameter names. It is possible for one method to have specialized parameter
+	 * and return types compared to the other method.
+	 * 
+	 * @param one the first method.
+	 * @param two the second method which can have specialized types.
+	 * @return true if the signatures match. false otherwise.
+	 */
+	public static boolean isSignatureMatching(Method one, Method two) {
+		EList<Parameter> parameterListOne = new BasicEList<>(one.getParameters());
+		EList<Parameter> parameterListTwo = new BasicEList<>(two.getParameters());
+		
+		if (parameterListOne.size() > 0 && parameterListOne.get(0) instanceof ReceiverParameter) {
+			parameterListOne.remove(0);
+		}
+		if (parameterListTwo.size() > 0 && parameterListTwo.get(0) instanceof ReceiverParameter) {
+			parameterListTwo.remove(0);
+		}
+
+		if (parameterListOne.size() == parameterListTwo.size()) { 
+			boolean parametersMatch = true;
+			for (int i = 0; i < parameterListOne.size() && parametersMatch; i++) {
+				Parameter paramOne = parameterListOne.get(i);
+				Parameter paramTwo = parameterListTwo.get(i);
+				
+				Type parameterType = paramOne.getTypeReference().getTarget();
+				Type argumentType = paramTwo.getTypeReference().getTarget();
+				
+				if (argumentType == null || parameterType == null) {
+					return false;
+				}
+				
+				if (!parameterType.eIsProxy() || !argumentType.eIsProxy()) {
+					parametersMatch = parametersMatch && argumentType.isSuperType(
+						paramTwo.getArrayDimension(), parameterType, paramOne);
+				} else {
+					return false;
+				}
+			}
+			
+			Type target = two.getTypeReference().getTarget();
+			parametersMatch = parametersMatch && target.isSuperType(two.getArrayDimension(),
+				one.getTypeReference().getTarget(), one);
+			
+			return parametersMatch;
+		}
+		return false;
 	}
 	
 	/**

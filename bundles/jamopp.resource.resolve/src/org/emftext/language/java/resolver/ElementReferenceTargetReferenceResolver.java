@@ -20,11 +20,18 @@ import java.util.List;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.util.EcoreUtil;
+import org.emftext.language.java.classifiers.ConcreteClassifier;
+import org.emftext.language.java.expressions.AssignmentExpression;
 import org.emftext.language.java.expressions.Expression;
+import org.emftext.language.java.expressions.ExpressionsPackage;
 import org.emftext.language.java.expressions.NestedExpression;
+import org.emftext.language.java.expressions.PrimaryExpressionReferenceExpression;
+import org.emftext.language.java.extensions.members.MethodExtension;
 import org.emftext.language.java.instantiations.NewConstructorCall;
+import org.emftext.language.java.members.Member;
+import org.emftext.language.java.members.Method;
 import org.emftext.language.java.references.ElementReference;
-import org.emftext.language.java.references.IdentifierReference;
+import org.emftext.language.java.references.MethodCall;
 import org.emftext.language.java.references.PackageReference;
 import org.emftext.language.java.references.Reference;
 import org.emftext.language.java.references.ReferenceableElement;
@@ -41,6 +48,8 @@ import org.emftext.language.java.resolver.decider.TypeParameterDecider;
 import org.emftext.language.java.resource.java.IJavaReferenceResolveResult;
 import org.emftext.language.java.types.PrimitiveType;
 import org.emftext.language.java.util.TemporalCompositeClassifier;
+import org.emftext.language.java.variables.AdditionalLocalVariable;
+import org.emftext.language.java.variables.LocalVariable;
 
 public class ElementReferenceTargetReferenceResolver implements
 	IJavaReferenceResolver<ElementReference, ReferenceableElement> {
@@ -55,47 +64,75 @@ public class ElementReferenceTargetReferenceResolver implements
 		if (container.eContainingFeature().equals(ReferencesPackage.Literals.REFERENCE__NEXT)) {
 			//a follow up reference: different scope
 			parentReference = (Reference) container.eContainer();
-			if (parentReference instanceof IdentifierReference
-					&& ((IdentifierReference) parentReference).getTarget()
-						instanceof org.emftext.language.java.containers.Package) {
-				startingPoint = container;
-			} else {
-				startingPoint = parentReference.getReferencedType();
-				
-				if (startingPoint == null) {
-					startingPoint = container;
-				}
-				
-				if (parentReference instanceof NestedExpression) {
-					alternativeStartingPoint = ((NestedExpression) parentReference
-							).getExpression().getAlternativeType();
-				}
 
-				//do not search on primitive types but their class representation
-				if (startingPoint instanceof PrimitiveType) {
-					startingPoint = ((PrimitiveType) startingPoint).wrapPrimitiveType();
-				}
+			startingPoint = parentReference.getReferencedType();
+			
+			if (parentReference instanceof NestedExpression) {
+				alternativeStartingPoint = ((NestedExpression) parentReference
+						).getExpression().getAlternativeType();
+			}
 
-				if (parentReference instanceof NestedExpression) {
-					startingPoint = (((NestedExpression) parentReference).getExpression()).getType();
-				}
+			//do not search on primitive types but their class representation
+			if (startingPoint instanceof PrimitiveType) {
+				startingPoint = ((PrimitiveType) startingPoint).wrapPrimitiveType();
+			}
 
-				//special case: anonymous class in constructor call
-				while (parentReference instanceof NestedExpression) {
-					Expression nestedExpression = ((NestedExpression) parentReference).getExpression();
-					if (nestedExpression instanceof Reference) {
-						parentReference = (Reference) nestedExpression;
-					} else {
-						parentReference = null;
+			if (parentReference instanceof NestedExpression) {
+				startingPoint = (((NestedExpression) parentReference).getExpression()).getType();
+			}
+
+			//special case: anonymous class in constructor call
+			while (parentReference instanceof NestedExpression) {
+				Expression nestedExpression = ((NestedExpression) parentReference).getExpression();
+				if (nestedExpression instanceof Reference) {
+					parentReference = (Reference) nestedExpression;
+				} else {
+					parentReference = null;
+				}
+			}
+			if (parentReference instanceof NewConstructorCall
+					&& ((NewConstructorCall) parentReference).getAnonymousClass() != null) {
+				startingPoint = ((NewConstructorCall) parentReference).getAnonymousClass();
+			}
+		}
+		
+		if (container.eContainingFeature().equals(
+				ExpressionsPackage.Literals.PRIMARY_EXPRESSION_REFERENCE_EXPRESSION__METHOD_REFERENCE)) {
+			PrimaryExpressionReferenceExpression parent = (PrimaryExpressionReferenceExpression)
+				container.eContainer();
+			ConcreteClassifier classifier = (ConcreteClassifier) parent.getChild().getType();
+			Method functionalMethod = null;
+			if (parent.eContainer() instanceof MethodCall) {
+				MethodCall call = (MethodCall) parent.eContainer();
+				functionalMethod = (Method) call.getTarget();
+			} else if (parent.eContainer() instanceof LocalVariable
+					|| parent.eContainer() instanceof AdditionalLocalVariable) {
+				LocalVariable vari;
+				if (parent.eContainer() instanceof AdditionalLocalVariable) {
+					vari = (LocalVariable) parent.eContainer().eContainer();
+				} else {
+					vari = (LocalVariable) parent.eContainer();
+				}
+				ConcreteClassifier targetType = (ConcreteClassifier) vari.getTypeReference().getTarget();
+				functionalMethod = findFunctionalMethod(targetType);
+			} else if (parent.eContainer() instanceof AssignmentExpression) {
+				AssignmentExpression assExpr = (AssignmentExpression) parent.eContainer();
+				ConcreteClassifier targetType = (ConcreteClassifier) assExpr.getChild().getType();
+				functionalMethod = findFunctionalMethod(targetType);
+			}
+			if (functionalMethod != null) {
+				for (Member mem : classifier.getAllMembers(classifier)) {
+					if (mem.getName().equals(identifier) && mem instanceof Method) {
+						if (MethodExtension.isSignatureMatching(functionalMethod, (Method) mem)) {
+							target = mem;
+							break;
+						}
 					}
 				}
-				if (parentReference instanceof NewConstructorCall
-						&& ((NewConstructorCall) parentReference).getAnonymousClass() != null) {
-					startingPoint = ((NewConstructorCall) parentReference).getAnonymousClass();
-				}
-
 			}
-		} else {
+		}
+		
+		if (startingPoint == null) {
 			startingPoint = container;
 		}
 
@@ -107,7 +144,7 @@ public class ElementReferenceTargetReferenceResolver implements
 					break;
 				}
 			}
-		} else {
+		} else if (target == null) {
 			target = searchFromStartingPoint(identifier, container, reference,
 					startingPoint);
 		}
@@ -136,5 +173,17 @@ public class ElementReferenceTargetReferenceResolver implements
 				new FieldDecider(), new LocalVariableDecider(), new ParameterDecider(), new MethodDecider(),
 				new ConcreteClassifierDecider(), new TypeParameterDecider(), new PackageDecider()));
 		return resolutionWalker.walk(startingPoint, identifier, container, reference);
+	}
+	
+	private Method findFunctionalMethod(ConcreteClassifier classifier) {
+		ConcreteClassifier objectClass = classifier.getObjectClass();
+		for (Member mem : classifier.getMembers()) {
+			if (mem instanceof Method) {
+				if (objectClass.getMembersByName(mem.getName()).isEmpty()) {
+					return (Method) mem;
+				}
+			}
+		}
+		return null;
 	}
 }
