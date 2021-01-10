@@ -216,7 +216,7 @@ class ExpressionConverterUtility {
 				lambda.parameters().forEach(obj -> {
 					VariableDeclarationFragment frag = (VariableDeclarationFragment) obj;
 					org.emftext.language.java.parameters.OrdinaryParameter nextParam = org.emftext.language.java.parameters.ParametersFactory.eINSTANCE.createOrdinaryParameter();
-					nextParam.setTypeReference(org.emftext.language.java.types.TypesFactory.eINSTANCE.createVoid());
+					nextParam.setTypeReference(org.emftext.language.java.types.TypesFactory.eINSTANCE.createInferableType());
 					nextParam.setName(frag.getName().getIdentifier());
 					LayoutInformationConverter.convertToMinimalLayoutInformation(nextParam, frag);
 					param.getParameters().add(nextParam);
