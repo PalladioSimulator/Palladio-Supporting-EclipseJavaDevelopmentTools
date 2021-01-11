@@ -46,6 +46,7 @@ import org.emftext.language.java.resolver.decider.ParameterDecider;
 import org.emftext.language.java.resolver.decider.ScopedTreeWalker;
 import org.emftext.language.java.resolver.decider.TypeParameterDecider;
 import org.emftext.language.java.resource.java.IJavaReferenceResolveResult;
+import org.emftext.language.java.statements.Return;
 import org.emftext.language.java.types.PrimitiveType;
 import org.emftext.language.java.util.TemporalCompositeClassifier;
 import org.emftext.language.java.variables.AdditionalLocalVariable;
@@ -106,7 +107,8 @@ public class ElementReferenceTargetReferenceResolver implements
 			while (!(parentContainer.eContainer() instanceof MethodCall
 					|| parentContainer.eContainer() instanceof LocalVariable
 					|| parentContainer.eContainer() instanceof AdditionalLocalVariable
-					|| parentContainer.eContainer() instanceof AssignmentExpression)) {
+					|| parentContainer.eContainer() instanceof AssignmentExpression
+					|| parentContainer.eContainer() instanceof Return)) {
 				parentContainer = parentContainer.eContainer();
 			}
 			if (parentContainer.eContainer() instanceof MethodCall) {
@@ -126,6 +128,11 @@ public class ElementReferenceTargetReferenceResolver implements
 			} else if (parentContainer.eContainer() instanceof AssignmentExpression) {
 				AssignmentExpression assExpr = (AssignmentExpression) parentContainer.eContainer();
 				targetType = (ConcreteClassifier) assExpr.getChild().getType();
+			} else if (parentContainer.eContainer() instanceof Return) {
+				while (!(parentContainer instanceof Method)) {
+					parentContainer = parentContainer.eContainer();
+				}
+				targetType = (ConcreteClassifier) ((Method) parentContainer).getTypeReference().getTarget();
 			}
 			if (targetType != null) {
 				Method functionalMethod = MethodExtension.findFunctionalMethod(targetType);
