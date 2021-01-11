@@ -22,8 +22,10 @@ import org.emftext.language.java.arrays.ArrayInstantiationBySize;
 import org.emftext.language.java.arrays.ArrayTypeable;
 import org.emftext.language.java.expressions.AdditiveExpression;
 import org.emftext.language.java.expressions.AndExpression;
+import org.emftext.language.java.expressions.ArrayConstructorReferenceExpression;
 import org.emftext.language.java.expressions.AssignmentExpression;
 import org.emftext.language.java.expressions.CastExpression;
+import org.emftext.language.java.expressions.ClassTypeConstructorReferenceExpression;
 import org.emftext.language.java.expressions.ConditionalAndExpression;
 import org.emftext.language.java.expressions.ConditionalExpression;
 import org.emftext.language.java.expressions.ConditionalOrExpression;
@@ -32,9 +34,12 @@ import org.emftext.language.java.expressions.ExclusiveOrExpression;
 import org.emftext.language.java.expressions.Expression;
 import org.emftext.language.java.expressions.InclusiveOrExpression;
 import org.emftext.language.java.expressions.InstanceOfExpression;
+import org.emftext.language.java.expressions.LambdaExpression;
+import org.emftext.language.java.expressions.MethodReferenceExpression;
 import org.emftext.language.java.expressions.MultiplicativeExpression;
 import org.emftext.language.java.expressions.NestedExpression;
 import org.emftext.language.java.expressions.PrimaryExpression;
+import org.emftext.language.java.expressions.PrimaryExpressionReferenceExpression;
 import org.emftext.language.java.expressions.RelationExpression;
 import org.emftext.language.java.expressions.ShiftExpression;
 import org.emftext.language.java.expressions.UnaryExpression;
@@ -44,9 +49,14 @@ import org.emftext.language.java.members.Field;
 import org.emftext.language.java.members.Method;
 import org.emftext.language.java.parameters.VariableLengthParameter;
 import org.emftext.language.java.references.ElementReference;
+import org.emftext.language.java.references.MethodCall;
 import org.emftext.language.java.references.Reference;
 import org.emftext.language.java.references.ReferenceableElement;
+import org.emftext.language.java.statements.Return;
 import org.emftext.language.java.types.Type;
+import org.emftext.language.java.types.TypeReference;
+import org.emftext.language.java.types.TypedElement;
+import org.emftext.language.java.util.TemporalCompositeClassifier;
 import org.emftext.language.java.variables.AdditionalLocalVariable;
 import org.emftext.language.java.variables.LocalVariable;
 
@@ -65,7 +75,7 @@ public class ExpressionExtension {
 	public static Type getAlternativeType(Expression me) {
 		return me.getOneType(true);
 	}
-	
+
 	public static Type getOneType(Expression me, boolean alternative) {
 		org.emftext.language.java.classifiers.Class stringClass = me.getStringClass();
 		
@@ -83,7 +93,17 @@ public class ExpressionExtension {
 			type = ((Literal) me).getType();
 		}
 		else if (me instanceof CastExpression) {
-			type = ((CastExpression) me).getTypeReference().getTarget();
+			CastExpression castExpr = (CastExpression) me;
+			if (castExpr.getAdditionalBounds().size() > 0) {
+				TemporalCompositeClassifier tempClass = new TemporalCompositeClassifier(me);
+				tempClass.getSuperTypes().add(castExpr.getTypeReference().getTarget());
+				for (TypeReference ref : castExpr.getAdditionalBounds()) {
+					tempClass.getSuperTypes().add(ref.getTarget());
+				}
+				type = tempClass;
+			} else {
+				type = castExpr.getTypeReference().getTarget();
+			}
 		}
 		else if (me instanceof AssignmentExpression) {
 			type = ((AssignmentExpression) me).getChild().getOneType(alternative);
@@ -132,39 +152,79 @@ public class ExpressionExtension {
 			Expression subExp = ((UnaryExpression) me).getChild();
 			
 			return subExp.getOneType(alternative);
-		}
-		else for(TreeIterator<EObject> i = me.eAllContents(); i.hasNext(); ) {
-			EObject next = i.next();
-			Type nextType = null;
-
-			if (next instanceof PrimaryExpression) {
-
-				if (next instanceof Reference) {
-					Reference ref = (Reference) next;
-					//navigate down references
-					while(ref.getNext() != null) {
-						ref = ref.getNext();
-					}
-					next = ref;
-				}
-				if (next instanceof Literal) {
-					nextType = ((Literal) next).getType();
-				}
-				else if (next instanceof CastExpression) {
-					nextType = ((CastExpression)next).getTypeReference().getTarget();
-				}
-				else {
-					nextType = ((Reference) next).getReferencedType();
-				}
-				i.prune();
-
+		} else if (me instanceof LambdaExpression) {
+			LambdaExpression lambdExpr = (LambdaExpression) me;
+			EObject container = lambdExpr;
+			while (!(container.eContainer() instanceof MethodCall
+					|| container.eContainer() instanceof AssignmentExpression
+					|| container.eContainer() instanceof LocalVariable
+					|| container.eContainer() instanceof AdditionalLocalVariable
+					|| container.eContainer() instanceof Return)) {
+				container = container.eContainer();
 			}
-			if (nextType != null) {
-				type = nextType;
-				//in the special case that this is an expression with
-				//some string included, everything is converted to string
-				if (stringClass.equals(type)) {
-					break;
+			if (container.eContainer() instanceof MethodCall) {
+				MethodCall call = (MethodCall) container.eContainer();
+				Method m = (Method) call.getTarget();
+				return m.getParameters().get(call.getArguments().indexOf(container)).getTypeReference().getTarget();
+			} else if (container.eContainer() instanceof AssignmentExpression) {
+				AssignmentExpression assExpr = (AssignmentExpression) container.eContainer();
+				return assExpr.getChild().getType();
+			} else if (container.eContainer() instanceof LocalVariable
+					|| container.eContainer() instanceof AdditionalLocalVariable) {
+				LocalVariable locVar;
+				if (container.eContainer() instanceof AdditionalLocalVariable) {
+					locVar = (LocalVariable) container.eContainer().eContainer();
+				} else {
+					locVar = (LocalVariable) container.eContainer();
+				}
+				return locVar.getTypeReference().getTarget();
+			} else if (container.eContainer() instanceof Return) {
+				while (!(container instanceof Method)) {
+					container = container.eContainer();
+				}
+				return ((Method) container).getTypeReference().getTarget();
+			}
+		} else if (me instanceof MethodReferenceExpression) {
+			if (me instanceof ClassTypeConstructorReferenceExpression || me instanceof ArrayConstructorReferenceExpression) {
+				return ((TypedElement) me).getTypeReference().getTarget();
+			} else {
+				PrimaryExpressionReferenceExpression expr = (PrimaryExpressionReferenceExpression) me;
+				return expr.getChild().getType();
+			}
+		} else {
+			for(TreeIterator<EObject> i = me.eAllContents(); i.hasNext(); ) {
+				EObject next = i.next();
+				Type nextType = null;
+	
+				if (next instanceof PrimaryExpression) {
+	
+					if (next instanceof Reference) {
+						Reference ref = (Reference) next;
+						//navigate down references
+						while(ref.getNext() != null) {
+							ref = ref.getNext();
+						}
+						next = ref;
+					}
+					if (next instanceof Literal) {
+						nextType = ((Literal) next).getType();
+					}
+					else if (next instanceof CastExpression) {
+						nextType = ((CastExpression)next).getTypeReference().getTarget();
+					}
+					else {
+						nextType = ((Reference) next).getReferencedType();
+					}
+					i.prune();
+	
+				}
+				if (nextType != null) {
+					type = nextType;
+					//in the special case that this is an expression with
+					//some string included, everything is converted to string
+					if (stringClass.equals(type)) {
+						break;
+					}
 				}
 			}
 		}

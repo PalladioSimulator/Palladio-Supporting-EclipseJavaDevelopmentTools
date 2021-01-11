@@ -15,9 +15,15 @@
  ******************************************************************************/
 package org.emftext.language.java.extensions.types;
 
+import org.eclipse.emf.ecore.EObject;
 import org.emftext.language.java.arrays.ArrayTypeable;
 import org.emftext.language.java.classifiers.Classifier;
+import org.emftext.language.java.classifiers.ConcreteClassifier;
+import org.emftext.language.java.expressions.LambdaExpression;
+import org.emftext.language.java.expressions.LambdaParameters;
+import org.emftext.language.java.extensions.members.MethodExtension;
 import org.emftext.language.java.generics.TypeParameter;
+import org.emftext.language.java.members.Method;
 import org.emftext.language.java.references.ElementReference;
 import org.emftext.language.java.references.MethodCall;
 import org.emftext.language.java.references.Reference;
@@ -29,6 +35,8 @@ import org.emftext.language.java.types.PrimitiveType;
 import org.emftext.language.java.types.Type;
 import org.emftext.language.java.types.TypeReference;
 import org.emftext.language.java.types.TypesFactory;
+import org.emftext.language.java.util.TemporalCompositeClassifier;
+import org.emftext.language.java.variables.LocalVariable;
 
 public class TypeReferenceExtension {
 
@@ -121,8 +129,37 @@ public class TypeReferenceExtension {
 		
 		else if (me instanceof InferableType) {
 			InferableType t = (InferableType) me;
-			if (t.getActualTargets().size() > 0) {
+			if (t.getActualTargets().size() == 0) {
+				Type initType = null;
+				if (t.eContainer() instanceof LocalVariable) {
+					LocalVariable loc = (LocalVariable) t.eContainer();
+					initType = loc.getInitialValue().getType();
+				} else if (t.eContainer().eContainer() instanceof LambdaParameters) {
+					LambdaExpression lambExpr = (LambdaExpression) t.eContainer().eContainer().eContainer();
+					initType = lambExpr.getType();
+					Method m = MethodExtension.findFunctionalMethod((ConcreteClassifier) initType);
+					initType = m.getParameters().get(
+						lambExpr.getParameters().getParameters().indexOf(t.eContainer()))
+							.getTypeReference().getBoundTarget(reference);
+				}
+				if (initType != null) {
+					if (initType instanceof TemporalCompositeClassifier) {
+						for (EObject obj : ((TemporalCompositeClassifier) initType).getSuperTypes()) {
+							t.getActualTargets().add(convertToTypeReference(obj, t, reference));
+						}
+					} else {
+						t.getActualTargets().add(convertToTypeReference(initType, t, reference));
+					}
+					return initType;
+				}
+			} else if (t.getActualTargets().size() == 1) {
 				return t.getActualTargets().get(0).getBoundTarget(reference);
+			} else {
+				TemporalCompositeClassifier result = new TemporalCompositeClassifier(me);
+				for (TypeReference ref : t.getActualTargets()) {
+					result.getSuperTypes().add(ref.getBoundTarget(reference));
+				}
+				return result;
 			}
 		}
 		
@@ -137,6 +174,17 @@ public class TypeReferenceExtension {
 		}
 		
 		return type;
+	}
+	
+	private static TypeReference convertToTypeReference(EObject obj, InferableType parent, Reference reference) {
+		if (obj instanceof PrimitiveType) {
+			return (PrimitiveType) obj;
+		} else if (obj instanceof Classifier) {
+			ClassifierReference ref = TypesFactory.eINSTANCE.createClassifierReference();
+			ref.setTarget((Classifier) obj);
+			return ref;
+		}
+		return null;
 	}
 	
 	/**

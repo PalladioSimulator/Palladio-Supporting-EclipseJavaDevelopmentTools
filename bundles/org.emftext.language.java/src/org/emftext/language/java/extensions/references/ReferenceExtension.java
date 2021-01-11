@@ -29,6 +29,7 @@ import org.emftext.language.java.references.ReferenceableElement;
 import org.emftext.language.java.references.ReflectiveClassReference;
 import org.emftext.language.java.references.SelfReference;
 import org.emftext.language.java.references.StringReference;
+import org.emftext.language.java.references.TextBlockReference;
 import org.emftext.language.java.types.Type;
 import org.emftext.language.java.types.TypeReference;
 import org.emftext.language.java.types.TypedElement;
@@ -130,7 +131,7 @@ public class ReferenceExtension {
 			}	
 		}
 		//Strings may also appear as reference
-		else if (me instanceof StringReference) {
+		else if (me instanceof StringReference || me instanceof TextBlockReference) {
 			return me.getStringClass();
 		}
 		else if (me instanceof NestedExpression) {
