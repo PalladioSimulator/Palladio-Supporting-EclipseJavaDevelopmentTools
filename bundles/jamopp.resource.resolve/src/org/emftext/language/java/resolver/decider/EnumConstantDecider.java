@@ -58,8 +58,13 @@ public class EnumConstantDecider extends AbstractDecider {
 	@Override
 	public EList<? extends EObject> getAdditionalCandidates(String identifier, EObject container) {
 		if (container instanceof Switch
-				&& reference.eContainmentFeature().equals(StatementsPackage.Literals.CONDITIONAL__CONDITION)
-				&& reference.eContainer() instanceof SwitchCase) {
+				&& ((reference.eContainmentFeature().equals(StatementsPackage.Literals.CONDITIONAL__CONDITION)
+					&& reference.eContainer() instanceof SwitchCase)
+				|| ((reference.eContainmentFeature().equals(
+						StatementsPackage.Literals.NORMAL_SWITCH_CASE__ADDITIONAL_CONDITIONS)
+					|| reference.eContainmentFeature().equals(
+							StatementsPackage.Literals.NORMAL_SWITCH_RULE__ADDITIONAL_CONDITIONS))
+					&& reference.eContainer() instanceof SwitchCase))) {
 			Switch aSwitch = (Switch) container;
 			Type variableType = aSwitch.getVariable().getType();
 			if (variableType instanceof Enumeration) {
