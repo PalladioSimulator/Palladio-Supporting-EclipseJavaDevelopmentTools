@@ -21,6 +21,7 @@ import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
 import org.emftext.language.java.classifiers.ConcreteClassifier;
 import org.emftext.language.java.expressions.Expression;
+import org.emftext.language.java.members.Member;
 import org.emftext.language.java.members.Method;
 import org.emftext.language.java.parameters.Parameter;
 import org.emftext.language.java.parameters.ReceiverParameter;
@@ -234,6 +235,24 @@ public class MethodExtension {
 	public static Block getBlock(Method me) {
 		if (me.getStatement() instanceof Block) {
 			return (Block) me.getStatement();
+		}
+		return null;
+	}
+	
+	/**
+	 * Finds the method of a functional interface.
+	 * 
+	 * @param classifier the functional interface.
+	 * @return the method.
+	 */
+	public static Method findFunctionalMethod(ConcreteClassifier classifier) {
+		ConcreteClassifier objectClass = classifier.getObjectClass();
+		for (Member mem : classifier.getMembers()) {
+			if (mem instanceof Method) {
+				if (objectClass.getMembersByName(mem.getName()).isEmpty()) {
+					return (Method) mem;
+				}
+			}
 		}
 		return null;
 	}

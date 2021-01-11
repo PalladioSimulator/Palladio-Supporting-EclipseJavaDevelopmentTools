@@ -101,26 +101,34 @@ public class ElementReferenceTargetReferenceResolver implements
 			PrimaryExpressionReferenceExpression parent = (PrimaryExpressionReferenceExpression)
 				container.eContainer();
 			ConcreteClassifier classifier = (ConcreteClassifier) parent.getChild().getType();
-			Method functionalMethod = null;
-			if (parent.eContainer() instanceof MethodCall) {
-				MethodCall call = (MethodCall) parent.eContainer();
-				functionalMethod = (Method) call.getTarget();
-			} else if (parent.eContainer() instanceof LocalVariable
-					|| parent.eContainer() instanceof AdditionalLocalVariable) {
-				LocalVariable vari;
-				if (parent.eContainer() instanceof AdditionalLocalVariable) {
-					vari = (LocalVariable) parent.eContainer().eContainer();
-				} else {
-					vari = (LocalVariable) parent.eContainer();
-				}
-				ConcreteClassifier targetType = (ConcreteClassifier) vari.getTypeReference().getTarget();
-				functionalMethod = findFunctionalMethod(targetType);
-			} else if (parent.eContainer() instanceof AssignmentExpression) {
-				AssignmentExpression assExpr = (AssignmentExpression) parent.eContainer();
-				ConcreteClassifier targetType = (ConcreteClassifier) assExpr.getChild().getType();
-				functionalMethod = findFunctionalMethod(targetType);
+			ConcreteClassifier targetType = null;
+			EObject parentContainer = parent;
+			while (!(parentContainer.eContainer() instanceof MethodCall
+					|| parentContainer.eContainer() instanceof LocalVariable
+					|| parentContainer.eContainer() instanceof AdditionalLocalVariable
+					|| parentContainer.eContainer() instanceof AssignmentExpression)) {
+				parentContainer = parentContainer.eContainer();
 			}
-			if (functionalMethod != null) {
+			if (parentContainer.eContainer() instanceof MethodCall) {
+				MethodCall call = (MethodCall) parentContainer.eContainer();
+				Method m = (Method) call.getTarget();
+				targetType = (ConcreteClassifier) m.getParameters().get(
+					call.getArguments().indexOf(parentContainer)).getTypeReference().getTarget();
+			} else if (parentContainer.eContainer() instanceof LocalVariable
+					|| parentContainer.eContainer() instanceof AdditionalLocalVariable) {
+				LocalVariable vari;
+				if (parentContainer.eContainer() instanceof AdditionalLocalVariable) {
+					vari = (LocalVariable) parentContainer.eContainer().eContainer();
+				} else {
+					vari = (LocalVariable) parentContainer.eContainer();
+				}
+				targetType = (ConcreteClassifier) vari.getTypeReference().getTarget();
+			} else if (parentContainer.eContainer() instanceof AssignmentExpression) {
+				AssignmentExpression assExpr = (AssignmentExpression) parentContainer.eContainer();
+				targetType = (ConcreteClassifier) assExpr.getChild().getType();
+			}
+			if (targetType != null) {
+				Method functionalMethod = MethodExtension.findFunctionalMethod(targetType);
 				for (Member mem : classifier.getAllMembers(classifier)) {
 					if (mem.getName().equals(identifier) && mem instanceof Method) {
 						if (MethodExtension.isSignatureMatching(functionalMethod, (Method) mem)) {
@@ -138,20 +146,17 @@ public class ElementReferenceTargetReferenceResolver implements
 
 		if (startingPoint instanceof TemporalCompositeClassifier) {
 			for (EObject superType : ((TemporalCompositeClassifier) startingPoint).getSuperTypes()) {
-				target = searchFromStartingPoint(identifier, container, reference,
-						superType);
+				target = searchFromStartingPoint(identifier, container, reference, superType);
 				if (target != null) {
 					break;
 				}
 			}
 		} else if (target == null) {
-			target = searchFromStartingPoint(identifier, container, reference,
-					startingPoint);
+			target = searchFromStartingPoint(identifier, container, reference, startingPoint);
 		}
 		
 		if (target == null && alternativeStartingPoint != null && !alternativeStartingPoint.equals(startingPoint)) {
-			target = searchFromStartingPoint(identifier, container, reference,
-					alternativeStartingPoint);
+			target = searchFromStartingPoint(identifier, container, reference, alternativeStartingPoint);
 		}
 
 		if (target != null) {
@@ -173,17 +178,5 @@ public class ElementReferenceTargetReferenceResolver implements
 				new FieldDecider(), new LocalVariableDecider(), new ParameterDecider(), new MethodDecider(),
 				new ConcreteClassifierDecider(), new TypeParameterDecider(), new PackageDecider()));
 		return resolutionWalker.walk(startingPoint, identifier, container, reference);
-	}
-	
-	private Method findFunctionalMethod(ConcreteClassifier classifier) {
-		ConcreteClassifier objectClass = classifier.getObjectClass();
-		for (Member mem : classifier.getMembers()) {
-			if (mem instanceof Method) {
-				if (objectClass.getMembersByName(mem.getName()).isEmpty()) {
-					return (Method) mem;
-				}
-			}
-		}
-		return null;
 	}
 }
