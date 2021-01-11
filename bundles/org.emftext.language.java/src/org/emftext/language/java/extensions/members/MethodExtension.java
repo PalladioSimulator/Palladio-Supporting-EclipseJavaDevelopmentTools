@@ -23,6 +23,7 @@ import org.emftext.language.java.classifiers.ConcreteClassifier;
 import org.emftext.language.java.expressions.Expression;
 import org.emftext.language.java.members.Member;
 import org.emftext.language.java.members.Method;
+import org.emftext.language.java.modifiers.Default;
 import org.emftext.language.java.parameters.Parameter;
 import org.emftext.language.java.parameters.ReceiverParameter;
 import org.emftext.language.java.parameters.VariableLengthParameter;
@@ -247,8 +248,8 @@ public class MethodExtension {
 	 */
 	public static Method findFunctionalMethod(ConcreteClassifier classifier) {
 		ConcreteClassifier objectClass = classifier.getObjectClass();
-		for (Member mem : classifier.getMembers()) {
-			if (mem instanceof Method) {
+		for (Member mem : classifier.getAllMembers(classifier)) {
+			if (mem instanceof Method && !((Method) mem).isStatic() && !((Method) mem).hasModifier(Default.class)) {
 				if (objectClass.getMembersByName(mem.getName()).isEmpty()) {
 					return (Method) mem;
 				}
