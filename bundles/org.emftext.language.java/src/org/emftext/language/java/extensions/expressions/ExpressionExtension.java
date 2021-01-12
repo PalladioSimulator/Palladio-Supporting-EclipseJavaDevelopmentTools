@@ -52,6 +52,7 @@ import org.emftext.language.java.references.ElementReference;
 import org.emftext.language.java.references.MethodCall;
 import org.emftext.language.java.references.Reference;
 import org.emftext.language.java.references.ReferenceableElement;
+import org.emftext.language.java.statements.Block;
 import org.emftext.language.java.statements.Return;
 import org.emftext.language.java.types.Type;
 import org.emftext.language.java.types.TypeReference;
@@ -165,6 +166,9 @@ public class ExpressionExtension {
 			if (container.eContainer() instanceof MethodCall) {
 				MethodCall call = (MethodCall) container.eContainer();
 				Method m = (Method) call.getTarget();
+				if (m.eIsProxy()) {
+					return me.getObjectClass();
+				}
 				return m.getParameters().get(call.getArguments().indexOf(container)).getTypeReference().getTarget();
 			} else if (container.eContainer() instanceof AssignmentExpression) {
 				AssignmentExpression assExpr = (AssignmentExpression) container.eContainer();
@@ -251,7 +255,7 @@ public class ExpressionExtension {
 			}
 			return value.getArrayDimension();
 		}
-		if (me instanceof InstanceOfExpression) {
+		if (me instanceof InstanceOfExpression || me instanceof MethodReferenceExpression) {
 			return 0;
 		}
 		if (me instanceof Reference) {
@@ -300,6 +304,22 @@ public class ExpressionExtension {
 			size += ((ArrayTypeable) me).getArrayDimensionsBefore().size() + ((ArrayTypeable) me).getArrayDimensionsAfter().size();
 			if (me instanceof VariableLengthParameter) {
 				size++;
+			}
+		}
+		
+		if (me instanceof LambdaExpression) {
+			LambdaExpression expr = (LambdaExpression) me;
+			if (expr.getBody() instanceof LambdaExpression) {
+				return 0;
+			} else if (expr.getBody() instanceof Expression) {
+				return getArrayDimension((Expression) expr.getBody());
+			} else {
+				Block b = (Block) expr.getBody();
+				EList<Return> returns = b.getChildrenByType(Return.class);
+				if (returns.size() == 0 || returns.get(0).getReturnValue() == null) {
+					return 0;
+				}
+				return returns.get(0).getReturnValue().getArrayDimension();
 			}
 		}
 		
