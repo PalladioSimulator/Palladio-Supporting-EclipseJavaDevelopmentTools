@@ -43,6 +43,8 @@ import org.emftext.language.java.modifiers.Modifier;
 import org.emftext.language.java.modifiers.Static;
 import org.emftext.language.java.parameters.CatchParameter;
 import org.emftext.language.java.parameters.ReceiverParameter;
+import org.emftext.language.java.references.IdentifierReference;
+import org.emftext.language.java.references.MethodCall;
 import org.emftext.language.java.statements.Block;
 import org.emftext.language.java.statements.DefaultSwitchRule;
 import org.emftext.language.java.statements.EmptyStatement;
@@ -56,8 +58,9 @@ import org.emftext.language.java.statements.SwitchCase;
 import org.emftext.language.java.statements.TryBlock;
 import org.emftext.language.java.statements.YieldStatement;
 import org.emftext.language.java.types.InferableType;
-import org.emftext.language.java.types.Int;
+import org.emftext.language.java.types.Type;
 import org.emftext.language.java.types.TypeReference;
+import org.emftext.language.java.variables.LocalVariable;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
@@ -460,6 +463,47 @@ public class JavaSevenAndUpTest extends AbstractJaMoPPTests {
 			swith = (Switch) method.getBlock().getStatements().get(1);
 			this.assertType(swith.getCases().get(0), NormalSwitchRule.class);
 			this.assertType(swith.getCases().get(2), DefaultSwitchRule.class);
+			this.assertResolveAllProxies(root);
+			this.parseAndReprint(file);
+		} catch (Exception e) {
+			fail(e.getMessage());
+		}
+	}
+	
+	@Test
+	public void testClassWithMoreReferences() {
+		try {
+			String file = "pkgJava14" + File.separator + "ClassWithMoreReferences.java";
+			JavaRoot root = this.parseResource(file);
+			this.assertType(root, CompilationUnit.class);
+			CompilationUnit cu = (CompilationUnit) root;
+			ClassMethod cm = (ClassMethod) cu.getClassifiers().get(0).getMembers().get(5);
+			assertEquals("m", cm.getName());
+			this.assertType(cm.getStatement(), Block.class);
+			Block cmBlock = (Block) cm.getStatement();
+			this.assertType(cmBlock.getStatements().get(0), LocalVariableStatement.class);
+			LocalVariableStatement locStat = (LocalVariableStatement) cmBlock.getStatements().get(0);
+			TypeReference ref = locStat.getVariable().getTypeReference();
+			this.assertType(ref, InferableType.class);
+			Type type = ref.getTarget();
+			this.assertType(type, Interface.class);
+			Interface inter = (Interface) type;
+			assertEquals("Runnable", inter.getName());
+			this.assertType(cmBlock.getStatements().get(cmBlock.getStatements().size() - 1), ExpressionStatement.class);
+			ExpressionStatement exprStat = (ExpressionStatement) cmBlock.getStatements().get(cmBlock.getStatements().size() - 1);
+			this.assertType(exprStat.getExpression(), IdentifierReference.class);
+			IdentifierReference idRef = (IdentifierReference) exprStat.getExpression();
+			assertEquals("a", idRef.getTarget().getName());
+			this.assertType(idRef.getTarget(), LocalVariable.class);
+			LocalVariable var = (LocalVariable) idRef.getTarget();
+			type = var.getTypeReference().getTarget();
+			this.assertType(type, org.emftext.language.java.classifiers.Class.class);
+			org.emftext.language.java.classifiers.Class cl = (org.emftext.language.java.classifiers.Class) type;
+			assertEquals("String", cl.getName());
+			this.assertType(idRef.getNext(), MethodCall.class);
+			MethodCall call = (MethodCall) idRef.getNext();
+			assertEquals("charAt", call.getTarget().getName());
+			assertEquals(1, call.getArguments().size());
 			this.assertResolveAllProxies(root);
 			this.parseAndReprint(file);
 		} catch (Exception e) {
