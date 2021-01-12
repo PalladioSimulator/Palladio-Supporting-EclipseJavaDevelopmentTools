@@ -277,6 +277,14 @@ class ReferenceConverterUtility {
 			}
 			LayoutInformationConverter.convertToMinimalLayoutInformation(result, arr);
 			return result;
+		} else if (t.isParameterizedType()) {
+			ParameterizedType paramType = (ParameterizedType) t;
+			org.emftext.language.java.references.IdentifierReference id = (org.emftext.language.java.references.IdentifierReference)
+				internalConvertToReference(paramType.getType());
+			paramType.typeArguments().forEach(typeArg ->
+				id.getTypeArguments().add(
+					BaseConverterUtility.convertToTypeArgument((Type) typeArg)));
+			return id;
 		}
 		return null;
 	}
