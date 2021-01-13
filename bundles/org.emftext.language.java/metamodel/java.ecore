@@ -173,6 +173,11 @@
           <details key="documentation" value=""/>
         </eAnnotations>
       </eOperations>
+      <eOperations name="getAbstractMethodOfFunctionalInterface" eType="#//members/Method">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return org.emftext.language.java.extensions.classifiers.InterfaceExtension.getAbstractMethodOfFunctionalInterface((org.emftext.language.java.classifiers.Interface) this);"/>
+        </eAnnotations>
+      </eOperations>
       <eStructuralFeatures xsi:type="ecore:EReference" name="extends" upperBound="-1"
           eType="#_Wo2ZPdz1Ed2bJ_pQViWxFg" containment="true"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="defaultExtends" upperBound="-1"
@@ -732,6 +737,18 @@
     <eClassifiers xsi:type="ecore:EClass" name="MethodReferenceExpressionChild" abstract="true"
         eSuperTypes="#//expressions/UnaryModificationExpressionChild"/>
     <eClassifiers xsi:type="ecore:EClass" name="LambdaExpression" eSuperTypes="#_Wo2YDNz1Ed2bJ_pQViWxFg">
+      <eOperations name="doesLambdaMatchFunctionalInterface" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return org.emftext.language.java.extensions.expressions.LambdaExpressionExtension.doesLambdaMatchFunctionalInterface((org.emftext.language.java.expressions.LambdaExpression) this, functionalInterface);"/>
+        </eAnnotations>
+        <eParameters name="functionalInterface" lowerBound="1" eType="#//classifiers/Interface"/>
+      </eOperations>
+      <eOperations name="getReturnType" eType="#_Wo2ZO9z1Ed2bJ_pQViWxFg">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return org.emftext.language.java.extensions.expressions.LambdaExpressionExtension.getReturnType((org.emftext.language.java.expressions.LambdaExpression) this, potentialReturnType);"/>
+        </eAnnotations>
+        <eParameters name="potentialReturnType" eType="#_Wo2ZO9z1Ed2bJ_pQViWxFg"/>
+      </eOperations>
       <eStructuralFeatures xsi:type="ecore:EReference" name="parameters" lowerBound="1"
           eType="#//expressions/LambdaParameters" containment="true"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="body" lowerBound="1"
@@ -1070,6 +1087,12 @@
         <eGenericType eClassifier="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EEList">
           <eTypeArguments eClassifier="#_Wo2YzNz1Ed2bJ_pQViWxFg"/>
         </eGenericType>
+      </eOperations>
+      <eOperations name="isSignatureMatching" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return org.emftext.language.java.extensions.members.MethodExtension.isSignatureMatching((org.emftext.language.java.members.Method) this, otherMethod);"/>
+        </eAnnotations>
+        <eParameters name="otherMethod" lowerBound="1" eType="#//members/Method"/>
       </eOperations>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="InterfaceMethod" eSuperTypes="#//members/Method">

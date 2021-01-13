@@ -18,10 +18,9 @@ package org.emftext.language.java.extensions.types;
 import org.eclipse.emf.ecore.EObject;
 import org.emftext.language.java.arrays.ArrayTypeable;
 import org.emftext.language.java.classifiers.Classifier;
-import org.emftext.language.java.classifiers.ConcreteClassifier;
+import org.emftext.language.java.classifiers.Interface;
 import org.emftext.language.java.expressions.LambdaExpression;
 import org.emftext.language.java.expressions.LambdaParameters;
-import org.emftext.language.java.extensions.members.MethodExtension;
 import org.emftext.language.java.generics.TypeParameter;
 import org.emftext.language.java.members.Method;
 import org.emftext.language.java.references.ElementReference;
@@ -137,7 +136,7 @@ public class TypeReferenceExtension {
 				} else if (t.eContainer().eContainer() instanceof LambdaParameters) {
 					LambdaExpression lambExpr = (LambdaExpression) t.eContainer().eContainer().eContainer();
 					initType = lambExpr.getType();
-					Method m = MethodExtension.findFunctionalMethod((ConcreteClassifier) initType);
+					Method m = ((Interface) initType).getAbstractMethodOfFunctionalInterface();
 					initType = m.getParameters().get(
 						lambExpr.getParameters().getParameters().indexOf(t.eContainer()))
 							.getTypeReference().getBoundTarget(reference);

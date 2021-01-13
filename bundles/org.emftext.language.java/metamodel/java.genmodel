@@ -109,6 +109,8 @@
         <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference java.ecore#//classifiers/Interface/defaultExtends"/>
         <genOperations ecoreOperation="java.ecore#//classifiers/Interface/getAllSuperClassifiers"
             body="return org.emftext.language.java.extensions.classifiers.InterfaceExtension.getAllSuperClassifiers((org.emftext.language.java.classifiers.Interface) this);"/>
+        <genOperations ecoreOperation="java.ecore#//classifiers/Interface/getAbstractMethodOfFunctionalInterface"
+            body="return org.emftext.language.java.extensions.classifiers.InterfaceExtension.getAbstractMethodOfFunctionalInterface((org.emftext.language.java.classifiers.Interface) this);"/>
       </genClasses>
       <genClasses ecoreClass="java.ecore#//classifiers/Enumeration">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//classifiers/Enumeration/constants"/>
@@ -388,6 +390,14 @@
       <genClasses ecoreClass="java.ecore#//expressions/LambdaExpression">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//expressions/LambdaExpression/parameters"/>
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//expressions/LambdaExpression/body"/>
+        <genOperations ecoreOperation="java.ecore#//expressions/LambdaExpression/doesLambdaMatchFunctionalInterface"
+            body="return org.emftext.language.java.extensions.expressions.LambdaExpressionExtension.doesLambdaMatchFunctionalInterface((org.emftext.language.java.expressions.LambdaExpression) this, functionalInterface);">
+          <genParameters ecoreParameter="java.ecore#//expressions/LambdaExpression/doesLambdaMatchFunctionalInterface/functionalInterface"/>
+        </genOperations>
+        <genOperations ecoreOperation="java.ecore#//expressions/LambdaExpression/getReturnType"
+            body="return org.emftext.language.java.extensions.expressions.LambdaExpressionExtension.getReturnType((org.emftext.language.java.expressions.LambdaExpression) this, potentialReturnType);">
+          <genParameters ecoreParameter="java.ecore#//expressions/LambdaExpression/getReturnType/potentialReturnType"/>
+        </genOperations>
       </genClasses>
       <genClasses image="false" ecoreClass="java.ecore#//expressions/LambdaBody"/>
       <genClasses image="false" ecoreClass="java.ecore#//expressions/LambdaParameters"/>
@@ -600,6 +610,10 @@
         <genOperations ecoreOperation="java.ecore#//members/Method/getBlock" body="return org.emftext.language.java.extensions.members.MethodExtension.getBlock((org.emftext.language.java.members.Method) this);"/>
         <genOperations ecoreOperation="java.ecore#//members/Method/getStatements"
             body="return org.emftext.language.java.extensions.members.MethodExtension.getStatements((org.emftext.language.java.members.Method) this);"/>
+        <genOperations ecoreOperation="java.ecore#//members/Method/isSignatureMatching"
+            body="return org.emftext.language.java.extensions.members.MethodExtension.isSignatureMatching((org.emftext.language.java.members.Method) this, otherMethod);">
+          <genParameters ecoreParameter="java.ecore#//members/Method/isSignatureMatching/otherMethod"/>
+        </genOperations>
       </genClasses>
       <genClasses ecoreClass="java.ecore#//members/InterfaceMethod">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//members/InterfaceMethod/defaultValue"/>

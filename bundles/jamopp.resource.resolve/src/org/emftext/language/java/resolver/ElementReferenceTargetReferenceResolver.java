@@ -21,12 +21,12 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.emftext.language.java.classifiers.ConcreteClassifier;
+import org.emftext.language.java.classifiers.Interface;
 import org.emftext.language.java.expressions.AssignmentExpression;
 import org.emftext.language.java.expressions.Expression;
 import org.emftext.language.java.expressions.ExpressionsPackage;
 import org.emftext.language.java.expressions.NestedExpression;
 import org.emftext.language.java.expressions.PrimaryExpressionReferenceExpression;
-import org.emftext.language.java.extensions.members.MethodExtension;
 import org.emftext.language.java.instantiations.NewConstructorCall;
 import org.emftext.language.java.members.Member;
 import org.emftext.language.java.members.Method;
@@ -135,10 +135,10 @@ public class ElementReferenceTargetReferenceResolver implements
 				targetType = (ConcreteClassifier) ((Method) parentContainer).getTypeReference().getTarget();
 			}
 			if (targetType != null) {
-				Method functionalMethod = MethodExtension.findFunctionalMethod(targetType);
+				Method functionalMethod = ((Interface) targetType).getAbstractMethodOfFunctionalInterface();
 				for (Member mem : classifier.getAllMembers(classifier)) {
 					if (mem.getName().equals(identifier) && mem instanceof Method) {
-						if (MethodExtension.isSignatureMatching(functionalMethod, (Method) mem)) {
+						if (functionalMethod.isSignatureMatching((Method) mem)) {
 							target = mem;
 							break;
 						}
