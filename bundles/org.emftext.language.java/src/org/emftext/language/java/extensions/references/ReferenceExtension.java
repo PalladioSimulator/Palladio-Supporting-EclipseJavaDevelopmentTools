@@ -145,4 +145,8 @@ public class ReferenceExtension {
 		}
 		return type;
 	}
+	
+	public static TypeReference getReferencedTypeReference(Reference me) {
+		return null;
+	}
 }

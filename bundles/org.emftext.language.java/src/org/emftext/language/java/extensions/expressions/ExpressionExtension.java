@@ -237,6 +237,10 @@ public class ExpressionExtension {
 		return type;
 	}
 	
+	public static TypeReference getOneTypeReference(Expression me, boolean alternative) {
+		return null;
+	}
+	
 	public static long getArrayDimension(Expression me) {
 		long size = 0;
 		ArrayTypeable arrayType = null;

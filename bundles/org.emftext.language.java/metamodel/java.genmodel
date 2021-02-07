@@ -285,6 +285,10 @@
         </genOperations>
         <genOperations ecoreOperation="java.ecore#//expressions/Expression/getArrayDimension"
             body="return org.emftext.language.java.extensions.expressions.ExpressionExtension.getArrayDimension((org.emftext.language.java.expressions.Expression) this);"/>
+        <genOperations ecoreOperation="java.ecore#//expressions/Expression/getOneTypeReference"
+            body="return org.emftext.language.java.extensions.expressions.ExpressionExtension.getOneTypeReference((org.emftext.language.java.expressions.Expression) this, alternative);">
+          <genParameters ecoreParameter="java.ecore#//expressions/Expression/getOneTypeReference/alternative"/>
+        </genOperations>
       </genClasses>
       <genClasses ecoreClass="java.ecore#//expressions/AssignmentExpression">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//expressions/AssignmentExpression/child"/>
@@ -753,6 +757,8 @@
             body="return org.emftext.language.java.extensions.references.ReferenceExtension.getReferencedType((org.emftext.language.java.references.Reference) this);"/>
         <genOperations ecoreOperation="java.ecore#//references/Reference/getPrevious"
             body="return org.emftext.language.java.extensions.references.ReferenceExtension.getPrevious((org.emftext.language.java.references.Reference) this);"/>
+        <genOperations ecoreOperation="java.ecore#//references/Reference/getReferencedTypeReference"
+            body="return org.emftext.language.java.extensions.references.ReferenceExtension.getReferencedTypeReference((org.emftext.language.java.references.Reference) this);"/>
       </genClasses>
       <genClasses image="false" ecoreClass="java.ecore#//references/Argumentable">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//references/Argumentable/arguments"/>
