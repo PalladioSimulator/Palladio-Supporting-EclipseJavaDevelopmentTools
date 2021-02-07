@@ -31,6 +31,7 @@ import org.emftext.language.java.generics.QualifiedTypeArgument;
 import org.emftext.language.java.generics.SuperTypeArgument;
 import org.emftext.language.java.generics.TypeArgument;
 import org.emftext.language.java.generics.TypeParameter;
+import org.emftext.language.java.generics.TypeParametrizable;
 import org.emftext.language.java.generics.UnknownTypeArgument;
 import org.emftext.language.java.members.Method;
 import org.emftext.language.java.references.ElementReference;
@@ -157,7 +158,8 @@ public class TypeReferenceExtension {
 					return ref.getTarget();
 				} else if (t.eContainer().eContainer() instanceof LambdaParameters) {
 					LambdaExpression lambExpr = (LambdaExpression) t.eContainer().eContainer().eContainer();
-					initType = lambExpr.getType();
+					TypeReference initTypeRef = lambExpr.getOneTypeReference(false);
+					initType = initTypeRef.getTarget();
 					if (!(initType instanceof Interface)) {
 						return initType;
 					}
@@ -173,7 +175,23 @@ public class TypeReferenceExtension {
 					} else {
 						initType = m.getParameters().get(
 							lambExpr.getParameters().getParameters().indexOf(t.eContainer()))
-								.getTypeReference().getBoundTarget(reference);
+								.getTypeReference().getBoundTarget(null);
+					}
+					if (initType instanceof TypeParameter) {
+						if (initType.eContainer().equals(initTypeRef.getTarget())) {
+							int index = ((TypeParametrizable) initTypeRef.getTarget()).getTypeParameters().indexOf(initType);
+							initTypeRef = getTypeReferenceOfTypeArgument(initTypeRef, index);
+							if (initTypeRef != null) {
+								initTypeRef = clone(initTypeRef);
+								if (initTypeRef instanceof TemporalCompositeTypeReference) {
+									TemporalCompositeTypeReference tempRef = (TemporalCompositeTypeReference) initTypeRef;
+									t.getActualTargets().addAll(tempRef.getTypeReferences());
+									return tempRef.asType();
+								}
+								t.getActualTargets().add(clone(initTypeRef));
+								return initTypeRef.getTarget();
+							}
+						}
 					}
 				}
 				if (initType != null) {
@@ -208,6 +226,25 @@ public class TypeReferenceExtension {
 		}
 		
 		return type;
+	}
+	
+	private static TypeReference getTypeReferenceOfTypeArgument(TypeReference ref, int index) {
+		ClassifierReference actualRef = null;
+		if (ref instanceof NamespaceClassifierReference) {
+			NamespaceClassifierReference ncr = (NamespaceClassifierReference) ref;
+			actualRef = ncr.getClassifierReferences().get(ncr.getClassifierReferences().size() - 1);
+		} else if (ref instanceof ClassifierReference) {
+			actualRef = (ClassifierReference) ref;
+		}
+		TypeArgument arg = actualRef.getTypeArguments().get(index);
+		if (arg instanceof QualifiedTypeArgument) {
+			return ((QualifiedTypeArgument) arg).getTypeReference();
+		} else if (arg instanceof SuperTypeArgument) {
+			return ((SuperTypeArgument) arg).getSuperType();
+		} else if (arg instanceof ExtendsTypeArgument) {
+			return ((ExtendsTypeArgument) arg).getExtendType();
+		}
+		return null;
 	}
 	
 	public static TypeReference convertToTypeReference(EObject obj) {

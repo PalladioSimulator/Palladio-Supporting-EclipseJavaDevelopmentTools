@@ -151,7 +151,8 @@ public class ExpressionExtension {
 					|| container.eContainer() instanceof AssignmentExpression
 					|| container.eContainer() instanceof LocalVariable
 					|| container.eContainer() instanceof AdditionalLocalVariable
-					|| container.eContainer() instanceof Return)) {
+					|| container.eContainer() instanceof Return
+					|| container.eContainer() instanceof CastExpression)) {
 				container = container.eContainer();
 			}
 			if (container.eContainer() instanceof MethodCall) {
@@ -178,6 +179,8 @@ public class ExpressionExtension {
 					container = container.eContainer();
 				}
 				return ((Method) container).getTypeReference();
+			} else if (container.eContainer() instanceof CastExpression) {
+				return ((CastExpression) container.eContainer()).getOneTypeReference(alternative);
 			}
 		} else if (me instanceof MethodReferenceExpression) {
 			if (me instanceof ClassTypeConstructorReferenceExpression || me instanceof ArrayConstructorReferenceExpression) {
