@@ -19,6 +19,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.emftext.language.java.arrays.ArrayTypeable;
 import org.emftext.language.java.classifiers.Classifier;
 import org.emftext.language.java.classifiers.Interface;
+import org.emftext.language.java.expressions.Expression;
 import org.emftext.language.java.expressions.LambdaExpression;
 import org.emftext.language.java.expressions.LambdaParameters;
 import org.emftext.language.java.generics.TypeParameter;
@@ -136,10 +137,23 @@ public class TypeReferenceExtension {
 				} else if (t.eContainer().eContainer() instanceof LambdaParameters) {
 					LambdaExpression lambExpr = (LambdaExpression) t.eContainer().eContainer().eContainer();
 					initType = lambExpr.getType();
+					if (!(initType instanceof Interface)) {
+						return initType;
+					}
 					Method m = ((Interface) initType).getAbstractMethodOfFunctionalInterface();
-					initType = m.getParameters().get(
-						lambExpr.getParameters().getParameters().indexOf(t.eContainer()))
-							.getTypeReference().getBoundTarget(reference);
+					EObject container = lambExpr.eContainer();
+					while (container instanceof Expression && !(container instanceof MethodCall)) {
+						container = container.eContainer();
+					}
+					if (container instanceof MethodCall) {
+						initType = m.getParameters().get(
+								lambExpr.getParameters().getParameters().indexOf(t.eContainer()))
+									.getTypeReference().getBoundTarget((Reference) container);
+					} else {
+						initType = m.getParameters().get(
+							lambExpr.getParameters().getParameters().indexOf(t.eContainer()))
+								.getTypeReference().getBoundTarget(reference);
+					}
 				}
 				if (initType != null) {
 					if (initType instanceof TemporalCompositeClassifier) {

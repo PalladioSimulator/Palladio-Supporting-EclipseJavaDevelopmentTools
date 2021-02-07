@@ -58,6 +58,7 @@ import org.emftext.language.java.types.Type;
 import org.emftext.language.java.types.TypeReference;
 import org.emftext.language.java.types.TypedElement;
 import org.emftext.language.java.util.TemporalCompositeClassifier;
+import org.emftext.language.java.util.TemporalUnknownLambdaExpressionType;
 import org.emftext.language.java.variables.AdditionalLocalVariable;
 import org.emftext.language.java.variables.LocalVariable;
 
@@ -167,7 +168,7 @@ public class ExpressionExtension {
 				MethodCall call = (MethodCall) container.eContainer();
 				Method m = (Method) call.getTarget();
 				if (m.eIsProxy()) {
-					return me.getObjectClass();
+					return new TemporalUnknownLambdaExpressionType(lambdExpr);
 				}
 				return m.getParameters().get(call.getArguments().indexOf(container)).getTypeReference().getTarget();
 			} else if (container.eContainer() instanceof AssignmentExpression) {

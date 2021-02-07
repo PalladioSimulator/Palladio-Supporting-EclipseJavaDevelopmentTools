@@ -22,7 +22,6 @@ import org.eclipse.emf.common.util.EList;
 import org.emftext.language.java.classifiers.ConcreteClassifier;
 import org.emftext.language.java.classifiers.Interface;
 import org.emftext.language.java.expressions.Expression;
-import org.emftext.language.java.expressions.LambdaExpression;
 import org.emftext.language.java.members.Method;
 import org.emftext.language.java.parameters.Parameter;
 import org.emftext.language.java.parameters.ReceiverParameter;
@@ -32,6 +31,7 @@ import org.emftext.language.java.statements.Block;
 import org.emftext.language.java.statements.Statement;
 import org.emftext.language.java.types.Type;
 import org.emftext.language.java.types.TypeReference;
+import org.emftext.language.java.util.TemporalUnknownLambdaExpressionType;
 
 public class MethodExtension {
 	
@@ -142,12 +142,12 @@ public class MethodExtension {
 				}
 				
 				if (!parameterType.eIsProxy() || !argumentType.eIsProxy()) {
-					if (argument instanceof LambdaExpression) {
+					if (argumentType instanceof TemporalUnknownLambdaExpressionType) {
 						if (!(parameterType instanceof Interface)) {
 							return false;
 						}
 						parametersMatch = parametersMatch
-								&& ((LambdaExpression) argument)
+								&& ((TemporalUnknownLambdaExpressionType) argumentType).getLambdaExpression()
 									.doesLambdaMatchFunctionalInterface((Interface) parameterType);
 						continue;
 					}
@@ -169,7 +169,7 @@ public class MethodExtension {
 			return parametersMatch;
 		}
 		
-		return false;		
+		return false;
 	}
 	
 	/**
