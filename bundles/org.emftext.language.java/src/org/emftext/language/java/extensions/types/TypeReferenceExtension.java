@@ -158,10 +158,10 @@ public class TypeReferenceExtension {
 				if (initType != null) {
 					if (initType instanceof TemporalCompositeClassifier) {
 						for (EObject obj : ((TemporalCompositeClassifier) initType).getSuperTypes()) {
-							t.getActualTargets().add(convertToTypeReference(obj, t, reference));
+							t.getActualTargets().add(convertToTypeReference(obj));
 						}
 					} else {
-						t.getActualTargets().add(convertToTypeReference(initType, t, reference));
+						t.getActualTargets().add(convertToTypeReference(initType));
 					}
 					return initType;
 				}
@@ -189,7 +189,7 @@ public class TypeReferenceExtension {
 		return type;
 	}
 	
-	private static TypeReference convertToTypeReference(EObject obj, InferableType parent, Reference reference) {
+	public static TypeReference convertToTypeReference(EObject obj) {
 		if (obj instanceof PrimitiveType) {
 			return (PrimitiveType) obj;
 		} else if (obj instanceof Classifier) {

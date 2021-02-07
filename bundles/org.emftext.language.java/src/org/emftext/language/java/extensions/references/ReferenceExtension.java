@@ -18,6 +18,7 @@ package org.emftext.language.java.extensions.references;
 import org.emftext.language.java.classifiers.AnonymousClass;
 import org.emftext.language.java.classifiers.Enumeration;
 import org.emftext.language.java.expressions.NestedExpression;
+import org.emftext.language.java.extensions.types.TypeReferenceExtension;
 import org.emftext.language.java.literals.Literal;
 import org.emftext.language.java.literals.Super;
 import org.emftext.language.java.members.AdditionalField;
@@ -33,6 +34,8 @@ import org.emftext.language.java.references.TextBlockReference;
 import org.emftext.language.java.types.Type;
 import org.emftext.language.java.types.TypeReference;
 import org.emftext.language.java.types.TypedElement;
+import org.emftext.language.java.util.TemporalCompositeClassifier;
+import org.emftext.language.java.util.TemporalCompositeTypeReference;
 import org.emftext.language.java.variables.AdditionalLocalVariable;
 
 public class ReferenceExtension {
@@ -55,53 +58,61 @@ public class ReferenceExtension {
 	 * @return the determined type
 	 */
 	public static Type getReferencedType(Reference me) {
+		TypeReference ref = getReferencedTypeReference(me);
+		if (ref instanceof TemporalCompositeTypeReference) {
+			TemporalCompositeClassifier res = new TemporalCompositeClassifier(me);
+			for (TypeReference r : ((TemporalCompositeTypeReference) ref).getTypeReferences()) {
+				res.getSuperTypes().add(r.getBoundTarget(me));
+			}
+			return res;
+		}
+		return ref == null ? null : ref.getBoundTarget(me);
+	}
+	
+	public static TypeReference getReferencedTypeReference(Reference me) {
 		if (me instanceof Literal) {
-			return ((Literal) me).getType();
+			return TypeReferenceExtension.convertToTypeReference(((Literal) me).getType());
 		}
 
-		Type type = null;
+		TypeReference type = null;
 
-		// Referenced element points to a type
 		if (me instanceof TypedElement) {
-			TypeReference typeRef = ((TypedElement) me).getTypeReference();
-			type = typeRef.getBoundTarget(me);
-		}
-		// Element points to this or super
-		else if (me instanceof SelfReference) {
+			// Referenced element points to a type.
+			type = ((TypedElement) me).getTypeReference();
+		} else if (me instanceof SelfReference) {
+			// Element points to this or super.
+			TypeReference thisClassRef = null;
 			Type thisClass = null;
 			if (me.getPrevious() != null) {
-				thisClass = me.getPrevious().getReferencedType();
-			}
-			else {
+				thisClassRef = me.getPrevious().getReferencedTypeReference();
+				thisClass = thisClassRef.getTarget();
+			} else {
 				AnonymousClass anonymousContainer = me.getContainingAnonymousClass();
 				if (anonymousContainer != null) {
 					thisClass = anonymousContainer;
-				}
-				else {
-					thisClass = me.getContainingConcreteClassifier();	
+				} else {
+					thisClass = me.getContainingConcreteClassifier();
 				}
 			}
 			
-			// Find super class if "self" is "super"
+			// Find super class if "self" is "super".
 			if (((SelfReference) me).getSelf() instanceof Super) {
 				if (thisClass instanceof org.emftext.language.java.classifiers.Class) {
-					return ((org.emftext.language.java.classifiers.Class) thisClass).getSuperClass();
+					return TypeReferenceExtension.convertToTypeReference(
+						((org.emftext.language.java.classifiers.Class) thisClass).getSuperClass());
 				}
 				if (thisClass instanceof AnonymousClass) {
-					return ((AnonymousClass)thisClass).getSuperClassifier();
+					return TypeReferenceExtension.convertToTypeReference(((AnonymousClass)thisClass).getSuperClassifier());
 				}
 			}
 			
-			return thisClass;
-		}
-		// Element points to the object's class object
-		else if (me instanceof ReflectiveClassReference) {
-			return me.getClassClass();
-		}
-		// Referenced element points to an element with a type
-		else if (me instanceof ElementReference) {
-			ReferenceableElement target = 
-				(ReferenceableElement) ((ElementReference) me).getTarget();
+			type = thisClassRef != null ? thisClassRef : TypeReferenceExtension.convertToTypeReference(thisClass);
+		} else if (me instanceof ReflectiveClassReference) {
+			// Element points to the object's class object.
+			return TypeReferenceExtension.convertToTypeReference(me.getClassClass());
+		} else if (me instanceof ElementReference) {
+			// Referenced element points to an element with a type.
+			ReferenceableElement target = (ReferenceableElement) ((ElementReference) me).getTarget();
 			
 			if (target == null) {
 				return null;
@@ -118,35 +129,23 @@ public class ReferenceExtension {
 				target = (ReferenceableElement) target.eContainer();
 			}
 			if (target instanceof TypedElement) {
-				TypeReference typeRef = ((TypedElement) target).getTypeReference();
-				if (typeRef != null) {
-					type = typeRef.getBoundTarget(me);
-				}
+				type = ((TypedElement) target).getTypeReference();
+			} else if (target instanceof Type /*e.g. Annotation*/) {
+				return TypeReferenceExtension.convertToTypeReference((Type) target);
+			} else if (target instanceof EnumConstant) {
+				type = TypeReferenceExtension.convertToTypeReference((Enumeration) target.eContainer());
 			}
-			else if (target instanceof Type /*e.g. Annotation*/ ) {
-				return (Type) target;
-			}
-			else if (target instanceof EnumConstant) {
-				type = (Enumeration)target.eContainer();
-			}	
 		}
-		//Strings may also appear as reference
+		// Strings may also appear as reference.
 		else if (me instanceof StringReference || me instanceof TextBlockReference) {
-			return me.getStringClass();
-		}
-		else if (me instanceof NestedExpression) {
-			type = ((NestedExpression) me).getExpression().getType();
-		}
-		else if (me instanceof PrimitiveTypeReference) {
+			return TypeReferenceExtension.convertToTypeReference(me.getStringClass());
+		} else if (me instanceof NestedExpression) {
+			type = ((NestedExpression) me).getExpression().getOneTypeReference(false);
+		} else if (me instanceof PrimitiveTypeReference) {
 			type = ((PrimitiveTypeReference) me).getPrimitiveType();
-		}
-		else {
-			assert(false);
+		} else {
+			assert false;
 		}
 		return type;
-	}
-	
-	public static TypeReference getReferencedTypeReference(Reference me) {
-		return null;
 	}
 }

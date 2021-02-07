@@ -43,6 +43,7 @@ import org.emftext.language.java.expressions.PrimaryExpressionReferenceExpressio
 import org.emftext.language.java.expressions.RelationExpression;
 import org.emftext.language.java.expressions.ShiftExpression;
 import org.emftext.language.java.expressions.UnaryExpression;
+import org.emftext.language.java.extensions.types.TypeReferenceExtension;
 import org.emftext.language.java.literals.Literal;
 import org.emftext.language.java.members.AdditionalField;
 import org.emftext.language.java.members.Field;
@@ -58,6 +59,7 @@ import org.emftext.language.java.types.Type;
 import org.emftext.language.java.types.TypeReference;
 import org.emftext.language.java.types.TypedElement;
 import org.emftext.language.java.util.TemporalCompositeClassifier;
+import org.emftext.language.java.util.TemporalCompositeTypeReference;
 import org.emftext.language.java.util.TemporalUnknownLambdaExpressionType;
 import org.emftext.language.java.variables.AdditionalLocalVariable;
 import org.emftext.language.java.variables.LocalVariable;
@@ -79,9 +81,21 @@ public class ExpressionExtension {
 	}
 
 	public static Type getOneType(Expression me, boolean alternative) {
+		TypeReference ref = getOneTypeReference(me, alternative);
+		if (ref instanceof TemporalCompositeTypeReference) {
+			TemporalCompositeClassifier res = new TemporalCompositeClassifier(me);
+			for (TypeReference r : ((TemporalCompositeTypeReference) ref).getTypeReferences()) {
+				res.getSuperTypes().add(r.getTarget());
+			}
+			return res;
+		}
+		return ref == null ? null : ref.getTarget();
+	}
+	
+	public static TypeReference getOneTypeReference(Expression me, boolean alternative) {
 		org.emftext.language.java.classifiers.Class stringClass = me.getStringClass();
 		
-		Type type = null;
+		TypeReference type = null;
 
 		if (me instanceof Reference) {
 			Reference reference = (Reference) me;
@@ -89,45 +103,27 @@ public class ExpressionExtension {
 			while(reference.getNext() != null) {
 				reference = reference.getNext();
 			}
-			type = reference.getReferencedType();
-		}
-		else if (me instanceof Literal) {
-			type = ((Literal) me).getType();
-		}
-		else if (me instanceof CastExpression) {
-			CastExpression castExpr = (CastExpression) me;
-			if (castExpr.getAdditionalBounds().size() > 0) {
-				TemporalCompositeClassifier tempClass = new TemporalCompositeClassifier(me);
-				tempClass.getSuperTypes().add(castExpr.getTypeReference().getTarget());
-				for (TypeReference ref : castExpr.getAdditionalBounds()) {
-					tempClass.getSuperTypes().add(ref.getTarget());
-				}
-				type = tempClass;
-			} else {
-				type = castExpr.getTypeReference().getTarget();
-			}
-		}
-		else if (me instanceof AssignmentExpression) {
-			type = ((AssignmentExpression) me).getChild().getOneType(alternative);
-		}
-		else if (me instanceof ConditionalExpression &&
+			type = reference.getReferencedTypeReference();
+		} else if (me instanceof Literal) {
+			type = TypeReferenceExtension.convertToTypeReference(((Literal) me).getType());
+		} else if (me instanceof CastExpression) {
+			return getTypeReference((CastExpression) me);
+		} else if (me instanceof AssignmentExpression) {
+			type = ((AssignmentExpression) me).getChild().getOneTypeReference(alternative);
+		} else if (me instanceof ConditionalExpression &&
 				((ConditionalExpression)me).getExpressionIf() != null) {
 			if (alternative) {
-				type = ((ConditionalExpression)me).getExpressionElse().getOneType(alternative);
+				type = ((ConditionalExpression)me).getExpressionElse().getOneTypeReference(alternative);
+			} else {
+				type = ((ConditionalExpression)me).getExpressionIf().getOneTypeReference(alternative);
 			}
-			else {
-				type = ((ConditionalExpression)me).getExpressionIf().getOneType(alternative);
-			}
-			
-		}
-		else if (me instanceof EqualityExpression ||
+		} else if (me instanceof EqualityExpression ||
 				me instanceof RelationExpression ||
 				me instanceof ConditionalOrExpression ||
 				me instanceof ConditionalAndExpression ||
 				me instanceof InstanceOfExpression) {
-			type = me.getLibClass("Boolean");
-		}
-		else if (me instanceof AdditiveExpression ||
+			type = TypeReferenceExtension.convertToTypeReference(me.getLibClass("Boolean"));
+		} else if (me instanceof AdditiveExpression ||
 				me instanceof MultiplicativeExpression ||
 				me instanceof InclusiveOrExpression ||
 				me instanceof ExclusiveOrExpression ||
@@ -138,8 +134,8 @@ public class ExpressionExtension {
 				AdditiveExpression additiveExpression = (AdditiveExpression) me;
 				for(Expression subExp : additiveExpression.getChildren()) {
 					if (stringClass.equals(subExp.getOneType(alternative))) {
-						//special case: string concatenation
-						return stringClass;
+						// special case: string concatenation
+						return TypeReferenceExtension.convertToTypeReference(stringClass);
 					}
 				}
 			}
@@ -148,12 +144,11 @@ public class ExpressionExtension {
 			Expression subExp = ((EList<Expression>) 
 					me.eGet(me.eClass().getEStructuralFeature("children"))).get(0);
 			
-			return subExp.getOneType(alternative);
-		}
-		else if (me instanceof UnaryExpression) {
+			return subExp.getOneTypeReference(alternative);
+		} else if (me instanceof UnaryExpression) {
 			Expression subExp = ((UnaryExpression) me).getChild();
 			
-			return subExp.getOneType(alternative);
+			return subExp.getOneTypeReference(alternative);
 		} else if (me instanceof LambdaExpression) {
 			LambdaExpression lambdExpr = (LambdaExpression) me;
 			EObject container = lambdExpr;
@@ -168,12 +163,12 @@ public class ExpressionExtension {
 				MethodCall call = (MethodCall) container.eContainer();
 				Method m = (Method) call.getTarget();
 				if (m.eIsProxy()) {
-					return new TemporalUnknownLambdaExpressionType(lambdExpr);
+					return TypeReferenceExtension.convertToTypeReference(new TemporalUnknownLambdaExpressionType(lambdExpr));
 				}
-				return m.getParameters().get(call.getArguments().indexOf(container)).getTypeReference().getTarget();
+				return m.getParameters().get(call.getArguments().indexOf(container)).getTypeReference();
 			} else if (container.eContainer() instanceof AssignmentExpression) {
 				AssignmentExpression assExpr = (AssignmentExpression) container.eContainer();
-				return assExpr.getChild().getType();
+				return assExpr.getChild().getOneTypeReference(alternative);
 			} else if (container.eContainer() instanceof LocalVariable
 					|| container.eContainer() instanceof AdditionalLocalVariable) {
 				LocalVariable locVar;
@@ -182,63 +177,72 @@ public class ExpressionExtension {
 				} else {
 					locVar = (LocalVariable) container.eContainer();
 				}
-				return locVar.getTypeReference().getTarget();
+				return locVar.getTypeReference();
 			} else if (container.eContainer() instanceof Return) {
 				while (!(container instanceof Method)) {
 					container = container.eContainer();
 				}
-				return ((Method) container).getTypeReference().getTarget();
+				return ((Method) container).getTypeReference();
 			}
 		} else if (me instanceof MethodReferenceExpression) {
 			if (me instanceof ClassTypeConstructorReferenceExpression || me instanceof ArrayConstructorReferenceExpression) {
-				return ((TypedElement) me).getTypeReference().getTarget();
+				return ((TypedElement) me).getTypeReference();
 			} else {
 				PrimaryExpressionReferenceExpression expr = (PrimaryExpressionReferenceExpression) me;
-				return expr.getChild().getType();
+				return expr.getChild().getOneTypeReference(alternative);
 			}
 		} else {
-			for(TreeIterator<EObject> i = me.eAllContents(); i.hasNext(); ) {
+			for (TreeIterator<EObject> i = me.eAllContents(); i.hasNext(); ) {
 				EObject next = i.next();
-				Type nextType = null;
+				TypeReference nextType = null;
 	
 				if (next instanceof PrimaryExpression) {
 	
 					if (next instanceof Reference) {
 						Reference ref = (Reference) next;
-						//navigate down references
+						// Navigate down references.
 						while(ref.getNext() != null) {
 							ref = ref.getNext();
 						}
 						next = ref;
 					}
 					if (next instanceof Literal) {
-						nextType = ((Literal) next).getType();
+						nextType = TypeReferenceExtension.convertToTypeReference(((Literal) next).getType());
 					}
 					else if (next instanceof CastExpression) {
-						nextType = ((CastExpression)next).getTypeReference().getTarget();
+						nextType = getTypeReference((CastExpression) next);
 					}
 					else {
-						nextType = ((Reference) next).getReferencedType();
+						nextType = ((Reference) next).getReferencedTypeReference();
 					}
 					i.prune();
 	
 				}
 				if (nextType != null) {
 					type = nextType;
-					//in the special case that this is an expression with
-					//some string included, everything is converted to string
-					if (stringClass.equals(type)) {
+					// In the special case that this is an expression with
+					// some String included, everything is converted to String.
+					if (stringClass.equals(type.getTarget())) {
 						break;
 					}
 				}
 			}
 		}
-		//type can be null in cases of unresolved/unresolvable proxies
+		// type can be null in cases of unresolved/unresolvable proxies.
 		return type;
 	}
 	
-	public static TypeReference getOneTypeReference(Expression me, boolean alternative) {
-		return null;
+	private static TypeReference getTypeReference(CastExpression castExpr) {
+		if (castExpr.getAdditionalBounds().size() > 0) {
+			TemporalCompositeTypeReference tempClass = new TemporalCompositeTypeReference();
+			tempClass.getTypeReferences().add(castExpr.getTypeReference());
+			for (TypeReference ref : castExpr.getAdditionalBounds()) {
+				tempClass.getTypeReferences().add(ref);
+			}
+			return tempClass;
+		} else {
+			return castExpr.getTypeReference();
+		}
 	}
 	
 	public static long getArrayDimension(Expression me) {
