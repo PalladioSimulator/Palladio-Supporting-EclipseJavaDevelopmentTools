@@ -58,7 +58,6 @@ import org.emftext.language.java.statements.Return;
 import org.emftext.language.java.types.Type;
 import org.emftext.language.java.types.TypeReference;
 import org.emftext.language.java.types.TypedElement;
-import org.emftext.language.java.util.TemporalCompositeClassifier;
 import org.emftext.language.java.util.TemporalCompositeTypeReference;
 import org.emftext.language.java.util.TemporalUnknownLambdaExpressionType;
 import org.emftext.language.java.variables.AdditionalLocalVariable;
@@ -83,11 +82,7 @@ public class ExpressionExtension {
 	public static Type getOneType(Expression me, boolean alternative) {
 		TypeReference ref = getOneTypeReference(me, alternative);
 		if (ref instanceof TemporalCompositeTypeReference) {
-			TemporalCompositeClassifier res = new TemporalCompositeClassifier(me);
-			for (TypeReference r : ((TemporalCompositeTypeReference) ref).getTypeReferences()) {
-				res.getSuperTypes().add(r.getTarget());
-			}
-			return res;
+			return ((TemporalCompositeTypeReference) ref).asType();
 		}
 		return ref == null ? null : ref.getTarget();
 	}

@@ -34,7 +34,6 @@ import org.emftext.language.java.references.TextBlockReference;
 import org.emftext.language.java.types.Type;
 import org.emftext.language.java.types.TypeReference;
 import org.emftext.language.java.types.TypedElement;
-import org.emftext.language.java.util.TemporalCompositeClassifier;
 import org.emftext.language.java.util.TemporalCompositeTypeReference;
 import org.emftext.language.java.variables.AdditionalLocalVariable;
 
@@ -60,11 +59,7 @@ public class ReferenceExtension {
 	public static Type getReferencedType(Reference me) {
 		TypeReference ref = getReferencedTypeReference(me);
 		if (ref instanceof TemporalCompositeTypeReference) {
-			TemporalCompositeClassifier res = new TemporalCompositeClassifier(me);
-			for (TypeReference r : ((TemporalCompositeTypeReference) ref).getTypeReferences()) {
-				res.getSuperTypes().add(r.getBoundTarget(me));
-			}
-			return res;
+			return ((TemporalCompositeTypeReference) ref).asType();
 		}
 		return ref == null ? null : ref.getBoundTarget(me);
 	}

@@ -45,9 +45,13 @@ public class LambdaExpressionExtension {
 					}
 				}
 			}
-			Type methReturn = m.getTypeReference().getTarget();
-			Type lambdaReturn = getReturnType(expr, methReturn);
-			return lambdaReturn.isSuperType(expr.getArrayDimension(), methReturn, m);
+			return true;
+//			Type methReturn = m.getTypeReference().getTarget();
+//			Type lambdaReturn = getReturnType(expr, methReturn);
+//			if (lambdaReturn == null) {
+//				return true;
+//			}
+//			return lambdaReturn.isSuperType(expr.getArrayDimension(), methReturn, m);
 		}
 		return false;
 	}
@@ -62,7 +66,7 @@ public class LambdaExpressionExtension {
 				return potentialReturnType;
 			}
 		} else if (me.getBody() instanceof Expression) {
-				return ((Expression) me.getBody()).getType();
+			return ((Expression) me.getBody()).getType();
 		} else {
 			Block b = (Block) me.getBody();
 			EList<Return> list = b.getChildrenByType(Return.class);
