@@ -471,6 +471,45 @@ public class JavaSevenAndUpTest extends AbstractJaMoPPTests {
 	}
 	
 	@Test
+	public void testClassWithReferences() {
+		try {
+			String file = "pkgJava14" + File.separator + "ClassWithReferences.java";
+			JavaRoot root = this.parseResource(file);
+			this.assertType(root, CompilationUnit.class);
+			this.assertResolveAllProxies(root);
+			this.parseAndReprint(file);
+		} catch (Exception e) {
+			fail(e.getMessage());
+		}
+	}
+	
+	@Test
+	public void testClassWithReferences2() {
+		try {
+			String file = "pkgJava14" + File.separator + "ClassWithReferences2.java";
+			JavaRoot root = this.parseResource(file);
+			this.assertType(root, CompilationUnit.class);
+			this.assertResolveAllProxies(root);
+			this.parseAndReprint(file);
+		} catch (Exception e) {
+			fail(e.getMessage());
+		}
+	}
+	
+	@Test
+	public void testClassWithReferences3() {
+		try {
+			String file = "pkgJava14" + File.separator + "ClassWithReferences3.java";
+			JavaRoot root = this.parseResource(file);
+			this.assertType(root, CompilationUnit.class);
+			this.assertResolveAllProxies(root);
+			this.parseAndReprint(file);
+		} catch (Exception e) {
+			fail(e.getMessage());
+		}
+	}
+	
+	@Test
 	public void testClassWithMoreReferences() {
 		try {
 			String file = "pkgJava14" + File.separator + "ClassWithMoreReferences.java";
