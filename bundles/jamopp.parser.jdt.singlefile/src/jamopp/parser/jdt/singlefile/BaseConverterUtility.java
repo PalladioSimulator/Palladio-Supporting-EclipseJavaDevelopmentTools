@@ -11,7 +11,7 @@
  *      - Initial implementation
  ******************************************************************************/
 
-package jamopp.parser.jdt;
+package jamopp.parser.jdt.singlefile;
 
 import org.eclipse.jdt.core.dom.Annotation;
 import org.eclipse.jdt.core.dom.ArrayType;
@@ -28,6 +28,9 @@ import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.WildcardType;
 import org.emftext.language.java.resource.java.IJavaContextDependentURIFragmentWrapper;
 import org.emftext.language.java.resource.java.JavaContextDependentURIFragmentFactoryFactory;
+
+import jamopp.parser.jdt.singlefile.AnnotationInstanceOrModifierConverterUtility;
+import jamopp.parser.jdt.singlefile.LayoutInformationConverter;
 
 class BaseConverterUtility {
 	static org.emftext.language.java.types.TypeReference convertToClassifierOrNamespaceClassifierReference(Name name) {

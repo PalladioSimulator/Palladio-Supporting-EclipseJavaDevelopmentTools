@@ -11,10 +11,14 @@
  *      - Initial implementation
  ******************************************************************************/
 
-package jamopp.parser.jdt;
+package jamopp.parser.jdt.singlefile;
 
 import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.jdt.core.dom.CompilationUnit;
+
+import jamopp.parser.jdt.singlefile.ClassifierConverterUtility;
+import jamopp.parser.jdt.singlefile.LayoutInformationConverter;
+import jamopp.parser.jdt.singlefile.ModuleJDTASTVisitorAndConverter;
 
 class OrdinaryCompilationUnitJDTASTVisitorAndConverter extends ModuleJDTASTVisitorAndConverter {
 	@Override

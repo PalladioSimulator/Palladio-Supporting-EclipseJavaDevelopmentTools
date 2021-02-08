@@ -11,7 +11,7 @@
  *      - Initial implementation
  ******************************************************************************/
 
-package jamopp.parser.jdt;
+package jamopp.parser.jdt.singlefile;
 
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.emftext.commons.layout.LayoutFactory;

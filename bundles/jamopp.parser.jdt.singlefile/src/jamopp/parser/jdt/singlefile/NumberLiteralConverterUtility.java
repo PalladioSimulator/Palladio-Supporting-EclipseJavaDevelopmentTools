@@ -11,11 +11,13 @@
  *      - Initial implementation
  ******************************************************************************/
 
-package jamopp.parser.jdt;
+package jamopp.parser.jdt.singlefile;
 
 import java.math.BigInteger;
 
 import org.eclipse.jdt.core.dom.NumberLiteral;
+
+import jamopp.parser.jdt.singlefile.LayoutInformationConverter;
 
 class NumberLiteralConverterUtility {
 	private static final String HEX_PREFIX = "0x";

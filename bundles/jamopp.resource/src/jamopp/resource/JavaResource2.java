@@ -24,7 +24,7 @@ import org.emftext.language.java.resource.java.IJavaURIMapping;
 import org.emftext.language.java.resource.java.util.JavaCastUtil;
 
 import jamopp.parser.api.JaMoPPParserAPI;
-import jamopp.parser.jdt.JaMoPPJDTSingleFileParser;
+import jamopp.parser.jdt.singlefile.JaMoPPJDTSingleFileParser;
 import jamopp.printer.JaMoPPPrinter;
 
 public class JavaResource2 extends ResourceImpl {

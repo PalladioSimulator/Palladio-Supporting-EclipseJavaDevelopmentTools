@@ -11,7 +11,7 @@
  *      - Initial implementation
  ******************************************************************************/
 
-package jamopp.parser.jdt;
+package jamopp.parser.jdt.singlefile;
 
 import java.util.HashSet;
 import java.util.List;
@@ -46,6 +46,13 @@ import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.jdt.core.dom.VariableDeclarationStatement;
 import org.eclipse.jdt.core.dom.WhileStatement;
 import org.eclipse.jdt.core.dom.YieldStatement;
+
+import jamopp.parser.jdt.singlefile.AnnotationInstanceOrModifierConverterUtility;
+import jamopp.parser.jdt.singlefile.BaseConverterUtility;
+import jamopp.parser.jdt.singlefile.ClassifierConverterUtility;
+import jamopp.parser.jdt.singlefile.ExpressionConverterUtility;
+import jamopp.parser.jdt.singlefile.LayoutInformationConverter;
+import jamopp.parser.jdt.singlefile.ReferenceConverterUtility;
 
 class StatementConverterUtility {
 	private static HashSet<org.emftext.language.java.statements.JumpLabel> currentJumpLabels = new HashSet<>();

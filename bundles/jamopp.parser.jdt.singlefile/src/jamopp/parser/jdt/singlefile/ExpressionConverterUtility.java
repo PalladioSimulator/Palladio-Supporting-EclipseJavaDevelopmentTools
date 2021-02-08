@@ -11,7 +11,7 @@
  *      - Initial implementation
  ******************************************************************************/
 
-package jamopp.parser.jdt;
+package jamopp.parser.jdt.singlefile;
 
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.Assignment;
@@ -37,6 +37,13 @@ import org.eclipse.jdt.core.dom.SwitchExpression;
 import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeMethodReference;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
+
+import jamopp.parser.jdt.singlefile.BaseConverterUtility;
+import jamopp.parser.jdt.singlefile.ClassifierConverterUtility;
+import jamopp.parser.jdt.singlefile.LayoutInformationConverter;
+import jamopp.parser.jdt.singlefile.NumberLiteralConverterUtility;
+import jamopp.parser.jdt.singlefile.ReferenceConverterUtility;
+import jamopp.parser.jdt.singlefile.StatementConverterUtility;
 
 class ExpressionConverterUtility {
 	@SuppressWarnings("unchecked")

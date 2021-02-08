@@ -11,7 +11,7 @@
  *      - Initial implementation
  ******************************************************************************/
 
-package jamopp.parser.jdt;
+package jamopp.parser.jdt.singlefile;
 
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.Annotation;
@@ -24,6 +24,11 @@ import org.eclipse.jdt.core.dom.Name;
 import org.eclipse.jdt.core.dom.ProvidesDirective;
 import org.eclipse.jdt.core.dom.RequiresDirective;
 import org.eclipse.jdt.core.dom.UsesDirective;
+
+import jamopp.parser.jdt.singlefile.AnnotationInstanceOrModifierConverterUtility;
+import jamopp.parser.jdt.singlefile.BaseConverterUtility;
+import jamopp.parser.jdt.singlefile.LayoutInformationConverter;
+import jamopp.parser.jdt.singlefile.PackageJDTASTVisitorAndConverter;
 
 class ModuleJDTASTVisitorAndConverter extends PackageJDTASTVisitorAndConverter {
 	@Override

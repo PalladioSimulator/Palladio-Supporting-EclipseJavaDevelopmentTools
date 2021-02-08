@@ -11,7 +11,7 @@
  *      - Initial implementation
  ******************************************************************************/
 
-package jamopp.parser.jdt;
+package jamopp.parser.jdt.singlefile;
 
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
@@ -33,6 +33,12 @@ import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.TypeParameter;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
+
+import jamopp.parser.jdt.singlefile.AnnotationInstanceOrModifierConverterUtility;
+import jamopp.parser.jdt.singlefile.BaseConverterUtility;
+import jamopp.parser.jdt.singlefile.ExpressionConverterUtility;
+import jamopp.parser.jdt.singlefile.LayoutInformationConverter;
+import jamopp.parser.jdt.singlefile.StatementConverterUtility;
 
 class ClassifierConverterUtility {
 	@SuppressWarnings("unchecked")

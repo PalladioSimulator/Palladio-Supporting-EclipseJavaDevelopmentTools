@@ -13,4 +13,4 @@ Require-Bundle: org.eclipse.jdt.core,
  org.eclipse.emf.ecore,
  jamopp.parser,
  jamopp.resource.resolve
-Export-Package: jamopp.parser.jdt
+Export-Package: jamopp.parser.jdt.singlefile

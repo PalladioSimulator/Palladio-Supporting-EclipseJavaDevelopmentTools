@@ -1,4 +1,4 @@
-package jamopp.parser.jdt;
+package jamopp.parser.jdt.singlefile;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -26,6 +26,7 @@ import org.emftext.language.java.JavaClasspath;
 import org.emftext.language.java.containers.JavaRoot;
 
 import jamopp.parser.api.JaMoPPParserAPI;
+import jamopp.parser.jdt.singlefile.OrdinaryCompilationUnitJDTASTVisitorAndConverter;
 
 public class JaMoPPJDTSingleFileParser implements JaMoPPParserAPI {
 	private final String DEFAULT_ENCODING = StandardCharsets.UTF_8.toString();

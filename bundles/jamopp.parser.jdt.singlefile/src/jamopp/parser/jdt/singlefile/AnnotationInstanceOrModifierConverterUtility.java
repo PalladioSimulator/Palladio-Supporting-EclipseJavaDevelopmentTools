@@ -11,7 +11,7 @@
  *      - Initial implementation
  ******************************************************************************/
 
-package jamopp.parser.jdt;
+package jamopp.parser.jdt.singlefile;
 
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.Annotation;
@@ -25,6 +25,10 @@ import org.eclipse.jdt.core.dom.QualifiedName;
 import org.eclipse.jdt.core.dom.SingleMemberAnnotation;
 import org.emftext.language.java.resource.java.IJavaContextDependentURIFragmentWrapper;
 import org.emftext.language.java.resource.java.JavaContextDependentURIFragmentFactoryFactory;
+
+import jamopp.parser.jdt.singlefile.BaseConverterUtility;
+import jamopp.parser.jdt.singlefile.ExpressionConverterUtility;
+import jamopp.parser.jdt.singlefile.LayoutInformationConverter;
 
 class AnnotationInstanceOrModifierConverterUtility {
 	static org.emftext.language.java.modifiers.AnnotationInstanceOrModifier converToModifierOrAnnotationInstance(IExtendedModifier mod) {

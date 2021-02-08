@@ -11,7 +11,7 @@
  *      - Initial implementation
  ******************************************************************************/
 
-package jamopp.parser.jdt;
+package jamopp.parser.jdt.singlefile;
 
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.jdt.core.dom.ASTVisitor;
@@ -20,6 +20,9 @@ import org.eclipse.jdt.core.dom.ImportDeclaration;
 import org.eclipse.jdt.core.dom.QualifiedName;
 import org.emftext.language.java.resource.java.IJavaContextDependentURIFragmentWrapper;
 import org.emftext.language.java.resource.java.JavaContextDependentURIFragmentFactoryFactory;
+
+import jamopp.parser.jdt.singlefile.BaseConverterUtility;
+import jamopp.parser.jdt.singlefile.LayoutInformationConverter;
 
 class AbstractAndEmptyModelJDTASTVisitorAndConverter extends ASTVisitor {
 	private org.emftext.language.java.containers.JavaRoot convertedRootElement;
