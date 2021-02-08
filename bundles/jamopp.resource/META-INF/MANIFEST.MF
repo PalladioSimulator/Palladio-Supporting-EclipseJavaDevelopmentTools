@@ -2,16 +2,16 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: JaMoPP new Resource support
 Bundle-SymbolicName: jamopp.resource
-Bundle-Version: 4.3.0.qualifier
+Bundle-Version: 5.0.0.qualifier
 Bundle-Vendor: Martin Armbruster
 Automatic-Module-Name: jamopp.resource
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.emf.ecore;bundle-version="2.22.0",
- jamopp.parser;bundle-version="4.3.0",
- jamopp.parser.jdt;bundle-version="4.3.0",
- jamopp.printer;bundle-version="4.3.0",
- org.emftext.language.java;bundle-version="4.3.0",
- jamopp.resource.resolve;bundle-version="4.3.0",
- jamopp.parser.jdt.singlefile;bundle-version="4.3.0"
+ jamopp.parser;bundle-version="5.0.0",
+ jamopp.parser.jdt;bundle-version="5.0.0",
+ jamopp.printer;bundle-version="5.0.0",
+ org.emftext.language.java;bundle-version="5.0.0",
+ jamopp.resource.resolve;bundle-version="5.0.0",
+ jamopp.parser.jdt.singlefile;bundle-version="5.0.0"
 Export-Package: jamopp.resource

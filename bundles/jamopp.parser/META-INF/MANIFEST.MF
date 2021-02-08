@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: JaMoPP Parser API
 Bundle-SymbolicName: jamopp.parser
-Bundle-Version: 4.3.0.qualifier
+Bundle-Version: 5.0.0.qualifier
 Bundle-Vendor: Martin Armbruster
 Automatic-Module-Name: jamopp.parser
 Bundle-RequiredExecutionEnvironment: JavaSE-11
