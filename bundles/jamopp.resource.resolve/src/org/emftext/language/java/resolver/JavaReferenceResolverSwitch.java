@@ -34,11 +34,15 @@ import org.emftext.language.java.references.ElementReference;
 import org.emftext.language.java.references.ReferenceableElement;
 import org.emftext.language.java.references.ReferencesPackage;
 import org.emftext.language.java.resolver.result.IJavaReferenceResolveResult;
-import org.emftext.language.java.resolver.result.JavaFuzzyResolveResult;
+import org.emftext.language.java.resolver.result.JavaDelegatingResolveResult;
 import org.emftext.language.java.types.ClassifierReference;
 import org.emftext.language.java.types.TypesPackage;
 
-public class JavaReferenceResolverSwitch implements IJavaReferenceResolverSwitch {
+/**
+ * A IJavaReferenceResolverSwitch holds references to multiple other reference
+ * resolvers and delegates requests to the appropriate resolver.
+ */
+public class JavaReferenceResolverSwitch implements IJavaReferenceResolver<EObject, EObject> {
 	private ClassifierImportClassifierReferenceResolver classifierImportClassifierReferenceResolver
 		= new ClassifierImportClassifierReferenceResolver();
 	private StaticMemberImportStaticMembersReferenceResolver staticMemberImportStaticMembersReferenceResolver
@@ -79,72 +83,66 @@ public class JavaReferenceResolverSwitch implements IJavaReferenceResolverSwitch
 	}
 	
 	@Override
-	public void resolveFuzzy(String identifier, EObject container, EReference reference, int position,
+	public void resolve(String identifier, EObject container, EReference reference, int position,
 			IJavaReferenceResolveResult<EObject> result) {
 		if (container == null) {
 			return;
 		}
 		if (ImportsPackage.eINSTANCE.getClassifierImport().isInstance(container)) {
-			JavaFuzzyResolveResult<ConcreteClassifier> frr = new JavaFuzzyResolveResult<ConcreteClassifier>(result);
-			String referenceName = reference.getName();
-			EStructuralFeature feature = container.eClass().getEStructuralFeature(referenceName);
+			EStructuralFeature feature = container.eClass().getEStructuralFeature(reference.getName());
+			JavaDelegatingResolveResult<EObject, ConcreteClassifier> frr = new JavaDelegatingResolveResult<>(result);
 			if (feature != null && feature instanceof EReference
-					&& referenceName != null && referenceName.equals("classifier")) {
+					&& ImportsPackage.CLASSIFIER_IMPORT__CLASSIFIER == feature.getFeatureID()) {
 				classifierImportClassifierReferenceResolver.resolve(identifier, (ClassifierImport) container,
-						(EReference) feature, position, true, frr);
+						(EReference) feature, position, frr);
 			}
 		}
 		if (ImportsPackage.eINSTANCE.getStaticMemberImport().isInstance(container)) {
-			JavaFuzzyResolveResult<ReferenceableElement> frr
-				= new JavaFuzzyResolveResult<ReferenceableElement>(result);
-			String referenceName = reference.getName();
-			EStructuralFeature feature = container.eClass().getEStructuralFeature(referenceName);
+			JavaDelegatingResolveResult<EObject, ReferenceableElement> frr
+				= new JavaDelegatingResolveResult<>(result);
+			EStructuralFeature feature = container.eClass().getEStructuralFeature(reference.getName());
 			if (feature != null && feature instanceof EReference
-					&& referenceName != null && referenceName.equals("staticMembers")) {
+					&& ImportsPackage.STATIC_MEMBER_IMPORT__STATIC_MEMBERS == feature.getFeatureID()) {
 				staticMemberImportStaticMembersReferenceResolver.resolve(identifier,
-						(StaticMemberImport) container, (EReference) feature, position, true, frr);
+						(StaticMemberImport) container, (EReference) feature, position, frr);
 			}
 		}
 		if (AnnotationsPackage.eINSTANCE.getAnnotationInstance().isInstance(container)) {
-			JavaFuzzyResolveResult<Classifier> frr = new JavaFuzzyResolveResult<Classifier>(result);
-			String referenceName = reference.getName();
-			EStructuralFeature feature = container.eClass().getEStructuralFeature(referenceName);
+			JavaDelegatingResolveResult<EObject, Classifier> frr = new JavaDelegatingResolveResult<>(result);
+			EStructuralFeature feature = container.eClass().getEStructuralFeature(reference.getName());
 			if (feature != null && feature instanceof EReference
-					&& referenceName != null && referenceName.equals("annotation")) {
+					&& AnnotationsPackage.ANNOTATION_INSTANCE__ANNOTATION == feature.getFeatureID()) {
 				annotationInstanceAnnotationReferenceResolver.resolve(identifier, (AnnotationInstance) container,
-						(EReference) feature, position, true, frr);
+						(EReference) feature, position, frr);
 			}
 		}
 		if (AnnotationsPackage.eINSTANCE.getAnnotationAttributeSetting().isInstance(container)) {
-			JavaFuzzyResolveResult<InterfaceMethod> frr = new JavaFuzzyResolveResult<InterfaceMethod>(result);
-			String referenceName = reference.getName();
-			EStructuralFeature feature = container.eClass().getEStructuralFeature(referenceName);
+			JavaDelegatingResolveResult<EObject, InterfaceMethod> frr = new JavaDelegatingResolveResult<>(result);
+			EStructuralFeature feature = container.eClass().getEStructuralFeature(reference.getName());
 			if (feature != null && feature instanceof EReference
-					&& referenceName != null && referenceName.equals("attribute")) {
+					&& AnnotationsPackage.ANNOTATION_ATTRIBUTE_SETTING__ATTRIBUTE == feature.getFeatureID()) {
 				annotationAttributeSettingAttributeReferenceResolver.resolve(identifier,
 						(AnnotationAttributeSetting) container, (EReference) feature,
-						position, true, frr);
+						position, frr);
 			}
 		}
 		if (TypesPackage.eINSTANCE.getClassifierReference().isInstance(container)) {
-			JavaFuzzyResolveResult<Classifier> frr = new JavaFuzzyResolveResult<Classifier>(result);
-			String referenceName = reference.getName();
-			EStructuralFeature feature = container.eClass().getEStructuralFeature(referenceName);
+			JavaDelegatingResolveResult<EObject, Classifier> frr = new JavaDelegatingResolveResult<>(result);
+			EStructuralFeature feature = container.eClass().getEStructuralFeature(reference.getName());
 			if (feature != null && feature instanceof EReference
-					&& referenceName != null && referenceName.equals("target")) {
+					&& TypesPackage.CLASSIFIER_REFERENCE__TARGET == feature.getFeatureID()) {
 				classifierReferenceTargetReferenceResolver.resolve(identifier, (ClassifierReference) container,
-						(EReference) feature, position, true, frr);
+						(EReference) feature, position, frr);
 			}
 		}
 		if (ReferencesPackage.eINSTANCE.getElementReference().isInstance(container)) {
-			JavaFuzzyResolveResult<ReferenceableElement> frr
-				= new JavaFuzzyResolveResult<ReferenceableElement>(result);
-			String referenceName = reference.getName();
-			EStructuralFeature feature = container.eClass().getEStructuralFeature(referenceName);
+			JavaDelegatingResolveResult<EObject, ReferenceableElement> frr
+				= new JavaDelegatingResolveResult<>(result);
+			EStructuralFeature feature = container.eClass().getEStructuralFeature(reference.getName());
 			if (feature != null && feature instanceof EReference
-					&& referenceName != null && referenceName.equals("target")) {
+					&& ReferencesPackage.ELEMENT_REFERENCE__TARGET == feature.getFeatureID()) {
 				elementReferenceTargetReferenceResolver.resolve(identifier, (ElementReference) container,
-						(EReference) feature, position, true, frr);
+						(EReference) feature, position, frr);
 			}
 		}
 	}

@@ -32,7 +32,7 @@ public class AnnotationAttributeSettingAttributeReferenceResolver implements
 	IJavaReferenceResolver<AnnotationAttributeSetting, InterfaceMethod> {
 	@Override
 	public void resolve(String identifier, AnnotationAttributeSetting container, EReference reference,
-			int position, boolean resolveFuzzy, IJavaReferenceResolveResult<InterfaceMethod> result) {
+			int position, IJavaReferenceResolveResult<InterfaceMethod> result) {
 
 		EObject startingPoint = container.getContainingAnnotationInstance().getAnnotation();
 

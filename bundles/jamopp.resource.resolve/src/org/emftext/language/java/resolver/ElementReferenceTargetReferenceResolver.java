@@ -56,7 +56,7 @@ public class ElementReferenceTargetReferenceResolver implements
 	IJavaReferenceResolver<ElementReference, ReferenceableElement> {
 	@Override
 	public void resolve(String identifier, ElementReference container, EReference reference,
-			int position, boolean resolveFuzzy, IJavaReferenceResolveResult<ReferenceableElement> result) {
+			int position, IJavaReferenceResolveResult<ReferenceableElement> result) {
 		EObject startingPoint = null;
 		EObject alternativeStartingPoint = null;
 		EObject target = null;

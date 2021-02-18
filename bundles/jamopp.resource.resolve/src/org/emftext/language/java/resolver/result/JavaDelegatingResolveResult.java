@@ -17,62 +17,58 @@
  ******************************************************************************/
 package org.emftext.language.java.resolver.result;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
 import org.eclipse.emf.ecore.EObject;
 
 /**
- * A basic implementation of the
- * org.emftext.language.java.resource.java.IJavaReferenceResolveResult interface
- * that collects mappings in a list.
+ * An implementation of the ResolveResult interface that delegates all method
+ * calls to another ResolveResult. Client may subclass this class to easily create
+ * custom ResolveResults.
  * 
- * @param <ReferenceType> the type of the references that can be contained in this
- * result.
+ * @param <ReferenceType> the type of the references that can be contained in the wrapped result.
+ * @param <T> the type of the references that can be contained in this result.
  */
-public class JavaReferenceResolveResult<ReferenceType extends EObject> implements IJavaReferenceResolveResult<ReferenceType> {
-	private Collection<IJavaReferenceMapping<ReferenceType>> mappings;
-	private String errorMessage;
+public class JavaDelegatingResolveResult<ReferenceType extends EObject, T extends ReferenceType>
+		implements IJavaReferenceResolveResult<T> {
+	private IJavaReferenceResolveResult<ReferenceType> delegate;
 	
-	@Override
-	public String getErrorMessage() {
-		return errorMessage;
+	public JavaDelegatingResolveResult(IJavaReferenceResolveResult<ReferenceType> delegate) {
+		this.delegate = delegate;
 	}
 	
 	@Override
-	public Collection<IJavaReferenceMapping<ReferenceType>> getMappings() {
-		return mappings;
+	public String getErrorMessage() {
+		return delegate.getErrorMessage();
+	}
+	
+	@Override
+	public Collection<IJavaReferenceMapping<T>> getMappings() {
+		return null;
 	}
 	
 	@Override
 	public boolean wasResolved() {
-		return mappings != null;
+		return delegate.wasResolved();
 	}
 	
 	@Override
 	public boolean wasResolvedMultiple() {
-		return mappings != null && mappings.size() > 1;
+		return delegate.wasResolvedMultiple();
 	}
 	
 	@Override
 	public boolean wasResolvedUniquely() {
-		return mappings != null && mappings.size() == 1;
+		return delegate.wasResolvedUniquely();
 	}
 	
 	@Override
 	public void setErrorMessage(String message) {
-		errorMessage = message;
+		delegate.setErrorMessage(message);
 	}
 	
 	@Override
-	public void addMapping(String identifier, ReferenceType target) {
-		if (target == null) {
-			throw new IllegalArgumentException("Mapping references to null is only allowed for fuzzy resolution.");
-		}
-		if (mappings == null) {
-			mappings = new ArrayList<IJavaReferenceMapping<ReferenceType>>(1);
-		}
-		mappings.add(new JavaElementMapping<ReferenceType>(identifier, target, null));
-		errorMessage = null;
+	public void addMapping(String identifier, T target) {
+		delegate.addMapping(identifier, target);
 	}
 }

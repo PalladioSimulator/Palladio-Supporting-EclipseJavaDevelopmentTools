@@ -40,11 +40,9 @@ public interface IJavaReferenceResolver<ContainerType extends EObject, Reference
 	 * @param reference The reference that points to the target of the reference.
 	 * @param position The index of the reference (if it has an upper bound greater
 	 * than 1).
-	 * @param resolveFuzzy If true, the resolver must return all objects, even the
-	 * ones that do not match the identifier
 	 * @param result an object that can be used to store the result of the resolve
 	 * operation.
 	 */
 	public void resolve(String identifier, ContainerType container, EReference reference, int position,
-			boolean resolveFuzzy, IJavaReferenceResolveResult<ReferenceType> result);
+			IJavaReferenceResolveResult<ReferenceType> result);
 }

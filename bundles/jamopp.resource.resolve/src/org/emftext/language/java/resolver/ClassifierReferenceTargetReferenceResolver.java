@@ -44,7 +44,7 @@ public class ClassifierReferenceTargetReferenceResolver implements
 	IJavaReferenceResolver<ClassifierReference, Classifier> {
 	@Override
 	public void resolve(String identifier, ClassifierReference container, EReference reference,
-			int position, boolean resolveFuzzy, IJavaReferenceResolveResult<Classifier> result) {
+			int position, IJavaReferenceResolveResult<Classifier> result) {
 		EObject startingPoint = null;
 		EObject target = null;
 		boolean hasNamespace = false;

@@ -29,7 +29,7 @@ public class ClassifierImportClassifierReferenceResolver implements
 	IJavaReferenceResolver<Import, ConcreteClassifier> {
 	@Override
 	public void resolve(String identifier, Import theImport, EReference reference, int position,
-			boolean resolveFuzzy, IJavaReferenceResolveResult<ConcreteClassifier> result) {
+			IJavaReferenceResolveResult<ConcreteClassifier> result) {
 		ConcreteClassifier importedClassifier = theImport.getImportedClassifier(identifier);
 		if (importedClassifier != null) {
 			if (importedClassifier.eIsProxy()) {

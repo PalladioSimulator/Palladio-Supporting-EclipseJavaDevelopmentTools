@@ -54,13 +54,13 @@ public abstract class JavaContextDependentURIFragment<ContainerType extends org.
 		}
 		resolving = true;
 		if (result == null || !result.wasResolved()) {
-			result = new org.emftext.language.java.resolver.result.JavaReferenceResolveResult<ReferenceType>(false);
+			result = new org.emftext.language.java.resolver.result.JavaReferenceResolveResult<ReferenceType>();
 			// set an initial default error message
 			result.setErrorMessage(getStdErrorMessage());
 			
 			org.emftext.language.java.resolver.IJavaReferenceResolver<ContainerType, ReferenceType> resolver = getResolver();
 			// do the actual resolving
-			resolver.resolve(getIdentifier(), getContainer(), getReference(), getPositionInReference(), false, result);
+			resolver.resolve(getIdentifier(), getContainer(), getReference(), getPositionInReference(), result);
 			
 			// EMFText allows proxies to resolve to multiple objects. The first one is
 			// returned, the others are added here to the reference.

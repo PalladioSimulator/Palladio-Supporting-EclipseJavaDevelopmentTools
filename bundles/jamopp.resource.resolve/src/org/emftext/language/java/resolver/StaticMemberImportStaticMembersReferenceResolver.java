@@ -30,7 +30,7 @@ public class StaticMemberImportStaticMembersReferenceResolver implements
 	IJavaReferenceResolver<StaticMemberImport, ReferenceableElement> {
 	@Override
 	public void resolve(String identifier, StaticMemberImport theImport, EReference reference,
-			int position, boolean resolveFuzzy, IJavaReferenceResolveResult<ReferenceableElement> result) {
+			int position, IJavaReferenceResolveResult<ReferenceableElement> result) {
 		ConcreteClassifier classifier = theImport.getClassifierAtNamespaces();
 		classifier = (ConcreteClassifier) EcoreUtil.resolve(classifier, theImport.eResource());
 		if (classifier != null && !classifier.eIsProxy()) {

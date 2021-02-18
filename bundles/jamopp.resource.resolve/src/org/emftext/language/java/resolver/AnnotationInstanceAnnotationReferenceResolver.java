@@ -34,7 +34,7 @@ public class AnnotationInstanceAnnotationReferenceResolver implements
 	IJavaReferenceResolver<AnnotationInstance, Classifier> {
 	@Override
 	public void resolve(String identifier, AnnotationInstance annotationInstance, EReference reference,
-			int position, boolean resolveFuzzy, IJavaReferenceResolveResult<Classifier> result) {
+			int position, IJavaReferenceResolveResult<Classifier> result) {
 		EObject startingPoint = annotationInstance;
 		EObject target =  null;
 

@@ -19,7 +19,6 @@ package org.emftext.language.java.resolver.result;
 
 import java.util.Collection;
 
-import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 
 /**
@@ -57,43 +56,13 @@ public interface IJavaReferenceResolveResult<ReferenceType extends EObject> {
 	 * mapping means that the identifier was resolved to reference the target object.
 	 * Previous errors as well as future ones will be discarded. Once a mapping is
 	 * found, resolve errors have no meaning anymore.
-	 * The target object can be null if the resolution is fuzzy. Otherwise, the target must
-	 * not be null and implementations of this method can throw an
+	 * The target must not be null and implementations of this method can throw an
 	 * IllegalArgumentException if this rule is violated.
-	 * Optionally, a warning can be passed to this method if resolving the reference
-	 * was successful, but not accurate.
 	 * 
-	 * @param identifier the giver identifier.
+	 * @param identifier the given identifier.
 	 * @param target the resolved target object for the identifier.
-	 * @param warning 
-	 */
-	public void addMapping(String identifier, ReferenceType target, String warning);
-	
-	/**
-	 * 
-	 * @see addMapping(String, ReferenceType, String)
 	 */
 	public void addMapping(String identifier, ReferenceType target);
-	
-	/**
-	 * Adds a mapping from the given identifier to another identifier. This is useful
-	 * for multilevel resolving where internal identifiers are replaced by external
-	 * ones depending on the context. Usually the external identifiers are replaced by
-	 * target object later on.
-	 * Optionally, a warning can be passed to this method if resolving reference was
-	 * successful, but not accurate.
-	 * 
-	 * @param identifier
-	 * @param newIdentifier
-	 * @param warning
-	 */
-	public void addMapping(String identifier, URI newIdentifier, String warning);
-	
-	/**
-	 * 
-	 * @see addMapping(String, org.eclipse.emf.common.util.URI, String)
-	 */
-	public void addMapping(String identifier, URI newIdentifier);
 	
 	/**
 	 * Indicates the type of the result. Depending on the type of the result, different
