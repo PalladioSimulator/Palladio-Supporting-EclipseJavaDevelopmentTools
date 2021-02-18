@@ -16,7 +16,6 @@ Workflow {
 	}
 	
 	component = URISupportingDirectoryCleaner {
-        directory = "platform:/resource/org.emftext.commons.jdt/src-gen"
         directory = "platform:/resource/org.emftext.commons.layout/src-gen"
         directory = "platform:/resource/org.emftext.commons.layout.edit/src-gen"
         directory = "platform:/resource/org.emftext.language.java/src-gen"

@@ -14,15 +14,9 @@ Workflow {
 		scanClassPath = true
 		platformUri = workspaceRoot
 		
-		registerGenModelFile = "platform:/resource/org.emftext.commons.jdt/metamodel/jdt.genmodel"
 		registerGenModelFile = "platform:/resource/org.emftext.commons.layout/metamodel/layout.genmodel"
 		
 		logResourceUriMap = true
-	}
-	
-	component = EcoreGenerator {
-		genModel = "platform:/resource/org.emftext.commons.jdt/metamodel/jdt.genmodel"
-		srcPath = "platform:/resource/org.emftext.commons.jdt/src-gen"
 	}
 	
 	component = EcoreGenerator {
