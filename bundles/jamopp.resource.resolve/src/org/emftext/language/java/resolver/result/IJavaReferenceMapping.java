@@ -35,6 +35,13 @@ public interface IJavaReferenceMapping<ReferenceType> {
 	public String getIdentifier();
 	
 	/**
+	 * Returns the mapped target.
+	 * 
+	 * @return the target.
+	 */
+	public ReferenceType getTarget();
+	
+	/**
 	 * A mapping can have a warning attached that contains additional information
 	 * (e.g., when the mapping might be wrong under specific conditions). The warning
 	 * is meant to be presented to the user together with the mapping result.

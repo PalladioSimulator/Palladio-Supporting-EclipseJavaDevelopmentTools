@@ -25,29 +25,9 @@ import org.eclipse.emf.ecore.EObject;
  * 
  * @param <ReferenceType> the type of the reference that can be mapped to.
  */
-public class JavaElementMapping<ReferenceType extends EObject> implements IJavaElementMapping<ReferenceType> {
-	private final ReferenceType target;
-	private String identifier;
-	private String warning;
-	
+public class JavaElementMapping<ReferenceType extends EObject> extends AbstractBaseJavaReferenceMapping<ReferenceType>
+		implements IJavaElementMapping<ReferenceType> {
 	public JavaElementMapping(String identifier, ReferenceType target, String warning) {
-		this.target = target;
-		this.identifier = identifier;
-		this.warning = warning;
-	}
-	
-	@Override
-	public ReferenceType getTargetElement() {
-		return target;
-	}
-	
-	@Override
-	public String getIdentifier() {
-		return identifier;
-	}
-	
-	@Override
-	public String getWarning() {
-		return warning;
+		super(identifier, target, warning);
 	}
 }

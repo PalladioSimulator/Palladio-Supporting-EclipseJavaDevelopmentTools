@@ -22,11 +22,8 @@ import org.eclipse.emf.common.util.URI;
 /**
  * Implementors of this interface map identifiers to URIs. This is sometimes
  * necessary when resolving references depends on the resolution of others.
- * 
- * @param <ReferenceType> unused type parameter which is needed to implement
- * org.emftext.language.java.resource.java.IJavaReferenceMapping.
  */
-public interface IJavaURIMapping<ReferenceType> extends IJavaReferenceMapping<ReferenceType> {
+public interface IJavaURIMapping extends IJavaReferenceMapping<URI> {
 	/**
 	 * Returns an alternative proxy URI that should follow EMF's default naming scheme
 	 * such that it can be resolved by the default resolution mechanism that will be
@@ -34,5 +31,6 @@ public interface IJavaURIMapping<ReferenceType> extends IJavaReferenceMapping<Re
 	 * 
 	 * @return the mapped URI.
 	 */
-	public URI getTargetIdentifier();
+	@Override
+	public URI getTarget();
 }

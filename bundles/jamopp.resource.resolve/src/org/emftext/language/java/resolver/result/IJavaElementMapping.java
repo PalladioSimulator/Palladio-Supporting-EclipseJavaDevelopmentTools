@@ -25,11 +25,4 @@ import org.eclipse.emf.ecore.EObject;
  * @param <ReferenceType> the type of the reference this mapping points to.
  */
 public interface IJavaElementMapping<ReferenceType extends EObject> extends IJavaReferenceMapping<ReferenceType> {
-	
-	/**
-	 * Returns the target object the identifier is mapped to.
-	 * 
-	 * @return the target object.
-	 */
-	public ReferenceType getTargetElement();
 }

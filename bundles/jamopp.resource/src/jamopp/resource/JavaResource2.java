@@ -141,8 +141,8 @@ public class JavaResource2 extends ResourceImpl {
 	}
 	
 	private EObject getResultElement(IJavaContextDependentURIFragment<? extends EObject> uriFragment, IJavaReferenceMapping<? extends EObject> mapping, EObject proxy, final String errorMessage) {
-		if (mapping instanceof IJavaURIMapping<?>) {
-			URI uri = ((IJavaURIMapping<? extends EObject>)mapping).getTargetIdentifier();
+		if (mapping instanceof IJavaURIMapping) {
+			URI uri = ((IJavaURIMapping)mapping).getTarget();
 			if (uri != null) {
 				org.eclipse.emf.ecore.EObject result = null;
 				try {
@@ -163,7 +163,7 @@ public class JavaResource2 extends ResourceImpl {
 			}
 			return null;
 		} else if (mapping instanceof IJavaElementMapping<?>) {
-			EObject element = ((IJavaElementMapping<? extends EObject>)mapping).getTargetElement();
+			EObject element = ((IJavaElementMapping<? extends EObject>)mapping).getTarget();
 			org.eclipse.emf.ecore.EReference reference = uriFragment.getReference();
 			org.eclipse.emf.ecore.EReference oppositeReference = uriFragment.getReference().getEOpposite();
 			if (!uriFragment.getReference().isContainment() && oppositeReference != null) {

@@ -98,10 +98,10 @@ public abstract class JavaContextDependentURIFragment<ContainerType extends org.
 		int proxyPosition = list.indexOf(proxy);
 		
 		if (mapping instanceof org.emftext.language.java.resolver.result.IJavaElementMapping<?>) {
-			target = ((org.emftext.language.java.resolver.result.IJavaElementMapping<ReferenceType>) mapping).getTargetElement();
-		} else if (mapping instanceof org.emftext.language.java.resolver.result.IJavaURIMapping<?>) {
+			target = ((org.emftext.language.java.resolver.result.IJavaElementMapping<ReferenceType>) mapping).getTarget();
+		} else if (mapping instanceof org.emftext.language.java.resolver.result.IJavaURIMapping) {
 			target = org.eclipse.emf.ecore.util.EcoreUtil.copy(proxy);
-			org.eclipse.emf.common.util.URI uri = ((org.emftext.language.java.resolver.result.IJavaURIMapping<ReferenceType>) mapping).getTargetIdentifier();
+			org.eclipse.emf.common.util.URI uri = ((org.emftext.language.java.resolver.result.IJavaURIMapping) mapping).getTarget();
 			((org.eclipse.emf.ecore.InternalEObject) target).eSetProxyURI(uri);
 		} else {
 			assert false;

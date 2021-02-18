@@ -17,14 +17,34 @@
  ******************************************************************************/
 package org.emftext.language.java.resolver.result;
 
-import org.eclipse.emf.common.util.URI;
-
 /**
- * A basic implementation of the IJavaURIMapping interface that can map
- * identifiers to URIs.
+ * A basic implementation of the IJavaReferenceMapping interface.
+ * 
+ * @param <ReferenceType> the type of the reference that can be mapped to.
  */
-public class JavaURIMapping extends AbstractBaseJavaReferenceMapping<URI> implements IJavaURIMapping {
-	public JavaURIMapping(String identifier, URI newIdentifier, String warning) {
-		super(identifier, newIdentifier, warning);
+public abstract class AbstractBaseJavaReferenceMapping<ReferenceType> implements IJavaReferenceMapping<ReferenceType> {
+	private final ReferenceType target;
+	private String identifier;
+	private String warning;
+	
+	public AbstractBaseJavaReferenceMapping(String identifier, ReferenceType target, String warning) {
+		this.target = target;
+		this.identifier = identifier;
+		this.warning = warning;
+	}
+	
+	@Override
+	public ReferenceType getTarget() {
+		return target;
+	}
+	
+	@Override
+	public String getIdentifier() {
+		return identifier;
+	}
+	
+	@Override
+	public String getWarning() {
+		return warning;
 	}
 }
