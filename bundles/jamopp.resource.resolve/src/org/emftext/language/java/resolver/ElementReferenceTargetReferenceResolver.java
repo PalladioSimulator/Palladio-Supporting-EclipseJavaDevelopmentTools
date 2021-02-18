@@ -45,7 +45,7 @@ import org.emftext.language.java.resolver.decider.PackageDecider;
 import org.emftext.language.java.resolver.decider.ParameterDecider;
 import org.emftext.language.java.resolver.decider.ScopedTreeWalker;
 import org.emftext.language.java.resolver.decider.TypeParameterDecider;
-import org.emftext.language.java.resource.java.IJavaReferenceResolveResult;
+import org.emftext.language.java.resolver.result.IJavaReferenceResolveResult;
 import org.emftext.language.java.statements.Return;
 import org.emftext.language.java.types.PrimitiveType;
 import org.emftext.language.java.util.TemporalCompositeClassifier;

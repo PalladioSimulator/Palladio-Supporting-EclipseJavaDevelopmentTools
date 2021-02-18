@@ -23,7 +23,7 @@ import org.emftext.language.java.annotations.AnnotationAttributeSetting;
 import org.emftext.language.java.members.InterfaceMethod;
 import org.emftext.language.java.resolver.decider.InterfaceMethodDecider;
 import org.emftext.language.java.resolver.decider.ScopedTreeWalker;
-import org.emftext.language.java.resource.java.IJavaReferenceResolveResult;
+import org.emftext.language.java.resolver.result.IJavaReferenceResolveResult;
 
 /**
  * Resolves the attribute, i. e., the interface method, of an set attribute within an annotation.

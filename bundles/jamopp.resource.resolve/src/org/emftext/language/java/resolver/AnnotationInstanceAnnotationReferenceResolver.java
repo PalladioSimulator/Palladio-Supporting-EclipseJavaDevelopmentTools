@@ -28,7 +28,7 @@ import org.emftext.language.java.classifiers.Classifier;
 import org.emftext.language.java.classifiers.ConcreteClassifier;
 import org.emftext.language.java.resolver.decider.ConcreteClassifierDecider;
 import org.emftext.language.java.resolver.decider.ScopedTreeWalker;
-import org.emftext.language.java.resource.java.IJavaReferenceResolveResult;
+import org.emftext.language.java.resolver.result.IJavaReferenceResolveResult;
 
 public class AnnotationInstanceAnnotationReferenceResolver implements
 	IJavaReferenceResolver<AnnotationInstance, Classifier> {

@@ -15,7 +15,9 @@
  *   Martin Armbruster
  *      - Extension for Java 7-13
  ******************************************************************************/
-package org.emftext.language.java.resource.java;
+package org.emftext.language.java.resolver.result;
+
+import org.eclipse.emf.common.util.URI;
 
 /**
  * Implementors of this interface map identifiers to URIs. This is sometimes
@@ -24,13 +26,13 @@ package org.emftext.language.java.resource.java;
  * @param <ReferenceType> unused type parameter which is needed to implement
  * org.emftext.language.java.resource.java.IJavaReferenceMapping.
  */
-public interface IJavaURIMapping<ReferenceType> extends org.emftext.language.java.resource.java.IJavaReferenceMapping<ReferenceType> {
-	
+public interface IJavaURIMapping<ReferenceType> extends IJavaReferenceMapping<ReferenceType> {
 	/**
 	 * Returns an alternative proxy URI that should follow EMF's default naming scheme
 	 * such that it can be resolved by the default resolution mechanism that will be
 	 * called on this URI (see <code>Resource.getEObject()</code>).
+	 * 
+	 * @return the mapped URI.
 	 */
-	public org.eclipse.emf.common.util.URI getTargetIdentifier();
-	
+	public URI getTargetIdentifier();
 }

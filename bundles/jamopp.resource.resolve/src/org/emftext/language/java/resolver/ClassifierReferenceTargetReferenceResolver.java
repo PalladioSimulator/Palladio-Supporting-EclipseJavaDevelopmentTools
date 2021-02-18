@@ -35,7 +35,7 @@ import org.emftext.language.java.references.ReferencesPackage;
 import org.emftext.language.java.resolver.decider.ConcreteClassifierDecider;
 import org.emftext.language.java.resolver.decider.ScopedTreeWalker;
 import org.emftext.language.java.resolver.decider.TypeParameterDecider;
-import org.emftext.language.java.resource.java.IJavaReferenceResolveResult;
+import org.emftext.language.java.resolver.result.IJavaReferenceResolveResult;
 import org.emftext.language.java.types.ClassifierReference;
 import org.emftext.language.java.types.NamespaceClassifierReference;
 import org.emftext.language.java.types.TypeReference;

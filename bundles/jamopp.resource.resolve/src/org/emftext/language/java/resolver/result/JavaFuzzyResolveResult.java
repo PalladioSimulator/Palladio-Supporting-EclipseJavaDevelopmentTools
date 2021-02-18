@@ -15,7 +15,7 @@
  *   Martin Armbruster
  *      - Extension for Java 7-13
  ******************************************************************************/
-package org.emftext.language.java.resource.java.mopp;
+package org.emftext.language.java.resolver.result;
 
 /**
  * A FuzzyResolveResult is an implementation of the IJavaReferenceResolveResult
@@ -26,11 +26,11 @@ package org.emftext.language.java.resource.java.mopp;
  * 
  * @param <ReferenceType> the type of the reference that is resolved
  */
-public class JavaFuzzyResolveResult<ReferenceType extends org.eclipse.emf.ecore.EObject> implements org.emftext.language.java.resource.java.IJavaReferenceResolveResult<ReferenceType> {
+public class JavaFuzzyResolveResult<ReferenceType extends org.eclipse.emf.ecore.EObject> implements org.emftext.language.java.resolver.result.IJavaReferenceResolveResult<ReferenceType> {
 	
-	private org.emftext.language.java.resource.java.IJavaReferenceResolveResult<org.eclipse.emf.ecore.EObject> delegate;
+	private org.emftext.language.java.resolver.result.IJavaReferenceResolveResult<org.eclipse.emf.ecore.EObject> delegate;
 	
-	public JavaFuzzyResolveResult(org.emftext.language.java.resource.java.IJavaReferenceResolveResult<org.eclipse.emf.ecore.EObject> delegate) {
+	public JavaFuzzyResolveResult(org.emftext.language.java.resolver.result.IJavaReferenceResolveResult<org.eclipse.emf.ecore.EObject> delegate) {
 		this.delegate = delegate;
 	}
 	
@@ -38,7 +38,7 @@ public class JavaFuzzyResolveResult<ReferenceType extends org.eclipse.emf.ecore.
 		return delegate.getErrorMessage();
 	}
 	
-	public java.util.Collection<org.emftext.language.java.resource.java.IJavaReferenceMapping<ReferenceType>> getMappings() {
+	public java.util.Collection<org.emftext.language.java.resolver.result.IJavaReferenceMapping<ReferenceType>> getMappings() {
 		return null;
 	}
 	

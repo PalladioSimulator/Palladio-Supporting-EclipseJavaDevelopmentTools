@@ -19,7 +19,7 @@ package org.emftext.language.java.resolver;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
-import org.emftext.language.java.resource.java.IJavaReferenceResolveResult;
+import org.emftext.language.java.resolver.result.IJavaReferenceResolveResult;
 
 /**
  * A reference resolver tries to resolve a reference to one or many model elements

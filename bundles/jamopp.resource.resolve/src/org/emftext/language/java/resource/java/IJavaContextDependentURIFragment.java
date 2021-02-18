@@ -80,7 +80,7 @@ public interface IJavaContextDependentURIFragment<ReferenceType extends org.ecli
 	 * 
 	 * @return result of resolving process
 	 */
-	public org.emftext.language.java.resource.java.IJavaReferenceResolveResult<ReferenceType> resolve();
+	public org.emftext.language.java.resolver.result.IJavaReferenceResolveResult<ReferenceType> resolve();
 	
 	/**
 	 * 

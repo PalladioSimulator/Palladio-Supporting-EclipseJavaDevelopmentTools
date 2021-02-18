@@ -15,37 +15,39 @@
  *   Martin Armbruster
  *      - Extension for Java 7-13
  ******************************************************************************/
-package org.emftext.language.java.resource.java.mopp;
+package org.emftext.language.java.resolver.result;
+
+import org.eclipse.emf.ecore.EObject;
 
 /**
  * A basic implementation of the
  * org.emftext.language.java.resource.java.IJavaElementMapping interface.
  * 
- * @param <ReferenceType> the type of the reference that can be mapped to
+ * @param <ReferenceType> the type of the reference that can be mapped to.
  */
-public class JavaElementMapping<ReferenceType> implements org.emftext.language.java.resource.java.IJavaElementMapping<ReferenceType> {
-	
+public class JavaElementMapping<ReferenceType extends EObject> implements IJavaElementMapping<ReferenceType> {
 	private final ReferenceType target;
 	private String identifier;
 	private String warning;
 	
 	public JavaElementMapping(String identifier, ReferenceType target, String warning) {
-		super();
 		this.target = target;
 		this.identifier = identifier;
 		this.warning = warning;
 	}
 	
+	@Override
 	public ReferenceType getTargetElement() {
 		return target;
 	}
 	
+	@Override
 	public String getIdentifier() {
 		return identifier;
 	}
 	
+	@Override
 	public String getWarning() {
 		return warning;
 	}
-	
 }

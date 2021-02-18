@@ -24,7 +24,7 @@ import org.emftext.language.java.members.EnumConstant;
 import org.emftext.language.java.members.Member;
 import org.emftext.language.java.modifiers.AnnotableAndModifiable;
 import org.emftext.language.java.references.ReferenceableElement;
-import org.emftext.language.java.resource.java.IJavaReferenceResolveResult;
+import org.emftext.language.java.resolver.result.IJavaReferenceResolveResult;
 
 public class StaticMemberImportStaticMembersReferenceResolver implements
 	IJavaReferenceResolver<StaticMemberImport, ReferenceableElement> {

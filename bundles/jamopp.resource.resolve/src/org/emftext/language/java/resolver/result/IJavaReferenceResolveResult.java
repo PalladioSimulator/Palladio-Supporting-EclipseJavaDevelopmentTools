@@ -15,7 +15,12 @@
  *   Martin Armbruster
  *      - Extension for Java 7-13
  ******************************************************************************/
-package org.emftext.language.java.resource.java;
+package org.emftext.language.java.resolver.result;
+
+import java.util.Collection;
+
+import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EObject;
 
 /**
  * The result of a single attempt to resolve an identifier. The result can either
@@ -25,13 +30,15 @@ package org.emftext.language.java.resource.java;
  * This interface must not be implemented by clients.
  * 
  * @param <ReferenceType> the type of the references that can be contained in this
- * result
+ * result.
  */
-public interface IJavaReferenceResolveResult<ReferenceType> {
+public interface IJavaReferenceResolveResult<ReferenceType extends EObject> {
 	
 	/**
 	 * Returns the error message that describes what went wrong while resolving a
 	 * reference.
+	 * 
+	 * @return the error message.
 	 */
 	public String getErrorMessage();
 	
@@ -41,7 +48,7 @@ public interface IJavaReferenceResolveResult<ReferenceType> {
 	 * was called before), the call to this method is ignored. If addMapping() is
 	 * called afterwards, the error message is also discarded.
 	 * 
-	 * @param message the error that prevented resolving the reference
+	 * @param message the error that prevented resolving the reference.
 	 */
 	public void setErrorMessage(String message);
 	
@@ -49,12 +56,16 @@ public interface IJavaReferenceResolveResult<ReferenceType> {
 	 * Adds a mapping from the given identifier to the given object. Adding such a
 	 * mapping means that the identifier was resolved to reference the target object.
 	 * Previous errors as well as future ones will be discarded. Once a mapping is
-	 * found, resolve errors have no meaning any more.
-	 * The target object can be null if the resolution is fuzzy. Otherwise target must
+	 * found, resolve errors have no meaning anymore.
+	 * The target object can be null if the resolution is fuzzy. Otherwise, the target must
 	 * not be null and implementations of this method can throw an
 	 * IllegalArgumentException if this rule is violated.
-	 * Optionally a warning can be passed to this method if resolving the reference
+	 * Optionally, a warning can be passed to this method if resolving the reference
 	 * was successful, but not accurate.
+	 * 
+	 * @param identifier the giver identifier.
+	 * @param target the resolved target object for the identifier.
+	 * @param warning 
 	 */
 	public void addMapping(String identifier, ReferenceType target, String warning);
 	
@@ -69,50 +80,52 @@ public interface IJavaReferenceResolveResult<ReferenceType> {
 	 * for multilevel resolving where internal identifiers are replaced by external
 	 * ones depending on the context. Usually the external identifiers are replaced by
 	 * target object later on.
-	 * Optionally a warning can be passed to this method if resolving reference was
+	 * Optionally, a warning can be passed to this method if resolving reference was
 	 * successful, but not accurate.
 	 * 
 	 * @param identifier
 	 * @param newIdentifier
+	 * @param warning
 	 */
-	public void addMapping(String identifier, org.eclipse.emf.common.util.URI newIdentifier, String warning);
+	public void addMapping(String identifier, URI newIdentifier, String warning);
 	
 	/**
 	 * 
 	 * @see addMapping(String, org.eclipse.emf.common.util.URI, String)
 	 */
-	public void addMapping(String identifier, org.eclipse.emf.common.util.URI newIdentifier);
+	public void addMapping(String identifier, URI newIdentifier);
 	
 	/**
-	 * Indicates the type of the result. Depending on the type of the result different
+	 * Indicates the type of the result. Depending on the type of the result, different
 	 * information is available (e.g., the error message is only set if the resolve
 	 * operation failed).
 	 * 
-	 * @return true if the reference was successfully resolved
+	 * @return true if the reference was successfully resolved.
 	 */
 	public boolean wasResolved();
 	
 	/**
-	 * Indicates the type of the result. Depending on the type of the result different
+	 * Indicates the type of the result. Depending on the type of the result, different
 	 * information is available (e.g., the unique mapping is only set if the resolve
 	 * operation returned a unique result).
 	 * 
-	 * @return true if the reference was resolved to exactly one target object
+	 * @return true if the reference was resolved to exactly one target object.
 	 */
 	public boolean wasResolvedUniquely();
 	
 	/**
-	 * Indicates the type of the result. Depending on the type of the result different
+	 * Indicates the type of the result. Depending on the type of the result, different
 	 * information is available (e.g., the multiple mappings are only set if the
 	 * resolve operation returned multiple result).
 	 * 
-	 * @return true the reference was resolved to more than one target object
+	 * @return true the reference was resolved to more than one target object.
 	 */
 	public boolean wasResolvedMultiple();
 	
 	/**
 	 * Returns all mappings that were found while resolving an identifier.
+	 * 
+	 * @return the mappings.
 	 */
-	public java.util.Collection<org.emftext.language.java.resource.java.IJavaReferenceMapping<ReferenceType>> getMappings();
-	
+	public Collection<IJavaReferenceMapping<ReferenceType>> getMappings();
 }

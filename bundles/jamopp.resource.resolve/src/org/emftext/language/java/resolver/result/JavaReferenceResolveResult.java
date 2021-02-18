@@ -15,7 +15,12 @@
  *   Martin Armbruster
  *      - Extension for Java 7-13
  ******************************************************************************/
-package org.emftext.language.java.resource.java.mopp;
+package org.emftext.language.java.resolver.result;
+
+import java.util.ArrayList;
+import java.util.Collection;
+
+import org.eclipse.emf.ecore.EObject;
 
 /**
  * A basic implementation of the
@@ -23,11 +28,10 @@ package org.emftext.language.java.resource.java.mopp;
  * that collects mappings in a list.
  * 
  * @param <ReferenceType> the type of the references that can be contained in this
- * result
+ * result.
  */
-public class JavaReferenceResolveResult<ReferenceType> implements org.emftext.language.java.resource.java.IJavaReferenceResolveResult<ReferenceType> {
-	
-	private java.util.Collection<org.emftext.language.java.resource.java.IJavaReferenceMapping<ReferenceType>> mappings;
+public class JavaReferenceResolveResult<ReferenceType extends EObject> implements IJavaReferenceResolveResult<ReferenceType> {
+	private Collection<IJavaReferenceMapping<ReferenceType>> mappings;
 	private String errorMessage;
 	private boolean resolveFuzzy;
 	
@@ -36,30 +40,37 @@ public class JavaReferenceResolveResult<ReferenceType> implements org.emftext.la
 		this.resolveFuzzy = resolveFuzzy;
 	}
 	
+	@Override
 	public String getErrorMessage() {
 		return errorMessage;
 	}
 	
-	public java.util.Collection<org.emftext.language.java.resource.java.IJavaReferenceMapping<ReferenceType>> getMappings() {
+	@Override
+	public Collection<IJavaReferenceMapping<ReferenceType>> getMappings() {
 		return mappings;
 	}
 	
+	@Override
 	public boolean wasResolved() {
 		return mappings != null;
 	}
 	
+	@Override
 	public boolean wasResolvedMultiple() {
 		return mappings != null && mappings.size() > 1;
 	}
 	
+	@Override
 	public boolean wasResolvedUniquely() {
 		return mappings != null && mappings.size() == 1;
 	}
 	
+	@Override
 	public void setErrorMessage(String message) {
 		errorMessage = message;
 	}
 	
+	@Override
 	public void addMapping(String identifier, ReferenceType target) {
 		if (!resolveFuzzy && target == null) {
 			throw new IllegalArgumentException("Mapping references to null is only allowed for fuzzy resolution.");
@@ -67,22 +78,25 @@ public class JavaReferenceResolveResult<ReferenceType> implements org.emftext.la
 		addMapping(identifier, target, null);
 	}
 	
+	@Override
 	public void addMapping(String identifier, ReferenceType target, String warning) {
 		if (mappings == null) {
-			mappings = new java.util.ArrayList<org.emftext.language.java.resource.java.IJavaReferenceMapping<ReferenceType>>(1);
+			mappings = new ArrayList<IJavaReferenceMapping<ReferenceType>>(1);
 		}
-		mappings.add(new org.emftext.language.java.resource.java.mopp.JavaElementMapping<ReferenceType>(identifier, target, warning));
+		mappings.add(new JavaElementMapping<ReferenceType>(identifier, target, warning));
 		errorMessage = null;
 	}
 	
+	@Override
 	public void addMapping(String identifier, org.eclipse.emf.common.util.URI uri) {
 		addMapping(identifier, uri, null);
 	}
 	
+	@Override
 	public void addMapping(String identifier, org.eclipse.emf.common.util.URI uri, String warning) {
 		if (mappings == null) {
-			mappings = new java.util.ArrayList<org.emftext.language.java.resource.java.IJavaReferenceMapping<ReferenceType>>(1);
+			mappings = new ArrayList<IJavaReferenceMapping<ReferenceType>>(1);
 		}
-		mappings.add(new org.emftext.language.java.resource.java.mopp.JavaURIMapping<ReferenceType>(identifier, uri, warning));
+		mappings.add(new JavaURIMapping<ReferenceType>(identifier, uri, warning));
 	}
 }

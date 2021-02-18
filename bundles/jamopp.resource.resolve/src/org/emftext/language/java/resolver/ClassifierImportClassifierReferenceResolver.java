@@ -23,7 +23,7 @@ import org.emftext.language.java.JavaClasspath;
 import org.emftext.language.java.LogicalJavaURIGenerator;
 import org.emftext.language.java.classifiers.ConcreteClassifier;
 import org.emftext.language.java.imports.Import;
-import org.emftext.language.java.resource.java.IJavaReferenceResolveResult;
+import org.emftext.language.java.resolver.result.IJavaReferenceResolveResult;
 
 public class ClassifierImportClassifierReferenceResolver implements
 	IJavaReferenceResolver<Import, ConcreteClassifier> {

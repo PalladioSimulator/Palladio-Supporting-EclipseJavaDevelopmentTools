@@ -15,22 +15,27 @@
  *   Martin Armbruster
  *      - Extension for Java 7-13
  ******************************************************************************/
-package org.emftext.language.java.resource.java;
+package org.emftext.language.java.resolver;
+
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EReference;
+import org.emftext.language.java.resolver.result.IJavaReferenceResolveResult;
 
 /**
  * A IJavaReferenceResolverSwitch holds references to multiple other reference
  * resolvers and delegates requests to the appropriate resolver.
  */
 public interface IJavaReferenceResolverSwitch {
-	
 	/**
 	 * Attempts to resolve a reference string fuzzy (returning objects that do not
-	 * match exactly). This is need during code completion.
+	 * match exactly). This is needed during code completion.
 	 * 
 	 * @param identifier The identifier for the reference.
 	 * @param container The object that contains the reference.
 	 * @param reference The reference that points to the target of the reference.
+	 * @param position The index of the reference (if it has an upper bound greater
+	 * than 1).
 	 * @param result an object to store the result of the resolve operation.
 	 */
-	public void resolveFuzzy(String identifier, org.eclipse.emf.ecore.EObject container, org.eclipse.emf.ecore.EReference reference, int position, org.emftext.language.java.resource.java.IJavaReferenceResolveResult<org.eclipse.emf.ecore.EObject> result);
+	public void resolveFuzzy(String identifier, EObject container, EReference reference, int position, IJavaReferenceResolveResult<EObject> result);
 }

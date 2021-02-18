@@ -15,12 +15,12 @@ import org.emftext.language.java.LogicalJavaURIGenerator;
 import org.emftext.language.java.containers.CompilationUnit;
 import org.emftext.language.java.containers.JavaRoot;
 import org.emftext.language.java.members.MemberContainer;
+import org.emftext.language.java.resolver.result.IJavaElementMapping;
+import org.emftext.language.java.resolver.result.IJavaReferenceMapping;
+import org.emftext.language.java.resolver.result.IJavaReferenceResolveResult;
+import org.emftext.language.java.resolver.result.IJavaURIMapping;
 import org.emftext.language.java.resource.java.IJavaContextDependentURIFragment;
 import org.emftext.language.java.resource.java.IJavaContextDependentURIFragmentWrapper;
-import org.emftext.language.java.resource.java.IJavaElementMapping;
-import org.emftext.language.java.resource.java.IJavaReferenceMapping;
-import org.emftext.language.java.resource.java.IJavaReferenceResolveResult;
-import org.emftext.language.java.resource.java.IJavaURIMapping;
 import org.emftext.language.java.resource.java.util.JavaCastUtil;
 
 import jamopp.parser.api.JaMoPPParserAPI;

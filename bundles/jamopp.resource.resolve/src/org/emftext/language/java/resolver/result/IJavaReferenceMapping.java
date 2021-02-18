@@ -15,17 +15,31 @@
  *   Martin Armbruster
  *      - Extension for Java 7-13
  ******************************************************************************/
-package org.emftext.language.java.resource.java;
+package org.emftext.language.java.resolver.result;
 
 /**
- * A mapping from an identifier to an EObject.
+ * A mapping from an identifier to something else. The &quot;something else&quot;
+ * is defined by subclasses of this interface. Implementors of such subclasses are
+ * used during the process of resolving references where identifiers need to be
+ * mapped to other objects.
+ * This interface must not be implemented by clients.
  * 
  * @param <ReferenceType> the type of the reference this mapping points to.
  */
-public interface IJavaElementMapping<ReferenceType> extends org.emftext.language.java.resource.java.IJavaReferenceMapping<ReferenceType> {
+public interface IJavaReferenceMapping<ReferenceType> {
+	/**
+	 * Returns the identifier that is mapped.
+	 * 
+	 * @return the identifier.
+	 */
+	public String getIdentifier();
 	
 	/**
-	 * Returns the target object the identifier is mapped to.
+	 * A mapping can have a warning attached that contains additional information
+	 * (e.g., when the mapping might be wrong under specific conditions). The warning
+	 * is meant to be presented to the user together with the mapping result.
+	 * 
+	 * @return the warning.
 	 */
-	public ReferenceType getTargetElement();
+	public String getWarning();
 }

@@ -32,7 +32,7 @@ public abstract class JavaContextDependentURIFragment<ContainerType extends org.
 	protected org.eclipse.emf.ecore.EReference reference;
 	protected int positionInReference;
 	protected org.eclipse.emf.ecore.EObject proxy;
-	protected org.emftext.language.java.resource.java.IJavaReferenceResolveResult<ReferenceType> result;
+	protected org.emftext.language.java.resolver.result.IJavaReferenceResolveResult<ReferenceType> result;
 	
 	private boolean resolving;
 	
@@ -48,13 +48,13 @@ public abstract class JavaContextDependentURIFragment<ContainerType extends org.
 		return result != null;
 	}
 	
-	public org.emftext.language.java.resource.java.IJavaReferenceResolveResult<ReferenceType> resolve() {
+	public org.emftext.language.java.resolver.result.IJavaReferenceResolveResult<ReferenceType> resolve() {
 		if (resolving) {
 			return null;
 		}
 		resolving = true;
 		if (result == null || !result.wasResolved()) {
-			result = new org.emftext.language.java.resource.java.mopp.JavaReferenceResolveResult<ReferenceType>(false);
+			result = new org.emftext.language.java.resolver.result.JavaReferenceResolveResult<ReferenceType>(false);
 			// set an initial default error message
 			result.setErrorMessage(getStdErrorMessage());
 			
@@ -82,7 +82,7 @@ public abstract class JavaContextDependentURIFragment<ContainerType extends org.
 		}
 		
 		boolean first = true;
-		for (org.emftext.language.java.resource.java.IJavaReferenceMapping<ReferenceType> mapping : result.getMappings()) {
+		for (org.emftext.language.java.resolver.result.IJavaReferenceMapping<ReferenceType> mapping : result.getMappings()) {
 			if (first) {
 				first = false;
 			} else if (list != null) {
@@ -93,15 +93,15 @@ public abstract class JavaContextDependentURIFragment<ContainerType extends org.
 		}
 	}
 	
-	private void addResultToList(org.emftext.language.java.resource.java.IJavaReferenceMapping<ReferenceType> mapping, org.eclipse.emf.ecore.EObject proxy, org.eclipse.emf.common.util.EList<org.eclipse.emf.ecore.EObject> list) {
+	private void addResultToList(org.emftext.language.java.resolver.result.IJavaReferenceMapping<ReferenceType> mapping, org.eclipse.emf.ecore.EObject proxy, org.eclipse.emf.common.util.EList<org.eclipse.emf.ecore.EObject> list) {
 		org.eclipse.emf.ecore.EObject target = null;
 		int proxyPosition = list.indexOf(proxy);
 		
-		if (mapping instanceof org.emftext.language.java.resource.java.IJavaElementMapping<?>) {
-			target = ((org.emftext.language.java.resource.java.IJavaElementMapping<ReferenceType>) mapping).getTargetElement();
-		} else if (mapping instanceof org.emftext.language.java.resource.java.IJavaURIMapping<?>) {
+		if (mapping instanceof org.emftext.language.java.resolver.result.IJavaElementMapping<?>) {
+			target = ((org.emftext.language.java.resolver.result.IJavaElementMapping<ReferenceType>) mapping).getTargetElement();
+		} else if (mapping instanceof org.emftext.language.java.resolver.result.IJavaURIMapping<?>) {
 			target = org.eclipse.emf.ecore.util.EcoreUtil.copy(proxy);
-			org.eclipse.emf.common.util.URI uri = ((org.emftext.language.java.resource.java.IJavaURIMapping<ReferenceType>) mapping).getTargetIdentifier();
+			org.eclipse.emf.common.util.URI uri = ((org.emftext.language.java.resolver.result.IJavaURIMapping<ReferenceType>) mapping).getTargetIdentifier();
 			((org.eclipse.emf.ecore.InternalEObject) target).eSetProxyURI(uri);
 		} else {
 			assert false;
