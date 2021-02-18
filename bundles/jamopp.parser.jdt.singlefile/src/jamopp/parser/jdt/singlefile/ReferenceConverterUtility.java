@@ -39,14 +39,7 @@ import org.eclipse.jdt.core.dom.SuperMethodInvocation;
 import org.eclipse.jdt.core.dom.ThisExpression;
 import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeLiteral;
-import org.emftext.language.java.resource.java.IJavaContextDependentURIFragmentWrapper;
-import org.emftext.language.java.resource.java.JavaContextDependentURIFragmentFactoryFactory;
-
-import jamopp.parser.jdt.singlefile.AnnotationInstanceOrModifierConverterUtility;
-import jamopp.parser.jdt.singlefile.BaseConverterUtility;
-import jamopp.parser.jdt.singlefile.ClassifierConverterUtility;
-import jamopp.parser.jdt.singlefile.ExpressionConverterUtility;
-import jamopp.parser.jdt.singlefile.LayoutInformationConverter;
+import org.emftext.language.java.resource.java.IJavaContextDependentURIFragmentCollector;
 
 class ReferenceConverterUtility {
 	static org.emftext.language.java.references.Reference convertToReference(Expression expr) {
@@ -129,7 +122,7 @@ class ReferenceConverterUtility {
 			arr.arguments().forEach(obj -> result.getArguments().add(ExpressionConverterUtility.convertToExpression((Expression) obj)));
 			org.emftext.language.java.members.Method methodProxy = org.emftext.language.java.members.MembersFactory.eINSTANCE.createClassMethod();
 			BaseConverterUtility.convertToSimpleNameOnlyAndSet(arr.getName(), methodProxy);
-			IJavaContextDependentURIFragmentWrapper.GLOBAL_INSTANCE.registerContextDependentProxy(JavaContextDependentURIFragmentFactoryFactory.ELEMENT_REFERENCE_TARGET_REFERENCE_FACTORY,
+			IJavaContextDependentURIFragmentCollector.GLOBAL_INSTANCE.registerContextDependentURIFragment(
 				result, org.emftext.language.java.references.ReferencesPackage.Literals.ELEMENT_REFERENCE__TARGET, methodProxy.getName(), methodProxy, -1);
 			result.setTarget(methodProxy);
 			LayoutInformationConverter.convertToMinimalLayoutInformation(result, arr);
@@ -183,7 +176,7 @@ class ReferenceConverterUtility {
 			arr.arguments().forEach(obj -> partTwo.getArguments().add(ExpressionConverterUtility.convertToExpression((Expression) obj)));
 			org.emftext.language.java.members.Method proxy = org.emftext.language.java.members.MembersFactory.eINSTANCE.createClassMethod();
 			BaseConverterUtility.convertToSimpleNameOnlyAndSet(arr.getName(), proxy);
-			IJavaContextDependentURIFragmentWrapper.GLOBAL_INSTANCE.registerContextDependentProxy(JavaContextDependentURIFragmentFactoryFactory.ELEMENT_REFERENCE_TARGET_REFERENCE_FACTORY,
+			IJavaContextDependentURIFragmentCollector.GLOBAL_INSTANCE.registerContextDependentURIFragment(
 					partTwo, org.emftext.language.java.references.ReferencesPackage.Literals.ELEMENT_REFERENCE__TARGET, proxy.getName(), proxy, -1);
 			partTwo.setTarget(proxy);
 			partOne.setNext(partTwo);
@@ -220,7 +213,7 @@ class ReferenceConverterUtility {
 		org.emftext.language.java.references.IdentifierReference result = org.emftext.language.java.references.ReferencesFactory.eINSTANCE.createIdentifierReference();
 		org.emftext.language.java.members.Field proxy = org.emftext.language.java.members.MembersFactory.eINSTANCE.createField();
 		proxy.setName(name);
-		IJavaContextDependentURIFragmentWrapper.GLOBAL_INSTANCE.registerContextDependentProxy(JavaContextDependentURIFragmentFactoryFactory.ELEMENT_REFERENCE_TARGET_REFERENCE_FACTORY,
+		IJavaContextDependentURIFragmentCollector.GLOBAL_INSTANCE.registerContextDependentURIFragment(
 				result, org.emftext.language.java.references.ReferencesPackage.Literals.ELEMENT_REFERENCE__TARGET, proxy.getName(), proxy, -1);
 		result.setTarget(proxy);
 		return result;

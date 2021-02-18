@@ -23,12 +23,7 @@ import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.core.dom.NormalAnnotation;
 import org.eclipse.jdt.core.dom.QualifiedName;
 import org.eclipse.jdt.core.dom.SingleMemberAnnotation;
-import org.emftext.language.java.resource.java.IJavaContextDependentURIFragmentWrapper;
-import org.emftext.language.java.resource.java.JavaContextDependentURIFragmentFactoryFactory;
-
-import jamopp.parser.jdt.singlefile.BaseConverterUtility;
-import jamopp.parser.jdt.singlefile.ExpressionConverterUtility;
-import jamopp.parser.jdt.singlefile.LayoutInformationConverter;
+import org.emftext.language.java.resource.java.IJavaContextDependentURIFragmentCollector;
 
 class AnnotationInstanceOrModifierConverterUtility {
 	static org.emftext.language.java.modifiers.AnnotationInstanceOrModifier converToModifierOrAnnotationInstance(IExtendedModifier mod) {
@@ -79,7 +74,7 @@ class AnnotationInstanceOrModifierConverterUtility {
 			BaseConverterUtility.convertToNamespacesAndSet(
 				((QualifiedName) annot.getTypeName()).getQualifier(), result);
 		}
-		IJavaContextDependentURIFragmentWrapper.GLOBAL_INSTANCE.registerContextDependentProxy(JavaContextDependentURIFragmentFactoryFactory.ANNOTATION_INSTANCE_ANNOTATION_REFERENCE_FACTORY, result,
+		IJavaContextDependentURIFragmentCollector.GLOBAL_INSTANCE.registerContextDependentURIFragment(result,
 			org.emftext.language.java.annotations.AnnotationsPackage.Literals.ANNOTATION_INSTANCE__ANNOTATION, proxyClass.getName(), proxyClass, -1);
 		result.setAnnotation(proxyClass);
 		if (annot.isSingleMemberAnnotation()) {
@@ -99,7 +94,7 @@ class AnnotationInstanceOrModifierConverterUtility {
 					.createAnnotationAttributeSetting();
 				org.emftext.language.java.members.InterfaceMethod methodProxy = org.emftext.language.java.members.MembersFactory.eINSTANCE.createInterfaceMethod();
 				BaseConverterUtility.convertToSimpleNameOnlyAndSet(memVal.getName(), methodProxy);
-				IJavaContextDependentURIFragmentWrapper.GLOBAL_INSTANCE.registerContextDependentProxy(JavaContextDependentURIFragmentFactoryFactory.ANNOTATION_ATTRIBUTE_SETTING_INTERFACE_METHOD_FACTORY, attrSet,
+				IJavaContextDependentURIFragmentCollector.GLOBAL_INSTANCE.registerContextDependentURIFragment(attrSet,
 					org.emftext.language.java.annotations.AnnotationsPackage.Literals.ANNOTATION_ATTRIBUTE_SETTING__ATTRIBUTE, methodProxy.getName(), methodProxy, -1);
 				attrSet.setAttribute(methodProxy);
 				attrSet.setValue(convertToAnnotationValue(memVal.getValue()));

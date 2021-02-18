@@ -25,7 +25,6 @@ import org.emftext.language.java.annotations.AnnotationInstance;
 import org.emftext.language.java.annotations.AnnotationsPackage;
 import org.emftext.language.java.classifiers.Classifier;
 import org.emftext.language.java.classifiers.ConcreteClassifier;
-import org.emftext.language.java.imports.ClassifierImport;
 import org.emftext.language.java.imports.Import;
 import org.emftext.language.java.imports.ImportsPackage;
 import org.emftext.language.java.imports.StaticMemberImport;
@@ -88,12 +87,12 @@ public class JavaReferenceResolverSwitch implements IJavaReferenceResolver<EObje
 		if (container == null) {
 			return;
 		}
-		if (ImportsPackage.eINSTANCE.getClassifierImport().isInstance(container)) {
+		if (ImportsPackage.eINSTANCE.getImport().isInstance(container)) {
 			EStructuralFeature feature = container.eClass().getEStructuralFeature(reference.getName());
 			JavaDelegatingResolveResult<EObject, ConcreteClassifier> frr = new JavaDelegatingResolveResult<>(result);
 			if (feature != null && feature instanceof EReference
-					&& ImportsPackage.CLASSIFIER_IMPORT__CLASSIFIER == feature.getFeatureID()) {
-				classifierImportClassifierReferenceResolver.resolve(identifier, (ClassifierImport) container,
+					&& ImportsPackage.IMPORT__CLASSIFIER == feature.getFeatureID()) {
+				classifierImportClassifierReferenceResolver.resolve(identifier, (Import) container,
 						(EReference) feature, position, frr);
 			}
 		}

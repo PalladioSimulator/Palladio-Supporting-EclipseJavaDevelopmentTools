@@ -52,28 +52,6 @@ public class JavaEObjectUtil {
 		}
 	}
 	
-	public static Object invokeOperation(org.eclipse.emf.ecore.EObject element, org.eclipse.emf.ecore.EOperation o) {
-		java.lang.reflect.Method method;
-		try {
-			method = element.getClass().getMethod(o.getName(), new Class[]{});
-			if (method != null) {
-				Object result = method.invoke(element, new Object[]{});
-				return result;
-			}
-		} catch (SecurityException e) {
-			new org.emftext.language.java.resource.java.util.JavaRuntimeUtil().logError("Exception while matching proxy URI.", e);
-		} catch (NoSuchMethodException e) {
-			new org.emftext.language.java.resource.java.util.JavaRuntimeUtil().logError("Exception while matching proxy URI.", e);
-		} catch (IllegalArgumentException e) {
-			new org.emftext.language.java.resource.java.util.JavaRuntimeUtil().logError("Exception while matching proxy URI.", e);
-		} catch (IllegalAccessException e) {
-			new org.emftext.language.java.resource.java.util.JavaRuntimeUtil().logError("Exception while matching proxy URI.", e);
-		} catch (java.lang.reflect.InvocationTargetException e) {
-			new org.emftext.language.java.resource.java.util.JavaRuntimeUtil().logError("Exception while matching proxy URI.", e);
-		}
-		return null;
-	}
-	
 	@SuppressWarnings("unchecked")	
 	public static void setFeature(org.eclipse.emf.ecore.EObject object, org.eclipse.emf.ecore.EStructuralFeature eFeature, Object value, boolean clearIfList) {
 		int upperBound = eFeature.getUpperBound();
