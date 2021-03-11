@@ -18,7 +18,8 @@ import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.ImportDeclaration;
 import org.eclipse.jdt.core.dom.QualifiedName;
-import org.emftext.language.java.resource.java.IJavaContextDependentURIFragmentCollector;
+
+import jamopp.proxy.IJavaContextDependentURIFragmentCollector;
 
 class AbstractAndEmptyModelJDTASTVisitorAndConverter extends ASTVisitor {
 	private org.emftext.language.java.containers.JavaRoot convertedRootElement;

@@ -39,7 +39,8 @@ import org.eclipse.jdt.core.dom.SuperMethodInvocation;
 import org.eclipse.jdt.core.dom.ThisExpression;
 import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeLiteral;
-import org.emftext.language.java.resource.java.IJavaContextDependentURIFragmentCollector;
+
+import jamopp.proxy.IJavaContextDependentURIFragmentCollector;
 
 class ReferenceConverterUtility {
 	static org.emftext.language.java.references.Reference convertToReference(Expression expr) {

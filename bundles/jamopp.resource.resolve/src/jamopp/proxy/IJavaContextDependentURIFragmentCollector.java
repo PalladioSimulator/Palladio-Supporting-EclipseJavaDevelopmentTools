@@ -1,4 +1,4 @@
-package org.emftext.language.java.resource.java;
+package jamopp.proxy;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -7,7 +7,6 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.InternalEObject;
-import org.emftext.language.java.resource.java.mopp.JavaContextDependentURIFragment;
 
 public interface IJavaContextDependentURIFragmentCollector {
 	IJavaContextDependentURIFragmentCollector GLOBAL_INSTANCE = new IJavaContextDependentURIFragmentCollectorImpl();

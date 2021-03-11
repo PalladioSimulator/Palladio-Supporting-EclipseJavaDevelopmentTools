@@ -29,8 +29,9 @@ import org.emftext.language.java.resolver.result.IJavaReferenceMapping;
 import org.emftext.language.java.resolver.result.IJavaReferenceResolveResult;
 import org.emftext.language.java.resolver.result.IJavaURIMapping;
 import org.emftext.language.java.resolver.result.JavaReferenceResolveResult;
-import org.emftext.language.java.resource.java.IJavaContextDependentURIFragment;
 import org.emftext.language.java.resource.java.util.JavaCastUtil;
+
+import jamopp.proxy.IJavaContextDependentURIFragment;
 
 /**
  * A central reference resolver that is capable of resolving references for IJavaContextDependentURIFragments.

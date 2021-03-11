@@ -10,8 +10,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.core.resources,
  org.eclipse.emf.ecore,
  org.emftext.language.java
-Export-Package: org.emftext.language.java.resolver,
+Export-Package: jamopp.proxy,
+ org.emftext.language.java.resolver,
  org.emftext.language.java.resolver.result,
- org.emftext.language.java.resource.java,
- org.emftext.language.java.resource.java.mopp,
  org.emftext.language.java.resource.java.util

@@ -26,7 +26,8 @@ import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.SimpleType;
 import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.WildcardType;
-import org.emftext.language.java.resource.java.IJavaContextDependentURIFragmentCollector;
+
+import jamopp.proxy.IJavaContextDependentURIFragmentCollector;
 
 class BaseConverterUtility {
 	static org.emftext.language.java.types.TypeReference convertToClassifierOrNamespaceClassifierReference(Name name) {

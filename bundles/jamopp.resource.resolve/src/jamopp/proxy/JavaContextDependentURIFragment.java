@@ -15,11 +15,10 @@
  *   Martin Armbruster
  *      - Extension for Java 7-13
  ******************************************************************************/
-package org.emftext.language.java.resource.java.mopp;
+package jamopp.proxy;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
-import org.emftext.language.java.resource.java.IJavaContextDependentURIFragment;
 
 /**
  * Standard implementation of <code>IContextDependentURIFragment</code>.

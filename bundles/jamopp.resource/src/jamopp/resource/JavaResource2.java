@@ -22,13 +22,13 @@ import org.emftext.language.java.resolver.result.IJavaElementMapping;
 import org.emftext.language.java.resolver.result.IJavaReferenceMapping;
 import org.emftext.language.java.resolver.result.IJavaReferenceResolveResult;
 import org.emftext.language.java.resolver.result.IJavaURIMapping;
-import org.emftext.language.java.resource.java.IJavaContextDependentURIFragment;
-import org.emftext.language.java.resource.java.IJavaContextDependentURIFragmentCollector;
 import org.emftext.language.java.resource.java.util.JavaCastUtil;
 
 import jamopp.parser.api.JaMoPPParserAPI;
 import jamopp.parser.jdt.singlefile.JaMoPPJDTSingleFileParser;
 import jamopp.printer.JaMoPPPrinter;
+import jamopp.proxy.IJavaContextDependentURIFragment;
+import jamopp.proxy.IJavaContextDependentURIFragmentCollector;
 
 public class JavaResource2 extends ResourceImpl {
 	private Map<String, IJavaContextDependentURIFragment> internalURIFragmentMap = IJavaContextDependentURIFragmentCollector.GLOBAL_INSTANCE.getContextDependentURIFragmentMap();

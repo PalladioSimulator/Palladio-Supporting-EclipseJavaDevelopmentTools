@@ -23,7 +23,8 @@ import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.core.dom.NormalAnnotation;
 import org.eclipse.jdt.core.dom.QualifiedName;
 import org.eclipse.jdt.core.dom.SingleMemberAnnotation;
-import org.emftext.language.java.resource.java.IJavaContextDependentURIFragmentCollector;
+
+import jamopp.proxy.IJavaContextDependentURIFragmentCollector;
 
 class AnnotationInstanceOrModifierConverterUtility {
 	static org.emftext.language.java.modifiers.AnnotationInstanceOrModifier converToModifierOrAnnotationInstance(IExtendedModifier mod) {
