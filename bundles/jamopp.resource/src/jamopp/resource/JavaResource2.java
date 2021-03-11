@@ -86,6 +86,7 @@ public class JavaResource2 extends ResourceImpl {
 				attachResolveWarnings(result, proxy);
 				IJavaReferenceMapping<? extends EObject> mapping = result.getMappings().iterator().next();
 				EObject resultElement = getResultElement(uriFragment, mapping, proxy, result.getErrorMessage());
+				this.internalURIFragmentMap.remove(id);
 				return resultElement;
 			}
 		} else {
