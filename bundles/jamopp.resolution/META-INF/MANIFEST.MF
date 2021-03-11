@@ -1,10 +1,10 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: JaMoPP Reference Resolvers
-Bundle-SymbolicName: jamopp.resource.resolve
+Bundle-SymbolicName: jamopp.resolution
 Bundle-Version: 5.0.0.qualifier
 Bundle-Vendor: Martin Armbruster
-Automatic-Module-Name: jamopp.resource.resolve
+Automatic-Module-Name: jamopp.resolution
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.core.resources,
