@@ -22,7 +22,6 @@ import org.emftext.language.java.resolver.result.IJavaElementMapping;
 import org.emftext.language.java.resolver.result.IJavaReferenceMapping;
 import org.emftext.language.java.resolver.result.IJavaReferenceResolveResult;
 import org.emftext.language.java.resolver.result.IJavaURIMapping;
-import org.emftext.language.java.resource.java.util.JavaCastUtil;
 
 import jamopp.parser.api.JaMoPPParserAPI;
 import jamopp.parser.jdt.singlefile.JaMoPPJDTSingleFileParser;
@@ -169,8 +168,10 @@ public class JavaResource2 extends ResourceImpl {
 			EReference oppositeReference = uriFragment.getReference().getEOpposite();
 			if (!uriFragment.getReference().isContainment() && oppositeReference != null) {
 				if (reference.isMany()) {
-					EObjectWithInverseResolvingEList.ManyInverse<EObject> list = JavaCastUtil.cast(element.eGet(oppositeReference, false));										// avoids duplicate entries in the reference caused by adding to the
-					// oppositeReference
+					// Avoids duplicated entries in the reference caused by adding to the oppositeReference.
+					@SuppressWarnings("unchecked")
+					EObjectWithInverseResolvingEList.ManyInverse<EObject> list =
+						(EObjectWithInverseResolvingEList.ManyInverse<EObject>) element.eGet(oppositeReference, false);
 					list.basicAdd(uriFragment.getContainer(), null);
 				} else {
 					uriFragment.getContainer().eSet(uriFragment.getReference(), element);

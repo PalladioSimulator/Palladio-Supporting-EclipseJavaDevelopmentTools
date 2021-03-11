@@ -29,7 +29,6 @@ import org.emftext.language.java.resolver.result.IJavaReferenceMapping;
 import org.emftext.language.java.resolver.result.IJavaReferenceResolveResult;
 import org.emftext.language.java.resolver.result.IJavaURIMapping;
 import org.emftext.language.java.resolver.result.JavaReferenceResolveResult;
-import org.emftext.language.java.resource.java.util.JavaCastUtil;
 
 import jamopp.proxy.IJavaContextDependentURIFragment;
 
@@ -63,12 +62,13 @@ public class CentralReferenceResolver {
 		return result;
 	}
 	
+	@SuppressWarnings("unchecked")
 	private void handleMultipleResults(IJavaContextDependentURIFragment context,
 			IJavaReferenceResolveResult<EObject> result) {
 		EList<EObject> list = null;
 		Object temp = context.getContainer().eGet(context.getReference());
 		if (temp instanceof EList<?>) {
-			list = JavaCastUtil.cast(temp);
+			list = (EList<EObject>) temp;
 		}
 		
 		boolean first = true;
