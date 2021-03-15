@@ -26,7 +26,7 @@ import org.emftext.language.java.JavaClasspath;
 import org.emftext.language.java.containers.JavaRoot;
 
 import jamopp.parser.api.JaMoPPParserAPI;
-import jamopp.parser.jdt.singlefile.OrdinaryCompilationUnitJDTASTVisitorAndConverter;
+import jamopp.proxy.IJavaContextDependentURIFragmentCollector;
 
 public class JaMoPPJDTSingleFileParser implements JaMoPPParserAPI {
 	private final String DEFAULT_ENCODING = StandardCharsets.UTF_8.toString();
@@ -90,22 +90,25 @@ public class JaMoPPJDTSingleFileParser implements JaMoPPParserAPI {
 		ArrayList<JavaRoot> result = new ArrayList<>();
 		ASTParser parser = setUpParser();
 		parser.setEnvironment(classpathEntries, new String[] {}, new String[] {}, true);
-		OrdinaryCompilationUnitJDTASTVisitorAndConverter converter = new OrdinaryCompilationUnitJDTASTVisitorAndConverter();
+		OrdinaryCompilationUnitJDTASTVisitorAndConverter converter =
+				new OrdinaryCompilationUnitJDTASTVisitorAndConverter();
 		parser.createASTs(sources, encodings, new String[] {}, new FileASTRequestor() {
 			@Override
 			public void acceptAST(String sourceFilePath, CompilationUnit node) {
+				URI fileURI = URI.createFileURI(sourceFilePath);
+				IJavaContextDependentURIFragmentCollector.GLOBAL_INSTANCE.setBaseURI(fileURI);
 				node.accept(converter);
 				JavaRoot root = converter.getConvertedElement();
 				Resource newResource;
 				if (root.eResource() == null) {
-					newResource = JaMoPPJDTSingleFileParser.this.resourceSet.createResource(URI.createFileURI(sourceFilePath));
+					newResource = JaMoPPJDTSingleFileParser.this.resourceSet.createResource(fileURI);
 					newResource.getContents().add(root);
-					JavaClasspath.get().registerJavaRoot(root, newResource.getURI());
+					JavaClasspath.get().registerJavaRoot(root, fileURI);
 				} else {
 					newResource = root.eResource();
 					if (!newResource.getURI().toFileString().equals(sourceFilePath)) {
-						newResource.setURI(URI.createFileURI(sourceFilePath));
-						JavaClasspath.get().registerJavaRoot(root, newResource.getURI());
+						newResource.setURI(fileURI);
+						JavaClasspath.get().registerJavaRoot(root, fileURI);
 					}
 				}
 				result.add(root);
@@ -121,14 +124,14 @@ public class JaMoPPJDTSingleFileParser implements JaMoPPParserAPI {
 	}
 	
 	private ASTParser setUpParser() {
-		ASTParser parser = ASTParser.newParser(AST.JLS14);
+		ASTParser parser = ASTParser.newParser(AST.JLS15);
 		parser.setResolveBindings(true);
 		parser.setBindingsRecovery(true);
 		parser.setStatementsRecovery(true);
 		Map<String, String> options = new HashMap<>();
-		options.put(JavaCore.COMPILER_SOURCE, JavaCore.VERSION_14);
-		options.put(JavaCore.COMPILER_COMPLIANCE, JavaCore.VERSION_14);
-		options.put(JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, JavaCore.VERSION_14);
+		options.put(JavaCore.COMPILER_SOURCE, JavaCore.VERSION_15);
+		options.put(JavaCore.COMPILER_COMPLIANCE, JavaCore.VERSION_15);
+		options.put(JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, JavaCore.VERSION_15);
 		parser.setCompilerOptions(options);
 		return parser;
 	}
