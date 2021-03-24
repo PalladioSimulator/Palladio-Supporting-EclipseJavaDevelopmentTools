@@ -279,7 +279,7 @@ public class JavaClasspath {
 		return packageClassifierMap.containsKey(packageName);
 	}
 	
-	private Map<URI, URI> getURIMap() {
+	public Map<URI, URI> getURIMap() {
 		if (uriConverter == URIConverter.INSTANCE) {
 			return URIConverter.URI_MAP;
 		}

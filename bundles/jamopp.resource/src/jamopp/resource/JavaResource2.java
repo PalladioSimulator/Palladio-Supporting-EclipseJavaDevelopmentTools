@@ -46,7 +46,16 @@ public class JavaResource2 extends ResourceImpl {
 	protected void doLoad(InputStream input, Map<?, ?> options) {
 		IJavaContextDependentURIFragmentCollector.GLOBAL_INSTANCE.setBaseURI(getURI());
 		EObject result = null;
-		String extension = this.getURI().fileExtension();
+		URI physicalURI;
+		if (this.getURI().isFile()) {
+			physicalURI = this.getURI();
+		} else {
+			physicalURI = JavaClasspath.get().getURIMap().get(this.getURI());
+		}
+		if (physicalURI == null) {
+			throw new IllegalStateException("There has to be a physical URI.");
+		}
+		String extension = physicalURI.fileExtension();
 		if (extension.equals("class")) {
 			try {
 				result = new ClassFileModelLoader().parse(input, "");
