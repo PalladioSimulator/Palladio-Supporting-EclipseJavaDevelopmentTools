@@ -138,7 +138,7 @@ public class JavaClasspath {
 				LogicalJavaURIGenerator.PACKAGE_SEPARATOR);
 		}
 		return classifiers.stream().filter(c -> c.getQualifiedName().equals(actualName))
-			.findFirst().orElse(getProxyConcreteClassifier(fullQualifiedClassifierName));
+			.findFirst().orElse(getProxyConcreteClassifier(actualName));
 	}
 	
 	public Collection<ConcreteClassifier> getConcreteClassifiers(String packageName) {
