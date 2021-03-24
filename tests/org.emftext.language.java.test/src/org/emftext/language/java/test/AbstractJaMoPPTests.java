@@ -238,6 +238,7 @@ public abstract class AbstractJaMoPPTests {
 		for (File libFile : allLibFiles) {
 			String libPath = libFile.getAbsolutePath();
 			URI libURI = URI.createFileURI(libPath);
+			classpath.registerZip(libURI);
 		}
 	}
 
@@ -328,7 +329,7 @@ public abstract class AbstractJaMoPPTests {
 
 	private org.eclipse.jdt.core.dom.CompilationUnit parseWithJDT(InputStream inputStream, boolean isModule) {
 
-		ASTParser jdtParser = ASTParser.newParser(AST.JLS14);
+		ASTParser jdtParser = ASTParser.newParser(AST.JLS15);
 		char[] charArray = readTextContents(inputStream).toCharArray();
 		jdtParser.setSource(charArray);
 		
@@ -337,7 +338,7 @@ public abstract class AbstractJaMoPPTests {
 		}
 
 		Map<String, String> options = new HashMap<String, String>();
-		options.put(JavaCore.COMPILER_SOURCE, JavaCore.VERSION_14);
+		options.put(JavaCore.COMPILER_SOURCE, JavaCore.VERSION_15);
 		jdtParser.setCompilerOptions(options);
 
 		org.eclipse.jdt.core.dom.CompilationUnit result1 =
