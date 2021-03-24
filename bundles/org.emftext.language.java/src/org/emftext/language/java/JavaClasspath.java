@@ -170,51 +170,73 @@ public class JavaClasspath {
 	 */
 	private void internalRegisterJDK9AndUpSrcZip(URI zipURI)
 	{
+		registerZip(zipURI, true);
+	}
+	
+	/**
+	 * Registers all source and class files within a zip file.
+	 * 
+	 * @param zipURI URI pointing to the zip file.
+	 */
+	public void registerZip(URI zipURI) {
+		registerZip(zipURI, false);
+	}
+	
+	/**
+	 * Registers all source and class files within a zip file.
+	 * 
+	 * @param zipURI URI pointing to the zip file containing source and class files.
+	 * @param isJDK true if the zip file contains the sources of the JDK. false otherwise.
+	 */
+	private void registerZip(URI zipURI, boolean isJDK)
+	{
 		try(ZipFile zipFile = new ZipFile(zipURI.toFileString())) {
 			
-			zipFile.stream().filter(entry -> entry.getName().endsWith(LogicalJavaURIGenerator.JAVA_FILE_EXTENSION))
+			zipFile.stream().filter(entry -> entry.getName().endsWith(LogicalJavaURIGenerator.JAVA_FILE_EXTENSION)
+					|| entry.getName().endsWith(LogicalJavaURIGenerator.JAVA_CLASS_FILE_EXTENSION))
 				.forEach(entry -> {
 					
 					String entryName = entry.getName();
 					String uri = "archive:" + zipURI.toString() + "!/" + entryName;
 					URI physicalURI = URI.createURI(uri);
-					// The entry name has the form "<module name>/<package>/<file name>.java" where
-					// module name contains only "." as separator, package contains "/" as separator and file name
+					// The entry name has the form "<module name>/<package>/<file name>.java" if the file is within the JDK
+					// where module name contains only "." as separator, package contains "/" as separator and file name
 					// is a simple name.
 					
-					if (entryName.endsWith(LogicalJavaURIGenerator.JAVA_MODULE_FILE_NAME)) {
+					if (isJDK && entryName.endsWith(LogicalJavaURIGenerator.JAVA_MODULE_FILE_NAME)) {
 						// Remove the file name.
 						String modName = entryName.substring(0, entryName.indexOf("/"));
 						registerModule(modName, physicalURI);
 					} else if (entryName.endsWith(LogicalJavaURIGenerator.JAVA_PACKAGE_FILE_NAME)) {
 						// Extract the package part.
-						int firstIndex = entryName.indexOf("/") + 1;
+						int firstIndex = isJDK ? entryName.indexOf("/") + 1 : 0;
 						int lastIndex = entryName.lastIndexOf("/");
 						String packName = entryName.substring(firstIndex, lastIndex).replace("/", LogicalJavaURIGenerator.PACKAGE_SEPARATOR);
 						registerPackage(packName, physicalURI);
 					} else {
-						// Remove the module name.
-						String fullName = entryName.substring(entryName.indexOf("/") + 1)
+						// Remove the module name if the file is in the JDK.
+						String fullName =
+							(isJDK ? entryName.substring(entryName.indexOf("/") + 1) : entryName)
 							.replace("/", LogicalJavaURIGenerator.PACKAGE_SEPARATOR);
 						
 						int lastDotIndex = fullName.lastIndexOf(LogicalJavaURIGenerator.PACKAGE_SEPARATOR);
-						int preLastDotIndex = fullName.substring(0, lastDotIndex).lastIndexOf(LogicalJavaURIGenerator.PACKAGE_SEPARATOR);
+						fullName = fullName.substring(0, lastDotIndex);
+						int preLastDotIndex = fullName.lastIndexOf(LogicalJavaURIGenerator.PACKAGE_SEPARATOR);
 						
 						String packageName = "";
-						String className;
+						String className = fullName;
 						
 						if (preLastDotIndex >= 0) {
 							packageName = fullName.substring(0, preLastDotIndex);
-							className = fullName.substring(preLastDotIndex + 1, lastDotIndex);
-						} else {
-							className = fullName.substring(0, lastDotIndex);
+							className = fullName.substring(preLastDotIndex + 1);
 						}
 						registerClassifier(packageName, className, physicalURI);
 					}
 				});
 			
 		} catch (IOException e) {
-			System.err.println("Error in processing JDK 9+'s src.zip: " + zipURI.toFileString());
+			e.printStackTrace();
+			System.err.println("Error in processing the zip file: " + zipURI.toFileString());
 		}
 	}
 	

@@ -77,7 +77,10 @@ public class JaMoPPJDTSingleFileParser implements JaMoPPParserAPI {
 			for (int index = 0; index < encodings.length; index++) {
 				encodings[index] = DEFAULT_ENCODING;
 			}
-			String[] classpathEntries = {};
+			String[] classpathEntries = Files.walk(dir).filter(path -> Files.isRegularFile(path)
+				&& (path.getFileName().toString().endsWith(".jar")
+				|| path.getFileName().toString().endsWith(".zip")))
+				.map(Path::toAbsolutePath).map(Path::toString).toArray(i -> new String[i]);
 			this.parseFilesWithJDT(classpathEntries, sources, encodings);
 		} catch (IOException e) {
 		}
@@ -89,6 +92,9 @@ public class JaMoPPJDTSingleFileParser implements JaMoPPParserAPI {
 	private List<JavaRoot> parseFilesWithJDT(String[] classpathEntries, String[] sources, String[] encodings) {
 		ArrayList<JavaRoot> result = new ArrayList<>();
 		ASTParser parser = setUpParser();
+		for (String entry : classpathEntries) {
+			JavaClasspath.get().registerZip(URI.createFileURI(entry));
+		}
 		parser.setEnvironment(classpathEntries, new String[] {}, new String[] {}, true);
 		OrdinaryCompilationUnitJDTASTVisitorAndConverter converter =
 				new OrdinaryCompilationUnitJDTASTVisitorAndConverter();

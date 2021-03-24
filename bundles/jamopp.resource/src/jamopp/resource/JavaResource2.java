@@ -1,5 +1,6 @@
 package jamopp.resource;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
@@ -24,6 +25,7 @@ import org.emftext.language.java.resolver.result.IJavaReferenceResolveResult;
 import org.emftext.language.java.resolver.result.IJavaURIMapping;
 
 import jamopp.parser.api.JaMoPPParserAPI;
+import jamopp.parser.bcel.ClassFileModelLoader;
 import jamopp.parser.jdt.singlefile.JaMoPPJDTSingleFileParser;
 import jamopp.printer.JaMoPPPrinter;
 import jamopp.proxy.IJavaContextDependentURIFragment;
@@ -43,9 +45,18 @@ public class JavaResource2 extends ResourceImpl {
 	@Override
 	protected void doLoad(InputStream input, Map<?, ?> options) {
 		IJavaContextDependentURIFragmentCollector.GLOBAL_INSTANCE.setBaseURI(getURI());
-		JaMoPPParserAPI api = new JaMoPPJDTSingleFileParser();
-		api.setResourceSet(this.getResourceSet());
-		EObject result = api.parse(this.getURI().toString(), input);
+		EObject result = null;
+		String extension = this.getURI().fileExtension();
+		if (extension.equals("class")) {
+			try {
+				result = new ClassFileModelLoader().parse(input, "");
+			} catch (IOException e) {
+			}
+		} else {
+			JaMoPPParserAPI api = new JaMoPPJDTSingleFileParser();
+			api.setResourceSet(this.getResourceSet());
+			result = api.parse(this.getURI().toString(), input);
+		}
 		JavaClasspath.get().registerJavaRoot((JavaRoot) result, getURI());
 		this.getContents().add(result);
 	}

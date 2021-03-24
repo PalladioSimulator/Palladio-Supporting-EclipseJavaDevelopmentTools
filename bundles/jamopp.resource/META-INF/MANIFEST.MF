@@ -13,5 +13,6 @@ Require-Bundle: org.eclipse.emf.ecore;bundle-version="2.22.0",
  jamopp.printer;bundle-version="5.0.0",
  org.emftext.language.java;bundle-version="5.0.0",
  jamopp.resolution;bundle-version="5.0.0",
- jamopp.parser.jdt.singlefile;bundle-version="5.0.0"
+ jamopp.parser.jdt.singlefile;bundle-version="5.0.0",
+ jamopp.parser.bcel;bundle-version="5.0.0"
 Export-Package: jamopp.resource
