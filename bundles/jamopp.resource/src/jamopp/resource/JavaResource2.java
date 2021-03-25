@@ -59,6 +59,7 @@ public class JavaResource2 extends ResourceImpl {
 		if (extension.equals("class")) {
 			try {
 				result = new ClassFileModelLoader().parse(input, "");
+				JavaClasspath.get().registerJavaRoot((JavaRoot) result, this.getURI());
 			} catch (IOException e) {
 			}
 		} else {
