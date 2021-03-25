@@ -336,7 +336,8 @@ public class JavaClasspath {
 		}
 
 		synchronized (this) {
-			registerPackage(qualifiedName, innerName);
+			registerPackage(qualifiedName.replaceAll("\\" + LogicalJavaURIGenerator.CLASSIFIER_SEPARATOR,
+					LogicalJavaURIGenerator.PACKAGE_SEPARATOR), innerName);
 
 			final String qualifiedClassifierName;
 			if (LogicalJavaURIGenerator.PACKAGE_SEPARATOR.equals(packageName)) {
@@ -345,7 +346,9 @@ public class JavaClasspath {
 				qualifiedClassifierName = packageName + classifierName;
 			}
 
-			URI logicalURI = LogicalJavaURIGenerator.getJavaFileResourceURI(qualifiedClassifierName);
+			URI logicalURI = LogicalJavaURIGenerator.getJavaFileResourceURI(qualifiedClassifierName
+					.replaceAll("\\" + LogicalJavaURIGenerator.CLASSIFIER_SEPARATOR,
+							LogicalJavaURIGenerator.PACKAGE_SEPARATOR));
 
 			URI existingMapping = getURIMap().get(logicalURI);
 
@@ -370,7 +373,8 @@ public class JavaClasspath {
 				outerPackage = outerPackage.substring(0, indexPlusOne);
 				outerPackage = checkPackageName(outerPackage);
 
-				registerPackage(outerPackage, outerClassifier);
+				registerPackage(outerPackage.replaceAll("\\" + LogicalJavaURIGenerator.CLASSIFIER_SEPARATOR,
+						LogicalJavaURIGenerator.PACKAGE_SEPARATOR), outerClassifier);
 			}
 		}
 	}
