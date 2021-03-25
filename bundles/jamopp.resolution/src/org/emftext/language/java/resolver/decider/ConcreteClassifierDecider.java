@@ -104,6 +104,16 @@ public class ConcreteClassifierDecider extends AbstractDecider {
 				if (classifier instanceof ConcreteClassifier) {
 					innerTypeSuperTypeList.addAll(
 						((ConcreteClassifier) classifier).getAllInnerClassifiers());
+					ConcreteClassifier cc = JavaClasspath.get().getConcreteClassifier(
+							((ConcreteClassifier) classifier).getQualifiedName() + "." + identifier);
+					if (cc.eIsProxy()) {
+						cc = (ConcreteClassifier) EcoreUtil.resolve(cc, classifier);
+						if (!cc.eIsProxy()) {
+							resultList.add(cc);
+						}
+					} else {
+						resultList.add(cc);
+					}
 				}
 			}
 		}
