@@ -771,7 +771,10 @@
             ecoreFeature="ecore:EReference java.ecore#//references/ElementReference/target"/>
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//references/ElementReference/containedTarget"/>
       </genClasses>
-      <genClasses ecoreClass="java.ecore#//references/IdentifierReference"/>
+      <genClasses ecoreClass="java.ecore#//references/IdentifierReference">
+        <genOperations ecoreOperation="java.ecore#//references/IdentifierReference/getArrayDimension"
+            body="return org.emftext.language.java.extensions.expressions.ExpressionExtension.getArrayDimension((org.emftext.language.java.expressions.Expression) this);"/>
+      </genClasses>
       <genClasses ecoreClass="java.ecore#//references/MethodCall"/>
       <genClasses ecoreClass="java.ecore#//references/ReflectiveClassReference"/>
       <genClasses ecoreClass="java.ecore#//references/PrimitiveTypeReference">
