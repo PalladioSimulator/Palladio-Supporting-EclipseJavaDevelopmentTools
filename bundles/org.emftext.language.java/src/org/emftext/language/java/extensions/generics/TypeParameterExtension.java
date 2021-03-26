@@ -33,6 +33,7 @@ import org.emftext.language.java.expressions.NestedExpression;
 import org.emftext.language.java.generics.ExtendsTypeArgument;
 import org.emftext.language.java.generics.QualifiedTypeArgument;
 import org.emftext.language.java.generics.TypeArgument;
+import org.emftext.language.java.generics.TypeArgumentable;
 import org.emftext.language.java.generics.TypeParameter;
 import org.emftext.language.java.generics.TypeParametrizable;
 import org.emftext.language.java.instantiations.NewConstructorCall;
@@ -223,20 +224,35 @@ public class TypeParameterExtension {
 				if (reference != null) {
 					ClassifierReference classifierReference = null;
 					if (parentReference instanceof ElementReference) {
-						ReferenceableElement prevReferenced = ((ElementReference) parentReference).getTarget();
+						ElementReference parentElementReference = (ElementReference) parentReference;
+						for (Adapter adapter : parentElementReference.eAdapters()) {
+							if (adapter instanceof TemporalTypeArgumentHolder) {
+								TemporalTypeArgumentHolder ttah = (TemporalTypeArgumentHolder) adapter;
+								if (typeParameterIndex < ttah.getTypeArguments().size()) {
+									TypeArgument typeArg = ttah.getTypeArguments().get(typeParameterIndex);
+									if (typeArg instanceof QualifiedTypeArgument) {
+										TypeReference qualTypeRef = ((QualifiedTypeArgument) typeArg).getTypeReference();
+										if (qualTypeRef.getTarget() != me) {
+											resultList.add(qualTypeRef.getBoundTarget(null));
+										}
+									}
+								}
+							}
+						}
+						ReferenceableElement prevReferenced = parentElementReference.getTarget();
 						if (prevReferenced instanceof TypedElement) {
-							TypeReference prevTypeReference = ((TypedElement) prevReferenced).getTypeReference ();
+							TypeReference prevTypeReference = ((TypedElement) prevReferenced).getTypeReference();
 							if (prevTypeReference != null) {
-								classifierReference = prevTypeReference.getPureClassifierReference(); 
+								classifierReference = prevTypeReference.getPureClassifierReference();
 							}
 						}
 					}
 					
 					if (parentReference instanceof TypedElement) {
 						//e.g. New Constructor Call
-						TypeReference prevParentReference = ((TypedElement)parentReference).getTypeReference ();
+						TypeReference prevParentReference = ((TypedElement) parentReference).getTypeReference();
 						if (prevParentReference != null) {
-							classifierReference = prevParentReference.getPureClassifierReference(); 
+							classifierReference = prevParentReference.getPureClassifierReference();
 						}
 					}
 					
@@ -251,7 +267,18 @@ public class TypeParameterExtension {
 												typeParameterDeclarator)) {					 
 									TypeArgument arg = superClassifierReference.getTypeArguments().get(typeParameterIndex);
 									if (arg instanceof QualifiedTypeArgument) {
-										resultList.add(idx, ((QualifiedTypeArgument) arg).getTypeReference().getTarget());
+										TypeReference argRef = ((QualifiedTypeArgument) arg).getTypeReference();
+										typeArgCheck: if (argRef instanceof TypeArgumentable) {
+											for (Adapter adapter : reference.eAdapters()) {
+												if (adapter instanceof TemporalTypeArgumentHolder) {
+													break typeArgCheck;
+												}
+											}
+											TemporalTypeArgumentHolder t = new TemporalTypeArgumentHolder();
+											t.getTypeArguments().addAll(((TypeArgumentable) argRef).getTypeArguments());
+											reference.eAdapters().add(t);
+										}
+										resultList.add(idx, argRef.getTarget());
 										idx++;
 									}
 								}
@@ -486,8 +513,9 @@ public class TypeParameterExtension {
 		if (resultList.isEmpty() || 
 				(resultList.size() == 1 && resultList.get(0).equals(me))) {
 			return me;
-		}
-		else {
+		} else if (resultList.size() == 1) {
+			return resultList.get(0);
+		} else {
 			TemporalCompositeClassifier temp = new TemporalCompositeClassifier(me);
 			for (Type aResult : resultList) {
 				if (aResult instanceof PrimitiveType) {
