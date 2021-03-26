@@ -1792,4 +1792,11 @@ public class OldJaMoPPParserTests extends AbstractJaMoPPTests {
 		
 		parseAndReprint(filename);
 	}
+	
+	@Test
+	public void testMultipleBoundTypeParameters() throws Exception {
+		this.registerInClassPath("mbtp" + File.separator + "C1.java");
+		this.registerInClassPath("mbtp" + File.separator + "C3.java");
+		parseAndReprint("mbtp" + File.separator + "C2.java");
+	}
 }
