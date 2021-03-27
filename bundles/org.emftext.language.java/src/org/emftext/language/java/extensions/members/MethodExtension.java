@@ -20,10 +20,12 @@ package org.emftext.language.java.extensions.members;
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
 import org.emftext.language.java.classifiers.ConcreteClassifier;
-import org.emftext.language.java.classifiers.Interface;
 import org.emftext.language.java.expressions.Expression;
+import org.emftext.language.java.extensions.types.TypeReferenceExtension;
 import org.emftext.language.java.members.Method;
+import org.emftext.language.java.parameters.OrdinaryParameter;
 import org.emftext.language.java.parameters.Parameter;
+import org.emftext.language.java.parameters.ParametersFactory;
 import org.emftext.language.java.parameters.ReceiverParameter;
 import org.emftext.language.java.parameters.VariableLengthParameter;
 import org.emftext.language.java.references.MethodCall;
@@ -31,7 +33,7 @@ import org.emftext.language.java.statements.Block;
 import org.emftext.language.java.statements.Statement;
 import org.emftext.language.java.types.Type;
 import org.emftext.language.java.types.TypeReference;
-import org.emftext.language.java.util.TemporalUnknownLambdaExpressionType;
+import org.emftext.language.java.util.TemporalUnknownType;
 
 public class MethodExtension {
 	
@@ -142,13 +144,7 @@ public class MethodExtension {
 				}
 				
 				if (!parameterType.eIsProxy() || !argumentType.eIsProxy()) {
-					if (argumentType instanceof TemporalUnknownLambdaExpressionType) {
-						if (!(parameterType instanceof Interface)) {
-							return false;
-						}
-						parametersMatch = parametersMatch
-								&& ((TemporalUnknownLambdaExpressionType) argumentType).getLambdaExpression()
-									.doesLambdaMatchFunctionalInterface((Interface) parameterType);
+					if (argumentType instanceof TemporalUnknownType) {
 						continue;
 					}
 					long argumentArrayDimension = argument.getArrayDimension();
@@ -182,6 +178,24 @@ public class MethodExtension {
 	 * @return true if the signatures match. false otherwise.
 	 */
 	public static boolean isSignatureMatching(Method one, Method two) {
+		return isSignatureMatching(one, two, null);
+	}
+	
+	/**
+	 * Checks if the signature, i. e., the parameter types and return type, of two methods match,
+	 * independently of the method and parameter names. It is possible for one method to have specialized parameter
+	 * and return types compared to the other method.
+	 * If the comparison is for finding the referenced method within a MethodReferenceExpression, e. g.,
+	 * StringBuilder::append, where the type of the primary expression (in the example StringBuilder) can be
+	 * part of the parameter types of the second method, the type can be given.
+	 * 
+	 * @param one the first method.
+	 * @param two the second method which can have specialized types.
+	 * @param twoFirstParameter the type in case of MethodReferenceExpressions
+	 *                          which is counted as the first parameter type of the second method.
+	 * @return true if the signatures match. false otherwise.
+	 */
+	public static boolean isSignatureMatching(Method one, Method two, Type twoFirstParameter) {
 		EList<Parameter> parameterListOne = new BasicEList<>(one.getParameters());
 		EList<Parameter> parameterListTwo = new BasicEList<>(two.getParameters());
 		
@@ -190,6 +204,12 @@ public class MethodExtension {
 		}
 		if (parameterListTwo.size() > 0 && parameterListTwo.get(0) instanceof ReceiverParameter) {
 			parameterListTwo.remove(0);
+		}
+		
+		if (twoFirstParameter != null) {
+			OrdinaryParameter p = ParametersFactory.eINSTANCE.createOrdinaryParameter();
+			p.setTypeReference(TypeReferenceExtension.convertToTypeReference(twoFirstParameter));
+			parameterListTwo.add(0, p);
 		}
 
 		if (parameterListOne.size() == parameterListTwo.size()) { 
@@ -206,16 +226,16 @@ public class MethodExtension {
 				}
 				
 				if (!parameterType.eIsProxy() || !argumentType.eIsProxy()) {
-					parametersMatch = parametersMatch && argumentType.isSuperType(
-						paramTwo.getArrayDimension(), parameterType, paramOne);
+					parametersMatch = parametersMatch && parameterType.isSuperType(
+						paramOne.getArrayDimension(), argumentType, paramTwo);
 				} else {
 					return false;
 				}
 			}
 			
-			Type target = two.getTypeReference().getTarget();
-			parametersMatch = parametersMatch && target.isSuperType(two.getArrayDimension(),
-				one.getTypeReference().getTarget(), one);
+			Type target = one.getTypeReference().getTarget();
+			parametersMatch = parametersMatch && target.isSuperType(one.getArrayDimension(),
+				two.getTypeReference().getTarget(), two);
 			
 			return parametersMatch;
 		}

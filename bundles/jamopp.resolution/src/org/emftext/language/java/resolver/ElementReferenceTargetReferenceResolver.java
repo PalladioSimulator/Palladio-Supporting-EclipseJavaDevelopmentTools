@@ -22,16 +22,15 @@ import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.emftext.language.java.classifiers.ConcreteClassifier;
 import org.emftext.language.java.classifiers.Interface;
-import org.emftext.language.java.expressions.AssignmentExpression;
 import org.emftext.language.java.expressions.Expression;
 import org.emftext.language.java.expressions.ExpressionsPackage;
 import org.emftext.language.java.expressions.NestedExpression;
 import org.emftext.language.java.expressions.PrimaryExpressionReferenceExpression;
+import org.emftext.language.java.extensions.members.MethodExtension;
 import org.emftext.language.java.instantiations.NewConstructorCall;
 import org.emftext.language.java.members.Member;
 import org.emftext.language.java.members.Method;
 import org.emftext.language.java.references.ElementReference;
-import org.emftext.language.java.references.MethodCall;
 import org.emftext.language.java.references.PackageReference;
 import org.emftext.language.java.references.Reference;
 import org.emftext.language.java.references.ReferenceableElement;
@@ -46,11 +45,9 @@ import org.emftext.language.java.resolver.decider.ParameterDecider;
 import org.emftext.language.java.resolver.decider.ScopedTreeWalker;
 import org.emftext.language.java.resolver.decider.TypeParameterDecider;
 import org.emftext.language.java.resolver.result.IJavaReferenceResolveResult;
-import org.emftext.language.java.statements.Return;
 import org.emftext.language.java.types.PrimitiveType;
+import org.emftext.language.java.types.Type;
 import org.emftext.language.java.util.TemporalCompositeClassifier;
-import org.emftext.language.java.variables.AdditionalLocalVariable;
-import org.emftext.language.java.variables.LocalVariable;
 
 public class ElementReferenceTargetReferenceResolver implements
 	IJavaReferenceResolver<ElementReference, ReferenceableElement> {
@@ -102,39 +99,8 @@ public class ElementReferenceTargetReferenceResolver implements
 			PrimaryExpressionReferenceExpression parent = (PrimaryExpressionReferenceExpression)
 				container.eContainer();
 			ConcreteClassifier classifier = (ConcreteClassifier) parent.getChild().getType();
-			ConcreteClassifier targetType = null;
-			EObject parentContainer = parent;
-			while (!(parentContainer.eContainer() instanceof MethodCall
-					|| parentContainer.eContainer() instanceof LocalVariable
-					|| parentContainer.eContainer() instanceof AdditionalLocalVariable
-					|| parentContainer.eContainer() instanceof AssignmentExpression
-					|| parentContainer.eContainer() instanceof Return)) {
-				parentContainer = parentContainer.eContainer();
-			}
-			if (parentContainer.eContainer() instanceof MethodCall) {
-				MethodCall call = (MethodCall) parentContainer.eContainer();
-				Method m = (Method) call.getTarget();
-				targetType = (ConcreteClassifier) m.getParameters().get(
-					call.getArguments().indexOf(parentContainer)).getTypeReference().getTarget();
-			} else if (parentContainer.eContainer() instanceof LocalVariable
-					|| parentContainer.eContainer() instanceof AdditionalLocalVariable) {
-				LocalVariable vari;
-				if (parentContainer.eContainer() instanceof AdditionalLocalVariable) {
-					vari = (LocalVariable) parentContainer.eContainer().eContainer();
-				} else {
-					vari = (LocalVariable) parentContainer.eContainer();
-				}
-				targetType = (ConcreteClassifier) vari.getTypeReference().getTarget();
-			} else if (parentContainer.eContainer() instanceof AssignmentExpression) {
-				AssignmentExpression assExpr = (AssignmentExpression) parentContainer.eContainer();
-				targetType = (ConcreteClassifier) assExpr.getChild().getType();
-			} else if (parentContainer.eContainer() instanceof Return) {
-				while (!(parentContainer instanceof Method)) {
-					parentContainer = parentContainer.eContainer();
-				}
-				targetType = (ConcreteClassifier) ((Method) parentContainer).getTypeReference().getTarget();
-			}
-			if (targetType != null) {
+			Type targetType = parent.getTargetType();
+			if (targetType != null && !targetType.eIsProxy() && targetType instanceof Interface) {
 				Method functionalMethod = ((Interface) targetType).getAbstractMethodOfFunctionalInterface();
 				for (Member mem : classifier.getAllMembers(classifier)) {
 					if (mem.getName().equals(identifier) && mem instanceof Method) {
@@ -142,8 +108,15 @@ public class ElementReferenceTargetReferenceResolver implements
 							target = mem;
 							break;
 						}
+						if (MethodExtension.isSignatureMatching(
+								functionalMethod, (Method) mem, classifier)) {
+							target = mem;
+							break;
+						}
 					}
 				}
+			} else {
+				return;
 			}
 		}
 		

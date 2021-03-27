@@ -45,13 +45,12 @@ public class LambdaExpressionExtension {
 					}
 				}
 			}
-			return true;
-//			Type methReturn = m.getTypeReference().getTarget();
-//			Type lambdaReturn = getReturnType(expr, methReturn);
-//			if (lambdaReturn == null) {
-//				return true;
-//			}
-//			return lambdaReturn.isSuperType(expr.getArrayDimension(), methReturn, m);
+			Type methReturn = m.getTypeReference().getTarget();
+			Type lambdaReturn = getReturnType(expr, methReturn);
+			if (lambdaReturn == null) {
+				return true;
+			}
+			return lambdaReturn.isSuperType(expr.getArrayDimension(), methReturn, m);
 		}
 		return false;
 	}

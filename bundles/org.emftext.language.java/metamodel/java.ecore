@@ -402,7 +402,7 @@
         <eParameters name="statementToAdd" lowerBound="1" eType="#_Wo2YzNz1Ed2bJ_pQViWxFg"/>
       </eOperations>
       <eStructuralFeatures xsi:type="ecore:EReference" name="layoutInformations" upperBound="-1"
-          eType="ecore:EClass platform:/resource/org.emftext.commons.layout/metamodel/layout.ecore#//LayoutInformation"
+          eType="ecore:EClass ../../org.emftext.commons.layout/metamodel/layout.ecore#//LayoutInformation"
           containment="true"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="NamedElement" abstract="true" eSuperTypes="#//commons/Commentable">
@@ -728,7 +728,18 @@
           eType="#_Wo2YDNz1Ed2bJ_pQViWxFg" containment="true"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="MethodReferenceExpression" abstract="true"
-        eSuperTypes="#//expressions/UnaryModificationExpressionChild"/>
+        eSuperTypes="#//expressions/UnaryModificationExpressionChild">
+      <eOperations name="getTargetType" lowerBound="1" eType="#_Wo2ZO9z1Ed2bJ_pQViWxFg">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return org.emftext.language.java.extensions.expressions.MethodReferenceExpressionExtension.getTargetType((MethodReferenceExpression) this);"/>
+        </eAnnotations>
+      </eOperations>
+      <eOperations name="getTargetTypeReference" lowerBound="1" eType="#_Wo2ZPdz1Ed2bJ_pQViWxFg">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return org.emftext.language.java.extensions.expressions.MethodReferenceExpressionExtension.getTargetTypeReference((MethodReferenceExpression) this);"/>
+        </eAnnotations>
+      </eOperations>
+    </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="PrimaryExpressionReferenceExpression"
         eSuperTypes="#//expressions/MethodReferenceExpression #//generics/CallTypeArgumentable">
       <eStructuralFeatures xsi:type="ecore:EReference" name="child" lowerBound="1"

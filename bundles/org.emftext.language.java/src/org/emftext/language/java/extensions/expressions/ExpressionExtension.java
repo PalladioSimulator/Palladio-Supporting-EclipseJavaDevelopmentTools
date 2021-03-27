@@ -183,12 +183,7 @@ public class ExpressionExtension {
 				return ((CastExpression) container.eContainer()).getOneTypeReference(alternative);
 			}
 		} else if (me instanceof MethodReferenceExpression) {
-			if (me instanceof ClassTypeConstructorReferenceExpression || me instanceof ArrayConstructorReferenceExpression) {
-				return ((TypedElement) me).getTypeReference();
-			} else {
-				PrimaryExpressionReferenceExpression expr = (PrimaryExpressionReferenceExpression) me;
-				return expr.getChild().getOneTypeReference(alternative);
-			}
+			return ((MethodReferenceExpression) me).getTargetTypeReference();
 		} else {
 			for (TreeIterator<EObject> i = me.eAllContents(); i.hasNext(); ) {
 				EObject next = i.next();

@@ -5,7 +5,7 @@
     editorDirectory="/org.emftext.language.java.editor/src-gen" modelPluginID="org.emftext.language.java"
     templateDirectory="" modelName="Java" rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl"
     importerID="org.eclipse.emf.importer.ecore" bundleManifest="false" containmentProxies="true"
-    complianceLevel="11.0" copyrightFields="false" usedGenPackages="platform:/resource/org.emftext.commons.layout/metamodel/layout.genmodel#//layout">
+    complianceLevel="11.0" copyrightFields="false" usedGenPackages="../../org.emftext.commons.layout/metamodel/layout.genmodel#//layout">
   <foreignModel>java.ecore</foreignModel>
   <genPackages prefix="Java" basePackage="org.emftext.language" disposableProviderFactory="true"
       ecorePackage="java.ecore#_WosmsNz1Ed2bJ_pQViWxFg">
@@ -383,7 +383,12 @@
       <genClasses ecoreClass="java.ecore#//expressions/NestedExpression">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//expressions/NestedExpression/expression"/>
       </genClasses>
-      <genClasses image="false" ecoreClass="java.ecore#//expressions/MethodReferenceExpression"/>
+      <genClasses image="false" ecoreClass="java.ecore#//expressions/MethodReferenceExpression">
+        <genOperations ecoreOperation="java.ecore#//expressions/MethodReferenceExpression/getTargetType"
+            body="return org.emftext.language.java.extensions.expressions.MethodReferenceExpressionExtension.getTargetType((MethodReferenceExpression) this);"/>
+        <genOperations ecoreOperation="java.ecore#//expressions/MethodReferenceExpression/getTargetTypeReference"
+            body="return org.emftext.language.java.extensions.expressions.MethodReferenceExpressionExtension.getTargetTypeReference((MethodReferenceExpression) this);"/>
+      </genClasses>
       <genClasses ecoreClass="java.ecore#//expressions/PrimaryExpressionReferenceExpression">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//expressions/PrimaryExpressionReferenceExpression/child"/>
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//expressions/PrimaryExpressionReferenceExpression/methodReference"/>
