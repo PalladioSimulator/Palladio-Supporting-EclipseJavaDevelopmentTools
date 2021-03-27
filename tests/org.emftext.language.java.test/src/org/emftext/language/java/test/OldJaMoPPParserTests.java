@@ -1799,4 +1799,9 @@ public class OldJaMoPPParserTests extends AbstractJaMoPPTests {
 		this.registerInClassPath("mbtp" + File.separator + "C3.java");
 		parseAndReprint("mbtp" + File.separator + "C2.java");
 	}
+	
+	@Test
+	public void testLambdaExpressionRefs() throws Exception {
+		parseAndReprint("refs" + File.separator + "LambdaExpressionRefs.java");
+	}
 }
