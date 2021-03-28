@@ -31,8 +31,10 @@ public class StaticMemberImportStaticMembersReferenceResolver implements
 	@Override
 	public void resolve(String identifier, StaticMemberImport theImport, EReference reference,
 			int position, IJavaReferenceResolveResult<ReferenceableElement> result) {
-		ConcreteClassifier classifier = theImport.getClassifierAtNamespaces();
-		classifier = (ConcreteClassifier) EcoreUtil.resolve(classifier, theImport.eResource());
+		ConcreteClassifier classifier = theImport.getClassifier();
+		if (classifier.eIsProxy()) {
+			classifier = (ConcreteClassifier) EcoreUtil.resolve(classifier, theImport.eResource());
+		}
 		if (classifier != null && !classifier.eIsProxy()) {
 			for (Member member : classifier.getAllMembers(theImport)) {
 				if (identifier.equals(member.getName()) && member instanceof ReferenceableElement) {
