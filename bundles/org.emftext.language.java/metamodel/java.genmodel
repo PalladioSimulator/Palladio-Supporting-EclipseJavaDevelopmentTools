@@ -596,6 +596,11 @@
       <genClasses ecoreClass="java.ecore#//members/Constructor">
         <genOperations ecoreOperation="java.ecore#//members/Constructor/getStatements"
             body="return org.emftext.language.java.extensions.members.ConstructorExtension.getStatements((org.emftext.language.java.members.Constructor) this);"/>
+        <genOperations ecoreOperation="java.ecore#//members/Constructor/isConstructorForCall"
+            body="return org.emftext.language.java.extensions.members.ConstructorExtension.isConstructorForCall((Constructor) this, call, needsPerfectMatch);">
+          <genParameters ecoreParameter="java.ecore#//members/Constructor/isConstructorForCall/call"/>
+          <genParameters ecoreParameter="java.ecore#//members/Constructor/isConstructorForCall/needsPerfectMatch"/>
+        </genOperations>
       </genClasses>
       <genClasses ecoreClass="java.ecore#//members/EmptyMember"/>
       <genClasses ecoreClass="java.ecore#//members/Field">

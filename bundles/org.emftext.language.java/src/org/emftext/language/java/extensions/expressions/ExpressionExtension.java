@@ -20,6 +20,7 @@ import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EObject;
 import org.emftext.language.java.arrays.ArrayInstantiationBySize;
 import org.emftext.language.java.arrays.ArrayTypeable;
+import org.emftext.language.java.classifiers.ConcreteClassifier;
 import org.emftext.language.java.expressions.AdditiveExpression;
 import org.emftext.language.java.expressions.AndExpression;
 import org.emftext.language.java.expressions.AssignmentExpression;
@@ -41,9 +42,14 @@ import org.emftext.language.java.expressions.RelationExpression;
 import org.emftext.language.java.expressions.ShiftExpression;
 import org.emftext.language.java.expressions.UnaryExpression;
 import org.emftext.language.java.extensions.types.TypeReferenceExtension;
+import org.emftext.language.java.instantiations.ExplicitConstructorCall;
+import org.emftext.language.java.instantiations.Instantiation;
+import org.emftext.language.java.instantiations.NewConstructorCall;
 import org.emftext.language.java.literals.Literal;
 import org.emftext.language.java.members.AdditionalField;
+import org.emftext.language.java.members.Constructor;
 import org.emftext.language.java.members.Field;
+import org.emftext.language.java.members.Member;
 import org.emftext.language.java.members.Method;
 import org.emftext.language.java.parameters.VariableLengthParameter;
 import org.emftext.language.java.references.ElementReference;
@@ -148,7 +154,10 @@ public class ExpressionExtension {
 					|| container.eContainer() instanceof LocalVariable
 					|| container.eContainer() instanceof AdditionalLocalVariable
 					|| container.eContainer() instanceof Return
-					|| container.eContainer() instanceof CastExpression)) {
+					|| container.eContainer() instanceof CastExpression
+					|| container.eContainer() instanceof Field
+					|| container.eContainer() instanceof AdditionalField
+					|| container.eContainer() instanceof Instantiation)) {
 				container = container.eContainer();
 			}
 			if (container.eContainer() instanceof MethodCall) {
@@ -170,6 +179,15 @@ public class ExpressionExtension {
 					locVar = (LocalVariable) container.eContainer();
 				}
 				return locVar.getTypeReference();
+			} else if (container.eContainer() instanceof Field
+					|| container.eContainer() instanceof AdditionalField) {
+				Field f;
+				if (container.eContainer() instanceof AdditionalField) {
+					f = (Field) container.eContainer().eContainer();
+				} else {
+					f = (Field) container.eContainer();
+				}
+				return f.getTypeReference();
 			} else if (container.eContainer() instanceof Return) {
 				while (!(container instanceof Method)) {
 					container = container.eContainer();
@@ -177,6 +195,21 @@ public class ExpressionExtension {
 				return ((Method) container).getTypeReference();
 			} else if (container.eContainer() instanceof CastExpression) {
 				return ((CastExpression) container.eContainer()).getOneTypeReference(alternative);
+			} else if (container.eContainer() instanceof Instantiation) {
+				Instantiation inst = (Instantiation) container.eContainer();
+				ConcreteClassifier t = (ConcreteClassifier) inst.getReferencedType();
+				for (Member mem : t.getMembers()) {
+					if (mem instanceof Constructor) {
+						Constructor aCon = (Constructor) mem;
+						if (aCon.getParameters().size() == inst.getArguments().size()) {
+							TypeReference ref = aCon.getParameters().get(
+									inst.getArguments().indexOf(container)).getTypeReference();
+							if (ref.getTarget() instanceof org.emftext.language.java.classifiers.Interface) {
+								return ref;
+							}
+						}
+					}
+				}
 			}
 		} else if (me instanceof MethodReferenceExpression) {
 			return ((MethodReferenceExpression) me).getTargetTypeReference();

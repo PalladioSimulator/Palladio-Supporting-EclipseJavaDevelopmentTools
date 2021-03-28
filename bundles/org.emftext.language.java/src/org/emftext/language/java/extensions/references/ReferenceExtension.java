@@ -15,12 +15,16 @@
  ******************************************************************************/
 package org.emftext.language.java.extensions.references;
 
+import org.emftext.language.java.classifiers.Annotation;
 import org.emftext.language.java.classifiers.AnonymousClass;
+import org.emftext.language.java.classifiers.ConcreteClassifier;
 import org.emftext.language.java.classifiers.Enumeration;
 import org.emftext.language.java.expressions.NestedExpression;
 import org.emftext.language.java.extensions.types.TypeReferenceExtension;
+import org.emftext.language.java.instantiations.ExplicitConstructorCall;
 import org.emftext.language.java.literals.Literal;
 import org.emftext.language.java.literals.Super;
+import org.emftext.language.java.literals.This;
 import org.emftext.language.java.members.AdditionalField;
 import org.emftext.language.java.members.EnumConstant;
 import org.emftext.language.java.references.ElementReference;
@@ -138,6 +142,17 @@ public class ReferenceExtension {
 			type = ((NestedExpression) me).getExpression().getOneTypeReference(false);
 		} else if (me instanceof PrimitiveTypeReference) {
 			type = ((PrimitiveTypeReference) me).getPrimitiveType();
+		} else if (me instanceof ExplicitConstructorCall) {
+			ExplicitConstructorCall exCall = (ExplicitConstructorCall) me;
+			ConcreteClassifier thisClass = me.getContainingConcreteClassifier();
+			if (exCall.getCallTarget() instanceof This) {
+				return TypeReferenceExtension.convertToTypeReference(thisClass);
+			} else {
+				if (thisClass instanceof org.emftext.language.java.classifiers.Class) {
+					return TypeReferenceExtension.convertToTypeReference(
+							((org.emftext.language.java.classifiers.Class) thisClass).getSuperClass());
+				}
+			}
 		} else {
 			assert false;
 		}
