@@ -13,7 +13,6 @@
 
 package jamopp.parser.jdt.singlefile;
 
-import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.ImportDeclaration;
@@ -45,7 +44,8 @@ class AbstractAndEmptyModelJDTASTVisitorAndConverter extends ASTVisitor {
 	@Override
 	public boolean visit(CompilationUnit node) {
 		if (this.convertedRootElement == null) {
-			this.convertedRootElement = org.emftext.language.java.containers.ContainersFactory.eINSTANCE.createEmptyModel();
+			this.convertedRootElement =
+					org.emftext.language.java.containers.ContainersFactory.eINSTANCE.createEmptyModel();
 			this.convertedRootElement.setName("");
 		}
 		node.imports().forEach(obj -> this.convertedRootElement.getImports().add(this.convertToImport((ImportDeclaration) obj)));
@@ -56,7 +56,8 @@ class AbstractAndEmptyModelJDTASTVisitorAndConverter extends ASTVisitor {
 		if (!importDecl.isOnDemand() && !importDecl.isStatic()) {
 			org.emftext.language.java.imports.ClassifierImport convertedImport =
 				org.emftext.language.java.imports.ImportsFactory.eINSTANCE.createClassifierImport();
-			org.emftext.language.java.classifiers.Class proxy = org.emftext.language.java.classifiers.ClassifiersFactory.eINSTANCE.createClass();
+			org.emftext.language.java.classifiers.Class proxy =
+					org.emftext.language.java.classifiers.ClassifiersFactory.eINSTANCE.createClass();
 			convertedImport.setClassifier(proxy);
 			BaseConverterUtility.convertToNamespacesAndSimpleNameAndSet(importDecl.getName(), convertedImport, proxy);
 			IJavaContextDependentURIFragmentCollector.GLOBAL_INSTANCE.registerContextDependentURIFragment(
@@ -67,16 +68,23 @@ class AbstractAndEmptyModelJDTASTVisitorAndConverter extends ASTVisitor {
 			org.emftext.language.java.imports.StaticMemberImport convertedImport =
 				org.emftext.language.java.imports.ImportsFactory.eINSTANCE.createStaticMemberImport();
 			convertedImport.setStatic(org.emftext.language.java.modifiers.ModifiersFactory.eINSTANCE.createStatic());
-			org.emftext.language.java.members.Field proxyMember = org.emftext.language.java.members.MembersFactory.eINSTANCE.createField();
+			org.emftext.language.java.members.Field proxyMember =
+					org.emftext.language.java.members.MembersFactory.eINSTANCE.createField();
 			QualifiedName qualifiedName = (QualifiedName) importDecl.getName();
 			proxyMember.setName(qualifiedName.getName().getIdentifier());
 			IJavaContextDependentURIFragmentCollector.GLOBAL_INSTANCE.registerContextDependentURIFragment(
 				convertedImport, org.emftext.language.java.imports.ImportsPackage.Literals.STATIC_MEMBER_IMPORT__STATIC_MEMBERS, proxyMember.getName(), proxyMember, -1);
 			convertedImport.getStaticMembers().add(proxyMember);
-			org.emftext.language.java.classifiers.Class proxyClass = org.emftext.language.java.classifiers.ClassifiersFactory.eINSTANCE.createClass();
-			((InternalEObject) proxyClass).eSetProxyURI(null);
+			qualifiedName = (QualifiedName) qualifiedName.getQualifier();
+			org.emftext.language.java.classifiers.Class proxyClass =
+					org.emftext.language.java.classifiers.ClassifiersFactory.eINSTANCE.createClass();
+			IJavaContextDependentURIFragmentCollector.GLOBAL_INSTANCE
+				.registerContextDependentURIFragment(convertedImport,
+					org.emftext.language.java.imports.ImportsPackage.Literals.IMPORT__CLASSIFIER,
+					qualifiedName.getName().getIdentifier(), proxyClass, -1);
 			convertedImport.setClassifier(proxyClass);
-			BaseConverterUtility.convertToNamespacesAndSimpleNameAndSet(qualifiedName.getQualifier(), convertedImport, proxyClass);
+			BaseConverterUtility.convertToNamespacesAndSimpleNameAndSet(
+					qualifiedName, convertedImport, proxyClass);
 			LayoutInformationConverter.convertToMinimalLayoutInformation(convertedImport, importDecl);
 			return convertedImport;
 		} else if (importDecl.isOnDemand() && !importDecl.isStatic()) {
@@ -87,7 +95,8 @@ class AbstractAndEmptyModelJDTASTVisitorAndConverter extends ASTVisitor {
 		} else { // importDecl.isOnDemand() && importDecl.isStatic()
 			org.emftext.language.java.imports.StaticClassifierImport convertedImport = org.emftext.language.java.imports.ImportsFactory.eINSTANCE.createStaticClassifierImport();
 			convertedImport.setStatic(org.emftext.language.java.modifiers.ModifiersFactory.eINSTANCE.createStatic());
-			org.emftext.language.java.classifiers.Class proxyClass = org.emftext.language.java.classifiers.ClassifiersFactory.eINSTANCE.createClass();
+			org.emftext.language.java.classifiers.Class proxyClass =
+					org.emftext.language.java.classifiers.ClassifiersFactory.eINSTANCE.createClass();
 			convertedImport.setClassifier(proxyClass);
 			BaseConverterUtility.convertToNamespacesAndSimpleNameAndSet(importDecl.getName(), convertedImport, proxyClass);
 			IJavaContextDependentURIFragmentCollector.GLOBAL_INSTANCE.registerContextDependentURIFragment(
