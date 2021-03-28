@@ -29,6 +29,8 @@ import org.emftext.language.java.commons.Commentable;
 import org.emftext.language.java.expressions.CastExpression;
 import org.emftext.language.java.expressions.ConditionalExpression;
 import org.emftext.language.java.expressions.Expression;
+import org.emftext.language.java.expressions.ExpressionsPackage;
+import org.emftext.language.java.expressions.LambdaExpression;
 import org.emftext.language.java.expressions.NestedExpression;
 import org.emftext.language.java.generics.ExtendsTypeArgument;
 import org.emftext.language.java.generics.QualifiedTypeArgument;
@@ -368,7 +370,13 @@ public class TypeParameterExtension {
 					for (Parameter parameter : method.getParameters()) {
 						for (TypeArgument typeArgument : parameter.getTypeArguments()) {
 							if (typeArgument instanceof QualifiedTypeArgument) {
-								if (((QualifiedTypeArgument) typeArgument).getTypeReference().getTarget().equals(me)) {
+								if (((QualifiedTypeArgument) typeArgument)
+										.getTypeReference().getTarget().equals(me)) {
+									idx = method.getParameters().indexOf(parameter);
+								}
+							} else if (typeArgument instanceof ExtendsTypeArgument) {
+								if (me.equals(((ExtendsTypeArgument) typeArgument)
+										.getExtendType().getTarget())) {
 									idx = method.getParameters().indexOf(parameter);
 								}
 							}
@@ -377,7 +385,13 @@ public class TypeParameterExtension {
 						if (paramTypeReference != null) {
 							for (TypeArgument typeArgument : paramTypeReference.getTypeArguments()) {
 								if (typeArgument instanceof QualifiedTypeArgument) {
-									if (me.equals(((QualifiedTypeArgument) typeArgument).getTypeReference().getTarget())) {
+									if (me.equals(((QualifiedTypeArgument) typeArgument)
+											.getTypeReference().getTarget())) {
+										idx = method.getParameters().indexOf(parameter);
+									}
+								} else if (typeArgument instanceof ExtendsTypeArgument) {
+									if (me.equals(((ExtendsTypeArgument) typeArgument)
+											.getExtendType().getTarget())) {
 										idx = method.getParameters().indexOf(parameter);
 									}
 								}
@@ -405,8 +419,7 @@ public class TypeParameterExtension {
 						if (argumentType != null && parameterType.getTarget() instanceof TypeParameter) {
 							resultList.add(0, argumentType.getTarget());
 						}
-					}
-					else if (parameterType != null && argument instanceof Reference) {
+					} else if (parameterType != null && argument instanceof Reference) {
 						Reference argReference = (Reference) argument;
 						
 						while (argReference.getNext() instanceof Reference &&
@@ -455,8 +468,7 @@ public class TypeParameterExtension {
 									}
 								}
 							}
-						}
-						else {
+						} else {
 							if (parameterType.getTarget() instanceof TypeParameter) {
 								while (argReference.getNext() instanceof Reference) {
 									argReference = argReference.getNext();
@@ -464,7 +476,15 @@ public class TypeParameterExtension {
 								resultList.add(0, ((Reference) argReference).getReferencedType());
 							}
 						}
-					}			
+					} else {
+						
+						LambdaExpression lambda = argument instanceof LambdaExpression ?
+								(LambdaExpression) argument
+								: argument.getFirstChildByType(LambdaExpression.class);
+						if (lambda != null) {
+							resultList.add(0, lambda.getReturnType(null));
+						}
+					}
 				}
 				
 				//return type
