@@ -64,7 +64,11 @@ public class ClassFileParserTest extends AbstractJaMoPPTests {
 		JavaClasspath.get().registerClassifier("", registeredType,
 				createURI(BIN_FOLDER, registeredType + CLASS_FILE_EXTENSION));
 		JavaClasspath.get().registerClassifier(registeredType, "A",
-				createURI(BIN_FOLDER, registeredType + "$A" + CLASS_FILE_EXTENSION));		
+				createURI(BIN_FOLDER, registeredType + "$A" + CLASS_FILE_EXTENSION));
+		registeredType = "CallTargetsProvider";
+		String pack = "staticcalltarget";
+		JavaClasspath.get().registerClassifier(pack, registeredType,
+				createURI(BIN_FOLDER, pack, registeredType + CLASS_FILE_EXTENSION));
 		parseAndReprint("StaticCalls.java");
 	}
 	
