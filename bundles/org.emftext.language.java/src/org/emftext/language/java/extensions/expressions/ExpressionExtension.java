@@ -22,10 +22,8 @@ import org.emftext.language.java.arrays.ArrayInstantiationBySize;
 import org.emftext.language.java.arrays.ArrayTypeable;
 import org.emftext.language.java.expressions.AdditiveExpression;
 import org.emftext.language.java.expressions.AndExpression;
-import org.emftext.language.java.expressions.ArrayConstructorReferenceExpression;
 import org.emftext.language.java.expressions.AssignmentExpression;
 import org.emftext.language.java.expressions.CastExpression;
-import org.emftext.language.java.expressions.ClassTypeConstructorReferenceExpression;
 import org.emftext.language.java.expressions.ConditionalAndExpression;
 import org.emftext.language.java.expressions.ConditionalExpression;
 import org.emftext.language.java.expressions.ConditionalOrExpression;
@@ -39,7 +37,6 @@ import org.emftext.language.java.expressions.MethodReferenceExpression;
 import org.emftext.language.java.expressions.MultiplicativeExpression;
 import org.emftext.language.java.expressions.NestedExpression;
 import org.emftext.language.java.expressions.PrimaryExpression;
-import org.emftext.language.java.expressions.PrimaryExpressionReferenceExpression;
 import org.emftext.language.java.expressions.RelationExpression;
 import org.emftext.language.java.expressions.ShiftExpression;
 import org.emftext.language.java.expressions.UnaryExpression;
@@ -57,7 +54,6 @@ import org.emftext.language.java.statements.Block;
 import org.emftext.language.java.statements.Return;
 import org.emftext.language.java.types.Type;
 import org.emftext.language.java.types.TypeReference;
-import org.emftext.language.java.types.TypedElement;
 import org.emftext.language.java.util.TemporalCompositeTypeReference;
 import org.emftext.language.java.util.TemporalUnknownLambdaExpressionType;
 import org.emftext.language.java.variables.AdditionalLocalVariable;
@@ -234,7 +230,7 @@ public class ExpressionExtension {
 			}
 			return tempClass;
 		} else {
-			return castExpr.getTypeReference();
+			return TypeReferenceExtension.clone(castExpr.getTypeReference());
 		}
 	}
 	

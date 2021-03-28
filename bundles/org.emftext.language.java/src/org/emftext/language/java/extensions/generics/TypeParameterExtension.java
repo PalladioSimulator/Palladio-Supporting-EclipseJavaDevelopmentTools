@@ -29,7 +29,6 @@ import org.emftext.language.java.commons.Commentable;
 import org.emftext.language.java.expressions.CastExpression;
 import org.emftext.language.java.expressions.ConditionalExpression;
 import org.emftext.language.java.expressions.Expression;
-import org.emftext.language.java.expressions.ExpressionsPackage;
 import org.emftext.language.java.expressions.LambdaExpression;
 import org.emftext.language.java.expressions.NestedExpression;
 import org.emftext.language.java.generics.ExtendsTypeArgument;
