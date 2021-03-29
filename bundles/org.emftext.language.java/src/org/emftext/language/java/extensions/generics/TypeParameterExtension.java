@@ -263,21 +263,22 @@ public class TypeParameterExtension {
 						for (ClassifierReference superClassifierReference : ((ConcreteClassifier) prevType).getSuperTypeReferences()) {
 							if (typeParameterIndex < superClassifierReference.getTypeArguments().size())  {
 								//is this an argument for the correct class?
-								if (typeParameterDeclarator.equals(superClassifierReference.getTarget()) ||
-										((Classifier)superClassifierReference.getTarget()).getAllSuperClassifiers().contains(
-												typeParameterDeclarator)) {					 
+								if (typeParameterDeclarator.equals(superClassifierReference.getTarget())) {					 
 									TypeArgument arg = superClassifierReference.getTypeArguments().get(typeParameterIndex);
 									if (arg instanceof QualifiedTypeArgument) {
 										TypeReference argRef = ((QualifiedTypeArgument) arg).getTypeReference();
 										typeArgCheck: if (argRef instanceof TypeArgumentable) {
-											for (Adapter adapter : reference.eAdapters()) {
-												if (adapter instanceof TemporalTypeArgumentHolder) {
-													break typeArgCheck;
+											TypeArgumentable typeArgumentable = (TypeArgumentable) argRef;
+											if (!typeArgumentable.getTypeArguments().isEmpty()) {
+												for (Adapter adapter : reference.eAdapters()) {
+													if (adapter instanceof TemporalTypeArgumentHolder) {
+														break typeArgCheck;
+													}
 												}
+												TemporalTypeArgumentHolder t = new TemporalTypeArgumentHolder();
+												t.getTypeArguments().addAll(((TypeArgumentable) argRef).getTypeArguments());
+												reference.eAdapters().add(t);
 											}
-											TemporalTypeArgumentHolder t = new TemporalTypeArgumentHolder();
-											t.getTypeArguments().addAll(((TypeArgumentable) argRef).getTypeArguments());
-											reference.eAdapters().add(t);
 										}
 										resultList.add(idx, argRef.getTarget());
 										idx++;
@@ -531,6 +532,23 @@ public class TypeParameterExtension {
 		
 		if (resultList.isEmpty() || 
 				(resultList.size() == 1 && resultList.get(0).equals(me))) {
+			if (me.getExtendTypes().size() > 0) {
+				TypeReference result = me.getExtendTypes().get(0);
+				 argCreation: if (result instanceof TypeArgumentable && reference != null) {
+					TypeArgumentable typeArg = (TypeArgumentable) result;
+					if (!typeArg.getTypeArguments().isEmpty()) {
+						for (Adapter a : reference.eAdapters()) {
+							if (a instanceof TemporalTypeArgumentHolder) {
+								break argCreation;
+							}
+						}
+						TemporalTypeArgumentHolder holder = new TemporalTypeArgumentHolder();
+						holder.getTypeArguments().addAll(typeArg.getTypeArguments());
+						reference.eAdapters().add(holder);
+					}
+				}
+				return result.getTarget();
+			}
 			return me;
 		} else if (resultList.size() == 1) {
 			return resultList.get(0);
