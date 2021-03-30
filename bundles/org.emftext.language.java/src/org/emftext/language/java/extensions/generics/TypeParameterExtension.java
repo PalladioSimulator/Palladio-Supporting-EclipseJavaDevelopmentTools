@@ -30,8 +30,10 @@ import org.emftext.language.java.commons.Commentable;
 import org.emftext.language.java.commons.NamedElement;
 import org.emftext.language.java.expressions.CastExpression;
 import org.emftext.language.java.expressions.ConditionalExpression;
+import org.emftext.language.java.expressions.ExplicitlyTypedLambdaParameters;
 import org.emftext.language.java.expressions.Expression;
 import org.emftext.language.java.expressions.LambdaExpression;
+import org.emftext.language.java.expressions.MethodReferenceExpression;
 import org.emftext.language.java.expressions.NestedExpression;
 import org.emftext.language.java.generics.ExtendsTypeArgument;
 import org.emftext.language.java.generics.QualifiedTypeArgument;
@@ -370,7 +372,9 @@ public class TypeParameterExtension {
 				
 				//method type parameter
 				if (idx == -1) {
+					int hasIgnoredLambdaParameterIdx = -1;
 					for (Parameter parameter : method.getParameters()) {
+						int oldIdx = idx;
 						for (TypeArgument typeArgument : parameter.getTypeArguments()) {
 							if (typeArgument instanceof QualifiedTypeArgument) {
 								if (((QualifiedTypeArgument) typeArgument)
@@ -409,7 +413,27 @@ public class TypeParameterExtension {
 									}
 								}
 							}
+							Type paramType = paramTypeReference.getTarget();
+							if (paramType instanceof TypeParameter
+									&& ((TypeParameter) paramType).equals(me)) {
+								idx = method.getParameters().indexOf(parameter);
+							}
 						}
+						Expression arg = methodCall.getArguments().get(method.getParameters().indexOf(parameter));
+						LambdaExpression lambda = arg instanceof LambdaExpression ?
+								(LambdaExpression) arg
+								: arg.getFirstChildByType(LambdaExpression.class);
+						if (lambda != null) {
+							if (!(lambda.getParameters() instanceof ExplicitlyTypedLambdaParameters)) {
+								if (oldIdx != idx) {
+									hasIgnoredLambdaParameterIdx = idx;
+									idx = oldIdx;
+								}
+							}
+						}
+					}
+					if (hasIgnoredLambdaParameterIdx > -1 && idx == -1) {
+						idx = hasIgnoredLambdaParameterIdx;
 					}
 				}
 				
@@ -491,7 +515,6 @@ public class TypeParameterExtension {
 							}
 						}
 					} else {
-						
 						LambdaExpression lambda = argument instanceof LambdaExpression ?
 								(LambdaExpression) argument
 								: argument.getFirstChildByType(LambdaExpression.class);
@@ -505,6 +528,13 @@ public class TypeParameterExtension {
 									resultList.add(0, ret);
 								}
 							}
+						}
+						MethodReferenceExpression methodRef = argument instanceof MethodReferenceExpression ?
+								(MethodReferenceExpression) argument
+								: argument.getFirstChildByType(MethodReferenceExpression.class);
+						if (methodRef != null) {
+						} else {
+							resultList.add(0, argument.getType());
 						}
 					}
 				}

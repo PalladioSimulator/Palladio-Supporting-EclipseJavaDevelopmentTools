@@ -108,7 +108,8 @@ public class MethodDecider extends AbstractDecider {
 				if (aImport instanceof StaticMemberImport) {
 					StaticMemberImport staticMemberImport = (StaticMemberImport) aImport;
 					if (!staticMemberImport.getStaticMembers().isEmpty()) {
-						//access first element to trigger proxy resolution and avoid ConcurrentModificationException
+						// Access first element to trigger proxy resolution
+						// and avoid ConcurrentModificationException.
 						staticMemberImport.getStaticMembers().get(0);
 					}
 					resultList.addAll(staticMemberImport.getStaticMembers());
