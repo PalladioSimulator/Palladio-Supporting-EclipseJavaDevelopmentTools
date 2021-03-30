@@ -19,6 +19,7 @@ package jamopp.proxy;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
+import org.eclipse.jdt.core.dom.IBinding;
 
 /**
  * Standard implementation of <code>IContextDependentURIFragment</code>.
@@ -33,6 +34,7 @@ public class JavaContextDependentURIFragment<ContainerType extends EObject>
 	private EReference reference;
 	private int positionInReference;
 	private EObject proxy;
+	private IBinding binding;
 	
 	public JavaContextDependentURIFragment(String identifier, ContainerType container, EReference reference,
 			int positionInReference, EObject proxy) {
@@ -41,6 +43,12 @@ public class JavaContextDependentURIFragment<ContainerType extends EObject>
 		this.reference = reference;
 		this.positionInReference = positionInReference;
 		this.proxy = proxy;
+	}
+	
+	public JavaContextDependentURIFragment(String identifier, ContainerType container, EReference reference,
+			int positionInReference, EObject proxy, IBinding binding) {
+		this(identifier, container, reference, positionInReference, proxy);
+		this.binding = binding;
 	}
 	
 	@Override
@@ -66,5 +74,10 @@ public class JavaContextDependentURIFragment<ContainerType extends EObject>
 	@Override
 	public EObject getProxy() {
 		return proxy;
+	}
+	
+	@Override
+	public IBinding getBinding() {
+		return binding;
 	}
 }

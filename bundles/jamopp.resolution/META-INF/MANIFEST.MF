@@ -9,7 +9,8 @@ Bundle-RequiredExecutionEnvironment: JavaSE-11
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.core.resources,
  org.eclipse.emf.ecore,
- org.emftext.language.java
+ org.emftext.language.java,
+ org.eclipse.jdt.core
 Export-Package: jamopp.proxy,
  jamopp.resolution.util,
  org.emftext.language.java.resolver,

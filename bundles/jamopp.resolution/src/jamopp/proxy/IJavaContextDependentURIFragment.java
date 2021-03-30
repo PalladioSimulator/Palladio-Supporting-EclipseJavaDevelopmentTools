@@ -19,6 +19,7 @@ package jamopp.proxy;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
+import org.eclipse.jdt.core.dom.IBinding;
 
 /**
  * An <code>IContextDependentURIFragment</code> points at an element referenced
@@ -72,4 +73,11 @@ public interface IJavaContextDependentURIFragment {
 	 * @return The position or -1 otherwise.
 	 */
 	public int getPositionInReference();
+	
+	/**
+	 * Returns the binding associated with the proxy element provided by an Eclipse JDT Parser.
+	 * 
+	 * @return the binding.
+	 */
+	public IBinding getBinding();
 }
