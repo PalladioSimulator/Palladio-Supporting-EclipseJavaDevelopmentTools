@@ -80,4 +80,11 @@ public interface IJavaContextDependentURIFragment {
 	 * @return the binding.
 	 */
 	public IBinding getBinding();
+	
+	/**
+	 * Sets the binding associated with the proxy element.
+	 * 
+	 * @param newBinding the new binding.
+	 */
+	public void setBinding(IBinding newBinding);
 }

@@ -80,4 +80,9 @@ public class JavaContextDependentURIFragment<ContainerType extends EObject>
 	public IBinding getBinding() {
 		return binding;
 	}
+	
+	@Override
+	public void setBinding(IBinding newBinding) {
+		binding = newBinding;
+	}
 }
