@@ -35,7 +35,8 @@ class BaseConverterUtility {
 			return convertToClassifierReference((SimpleName) name);
 		} else { // name.isQualifiedName()
 			QualifiedName qualifiedName = (QualifiedName) name;
-			org.emftext.language.java.types.NamespaceClassifierReference ref = org.emftext.language.java.types.TypesFactory.eINSTANCE.createNamespaceClassifierReference();
+			org.emftext.language.java.types.NamespaceClassifierReference ref = org.emftext.language.java
+					.types.TypesFactory.eINSTANCE.createNamespaceClassifierReference();
 			ref.getClassifierReferences().add(convertToClassifierReference(qualifiedName.getName()));
 			convertToNamespacesAndSet(qualifiedName.getQualifier(), ref);
 			return ref;
@@ -43,17 +44,21 @@ class BaseConverterUtility {
 	}
 	
 	static org.emftext.language.java.types.ClassifierReference convertToClassifierReference(SimpleName simpleName) {
-		org.emftext.language.java.types.ClassifierReference ref = org.emftext.language.java.types.TypesFactory.eINSTANCE.createClassifierReference();
-		org.emftext.language.java.classifiers.Class proxy = org.emftext.language.java.classifiers.ClassifiersFactory.eINSTANCE.createClass();
+		org.emftext.language.java.types.ClassifierReference ref =
+				org.emftext.language.java.types.TypesFactory.eINSTANCE.createClassifierReference();
+		org.emftext.language.java.classifiers.Class proxy =
+				org.emftext.language.java.classifiers.ClassifiersFactory.eINSTANCE.createClass();
 		proxy.setName(simpleName.getIdentifier());
 		IJavaContextDependentURIFragmentCollector.GLOBAL_INSTANCE.registerContextDependentURIFragment(
-			ref, org.emftext.language.java.types.TypesPackage.Literals.CLASSIFIER_REFERENCE__TARGET, proxy.getName(), proxy, -1);
+			ref, org.emftext.language.java.types.TypesPackage.Literals.CLASSIFIER_REFERENCE__TARGET,
+			proxy.getName(), proxy, -1, simpleName.resolveBinding());
 		ref.setTarget(proxy);
 		return ref;
 	}
 	
-	static void convertToNamespacesAndSimpleNameAndSet(Name name, org.emftext.language.java.commons.NamespaceAwareElement namespaceElement,
-		org.emftext.language.java.commons.NamedElement namedElement) {
+	static void convertToNamespacesAndSimpleNameAndSet(Name name,
+			org.emftext.language.java.commons.NamespaceAwareElement namespaceElement,
+			org.emftext.language.java.commons.NamedElement namedElement) {
 		if (name.isSimpleName()) {
 			namedElement.setName(((SimpleName) name).getIdentifier());
 		} else if (name.isQualifiedName()) {
@@ -63,7 +68,8 @@ class BaseConverterUtility {
 		}
 	}
 	
-	static void convertToNamespacesAndSet(Name name, org.emftext.language.java.commons.NamespaceAwareElement namespaceElement) {
+	static void convertToNamespacesAndSet(Name name,
+			org.emftext.language.java.commons.NamespaceAwareElement namespaceElement) {
 		if (name.isSimpleName()) {
 			SimpleName simpleName = (SimpleName) name;
 			namespaceElement.getNamespaces().add(0, simpleName.getIdentifier());
@@ -108,12 +114,14 @@ class BaseConverterUtility {
 			} else { // primType.getPrimitiveTypeCode() == PrimitiveType.VOID
 				convertedType = org.emftext.language.java.types.TypesFactory.eINSTANCE.createVoid();
 			}
-			primType.annotations().forEach(obj -> convertedType.getAnnotations().add(AnnotationInstanceOrModifierConverterUtility
+			primType.annotations().forEach(obj -> convertedType.getAnnotations().add(
+				AnnotationInstanceOrModifierConverterUtility
 				.convertToAnnotationInstance((Annotation) obj)));
 			LayoutInformationConverter.convertToMinimalLayoutInformation(convertedType, primType);
 			return convertedType;
 		} else if (t.isVar()) {
-			org.emftext.language.java.types.InferableType ref = org.emftext.language.java.types.TypesFactory.eINSTANCE.createInferableType();
+			org.emftext.language.java.types.InferableType ref =
+					org.emftext.language.java.types.TypesFactory.eINSTANCE.createInferableType();
 			LayoutInformationConverter.convertToMinimalLayoutInformation(ref, t);
 			return ref;
 		} else if (t.isArrayType()) {
@@ -123,8 +131,10 @@ class BaseConverterUtility {
 			SimpleType simT = (SimpleType) t;
 			org.emftext.language.java.types.TypeReference ref;
 			if (simT.annotations().size() > 0) {
-				org.emftext.language.java.types.ClassifierReference tempRef = convertToClassifierReference((SimpleName) simT.getName());
-				simT.annotations().forEach(obj -> tempRef.getAnnotations().add(AnnotationInstanceOrModifierConverterUtility
+				org.emftext.language.java.types.ClassifierReference tempRef =
+						convertToClassifierReference((SimpleName) simT.getName());
+				simT.annotations().forEach(obj -> tempRef.getAnnotations().add(
+					AnnotationInstanceOrModifierConverterUtility
 					.convertToAnnotationInstance((Annotation) obj)));
 				ref = tempRef;
 			} else {
@@ -137,24 +147,32 @@ class BaseConverterUtility {
 			org.emftext.language.java.types.NamespaceClassifierReference result;
 			org.emftext.language.java.types.TypeReference parentRef = convertToTypeReference(qualType.getQualifier());
 			if (parentRef instanceof org.emftext.language.java.types.ClassifierReference) {
-				result = org.emftext.language.java.types.TypesFactory.eINSTANCE.createNamespaceClassifierReference();
-				result.getClassifierReferences().add((org.emftext.language.java.types.ClassifierReference) parentRef);
+				result = org.emftext.language.java.types.TypesFactory.eINSTANCE
+						.createNamespaceClassifierReference();
+				result.getClassifierReferences().add(
+						(org.emftext.language.java.types.ClassifierReference) parentRef);
 			} else { // parentRef instanceof org.emftext.language.java.types.NamespaceClassifierReference
 				result = (org.emftext.language.java.types.NamespaceClassifierReference) parentRef;
 			}
-			org.emftext.language.java.types.ClassifierReference childRef = convertToClassifierReference(qualType.getName());
-			qualType.annotations().forEach(obj -> childRef.getAnnotations().add(AnnotationInstanceOrModifierConverterUtility
+			org.emftext.language.java.types.ClassifierReference childRef =
+					convertToClassifierReference(qualType.getName());
+			qualType.annotations().forEach(obj -> childRef.getAnnotations().add(
+				AnnotationInstanceOrModifierConverterUtility
 				.convertToAnnotationInstance((Annotation) obj)));
 			result.getClassifierReferences().add(childRef);
 			LayoutInformationConverter.convertToMinimalLayoutInformation(result, qualType);
 			return result;
 		} else if (t.isNameQualifiedType()) {
 			NameQualifiedType nqT = (NameQualifiedType) t;
-			org.emftext.language.java.types.NamespaceClassifierReference result = org.emftext.language.java.types.TypesFactory.eINSTANCE.createNamespaceClassifierReference();
-			org.emftext.language.java.types.TypeReference parentRef = convertToClassifierOrNamespaceClassifierReference(nqT.getQualifier());
+			org.emftext.language.java.types.NamespaceClassifierReference result = org.emftext.language
+					.java.types.TypesFactory.eINSTANCE.createNamespaceClassifierReference();
+			org.emftext.language.java.types.TypeReference parentRef =
+					convertToClassifierOrNamespaceClassifierReference(nqT.getQualifier());
 			if (parentRef instanceof org.emftext.language.java.types.ClassifierReference) {
-				result = org.emftext.language.java.types.TypesFactory.eINSTANCE.createNamespaceClassifierReference();
-				result.getClassifierReferences().add((org.emftext.language.java.types.ClassifierReference) parentRef);
+				result = org.emftext.language.java.types.TypesFactory.eINSTANCE
+						.createNamespaceClassifierReference();
+				result.getClassifierReferences().add(
+						(org.emftext.language.java.types.ClassifierReference) parentRef);
 			} else {
 				result = (org.emftext.language.java.types.NamespaceClassifierReference) parentRef;
 			}
@@ -171,10 +189,13 @@ class BaseConverterUtility {
 			if (ref instanceof org.emftext.language.java.types.ClassifierReference) {
 				container = (org.emftext.language.java.types.ClassifierReference) ref;
 			} else {
-				org.emftext.language.java.types.NamespaceClassifierReference containerContainer = (org.emftext.language.java.types.NamespaceClassifierReference) ref;
-				container = containerContainer.getClassifierReferences().get(containerContainer.getClassifierReferences().size() - 1);
+				org.emftext.language.java.types.NamespaceClassifierReference containerContainer =
+						(org.emftext.language.java.types.NamespaceClassifierReference) ref;
+				container = containerContainer.getClassifierReferences()
+						.get(containerContainer.getClassifierReferences().size() - 1);
 			}
-			paramT.typeArguments().forEach(obj -> container.getTypeArguments().add(convertToTypeArgument((Type) obj)));
+			paramT.typeArguments().forEach(obj -> container.getTypeArguments()
+					.add(convertToTypeArgument((Type) obj)));
 			return ref;
 		}
 		return null;
@@ -185,22 +206,28 @@ class BaseConverterUtility {
 		if (t.isWildcardType()) {
 			WildcardType wildType = (WildcardType) t;
 			if (wildType.getBound() == null) {
-				org.emftext.language.java.generics.UnknownTypeArgument result = org.emftext.language.java.generics.GenericsFactory.eINSTANCE.createUnknownTypeArgument();
-				wildType.annotations().forEach(obj -> result.getAnnotations().add(AnnotationInstanceOrModifierConverterUtility
+				org.emftext.language.java.generics.UnknownTypeArgument result = org.emftext.language
+						.java.generics.GenericsFactory.eINSTANCE.createUnknownTypeArgument();
+				wildType.annotations().forEach(obj -> result.getAnnotations().add(
+					AnnotationInstanceOrModifierConverterUtility
 					.convertToAnnotationInstance((Annotation) obj)));
 				LayoutInformationConverter.convertToMinimalLayoutInformation(result, wildType);
 				return result;
 			} else if (wildType.isUpperBound()) {
-				org.emftext.language.java.generics.ExtendsTypeArgument result = org.emftext.language.java.generics.GenericsFactory.eINSTANCE.createExtendsTypeArgument();
-				wildType.annotations().forEach(obj -> result.getAnnotations().add(AnnotationInstanceOrModifierConverterUtility
+				org.emftext.language.java.generics.ExtendsTypeArgument result = org.emftext.language
+						.java.generics.GenericsFactory.eINSTANCE.createExtendsTypeArgument();
+				wildType.annotations().forEach(obj -> result.getAnnotations().add(
+					AnnotationInstanceOrModifierConverterUtility
 					.convertToAnnotationInstance((Annotation) obj)));
 				result.setExtendType(convertToTypeReference(wildType.getBound()));
 				convertToArrayDimensionsAndSet(wildType.getBound(), result);
 				LayoutInformationConverter.convertToMinimalLayoutInformation(result, wildType);
 				return result;
 			} else {
-				org.emftext.language.java.generics.SuperTypeArgument result = org.emftext.language.java.generics.GenericsFactory.eINSTANCE.createSuperTypeArgument();
-				wildType.annotations().forEach(obj -> result.getAnnotations().add(AnnotationInstanceOrModifierConverterUtility
+				org.emftext.language.java.generics.SuperTypeArgument result = org.emftext.language
+						.java.generics.GenericsFactory.eINSTANCE.createSuperTypeArgument();
+				wildType.annotations().forEach(obj -> result.getAnnotations().add(
+					AnnotationInstanceOrModifierConverterUtility
 					.convertToAnnotationInstance((Annotation) obj)));
 				result.setSuperType(convertToTypeReference(wildType.getBound()));
 				convertToArrayDimensionsAndSet(wildType.getBound(), result);
@@ -208,7 +235,8 @@ class BaseConverterUtility {
 				return result;
 			}
 		} else {
-			org.emftext.language.java.generics.QualifiedTypeArgument result = org.emftext.language.java.generics.GenericsFactory.eINSTANCE.createQualifiedTypeArgument();
+			org.emftext.language.java.generics.QualifiedTypeArgument result = org.emftext.language
+					.java.generics.GenericsFactory.eINSTANCE.createQualifiedTypeArgument();
 			result.setTypeReference(convertToTypeReference(t));
 			convertToArrayDimensionsAndSet(t, result);
 			LayoutInformationConverter.convertToMinimalLayoutInformation(result, t);
@@ -231,13 +259,15 @@ class BaseConverterUtility {
 		}
 	}
 	
-	static void convertToArrayDimensionAfterAndSet(Dimension dim, org.emftext.language.java.arrays.ArrayTypeable arrDimContainer) {
+	static void convertToArrayDimensionAfterAndSet(Dimension dim,
+			org.emftext.language.java.arrays.ArrayTypeable arrDimContainer) {
 		arrDimContainer.getArrayDimensionsAfter().add(convertToArrayDimension(dim));
 	}
 	
 	@SuppressWarnings("unchecked")
 	private static org.emftext.language.java.arrays.ArrayDimension convertToArrayDimension(Dimension dim) {
-		org.emftext.language.java.arrays.ArrayDimension result = org.emftext.language.java.arrays.ArraysFactory.eINSTANCE.createArrayDimension();
+		org.emftext.language.java.arrays.ArrayDimension result =
+				org.emftext.language.java.arrays.ArraysFactory.eINSTANCE.createArrayDimension();
 		dim.annotations().forEach(annot -> result.getAnnotations().add(AnnotationInstanceOrModifierConverterUtility
 			.convertToAnnotationInstance((Annotation) annot)));
 		LayoutInformationConverter.convertToMinimalLayoutInformation(result, dim);

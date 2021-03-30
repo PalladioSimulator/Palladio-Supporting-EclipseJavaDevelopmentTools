@@ -16,10 +16,6 @@ package jamopp.parser.jdt.singlefile;
 import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 
-import jamopp.parser.jdt.singlefile.ClassifierConverterUtility;
-import jamopp.parser.jdt.singlefile.LayoutInformationConverter;
-import jamopp.parser.jdt.singlefile.ModuleJDTASTVisitorAndConverter;
-
 class OrdinaryCompilationUnitJDTASTVisitorAndConverter extends ModuleJDTASTVisitorAndConverter {
 	@Override
 	public boolean visit(CompilationUnit node) {
@@ -34,10 +30,12 @@ class OrdinaryCompilationUnitJDTASTVisitorAndConverter extends ModuleJDTASTVisit
 	
 	@SuppressWarnings("unchecked")
 	private org.emftext.language.java.containers.CompilationUnit convertToCompilationUnit(CompilationUnit cu) {
-		org.emftext.language.java.containers.CompilationUnit result = org.emftext.language.java.containers.ContainersFactory.eINSTANCE.createCompilationUnit();
+		org.emftext.language.java.containers.CompilationUnit result =
+				org.emftext.language.java.containers.ContainersFactory.eINSTANCE.createCompilationUnit();
 		result.setName("");
 		LayoutInformationConverter.convertJavaRootLayoutInformation(result, cu, getSource());
-		cu.types().forEach(obj -> result.getClassifiers().add(ClassifierConverterUtility.convertToConcreteClassifier((AbstractTypeDeclaration) obj)));
+		cu.types().forEach(obj -> result.getClassifiers().add(
+				ClassifierConverterUtility.convertToConcreteClassifier((AbstractTypeDeclaration) obj)));
 		return result;
 	}
 }

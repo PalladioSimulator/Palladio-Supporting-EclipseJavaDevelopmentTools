@@ -27,7 +27,8 @@ import org.eclipse.jdt.core.dom.SingleMemberAnnotation;
 import jamopp.proxy.IJavaContextDependentURIFragmentCollector;
 
 class AnnotationInstanceOrModifierConverterUtility {
-	static org.emftext.language.java.modifiers.AnnotationInstanceOrModifier converToModifierOrAnnotationInstance(IExtendedModifier mod) {
+	static org.emftext.language.java.modifiers.AnnotationInstanceOrModifier
+			converToModifierOrAnnotationInstance(IExtendedModifier mod) {
 		if (mod.isModifier()) {
 			return convertToModifier((Modifier) mod);
 		} else { // mod.isAnnotation()
@@ -68,35 +69,44 @@ class AnnotationInstanceOrModifierConverterUtility {
 	
 	@SuppressWarnings("unchecked")
 	static org.emftext.language.java.annotations.AnnotationInstance convertToAnnotationInstance(Annotation annot) {
-		org.emftext.language.java.annotations.AnnotationInstance result = org.emftext.language.java.annotations.AnnotationsFactory.eINSTANCE.createAnnotationInstance();
-		org.emftext.language.java.classifiers.Class proxyClass = org.emftext.language.java.classifiers.ClassifiersFactory.eINSTANCE.createClass();
+		org.emftext.language.java.annotations.AnnotationInstance result =
+				org.emftext.language.java.annotations.AnnotationsFactory.eINSTANCE.createAnnotationInstance();
+		org.emftext.language.java.classifiers.Class proxyClass =
+				org.emftext.language.java.classifiers.ClassifiersFactory.eINSTANCE.createClass();
 		BaseConverterUtility.convertToSimpleNameOnlyAndSet(annot.getTypeName(), proxyClass);
 		if (annot.getTypeName() instanceof QualifiedName) {
 			BaseConverterUtility.convertToNamespacesAndSet(
 				((QualifiedName) annot.getTypeName()).getQualifier(), result);
 		}
 		IJavaContextDependentURIFragmentCollector.GLOBAL_INSTANCE.registerContextDependentURIFragment(result,
-			org.emftext.language.java.annotations.AnnotationsPackage.Literals.ANNOTATION_INSTANCE__ANNOTATION, proxyClass.getName(), proxyClass, -1);
+			org.emftext.language.java.annotations.AnnotationsPackage.Literals.ANNOTATION_INSTANCE__ANNOTATION,
+			proxyClass.getName(), proxyClass, -1, annot.resolveAnnotationBinding());
 		result.setAnnotation(proxyClass);
 		if (annot.isSingleMemberAnnotation()) {
-			org.emftext.language.java.annotations.SingleAnnotationParameter param = org.emftext.language.java.annotations.AnnotationsFactory.eINSTANCE
+			org.emftext.language.java.annotations.SingleAnnotationParameter param =
+					org.emftext.language.java.annotations.AnnotationsFactory.eINSTANCE
 				.createSingleAnnotationParameter();
 			result.setParameter(param);
 			SingleMemberAnnotation singleAnnot = (SingleMemberAnnotation) annot;
 			param.setValue(convertToAnnotationValue(singleAnnot.getValue()));
 		} else if (annot.isNormalAnnotation()) {
-			org.emftext.language.java.annotations.AnnotationParameterList param = org.emftext.language.java.annotations.AnnotationsFactory.eINSTANCE
+			org.emftext.language.java.annotations.AnnotationParameterList param =
+					org.emftext.language.java.annotations.AnnotationsFactory.eINSTANCE
 				.createAnnotationParameterList();
 			result.setParameter(param);
 			NormalAnnotation normalAnnot = (NormalAnnotation) annot;
 			normalAnnot.values().forEach(obj -> {
 				MemberValuePair memVal = (MemberValuePair) obj;
-				org.emftext.language.java.annotations.AnnotationAttributeSetting attrSet = org.emftext.language.java.annotations.AnnotationsFactory.eINSTANCE
+				org.emftext.language.java.annotations.AnnotationAttributeSetting attrSet =
+						org.emftext.language.java.annotations.AnnotationsFactory.eINSTANCE
 					.createAnnotationAttributeSetting();
-				org.emftext.language.java.members.InterfaceMethod methodProxy = org.emftext.language.java.members.MembersFactory.eINSTANCE.createInterfaceMethod();
+				org.emftext.language.java.members.InterfaceMethod methodProxy = org.emftext.language
+						.java.members.MembersFactory.eINSTANCE.createInterfaceMethod();
 				BaseConverterUtility.convertToSimpleNameOnlyAndSet(memVal.getName(), methodProxy);
-				IJavaContextDependentURIFragmentCollector.GLOBAL_INSTANCE.registerContextDependentURIFragment(attrSet,
-					org.emftext.language.java.annotations.AnnotationsPackage.Literals.ANNOTATION_ATTRIBUTE_SETTING__ATTRIBUTE, methodProxy.getName(), methodProxy, -1);
+				IJavaContextDependentURIFragmentCollector.GLOBAL_INSTANCE.registerContextDependentURIFragment(
+					attrSet, org.emftext.language.java.annotations.AnnotationsPackage.Literals
+					.ANNOTATION_ATTRIBUTE_SETTING__ATTRIBUTE, methodProxy.getName(),
+					methodProxy, -1, memVal.resolveMemberValuePairBinding());
 				attrSet.setAttribute(methodProxy);
 				attrSet.setValue(convertToAnnotationValue(memVal.getValue()));
 				LayoutInformationConverter.convertToMinimalLayoutInformation(attrSet, memVal);
@@ -119,7 +129,8 @@ class AnnotationInstanceOrModifierConverterUtility {
 	
 	@SuppressWarnings("unchecked")
 	static org.emftext.language.java.arrays.ArrayInitializer convertToArrayInitializer(ArrayInitializer arr) {
-		org.emftext.language.java.arrays.ArrayInitializer result = org.emftext.language.java.arrays.ArraysFactory.eINSTANCE.createArrayInitializer();
+		org.emftext.language.java.arrays.ArrayInitializer result =
+				org.emftext.language.java.arrays.ArraysFactory.eINSTANCE.createArrayInitializer();
 		arr.expressions().forEach(obj -> {
 			org.emftext.language.java.arrays.ArrayInitializationValue value = null;
 			Expression expr = (Expression) obj;

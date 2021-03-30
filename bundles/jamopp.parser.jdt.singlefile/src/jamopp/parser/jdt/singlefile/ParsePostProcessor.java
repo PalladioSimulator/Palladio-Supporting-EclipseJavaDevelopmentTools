@@ -40,8 +40,7 @@ public class ParsePostProcessor {
 	 * Main method to perform the completion and expression simplification for
 	 * the given resource.
 	 * 
-	 * @param resource
-	 *            the resource to complete and simplify
+	 * @param obj the resource to complete and simplify.
 	 */
 	public static void complete(EObject obj) {
 		obj.eAllContents().forEachRemaining(element -> {
@@ -71,7 +70,8 @@ public class ParsePostProcessor {
 	 *            the class to complete
 	 */
 	private static void addDefaultSuperClass(Class javaClass) {
-		if (javaClass.getExtends() == null && javaClass.getDefaultExtends() == null && !javaClass.isJavaLangObject(javaClass)) {
+		if (javaClass.getExtends() == null && javaClass.getDefaultExtends() == null
+				&& !javaClass.isJavaLangObject(javaClass)) {
 			Class objectClass = javaClass.getObjectClass();
 			ClassifierReference classifierReference = TypesFactory.eINSTANCE.createClassifierReference();
 			classifierReference.setTarget(objectClass);

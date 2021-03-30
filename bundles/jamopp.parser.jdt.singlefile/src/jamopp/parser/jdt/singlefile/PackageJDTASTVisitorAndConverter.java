@@ -16,11 +16,6 @@ package jamopp.parser.jdt.singlefile;
 import org.eclipse.jdt.core.dom.Annotation;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 
-import jamopp.parser.jdt.singlefile.AbstractAndEmptyModelJDTASTVisitorAndConverter;
-import jamopp.parser.jdt.singlefile.AnnotationInstanceOrModifierConverterUtility;
-import jamopp.parser.jdt.singlefile.BaseConverterUtility;
-import jamopp.parser.jdt.singlefile.LayoutInformationConverter;
-
 class PackageJDTASTVisitorAndConverter extends AbstractAndEmptyModelJDTASTVisitorAndConverter {
 	@SuppressWarnings("unchecked")
 	@Override
@@ -34,7 +29,8 @@ class PackageJDTASTVisitorAndConverter extends AbstractAndEmptyModelJDTASTVisito
 		}
 		org.emftext.language.java.containers.JavaRoot finalRoot = root;
 		if (node.getPackage() != null) {
-			node.getPackage().annotations().forEach(obj -> finalRoot.getAnnotations().add(AnnotationInstanceOrModifierConverterUtility
+			node.getPackage().annotations().forEach(obj ->
+				finalRoot.getAnnotations().add(AnnotationInstanceOrModifierConverterUtility
 				.convertToAnnotationInstance((Annotation) obj)));
 			BaseConverterUtility.convertToNamespacesAndSet(node.getPackage().getName(), root);
 		}
