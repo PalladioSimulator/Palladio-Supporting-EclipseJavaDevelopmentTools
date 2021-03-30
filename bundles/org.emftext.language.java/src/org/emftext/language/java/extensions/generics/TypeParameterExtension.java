@@ -25,7 +25,9 @@ import org.eclipse.emf.common.util.UniqueEList;
 import org.eclipse.emf.ecore.EObject;
 import org.emftext.language.java.classifiers.Classifier;
 import org.emftext.language.java.classifiers.ConcreteClassifier;
+import org.emftext.language.java.classifiers.Interface;
 import org.emftext.language.java.commons.Commentable;
+import org.emftext.language.java.commons.NamedElement;
 import org.emftext.language.java.expressions.CastExpression;
 import org.emftext.language.java.expressions.ConditionalExpression;
 import org.emftext.language.java.expressions.Expression;
@@ -33,6 +35,7 @@ import org.emftext.language.java.expressions.LambdaExpression;
 import org.emftext.language.java.expressions.NestedExpression;
 import org.emftext.language.java.generics.ExtendsTypeArgument;
 import org.emftext.language.java.generics.QualifiedTypeArgument;
+import org.emftext.language.java.generics.SuperTypeArgument;
 import org.emftext.language.java.generics.TypeArgument;
 import org.emftext.language.java.generics.TypeArgumentable;
 import org.emftext.language.java.generics.TypeParameter;
@@ -379,6 +382,11 @@ public class TypeParameterExtension {
 										.getExtendType().getTarget())) {
 									idx = method.getParameters().indexOf(parameter);
 								}
+							} else if (typeArgument instanceof SuperTypeArgument) {
+								if (me.equals(((SuperTypeArgument) typeArgument)
+										.getSuperType().getTarget())) {
+									idx = method.getParameters().indexOf(parameter);
+								}
 							}
 						}
 						ClassifierReference paramTypeReference = parameter.getTypeReference().getPureClassifierReference();
@@ -392,6 +400,11 @@ public class TypeParameterExtension {
 								} else if (typeArgument instanceof ExtendsTypeArgument) {
 									if (me.equals(((ExtendsTypeArgument) typeArgument)
 											.getExtendType().getTarget())) {
+										idx = method.getParameters().indexOf(parameter);
+									}
+								} else if (typeArgument instanceof SuperTypeArgument) {
+									if (me.equals(((SuperTypeArgument) typeArgument)
+											.getSuperType().getTarget())) {
 										idx = method.getParameters().indexOf(parameter);
 									}
 								}
@@ -444,9 +457,10 @@ public class TypeParameterExtension {
 													int idx2 = parameterType.getTypeArguments().indexOf(typeArgument);
 													if (argumentType.getTypeArguments().get(idx2) instanceof QualifiedTypeArgument) {
 														resultList.add(0, ((QualifiedTypeArgument)argumentType.getTypeArguments().get(idx2)).getTypeReference().getTarget());
-													}
-													else if (argumentType.getTypeArguments().get(idx2) instanceof ExtendsTypeArgument) {
+													} else if (argumentType.getTypeArguments().get(idx2) instanceof ExtendsTypeArgument) {
 														resultList.add(0, ((ExtendsTypeArgument) argumentType.getTypeArguments().get(idx2)).getExtendType().getTarget());
+													} else if (argumentType.getTypeArguments().get(idx2) instanceof SuperTypeArgument) {
+														resultList.add(0, ((SuperTypeArgument) argumentType.getTypeArguments().get(idx2)).getSuperType().getTarget());
 													}
 												}
 											}
@@ -482,7 +496,15 @@ public class TypeParameterExtension {
 								(LambdaExpression) argument
 								: argument.getFirstChildByType(LambdaExpression.class);
 						if (lambda != null) {
-							resultList.add(0, lambda.getReturnType(null));
+							Method correspondingMethod =
+									((Interface) parameterType.getTarget()).getAbstractMethodOfFunctionalInterface();
+							Type potT = correspondingMethod.getTypeReference().getTarget();
+							if (((NamedElement) potT).getName().equals(me.getName())) {
+								Type ret = lambda.getReturnType(null);
+								if (ret != null) {
+									resultList.add(0, ret);
+								}
+							}
 						}
 					}
 				}
@@ -518,6 +540,35 @@ public class TypeParameterExtension {
 					//all types given by all bindings
 					if (allSuperTypes != null) {
 						resultList.addAll(allSuperTypes);
+					}
+				}
+				
+				if (resultList.isEmpty()) {
+					Reference prevReference = reference;
+					while (prevReference.getPrevious() != null) {
+						prevReference = prevReference.getPrevious();
+					}
+					if (prevReference.getPrevious() == null
+							&& prevReference.eContainer() instanceof MethodCall) {
+						MethodCall containingCall = (MethodCall) prevReference.eContainer();
+						int index = containingCall.getArguments().indexOf(prevReference);
+						TypeReference typeRef = ((Method) containingCall.getTarget())
+								.getParameters().get(index).getTypeReference();
+						if (typeRef instanceof TypeArgumentable) {
+							TypeArgument typeArg =
+									((TypeArgumentable) typeRef).getTypeArguments()
+									.get(method.getTypeParameters().indexOf(me));
+							if (typeArg instanceof QualifiedTypeArgument) {
+								resultList.add(0, ((QualifiedTypeArgument) typeArg).getTypeReference()
+										.getBoundTarget(containingCall));
+							} else if (typeArg instanceof ExtendsTypeArgument) {
+								resultList.add(0, ((ExtendsTypeArgument) typeArg).getExtendType()
+										.getBoundTarget(containingCall));
+							} else if (typeArg instanceof SuperTypeArgument) {
+								resultList.add(0, ((SuperTypeArgument) typeArg).getSuperType()
+										.getBoundTarget(containingCall));
+							}
+						}
 					}
 				}
 			}

@@ -187,8 +187,12 @@ public class TypeReferenceExtension {
 									TemporalCompositeTypeReference tempRef = (TemporalCompositeTypeReference) initTypeRef;
 									t.getActualTargets().addAll(tempRef.getTypeReferences());
 									return tempRef.asType();
+								} else if (initTypeRef.getTarget() instanceof TypeParameter
+										&& initTypeRef.getTarget().eContainer() instanceof Method) {
+									initTypeRef = TypeReferenceExtension.convertToTypeReference(
+											initTypeRef.getBoundTarget((Reference) container));
 								}
-								t.getActualTargets().add(clone(initTypeRef));
+								t.getActualTargets().add(initTypeRef);
 								return initTypeRef.getTarget();
 							}
 						}

@@ -42,9 +42,7 @@ import org.emftext.language.java.expressions.RelationExpression;
 import org.emftext.language.java.expressions.ShiftExpression;
 import org.emftext.language.java.expressions.UnaryExpression;
 import org.emftext.language.java.extensions.types.TypeReferenceExtension;
-import org.emftext.language.java.instantiations.ExplicitConstructorCall;
 import org.emftext.language.java.instantiations.Instantiation;
-import org.emftext.language.java.instantiations.NewConstructorCall;
 import org.emftext.language.java.literals.Literal;
 import org.emftext.language.java.members.AdditionalField;
 import org.emftext.language.java.members.Constructor;
@@ -61,7 +59,7 @@ import org.emftext.language.java.statements.Return;
 import org.emftext.language.java.types.Type;
 import org.emftext.language.java.types.TypeReference;
 import org.emftext.language.java.util.TemporalCompositeTypeReference;
-import org.emftext.language.java.util.TemporalUnknownLambdaExpressionType;
+import org.emftext.language.java.util.TemporalUnknownType;
 import org.emftext.language.java.variables.AdditionalLocalVariable;
 import org.emftext.language.java.variables.LocalVariable;
 
@@ -164,7 +162,7 @@ public class ExpressionExtension {
 				MethodCall call = (MethodCall) container.eContainer();
 				Method m = (Method) call.getTarget();
 				if (m.eIsProxy()) {
-					return TypeReferenceExtension.convertToTypeReference(new TemporalUnknownLambdaExpressionType(lambdExpr));
+					return TypeReferenceExtension.convertToTypeReference(new TemporalUnknownType(lambdExpr));
 				}
 				return m.getParameters().get(call.getArguments().indexOf(container)).getTypeReference();
 			} else if (container.eContainer() instanceof AssignmentExpression) {

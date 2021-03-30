@@ -15,7 +15,6 @@
  ******************************************************************************/
 package org.emftext.language.java.extensions.references;
 
-import org.emftext.language.java.classifiers.Annotation;
 import org.emftext.language.java.classifiers.AnonymousClass;
 import org.emftext.language.java.classifiers.ConcreteClassifier;
 import org.emftext.language.java.classifiers.Enumeration;
