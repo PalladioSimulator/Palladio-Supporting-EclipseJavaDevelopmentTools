@@ -20,7 +20,9 @@ package org.emftext.language.java.extensions.members;
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
 import org.emftext.language.java.classifiers.ConcreteClassifier;
+import org.emftext.language.java.classifiers.Interface;
 import org.emftext.language.java.expressions.Expression;
+import org.emftext.language.java.expressions.LambdaExpression;
 import org.emftext.language.java.extensions.types.TypeReferenceExtension;
 import org.emftext.language.java.members.Method;
 import org.emftext.language.java.parameters.OrdinaryParameter;
@@ -145,6 +147,18 @@ public class MethodExtension {
 				
 				if (!parameterType.eIsProxy() || !argumentType.eIsProxy()) {
 					if (argumentType instanceof TemporalUnknownType) {
+						LambdaExpression lambda = argument instanceof LambdaExpression ?
+								(LambdaExpression) argument
+								: argument.getFirstChildByType(LambdaExpression.class);
+						if (lambda != null) {
+							if (!(parameterType instanceof Interface)) {
+								return false;
+							}
+							Method absMeth = ((Interface) parameterType).getAbstractMethodOfFunctionalInterface();
+							if (absMeth.getParameters().size() != lambda.getParameters().getParameters().size()) {
+								return false;
+							}
+						}
 						continue;
 					}
 					long argumentArrayDimension = argument.getArrayDimension();
