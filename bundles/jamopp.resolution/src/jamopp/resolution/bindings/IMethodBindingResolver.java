@@ -3,7 +3,6 @@ package jamopp.resolution.bindings;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
-import org.emftext.language.java.classifiers.AnonymousClass;
 import org.emftext.language.java.classifiers.ConcreteClassifier;
 import org.emftext.language.java.generics.TypeParameter;
 import org.emftext.language.java.members.Constructor;
@@ -27,7 +26,7 @@ class IMethodBindingResolver extends AbstractBindingResolver<IMethodBinding> {
 		binding = binding.getMethodDeclaration();
 		EObject container = this.getParentResolver().resolve(binding.getDeclaringClass());
 		if (container instanceof MemberContainer) {
-			for (Member mem : ((AnonymousClass) container).getMembers()) {
+			for (Member mem : ((MemberContainer) container).getMembers()) {
 				if (binding.isConstructor() && mem instanceof Constructor
 						&& checkConstructor(binding, (Constructor) mem)) {
 					return mem;
