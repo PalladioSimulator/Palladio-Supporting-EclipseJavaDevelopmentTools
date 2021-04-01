@@ -10,6 +10,6 @@ class IAnnotationBindingResolver extends AbstractBindingResolver<IAnnotationBind
 
 	@Override
 	protected EObject resolve(IAnnotationBinding binding) {
-		return null;
+		return this.getParentResolver().resolve(binding.getAnnotationType());
 	}
 }

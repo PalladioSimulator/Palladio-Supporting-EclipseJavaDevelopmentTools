@@ -10,6 +10,6 @@ class IMemberValuePairBindingResolver extends AbstractBindingResolver<IMemberVal
 
 	@Override
 	protected EObject resolve(IMemberValuePairBinding binding) {
-		return null;
+		return this.getParentResolver().resolve(binding.getMethodBinding());
 	}
 }
