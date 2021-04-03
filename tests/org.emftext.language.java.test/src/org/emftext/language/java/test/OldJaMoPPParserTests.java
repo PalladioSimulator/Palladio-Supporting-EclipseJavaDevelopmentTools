@@ -1809,4 +1809,9 @@ public class OldJaMoPPParserTests extends AbstractJaMoPPTests {
 	public void testLambdaExpressionRefs2() throws Exception {
 		parseAndReprint("refs" + File.separator + "LambdaExpressionRefs2.java");
 	}
+	
+	@Test
+	public void testLocalClass() throws Exception {
+		parseAndReprint("refs" + File.separator + "LocalClasses.java");
+	}
 }
