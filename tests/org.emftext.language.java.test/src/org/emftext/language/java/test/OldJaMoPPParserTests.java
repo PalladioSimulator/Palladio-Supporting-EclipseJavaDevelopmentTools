@@ -1814,4 +1814,9 @@ public class OldJaMoPPParserTests extends AbstractJaMoPPTests {
 	public void testLocalClass() throws Exception {
 		parseAndReprint("refs" + File.separator + "LocalClasses.java");
 	}
+	
+	@Test
+	public void testAnonymousClasses() throws Exception {
+		parseAndReprint("refs" + File.separator + "AnonymousClasses.java");
+	}
 }
