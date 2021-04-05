@@ -3,9 +3,12 @@ package jamopp.resolution.bindings;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.emftext.language.java.JavaClasspath;
+import org.emftext.language.java.LogicalJavaURIGenerator;
 import org.emftext.language.java.classifiers.AnonymousClass;
 import org.emftext.language.java.classifiers.ConcreteClassifier;
 import org.emftext.language.java.containers.CompilationUnit;
@@ -50,6 +53,10 @@ class ITypeBindingResolver extends AbstractBindingResolver<ITypeBinding> {
 				return classifier;
 			}
 			CompilationUnit cu = JDTBindingConverterUtility.convertToCompilationUnit(binding);
+			URI uri = LogicalJavaURIGenerator.getJavaFileResourceURI(cu.getClassifiers().get(0).getQualifiedName());
+			Resource res = this.getParentResolver().getResourceSet().createResource(uri);
+			res.getContents().add(cu);
+			JavaClasspath.get().registerJavaRoot(cu, uri);
 			return JavaClasspath.get().getConcreteClassifier(binding.getQualifiedName());
 		}
 		return null;
@@ -69,7 +76,8 @@ class ITypeBindingResolver extends AbstractBindingResolver<ITypeBinding> {
 					if (index == null && innerClass != null) {
 						for (Member mem : currentContainer.getMembers()) {
 							if (mem instanceof ConcreteClassifier
-									&& ((ConcreteClassifier) mem).getName().equals(innerClass)) {
+									&& ((ConcreteClassifier) mem).getName()
+									.equals(innerClass)) {
 								currentContainer = (ConcreteClassifier) mem;
 							}
 						}
@@ -80,7 +88,8 @@ class ITypeBindingResolver extends AbstractBindingResolver<ITypeBinding> {
 								.getChildrenByType(ConcreteClassifier.class)) {
 							if (!(conClass.eContainer() instanceof MemberContainer)) {
 								EObject conContainer = conClass.getContainingAnonymousClass();
-								if (conContainer != null && conContainer.equals(currentContainer)) {
+								if (conContainer != null
+										&& conContainer.equals(currentContainer)) {
 									if (currentIndex == i) {
 										conContainer = conClass;
 										break;
@@ -103,7 +112,8 @@ class ITypeBindingResolver extends AbstractBindingResolver<ITypeBinding> {
 					} else if (index != null && innerClass == null) {
 						int i = Integer.parseInt(index);
 						int currentIndex = 1;
-						for (AnonymousClass ano : currentContainer.getChildrenByType(AnonymousClass.class)) {
+						for (AnonymousClass ano
+								: currentContainer.getChildrenByType(AnonymousClass.class)) {
 							EObject anoContainer = ano.getContainingAnonymousClass();
 							if (anoContainer != null && anoContainer.equals(currentContainer)) {
 								if (currentIndex == i) {
