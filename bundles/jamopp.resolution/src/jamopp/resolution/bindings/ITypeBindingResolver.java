@@ -11,6 +11,7 @@ import org.emftext.language.java.JavaClasspath;
 import org.emftext.language.java.LogicalJavaURIGenerator;
 import org.emftext.language.java.classifiers.AnonymousClass;
 import org.emftext.language.java.classifiers.ConcreteClassifier;
+import org.emftext.language.java.commons.Commentable;
 import org.emftext.language.java.containers.CompilationUnit;
 import org.emftext.language.java.generics.TypeParameter;
 import org.emftext.language.java.generics.TypeParametrizable;
@@ -23,8 +24,8 @@ class ITypeBindingResolver extends AbstractBindingResolver<ITypeBinding> {
 	
 	protected ITypeBindingResolver(CentralBindingBasedResolver parentResolver) {
 		super(parentResolver);
-		parentNamePattern = Pattern.compile("([a-zA-Z0-9\\.]+?)([\\$[0-9]*?([a-zA-z][a-zA-z0-9]*?)??]+?)");
-		innerNamesPattern = Pattern.compile("\\$([0-9]*?)([a-zA-Z][a-zA-Z0-9]*?)??");
+		parentNamePattern = Pattern.compile("([a-zA-Z0-9\\.]+?)((\\$[0-9]*?([a-zA-z][a-zA-z0-9]*?)??)+?)");
+		innerNamesPattern = Pattern.compile("\\$((([0-9]+?)([a-zA-Z][a-zA-Z0-9]*?))|([0-9]+?)|([a-zA-Z][a-zA-Z0-9]*?))");
 	}
 
 	@Override
@@ -46,8 +47,19 @@ class ITypeBindingResolver extends AbstractBindingResolver<ITypeBinding> {
 					return p;
 				}
 			}
-		} else if (binding.isMember() || binding.isTopLevel()) {
-			ConcreteClassifier classifier = JavaClasspath.get().getConcreteClassifier(
+		} else if (binding.isMember()) {
+			EObject parent = this.getParentResolver().resolve(binding.getDeclaringClass());
+			if (parent != null && !parent.eIsProxy() && parent instanceof MemberContainer) {
+				MemberContainer con = (MemberContainer) parent;
+				for (Member member : con.getMembers()) {
+					if (member instanceof ConcreteClassifier && ((ConcreteClassifier) member)
+							.getName().equals(binding.getName())) {
+						return member;
+					}
+				}
+			}
+		} else if (binding.isTopLevel()) {
+			ConcreteClassifier classifier =	JavaClasspath.get().getConcreteClassifier(
 					binding.getQualifiedName());
 			if (classifier != null && !classifier.eIsProxy()) {
 				return classifier;
@@ -71,14 +83,17 @@ class ITypeBindingResolver extends AbstractBindingResolver<ITypeBinding> {
 				Matcher m2 = innerNamesPattern.matcher(m1.group(2));
 				MemberContainer currentContainer = parentClassifier;
 				while (m2.find()) {
-					String index = m2.group(1);
-					String innerClass = m2.group(2);
+					String index = m2.group(3);
+					index = index == null ? m2.group(5) : index;
+					String innerClass = m2.group(4);
+					innerClass = innerClass == null ? m2.group(6) : innerClass;
 					if (index == null && innerClass != null) {
 						for (Member mem : currentContainer.getMembers()) {
 							if (mem instanceof ConcreteClassifier
 									&& ((ConcreteClassifier) mem).getName()
 									.equals(innerClass)) {
 								currentContainer = (ConcreteClassifier) mem;
+								break;
 							}
 						}
 					} else if (index != null && innerClass != null) {
@@ -87,21 +102,23 @@ class ITypeBindingResolver extends AbstractBindingResolver<ITypeBinding> {
 						for (ConcreteClassifier conClass : currentContainer
 								.getChildrenByType(ConcreteClassifier.class)) {
 							if (!(conClass.eContainer() instanceof MemberContainer)) {
-								EObject conContainer = conClass.getContainingAnonymousClass();
+								EObject conContainer = ((Commentable) conClass.eContainer())
+										.getContainingAnonymousClass();
 								if (conContainer != null
 										&& conContainer.equals(currentContainer)) {
 									if (currentIndex == i) {
-										conContainer = conClass;
+										currentContainer = conClass;
 										break;
 									} else {
 										currentIndex++;
 										continue;
 									}
 								}
-								conContainer = conClass.getContainingConcreteClassifier();
+								conContainer = ((Commentable) conClass.eContainer())
+										.getContainingConcreteClassifier();
 								if (currentContainer.equals(conContainer)) {
 									if (currentIndex == i) {
-										conContainer = conClass;
+										currentContainer = conClass;
 										break;
 									} else {
 										currentIndex++;
@@ -114,7 +131,8 @@ class ITypeBindingResolver extends AbstractBindingResolver<ITypeBinding> {
 						int currentIndex = 1;
 						for (AnonymousClass ano
 								: currentContainer.getChildrenByType(AnonymousClass.class)) {
-							EObject anoContainer = ano.getContainingAnonymousClass();
+							EObject anoContainer = ((Commentable) ano.eContainer())
+									.getContainingAnonymousClass();
 							if (anoContainer != null && anoContainer.equals(currentContainer)) {
 								if (currentIndex == i) {
 									currentContainer = ano;
@@ -124,7 +142,8 @@ class ITypeBindingResolver extends AbstractBindingResolver<ITypeBinding> {
 									continue;
 								}
 							}
-							anoContainer = ano.getContainingConcreteClassifier();
+							anoContainer = ((Commentable) ano.eContainer())
+									.getContainingConcreteClassifier();
 							if (currentContainer.equals(anoContainer)) {
 								if (currentIndex == i) {
 									currentContainer = ano;
