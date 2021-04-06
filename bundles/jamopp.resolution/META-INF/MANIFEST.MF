@@ -12,6 +12,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.emftext.language.java,
  org.eclipse.jdt.core
 Export-Package: jamopp.proxy,
+ jamopp.resolution.bindings,
  jamopp.resolution.util,
  org.emftext.language.java.resolver,
  org.emftext.language.java.resolver.result

@@ -31,6 +31,7 @@ import org.emftext.language.java.resolver.result.IJavaURIMapping;
 import org.emftext.language.java.resolver.result.JavaReferenceResolveResult;
 
 import jamopp.proxy.IJavaContextDependentURIFragment;
+import jamopp.resolution.bindings.CentralBindingBasedResolver;
 
 /**
  * A central reference resolver that is capable of resolving references for IJavaContextDependentURIFragments.
@@ -39,6 +40,11 @@ public class CentralReferenceResolver {
 	public static final CentralReferenceResolver GLOBAL_INSTANCE = new CentralReferenceResolver();
 	private IJavaReferenceResolver<EObject, EObject> resolver = new JavaReferenceResolverSwitch();
 	private HashSet<IJavaContextDependentURIFragment> resolving = new HashSet<>();
+	private CentralBindingBasedResolver bindingResolver;
+	
+	public void setBindingBasedResolver(CentralBindingBasedResolver resolver) {
+		bindingResolver = resolver;
+	}
 	
 	public IJavaReferenceResolveResult<EObject> resolve(IJavaContextDependentURIFragment context) {
 		if (resolving.contains(context)) {
@@ -50,8 +56,17 @@ public class CentralReferenceResolver {
 		result.setErrorMessage(getStdErrorMessage(context));
 		
 		// Do the actual resolving.
-		resolver.resolve(context.getIdentifier(), context.getContainer(), context.getReference(),
-				context.getPositionInReference(), result);
+		if (bindingResolver != null) {
+			EObject resolved = bindingResolver.resolve(context.getBinding());
+			if (resolved == null) {
+				resolving.remove(context);
+				return null;
+			}
+			result.addMapping(context.getIdentifier(), resolved);
+		} else {
+			resolver.resolve(context.getIdentifier(), context.getContainer(), context.getReference(),
+					context.getPositionInReference(), result);
+		}
 		
 		// EMFText allows proxies to resolve to multiple objects. The first one is
 		// returned, the others are added here to the reference.

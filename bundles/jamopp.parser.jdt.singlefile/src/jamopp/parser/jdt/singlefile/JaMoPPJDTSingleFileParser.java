@@ -16,6 +16,7 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTNode;
@@ -24,9 +25,12 @@ import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.FileASTRequestor;
 import org.emftext.language.java.JavaClasspath;
 import org.emftext.language.java.containers.JavaRoot;
+import org.emftext.language.java.resolver.CentralReferenceResolver;
 
 import jamopp.parser.api.JaMoPPParserAPI;
+import jamopp.proxy.IJavaContextDependentURIFragment;
 import jamopp.proxy.IJavaContextDependentURIFragmentCollector;
+import jamopp.resolution.bindings.CentralBindingBasedResolver;
 
 public class JaMoPPJDTSingleFileParser implements JaMoPPParserAPI {
 	private final String DEFAULT_ENCODING = StandardCharsets.UTF_8.toString();
@@ -37,13 +41,15 @@ public class JaMoPPJDTSingleFileParser implements JaMoPPParserAPI {
 		this.setUpResourceSet();
 		StringBuilder builder = new StringBuilder();
 		String lineSep = System.getProperty("line.separator");
-		try(InputStreamReader inReader = new InputStreamReader(input); BufferedReader buffReader = new BufferedReader(inReader)) {
+		try (InputStreamReader inReader = new InputStreamReader(input);
+				BufferedReader buffReader = new BufferedReader(inReader)) {
 			buffReader.lines().forEach(line -> builder.append(line + lineSep));
 		} catch (IOException e) {
 		}
 		String src = builder.toString();
 		ASTNode ast = parseFileWithJDT(src, fileName);
-		OrdinaryCompilationUnitJDTASTVisitorAndConverter converter = new OrdinaryCompilationUnitJDTASTVisitorAndConverter();
+		OrdinaryCompilationUnitJDTASTVisitorAndConverter converter =
+				new OrdinaryCompilationUnitJDTASTVisitorAndConverter();
 		converter.setSource(src);
 		ast.accept(converter);
 		this.resourceSet = null;
@@ -71,7 +77,8 @@ public class JaMoPPJDTSingleFileParser implements JaMoPPParserAPI {
 	public ResourceSet parseDirectory(Path dir) {
 		this.setUpResourceSet();
 		try {
-			String[] sources = Files.walk(dir).filter(path -> Files.isRegularFile(path) && path.getFileName().toString().endsWith("java"))
+			String[] sources = Files.walk(dir).filter(path ->
+				Files.isRegularFile(path) && path.getFileName().toString().endsWith("java"))
 				.map(Path::toAbsolutePath).map(Path::toString).toArray(i -> new String[i]);
 			String[] encodings = new String[sources.length];
 			for (int index = 0; index < encodings.length; index++) {
@@ -82,6 +89,7 @@ public class JaMoPPJDTSingleFileParser implements JaMoPPParserAPI {
 				|| path.getFileName().toString().endsWith(".zip")))
 				.map(Path::toAbsolutePath).map(Path::toString).toArray(i -> new String[i]);
 			this.parseFilesWithJDT(classpathEntries, sources, encodings);
+			resolveBindings();
 		} catch (IOException e) {
 		}
 		ResourceSet result = this.resourceSet;
@@ -140,6 +148,18 @@ public class JaMoPPJDTSingleFileParser implements JaMoPPParserAPI {
 		options.put(JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, JavaCore.VERSION_15);
 		parser.setCompilerOptions(options);
 		return parser;
+	}
+	
+	public void resolveBindings() {
+		CentralReferenceResolver.GLOBAL_INSTANCE.setBindingBasedResolver(
+				new CentralBindingBasedResolver(this.resourceSet));
+		List<Resource> resources = new ArrayList<>(this.resourceSet.getResources());
+		resources.forEach(r -> EcoreUtil.resolveAll(r));
+		CentralReferenceResolver.GLOBAL_INSTANCE.setBindingBasedResolver(null);
+		Map<String, IJavaContextDependentURIFragment> fragments =
+				IJavaContextDependentURIFragmentCollector.GLOBAL_INSTANCE
+				.getContextDependentURIFragmentMap();
+		fragments.values().forEach(v -> v.setBinding(null));
 	}
 
 	@Override

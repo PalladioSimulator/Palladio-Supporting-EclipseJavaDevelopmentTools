@@ -60,15 +60,18 @@ public class JavaResource2 extends ResourceImpl {
 			try {
 				result = new ClassFileModelLoader().parse(input, "");
 				JavaClasspath.get().registerJavaRoot((JavaRoot) result, this.getURI());
+				this.getContents().add(result);
 			} catch (IOException e) {
 			}
 		} else {
-			JaMoPPParserAPI api = new JaMoPPJDTSingleFileParser();
+			JaMoPPJDTSingleFileParser api = new JaMoPPJDTSingleFileParser();
 			api.setResourceSet(this.getResourceSet());
 			result = api.parse(this.getURI().toString(), input);
+			JavaClasspath.get().registerJavaRoot((JavaRoot) result, getURI());
+			this.getContents().add(result);
+			api.setResourceSet(this.getResourceSet());
+			api.resolveBindings();
 		}
-		JavaClasspath.get().registerJavaRoot((JavaRoot) result, getURI());
-		this.getContents().add(result);
 	}
 	
 	@Override
@@ -177,7 +180,7 @@ public class JavaResource2 extends ResourceImpl {
 					if (errorMessage == null) {
 						assert false;
 					} else {
-						errors.add(new SimpleDiagnostic(errorMessage));
+						getErrors().add(new SimpleDiagnostic(errorMessage));
 					}
 				}
 				return result;
@@ -211,7 +214,7 @@ public class JavaResource2 extends ResourceImpl {
 		if (errorMessage == null) {
 			assert false;
 		} else {
-			errors.add(new SimpleDiagnostic(errorMessage));
+			getErrors().add(new SimpleDiagnostic(errorMessage));
 		}
 	}
 	
@@ -224,7 +227,7 @@ public class JavaResource2 extends ResourceImpl {
 				if (warningMessage == null) {
 					continue;
 				}
-				warnings.add(new SimpleDiagnostic(warningMessage));
+				getWarnings().add(new SimpleDiagnostic(warningMessage));
 			}
 		}
 	}
