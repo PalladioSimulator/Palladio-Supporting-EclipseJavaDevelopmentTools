@@ -38,6 +38,7 @@ import org.emftext.language.java.imports.StaticMemberImport;
 import org.emftext.language.java.members.Member;
 import org.emftext.language.java.references.IdentifierReference;
 import org.emftext.language.java.references.MethodCall;
+import org.emftext.language.java.references.PackageReference;
 import org.emftext.language.java.references.Reference;
 import org.emftext.language.java.statements.StatementsPackage;
 import org.emftext.language.java.types.ClassifierReference;
@@ -141,8 +142,12 @@ public class ConcreteClassifierDecider extends AbstractDecider {
 			if (p.getTarget() instanceof org.emftext.language.java.containers.Package) {
 				s = ((org.emftext.language.java.containers.Package) p.getTarget()).getNamespacesAsString();
 				break;
+			} else if (p.getTarget() instanceof PackageReference) {
+				PackageReference ref = (PackageReference) p.getTarget();
+				s = ref.getNamespacesAsString() + "." + ref.getName() + "." + s;
+				break;
 			} else {
-				s =  p.getTarget().getName() + "." + s;
+				s = p.getTarget().getName() + "." + s;
 			}
 			EObject container = p.eContainer();
 			if (container instanceof IdentifierReference) {
