@@ -130,7 +130,7 @@ class ReferenceConverterUtility {
 			FieldAccess arr = (FieldAccess) expr;
 			org.emftext.language.java.references.Reference parent = internalConvertToReference(arr.getExpression());
 			org.emftext.language.java.references.IdentifierReference result =
-					convertToProxyIdentifierReference(arr.getName());
+					convertToProxyIdentifierReference(arr.getName(), arr.resolveFieldBinding());
 			parent.setNext(result);
 			return result;
 		} else if (expr.getNodeType() == ASTNode.METHOD_INVOCATION) {
@@ -159,13 +159,13 @@ class ReferenceConverterUtility {
 		} else if (expr.getNodeType() == ASTNode.QUALIFIED_NAME) {
 			QualifiedName arr = (QualifiedName) expr;
 			org.emftext.language.java.references.IdentifierReference result =
-					convertToProxyIdentifierReference(arr.getName());
+					convertToProxyIdentifierReference(arr.getName(), arr.resolveBinding());
 			org.emftext.language.java.references.Reference parent = internalConvertToReference(arr.getQualifier());
 			parent.setNext(result);
 			LayoutInformationConverter.convertToMinimalLayoutInformation(result, arr);
 			return result;
 		} else if (expr.getNodeType() == ASTNode.SIMPLE_NAME) {
-			return convertToProxyIdentifierReference((SimpleName) expr);
+			return convertToProxyIdentifierReference((SimpleName) expr, ((SimpleName) expr).resolveBinding());
 		} else if (expr.getNodeType() == ASTNode.PARENTHESIZED_EXPRESSION) {
 			ParenthesizedExpression arr = (ParenthesizedExpression) expr;
 			org.emftext.language.java.expressions.NestedExpression result = org.emftext.language.java
@@ -191,7 +191,7 @@ class ReferenceConverterUtility {
 				parent.setNext(partOne);
 			}
 			org.emftext.language.java.references.IdentifierReference partTwo =
-					convertToProxyIdentifierReference(arr.getName());
+					convertToProxyIdentifierReference(arr.getName(), arr.resolveFieldBinding());
 			partOne.setNext(partTwo);
 			return partTwo;
 		} else if (expr.getNodeType() == ASTNode.SUPER_METHOD_INVOCATION) {
@@ -245,9 +245,9 @@ class ReferenceConverterUtility {
 	}
 	
 	private static org.emftext.language.java.references.IdentifierReference
-			convertToProxyIdentifierReference(SimpleName name) {
+			convertToProxyIdentifierReference(SimpleName name, IBinding binding) {
 		org.emftext.language.java.references.IdentifierReference result =
-				createProxyIdentifierReference(name.getIdentifier(), name.resolveBinding());
+				createProxyIdentifierReference(name.getIdentifier(), binding);
 		LayoutInformationConverter.convertToMinimalLayoutInformation(result, name);
 		return result;
 	}
@@ -276,7 +276,7 @@ class ReferenceConverterUtility {
 			NameQualifiedType nqType = (NameQualifiedType) t;
 			org.emftext.language.java.references.Reference parent = internalConvertToReference(nqType.getQualifier());
 			org.emftext.language.java.references.IdentifierReference child =
-					convertToProxyIdentifierReference(nqType.getName());
+					convertToProxyIdentifierReference(nqType.getName(), nqType.resolveBinding());
 			parent.setNext(child);
 			nqType.annotations().forEach(obj -> child.getAnnotations().add(
 				AnnotationInstanceOrModifierConverterUtility
@@ -287,7 +287,7 @@ class ReferenceConverterUtility {
 			QualifiedType qType = (QualifiedType) t;
 			org.emftext.language.java.references.Reference parent = internalConvertToReference(qType.getQualifier());
 			org.emftext.language.java.references.IdentifierReference child =
-					convertToProxyIdentifierReference(qType.getName());
+					convertToProxyIdentifierReference(qType.getName(), qType.resolveBinding());
 			qType.annotations().forEach(obj -> child.getAnnotations().add(AnnotationInstanceOrModifierConverterUtility
 				.convertToAnnotationInstance((Annotation) obj)));
 			parent.setNext(child);
@@ -298,7 +298,8 @@ class ReferenceConverterUtility {
 			org.emftext.language.java.references.Reference result;
 			if (sType.annotations().size() > 0) {
 				org.emftext.language.java.references.IdentifierReference id =
-						convertToProxyIdentifierReference((SimpleName) sType.getName());
+						convertToProxyIdentifierReference((SimpleName) sType.getName(),
+						sType.resolveBinding());
 				sType.annotations().forEach(obj -> id.getAnnotations().add(
 					AnnotationInstanceOrModifierConverterUtility
 					.convertToAnnotationInstance((Annotation) obj)));
