@@ -35,7 +35,19 @@ import jamopp.resolution.bindings.CentralBindingBasedResolver;
 public class JaMoPPJDTSingleFileParser implements JaMoPPParserAPI {
 	private final String DEFAULT_ENCODING = StandardCharsets.UTF_8.toString();
 	private ResourceSet resourceSet;
+	private HashMap<String, String> options;
+	private final String trueString = "true";
+	
+	public JaMoPPJDTSingleFileParser() {
+		options = new HashMap<>();
+		setOption(ParserOptions.RESOLVE_BINDINGS, trueString);
+		setOption(ParserOptions.RESOLVE_ALL_BINDINGS, "false");
+	}
 
+	public void setOption(ParserOptions option, String value) {
+		options.put(option.name(), value);
+	}
+	
 	@Override
 	public JavaRoot parse(String fileName, InputStream input) {
 		this.setUpResourceSet();
@@ -142,24 +154,33 @@ public class JaMoPPJDTSingleFileParser implements JaMoPPParserAPI {
 		parser.setResolveBindings(true);
 		parser.setBindingsRecovery(true);
 		parser.setStatementsRecovery(true);
-		Map<String, String> options = new HashMap<>();
-		options.put(JavaCore.COMPILER_SOURCE, JavaCore.VERSION_15);
-		options.put(JavaCore.COMPILER_COMPLIANCE, JavaCore.VERSION_15);
-		options.put(JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, JavaCore.VERSION_15);
-		parser.setCompilerOptions(options);
+		Map<String, String> compilerOptions = new HashMap<>();
+		compilerOptions.put(JavaCore.COMPILER_SOURCE, JavaCore.VERSION_15);
+		compilerOptions.put(JavaCore.COMPILER_COMPLIANCE, JavaCore.VERSION_15);
+		compilerOptions.put(JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, JavaCore.VERSION_15);
+		parser.setCompilerOptions(compilerOptions);
 		return parser;
 	}
 	
 	public void resolveBindings() {
-		CentralReferenceResolver.GLOBAL_INSTANCE.setBindingBasedResolver(
-				new CentralBindingBasedResolver(this.resourceSet));
-		List<Resource> resources = new ArrayList<>(this.resourceSet.getResources());
-		resources.forEach(r -> EcoreUtil.resolveAll(r));
-		CentralReferenceResolver.GLOBAL_INSTANCE.setBindingBasedResolver(null);
-		Map<String, IJavaContextDependentURIFragment> fragments =
-				IJavaContextDependentURIFragmentCollector.GLOBAL_INSTANCE
-				.getContextDependentURIFragmentMap();
-		fragments.values().forEach(v -> v.setBinding(null));
+		if (trueString.equals(options.get(ParserOptions.RESOLVE_BINDINGS.name()))) {
+			CentralReferenceResolver.GLOBAL_INSTANCE.setBindingBasedResolver(
+					new CentralBindingBasedResolver(this.resourceSet));
+			int oldSize;
+			int newSize = this.resourceSet.getResources().size();
+			do {
+				oldSize = newSize;
+				List<Resource> resources = new ArrayList<>(this.resourceSet.getResources());
+				resources.forEach(r -> EcoreUtil.resolveAll(r));
+				newSize = this.resourceSet.getResources().size();
+			} while (oldSize != newSize
+					&& trueString.equals(options.get(ParserOptions.RESOLVE_ALL_BINDINGS.name())));
+			CentralReferenceResolver.GLOBAL_INSTANCE.setBindingBasedResolver(null);
+			Map<String, IJavaContextDependentURIFragment> fragments =
+					IJavaContextDependentURIFragmentCollector.GLOBAL_INSTANCE
+					.getContextDependentURIFragmentMap();
+			fragments.values().forEach(v -> v.setBinding(null));
+		}
 	}
 
 	@Override
