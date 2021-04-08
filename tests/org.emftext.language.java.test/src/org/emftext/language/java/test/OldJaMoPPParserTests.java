@@ -788,11 +788,12 @@ public class OldJaMoPPParserTests extends AbstractJaMoPPTests {
 	public void testEnumImplementingTwoInterfaces() throws Exception {
 		String typename = "EnumImplementingTwoInterfaces";
 		String filename = typename + JAVA_FILE_EXTENSION;
-		Enumeration enumeration = assertParsesToEnumeration(typename);
-		assertEquals(2, enumeration.getImplements().size(), typename + " implements two interfaces.");
-
+		
 		registerInClassPath("EmptyInterface" + JAVA_FILE_EXTENSION);
 		registerInClassPath("IOneMethod" + JAVA_FILE_EXTENSION);
+		
+		Enumeration enumeration = assertParsesToEnumeration(typename);
+		assertEquals(2, enumeration.getImplements().size(), typename + " implements two interfaces.");
 
 		parseAndReprint(filename);
 	}
@@ -880,11 +881,12 @@ public class OldJaMoPPParserTests extends AbstractJaMoPPTests {
 	public void testExplicitGenericConstructorCalls() throws Exception {
 		String typename = "ExplicitGenericConstructorCalls";
 		String filename = typename + JAVA_FILE_EXTENSION;
+		
+		registerInClassPath("ConstructorCalls" + JAVA_FILE_EXTENSION);
+		
 		org.emftext.language.java.classifiers.Class clazz = assertParsesToClass(typename);
 
 		assertMemberCount(clazz, 4);
-
-		registerInClassPath("ConstructorCalls" + JAVA_FILE_EXTENSION);
 
 		parseAndReprint(filename);
 	}
@@ -962,23 +964,24 @@ public class OldJaMoPPParserTests extends AbstractJaMoPPTests {
 		
 		ExpressionStatement statement = (ExpressionStatement) method.getStatements().get(0);
 		IdentifierReference ref = (IdentifierReference) statement.getExpression();
-		assertType(ref.getTarget(), PackageReference.class);
-		PackageReference p1 = (PackageReference) ref.getTarget();
-		assertEquals(0, p1.getNamespaces().size());
-		assertEquals("java", p1.getName());
-		
-		ref = (IdentifierReference) ref.getNext();
-		assertType(ref.getTarget(), PackageReference.class);
-		p1 = (PackageReference) ref.getTarget();
+		assertType(ref.getTarget(), org.emftext.language.java.containers.Package.class);
+		org.emftext.language.java.containers.Package p1 =
+				(org.emftext.language.java.containers.Package) ref.getTarget();
 		assertEquals(1, p1.getNamespaces().size());
 		assertEquals("java", p1.getNamespaces().get(0));
-		assertEquals("lang", p1.getName());
 		
 		ref = (IdentifierReference) ref.getNext();
-		assertType(ref.getTarget(), PackageReference.class);
-		p1 = (PackageReference) ref.getTarget();
+		assertType(ref.getTarget(), org.emftext.language.java.containers.Package.class);
+		p1 = (org.emftext.language.java.containers.Package) ref.getTarget();
 		assertEquals(2, p1.getNamespaces().size());
-		assertEquals("annotation", p1.getName());
+		assertEquals("java", p1.getNamespaces().get(0));
+		assertEquals("lang", p1.getNamespaces().get(1));
+		
+		ref = (IdentifierReference) ref.getNext();
+		assertType(ref.getTarget(), org.emftext.language.java.containers.Package.class);
+		p1 = (org.emftext.language.java.containers.Package) ref.getTarget();
+		assertEquals(3, p1.getNamespaces().size());
+		assertEquals("annotation", p1.getNamespaces().get(2));
 		
 		parseAndReprint(filename);
 	}

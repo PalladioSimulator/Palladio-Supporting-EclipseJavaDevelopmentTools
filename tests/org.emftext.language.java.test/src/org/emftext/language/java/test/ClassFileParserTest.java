@@ -30,15 +30,15 @@ public class ClassFileParserTest extends AbstractJaMoPPTests {
 	
 	@Test
 	public void testExplicitGenericConstructorCalls() throws Exception {
+		String classFile = "ConstructorCalls";
+		JavaClasspath.get().registerClassifier("", classFile,
+				createURI(BIN_FOLDER, classFile + CLASS_FILE_EXTENSION));
+		
 		String typename = "ExplicitGenericConstructorCalls";
 		String filename = typename + ".java";
 		org.emftext.language.java.classifiers.Class clazz = assertParsesToClass(typename);
 
 		assertMemberCount(clazz, 4);
-
-		String classFile = "ConstructorCalls";
-		JavaClasspath.get().registerClassifier("", classFile,
-				createURI(BIN_FOLDER, classFile + CLASS_FILE_EXTENSION));
 
 		parseAndReprint(filename);
 	}
