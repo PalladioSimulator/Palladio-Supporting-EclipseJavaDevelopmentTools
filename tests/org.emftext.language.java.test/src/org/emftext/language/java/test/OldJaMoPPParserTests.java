@@ -68,7 +68,6 @@ import org.emftext.language.java.operators.LessThan;
 import org.emftext.language.java.parameters.VariableLengthParameter;
 import org.emftext.language.java.references.IdentifierReference;
 import org.emftext.language.java.references.MethodCall;
-import org.emftext.language.java.references.PackageReference;
 import org.emftext.language.java.references.StringReference;
 import org.emftext.language.java.statements.Block;
 import org.emftext.language.java.statements.ExpressionStatement;
@@ -1821,5 +1820,10 @@ public class OldJaMoPPParserTests extends AbstractJaMoPPTests {
 	@Test
 	public void testAnonymousClasses() throws Exception {
 		parseAndReprint("refs" + File.separator + "AnonymousClasses.java");
+	}
+	
+	@Test
+	public void testVarLengthRef() throws Exception {
+		parseAndReprint("refs" + File.separator + "VarLengthRef.java");
 	}
 }
