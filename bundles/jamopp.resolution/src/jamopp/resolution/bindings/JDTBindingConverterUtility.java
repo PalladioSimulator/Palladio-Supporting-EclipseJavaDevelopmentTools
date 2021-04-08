@@ -84,28 +84,28 @@ class JDTBindingConverterUtility {
 				org.emftext.language.java.generics.ExtendsTypeArgument result = org.emftext.language
 						.java.generics.GenericsFactory.eINSTANCE.createExtendsTypeArgument();
 				result.setExtendType(convertToTypeReferences(binding.getBound()).get(0));
-				convertToArrayDimensionsAndSet(binding, result);
+				convertToArrayDimensionsAndSet(binding, result, false);
 				return result;
 			} else {
 				org.emftext.language.java.generics.SuperTypeArgument result = org.emftext.language
 						.java.generics.GenericsFactory.eINSTANCE.createSuperTypeArgument();
 				result.setSuperType(convertToTypeReferences(binding.getBound()).get(0));
-				convertToArrayDimensionsAndSet(binding, result);
+				convertToArrayDimensionsAndSet(binding, result, false);
 				return result;
 			}
 		} else {
 			org.emftext.language.java.generics.QualifiedTypeArgument result = org.emftext.language
 					.java.generics.GenericsFactory.eINSTANCE.createQualifiedTypeArgument();
 			result.setTypeReference(convertToTypeReferences(binding).get(0));
-			convertToArrayDimensionsAndSet(binding, result);
+			convertToArrayDimensionsAndSet(binding, result, false);
 			return result;
 		}
 	}
 	
 	private static void convertToArrayDimensionsAndSet(ITypeBinding binding,
-			org.emftext.language.java.arrays.ArrayTypeable arrDimContainer) {
+			org.emftext.language.java.arrays.ArrayTypeable arrDimContainer, boolean isVarArg) {
 		if (binding.isArray()) {
-			for (int i = 0; i < binding.getDimensions(); i++) {
+			for (int i = isVarArg ? 1 : 0; i < binding.getDimensions(); i++) {
 				arrDimContainer.getArrayDimensionsBefore().add(
 						org.emftext.language.java.arrays.ArraysFactory.eINSTANCE.createArrayDimension());
 			}
@@ -269,7 +269,7 @@ class JDTBindingConverterUtility {
 		}
 		result.setName(binding.getName());
 		result.setTypeReference(convertToTypeReferences(binding.getType()).get(0));
-		convertToArrayDimensionsAndSet(binding.getType(), result);
+		convertToArrayDimensionsAndSet(binding.getType(), result, false);
 		if (binding.getConstantValue() != null) {
 			result.setInitialValue(convertToPrimaryExpression(binding.getConstantValue()));
 		}
@@ -327,7 +327,8 @@ class JDTBindingConverterUtility {
 			}
 			param.setName("param" + index);
 			param.setTypeReference(convertToTypeReferences(typeBind).get(0));
-			convertToArrayDimensionsAndSet(typeBind, param);
+			convertToArrayDimensionsAndSet(typeBind, param, binding.isVarargs()
+					&& index == binding.getParameterTypes().length - 1);
 			IAnnotationBinding[] binds = binding.getParameterAnnotations(index);
 			try {
 				for (IAnnotationBinding annotBind : binds) {
@@ -359,7 +360,7 @@ class JDTBindingConverterUtility {
 		}
 		result.setName(binding.getName());
 		result.setTypeReference(convertToTypeReferences(binding.getReturnType()).get(0));
-		convertToArrayDimensionsAndSet(binding.getReturnType(), result);
+		convertToArrayDimensionsAndSet(binding.getReturnType(), result, false);
 		try {
 			for (ITypeBinding typeBind : binding.getTypeParameters()) {
 				result.getTypeParameters().add(convertToTypeParameter(typeBind));
@@ -386,7 +387,8 @@ class JDTBindingConverterUtility {
 			}
 			param.setName("param" + index);
 			param.setTypeReference(convertToTypeReferences(typeBind).get(0));
-			convertToArrayDimensionsAndSet(typeBind, param);
+			convertToArrayDimensionsAndSet(typeBind, param, binding.isVarargs()
+					&& index == binding.getParameterTypes().length - 1);
 			try {
 				IAnnotationBinding[] binds = binding.getParameterAnnotations(index);
 				for (IAnnotationBinding annotBind : binds) {
