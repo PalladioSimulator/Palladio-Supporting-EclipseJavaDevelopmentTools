@@ -85,6 +85,8 @@ class IMethodBindingResolver extends AbstractBindingResolver<IMethodBinding> {
 			qualifiedName = convertToTypeName(binding.getDeclaringClass()) + "." + binding.getName();
 		} else if (binding.isLocal()) {
 			return binding.getName();
+		} else if (binding.isArray()) {
+			return convertToTypeName(binding.getElementType());
 		} else {
 			qualifiedName = binding.getQualifiedName();
 		}
