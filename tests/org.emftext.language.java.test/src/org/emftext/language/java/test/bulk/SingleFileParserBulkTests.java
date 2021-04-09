@@ -15,6 +15,7 @@
  ******************************************************************************/
 package org.emftext.language.java.test.bulk;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
@@ -23,6 +24,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.compress.archivers.ArchiveException;
 import org.apache.commons.compress.archivers.ArchiveStreamFactory;
@@ -190,10 +193,24 @@ public class SingleFileParserBulkTests extends AbstractJaMoPPTests {
 			decompressZipFile();
 		}
 		Path target = Paths.get(getTestInputFolder());
+		Set<String> parsedFiles = null;
+		try {
+			parsedFiles = Files.walk(target).map(Path::toAbsolutePath).map(Path::toString)
+				.filter(s -> s.endsWith(".java")).collect(Collectors.toSet());
+		} catch (IOException e1) {
+			fail(e1.getMessage());
+		}
 		JaMoPPJDTSingleFileParser parser = new JaMoPPJDTSingleFileParser();
 		ResourceSet set = parser.parseDirectory(target);
+		int index = 0;
 		for (Resource res : new ArrayList<>(set.getResources())) {
-			this.assertResolveAllProxies(res);
+			if (parsedFiles.contains(res.getURI().toFileString())) {
+				System.out.println(index + " of " + parsedFiles.size() + " ("
+						+ res.getURI().toString() + ")");
+				assertTrue(res.getContents().size() > 0);
+				this.assertResolveAllProxies(res);
+				index++;
+			}
 		}
 		try {
 			this.testReprint(set);
