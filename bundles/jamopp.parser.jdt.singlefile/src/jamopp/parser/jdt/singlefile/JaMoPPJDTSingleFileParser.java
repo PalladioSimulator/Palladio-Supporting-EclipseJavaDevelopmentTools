@@ -41,7 +41,7 @@ public class JaMoPPJDTSingleFileParser implements JaMoPPParserAPI {
 	public JaMoPPJDTSingleFileParser() {
 		options = new HashMap<>();
 		setOption(ParserOptions.RESOLVE_BINDINGS, trueString);
-		setOption(ParserOptions.RESOLVE_ALL_BINDINGS, "false");
+		setOption(ParserOptions.RESOLVE_ALL_BINDINGS, trueString);
 	}
 
 	public void setOption(ParserOptions option, String value) {
