@@ -24,6 +24,7 @@ import org.eclipse.jdt.core.dom.CreationReference;
 import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.ExpressionMethodReference;
 import org.eclipse.jdt.core.dom.ITypeBinding;
+import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.InfixExpression;
 import org.eclipse.jdt.core.dom.InstanceofExpression;
 import org.eclipse.jdt.core.dom.IntersectionType;
@@ -270,8 +271,11 @@ class ExpressionConverterUtility {
 							.java.parameters.ParametersFactory.eINSTANCE.createOrdinaryParameter();
 					org.emftext.language.java.types.InferableType type = org.emftext.language.java.types
 							.TypesFactory.eINSTANCE.createInferableType();
-					ITypeBinding c = frag.resolveBinding().getType();
-					if (c != null && !c.isRecovered()) {
+					IVariableBinding varBind = frag.resolveBinding();
+					ITypeBinding c = varBind == null ? null : varBind.getType();
+					if (c != null && !c.isRecovered()
+							&& ParserOptions.TRUE_VALUE.equals(
+							ParserOptions.RESOLVE_BINDINGS_OF_INFERABLE_TYPES.getValue())) {
 						type.getActualTargets().addAll(
 								JDTBindingConverterUtility.convertToTypeReferences(c));
 					}

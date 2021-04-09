@@ -35,18 +35,6 @@ import jamopp.resolution.bindings.CentralBindingBasedResolver;
 public class JaMoPPJDTSingleFileParser implements JaMoPPParserAPI {
 	private final String DEFAULT_ENCODING = StandardCharsets.UTF_8.toString();
 	private ResourceSet resourceSet;
-	private HashMap<String, String> options;
-	private final String trueString = "true";
-	
-	public JaMoPPJDTSingleFileParser() {
-		options = new HashMap<>();
-		setOption(ParserOptions.RESOLVE_BINDINGS, trueString);
-		setOption(ParserOptions.RESOLVE_ALL_BINDINGS, trueString);
-	}
-
-	public void setOption(ParserOptions option, String value) {
-		options.put(option.name(), value);
-	}
 	
 	@Override
 	public JavaRoot parse(String fileName, InputStream input) {
@@ -163,7 +151,8 @@ public class JaMoPPJDTSingleFileParser implements JaMoPPParserAPI {
 	}
 	
 	public void resolveBindings() {
-		if (trueString.equals(options.get(ParserOptions.RESOLVE_BINDINGS.name()))) {
+		if (ParserOptions.TRUE_VALUE.equals(
+				ParserOptions.RESOLVE_BINDINGS.getValue())) {
 			CentralReferenceResolver.GLOBAL_INSTANCE.setBindingBasedResolver(
 					new CentralBindingBasedResolver(this.resourceSet));
 			int oldSize;
@@ -174,7 +163,8 @@ public class JaMoPPJDTSingleFileParser implements JaMoPPParserAPI {
 				resources.forEach(r -> EcoreUtil.resolveAll(r));
 				newSize = this.resourceSet.getResources().size();
 			} while (oldSize != newSize
-					&& trueString.equals(options.get(ParserOptions.RESOLVE_ALL_BINDINGS.name())));
+					&& ParserOptions.TRUE_VALUE.equals(
+					ParserOptions.RESOLVE_ALL_BINDINGS.getValue()));
 			CentralReferenceResolver.GLOBAL_INSTANCE.setBindingBasedResolver(null);
 			Map<String, IJavaContextDependentURIFragment> fragments =
 					IJavaContextDependentURIFragmentCollector.GLOBAL_INSTANCE

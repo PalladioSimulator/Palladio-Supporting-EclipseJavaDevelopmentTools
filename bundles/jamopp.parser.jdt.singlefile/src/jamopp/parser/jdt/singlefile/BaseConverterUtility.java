@@ -125,7 +125,9 @@ class BaseConverterUtility {
 			org.emftext.language.java.types.InferableType ref =
 					org.emftext.language.java.types.TypesFactory.eINSTANCE.createInferableType();
 			ITypeBinding b = t.resolveBinding();
-			if (b != null && !b.isRecovered()) {
+			if (b != null && !b.isRecovered()
+					&& ParserOptions.TRUE_VALUE.equals(
+					ParserOptions.RESOLVE_BINDINGS_OF_INFERABLE_TYPES.getValue())) {
 				ref.getActualTargets().addAll(JDTBindingConverterUtility
 						.convertToTypeReferences(b));
 			}

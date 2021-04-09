@@ -24,7 +24,6 @@ import org.emftext.language.java.resolver.result.IJavaReferenceMapping;
 import org.emftext.language.java.resolver.result.IJavaReferenceResolveResult;
 import org.emftext.language.java.resolver.result.IJavaURIMapping;
 
-import jamopp.parser.api.JaMoPPParserAPI;
 import jamopp.parser.bcel.ClassFileModelLoader;
 import jamopp.parser.jdt.singlefile.JaMoPPJDTSingleFileParser;
 import jamopp.printer.JaMoPPPrinter;
