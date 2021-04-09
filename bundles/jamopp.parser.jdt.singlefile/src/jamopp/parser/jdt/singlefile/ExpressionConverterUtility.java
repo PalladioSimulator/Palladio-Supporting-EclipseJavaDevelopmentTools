@@ -23,6 +23,7 @@ import org.eclipse.jdt.core.dom.ConditionalExpression;
 import org.eclipse.jdt.core.dom.CreationReference;
 import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.ExpressionMethodReference;
+import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.InfixExpression;
 import org.eclipse.jdt.core.dom.InstanceofExpression;
 import org.eclipse.jdt.core.dom.IntersectionType;
@@ -37,6 +38,8 @@ import org.eclipse.jdt.core.dom.SwitchExpression;
 import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeMethodReference;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
+
+import jamopp.resolution.bindings.JDTBindingConverterUtility;
 
 class ExpressionConverterUtility {
 	@SuppressWarnings("unchecked")
@@ -265,8 +268,14 @@ class ExpressionConverterUtility {
 					VariableDeclarationFragment frag = (VariableDeclarationFragment) obj;
 					org.emftext.language.java.parameters.OrdinaryParameter nextParam = org.emftext.language
 							.java.parameters.ParametersFactory.eINSTANCE.createOrdinaryParameter();
-					nextParam.setTypeReference(org.emftext.language.java.types
-							.TypesFactory.eINSTANCE.createInferableType());
+					org.emftext.language.java.types.InferableType type = org.emftext.language.java.types
+							.TypesFactory.eINSTANCE.createInferableType();
+					ITypeBinding c = frag.resolveBinding().getType();
+					if (c != null && !c.isRecovered()) {
+						type.getActualTargets().addAll(
+								JDTBindingConverterUtility.convertToTypeReferences(c));
+					}
+					nextParam.setTypeReference(type);
 					nextParam.setName(frag.getName().getIdentifier());
 					LayoutInformationConverter.convertToMinimalLayoutInformation(nextParam, frag);
 					param.getParameters().add(nextParam);

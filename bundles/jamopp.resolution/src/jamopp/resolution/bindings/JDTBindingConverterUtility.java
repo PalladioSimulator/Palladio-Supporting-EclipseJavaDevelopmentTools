@@ -17,8 +17,8 @@ import org.eclipse.jdt.internal.compiler.problem.AbortCompilation;
 import jamopp.proxy.IJavaContextDependentURIFragmentCollector;
 
 @SuppressWarnings("restriction")
-class JDTBindingConverterUtility {
-	private static List<org.emftext.language.java.types.TypeReference> convertToTypeReferences(ITypeBinding binding) {
+public class JDTBindingConverterUtility {
+	public static List<org.emftext.language.java.types.TypeReference> convertToTypeReferences(ITypeBinding binding) {
 		List<org.emftext.language.java.types.TypeReference> result = new ArrayList<>();
 		if (binding.isPrimitive()) {
 			if (binding.getName().equals("int")) {

@@ -16,6 +16,7 @@ package jamopp.parser.jdt.singlefile;
 import org.eclipse.jdt.core.dom.Annotation;
 import org.eclipse.jdt.core.dom.ArrayType;
 import org.eclipse.jdt.core.dom.Dimension;
+import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.Name;
 import org.eclipse.jdt.core.dom.NameQualifiedType;
 import org.eclipse.jdt.core.dom.ParameterizedType;
@@ -28,6 +29,7 @@ import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.WildcardType;
 
 import jamopp.proxy.IJavaContextDependentURIFragmentCollector;
+import jamopp.resolution.bindings.JDTBindingConverterUtility;
 
 class BaseConverterUtility {
 	static org.emftext.language.java.types.TypeReference convertToClassifierOrNamespaceClassifierReference(Name name) {
@@ -122,6 +124,11 @@ class BaseConverterUtility {
 		} else if (t.isVar()) {
 			org.emftext.language.java.types.InferableType ref =
 					org.emftext.language.java.types.TypesFactory.eINSTANCE.createInferableType();
+			ITypeBinding b = t.resolveBinding();
+			if (b != null && !b.isRecovered()) {
+				ref.getActualTargets().addAll(JDTBindingConverterUtility
+						.convertToTypeReferences(b));
+			}
 			LayoutInformationConverter.convertToMinimalLayoutInformation(ref, t);
 			return ref;
 		} else if (t.isArrayType()) {
