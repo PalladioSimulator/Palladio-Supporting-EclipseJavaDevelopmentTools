@@ -19,6 +19,8 @@ import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
+import org.eclipse.emf.ecore.util.EcoreUtil;
+import org.emftext.language.java.JavaClasspath;
 import org.emftext.language.java.classifiers.AnonymousClass;
 import org.emftext.language.java.classifiers.Classifier;
 import org.emftext.language.java.classifiers.ConcreteClassifier;
@@ -56,6 +58,11 @@ public class FieldDecider extends AbstractDecider {
 			ClassifierReference typeReference = TypesFactory.eINSTANCE.createClassifierReference();
 			typeReference.setTarget(objectContext.getLibClass("Integer"));
 			standardArrayLengthField.setTypeReference(typeReference);
+			ConcreteClassifier containerClass = JavaClasspath.get().getConcreteClassifier("java.util.Arrays");
+			if (containerClass.eIsProxy()) {
+				containerClass = (ConcreteClassifier) EcoreUtil.resolve(containerClass, objectContext);
+			}
+			containerClass.getMembers().add(standardArrayLengthField);
 		}
 		return standardArrayLengthField;
 	}
