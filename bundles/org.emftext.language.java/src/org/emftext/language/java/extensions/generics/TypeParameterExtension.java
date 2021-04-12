@@ -294,21 +294,9 @@ public class TypeParameterExtension {
 						}
 						
 						EList<TypeArgument> typeArgumentList;
-						TemporalTypeArgumentHolder ttah = null;
-						for (Adapter adapter : prevType.eAdapters()) {
-							if (adapter instanceof TemporalTypeArgumentHolder) {
-								ttah = (TemporalTypeArgumentHolder) adapter; 
-								prevType.eAdapters().remove(ttah);
-								break;
-							}
-						}
-						if (ttah != null) {
-							typeArgumentList = ttah.getTypeArguments();
-						}
-						else if (classifierReference != null) {
+						if (classifierReference != null) {
 							typeArgumentList = classifierReference.getTypeArguments();
-						}
-						else {
+						} else {
 							typeArgumentList = ECollections.emptyEList();
 						}
 						
@@ -319,10 +307,15 @@ public class TypeParameterExtension {
 								if (theTypeRef != null) {
 									Type theType = theTypeRef.getBoundTarget(parentReference);
 									if (theType != null) {
-										if (!theTypeRef.getTypeArguments().isEmpty()) {
-											ttah = new TemporalTypeArgumentHolder();
+										outerIf: if (!theTypeRef.getTypeArguments().isEmpty()) {
+											for (Adapter a : parentReference.eAdapters()) {
+												if (a instanceof TemporalTypeArgumentHolder) {
+													break outerIf;
+												}
+											}
+											TemporalTypeArgumentHolder ttah = new TemporalTypeArgumentHolder();
 											ttah.getTypeArguments().addAll(theTypeRef.getTypeArguments());
-											theType.eAdapters().add(ttah);
+											parentReference.eAdapters().add(ttah);
 										}
 										resultList.add(0, theType);
 									}
