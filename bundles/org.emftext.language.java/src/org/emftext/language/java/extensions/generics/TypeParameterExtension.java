@@ -528,13 +528,14 @@ public class TypeParameterExtension {
 									resultList.add(0, ret);
 								}
 							}
-						}
-						MethodReferenceExpression methodRef = argument instanceof MethodReferenceExpression ?
-								(MethodReferenceExpression) argument
-								: argument.getFirstChildByType(MethodReferenceExpression.class);
-						if (methodRef != null) {
 						} else {
-							resultList.add(0, argument.getType());
+							MethodReferenceExpression methodRef = argument instanceof MethodReferenceExpression ?
+									(MethodReferenceExpression) argument
+									: argument.getFirstChildByType(MethodReferenceExpression.class);
+							if (methodRef != null) {
+							} else {
+								resultList.add(0, argument.getType());
+							}
 						}
 					}
 				}
