@@ -253,7 +253,7 @@ public class TypeReferenceExtension {
 	
 	public static TypeReference convertToTypeReference(EObject obj) {
 		if (obj instanceof PrimitiveType) {
-			return (PrimitiveType) obj;
+			return clone((PrimitiveType) obj);
 		} else if (obj instanceof Classifier) {
 			ClassifierReference ref = TypesFactory.eINSTANCE.createClassifierReference();
 			ref.setTarget((Classifier) obj);
