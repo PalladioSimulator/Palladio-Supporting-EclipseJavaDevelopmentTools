@@ -137,7 +137,13 @@ public class ConcreteClassifierDecider extends AbstractDecider {
 	}
 
 	private String packageName(IdentifierReference p) {
+		Reference previous = p.getPrevious();
 		String s = "";
+		if (previous instanceof IdentifierReference) {
+			p = (IdentifierReference) previous;
+		} else {
+			return s;
+		}
 		while (p != null) {
 			if (p.getTarget() instanceof org.emftext.language.java.containers.Package) {
 				s = ((org.emftext.language.java.containers.Package) p.getTarget()).getNamespacesAsString();
