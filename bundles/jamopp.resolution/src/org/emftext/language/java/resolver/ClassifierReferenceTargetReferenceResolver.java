@@ -64,7 +64,8 @@ public class ClassifierReferenceTargetReferenceResolver implements
 						startingPoint = lastClassInNS;
 					} else {
 						//absolute class starting with package
-						target = resolveFullQualifiedTypeReferences(identifier, ncr, container, reference);
+						target = resolveFullQualifiedTypeReferences(identifier,
+								ncr, container, reference);
 					}
 				}
 			}
@@ -114,6 +115,12 @@ public class ClassifierReferenceTargetReferenceResolver implements
 							target = cand;
 							break;
 						}
+					}
+					if (target == null) {
+						String potName = ((ConcreteClassifier) startingPoint).getQualifiedName()
+								+ "." + identifier;
+						target = EcoreUtil.resolve(JavaClasspath.get().getConcreteClassifier(potName),
+								container);
 					}
 				} else if (startingPoint instanceof TypeParameter) {
 					for (TypeReference extendsClassifierReference
