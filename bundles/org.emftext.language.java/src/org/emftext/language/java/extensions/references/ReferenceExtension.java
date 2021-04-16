@@ -20,6 +20,7 @@ import org.emftext.language.java.classifiers.ConcreteClassifier;
 import org.emftext.language.java.classifiers.Enumeration;
 import org.emftext.language.java.expressions.NestedExpression;
 import org.emftext.language.java.extensions.types.TypeReferenceExtension;
+import org.emftext.language.java.generics.TypeParameter;
 import org.emftext.language.java.instantiations.ExplicitConstructorCall;
 import org.emftext.language.java.literals.Literal;
 import org.emftext.language.java.literals.Super;
@@ -34,6 +35,7 @@ import org.emftext.language.java.references.ReflectiveClassReference;
 import org.emftext.language.java.references.SelfReference;
 import org.emftext.language.java.references.StringReference;
 import org.emftext.language.java.references.TextBlockReference;
+import org.emftext.language.java.types.PrimitiveType;
 import org.emftext.language.java.types.Type;
 import org.emftext.language.java.types.TypeReference;
 import org.emftext.language.java.types.TypedElement;
@@ -128,6 +130,13 @@ public class ReferenceExtension {
 			}
 			if (target instanceof TypedElement) {
 				type = ((TypedElement) target).getTypeReference();
+				if (type != null) {
+					Type t = type.getTarget();
+					if (t instanceof TypeParameter) {
+						t = ((TypeParameter) t).getBoundType(type, ((ElementReference) me));
+						type = TypeReferenceExtension.convertToTypeReference(t);
+					}
+				}
 			} else if (target instanceof Type /*e.g. Annotation*/) {
 				return TypeReferenceExtension.convertToTypeReference((Type) target);
 			} else if (target instanceof EnumConstant) {

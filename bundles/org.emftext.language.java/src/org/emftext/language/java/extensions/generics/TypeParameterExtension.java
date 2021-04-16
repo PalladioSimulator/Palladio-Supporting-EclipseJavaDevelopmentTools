@@ -576,22 +576,29 @@ public class TypeParameterExtension {
 							&& prevReference.eContainer() instanceof MethodCall) {
 						MethodCall containingCall = (MethodCall) prevReference.eContainer();
 						int index = containingCall.getArguments().indexOf(prevReference);
-						TypeReference typeRef = ((Method) containingCall.getTarget())
-								.getParameters().get(index).getTypeReference();
-						if (typeRef instanceof TypeArgumentable) {
-							TypeArgument typeArg =
-									((TypeArgumentable) typeRef).getTypeArguments()
-									.get(method.getTypeParameters().indexOf(me));
-							if (typeArg instanceof QualifiedTypeArgument) {
-								resultList.add(0, ((QualifiedTypeArgument) typeArg).getTypeReference()
-										.getBoundTarget(containingCall));
-							} else if (typeArg instanceof ExtendsTypeArgument) {
-								resultList.add(0, ((ExtendsTypeArgument) typeArg).getExtendType()
-										.getBoundTarget(containingCall));
-							} else if (typeArg instanceof SuperTypeArgument) {
-								resultList.add(0, ((SuperTypeArgument) typeArg).getSuperType()
-										.getBoundTarget(containingCall));
+						Method containingMethod = (Method) containingCall.getTarget();
+						if (containingMethod != null && !containingMethod.eIsProxy()) {
+							TypeReference typeRef = ((Method) containingCall.getTarget())
+									.getParameters().get(index).getTypeReference();
+							if (typeRef instanceof TypeArgumentable) {
+								TypeArgument typeArg =
+										((TypeArgumentable) typeRef).getTypeArguments()
+										.get(method.getTypeParameters().indexOf(me));
+								if (typeArg instanceof QualifiedTypeArgument) {
+									resultList.add(0, ((QualifiedTypeArgument) typeArg).getTypeReference()
+											.getBoundTarget(containingCall));
+								} else if (typeArg instanceof ExtendsTypeArgument) {
+									resultList.add(0, ((ExtendsTypeArgument) typeArg).getExtendType()
+											.getBoundTarget(containingCall));
+								} else if (typeArg instanceof SuperTypeArgument) {
+									resultList.add(0, ((SuperTypeArgument) typeArg).getSuperType()
+											.getBoundTarget(containingCall));
+								}
+							} else {
+								resultList.add(typeRef.getBoundTarget(containingCall));
 							}
+						} else {
+							return me;
 						}
 					}
 				}
