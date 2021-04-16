@@ -1,23 +1,22 @@
 package jamopp.parser.jdt.singlefile;
 
+/**
+ * Options for the single file parser.
+ * 
+ * @author Martin Armbruster
+ */
 public enum ParserOptions {
-	RESOLVE_ALL_BINDINGS(ParserOptions.TRUE_VALUE),
-	RESOLVE_BINDINGS(ParserOptions.TRUE_VALUE),
-	RESOLVE_BINDINGS_OF_INFERABLE_TYPES(ParserOptions.TRUE_VALUE);
+	RESOLVE_ALL_BINDINGS,
+	RESOLVE_BINDINGS,
+	RESOLVE_BINDINGS_OF_INFERABLE_TYPES;
 	
 	public static final String TRUE_VALUE = "true";
 	
-	private String value;
-	
-	ParserOptions(String initialValue) {
-		value = initialValue;
-	}
-	
 	public void setValue(String v) {
-		value = v;
+		ParserOptionsValueContainer.getInstance().setValue(this, v);
 	}
 	
 	public String getValue() {
-		return value;
+		return ParserOptionsValueContainer.getInstance().getValue(this);
 	}
 }
