@@ -9,6 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -35,6 +36,15 @@ import jamopp.resolution.bindings.CentralBindingBasedResolver;
 public class JaMoPPJDTSingleFileParser implements JaMoPPParserAPI {
 	private final String DEFAULT_ENCODING = StandardCharsets.UTF_8.toString();
 	private ResourceSet resourceSet;
+	private ArrayList<String> exclusionPatterns = new ArrayList<>();
+	private static boolean isResolving = false;
+	
+	public void setExclusionPatterns(String...patterns) {
+		exclusionPatterns.clear();
+		for (String pa : patterns) {
+			exclusionPatterns.add(pa);
+		}
+	}
 	
 	@Override
 	public JavaRoot parse(String fileName, InputStream input) {
@@ -77,24 +87,50 @@ public class JaMoPPJDTSingleFileParser implements JaMoPPParserAPI {
 	public ResourceSet parseDirectory(Path dir) {
 		this.setUpResourceSet();
 		try {
-			String[] sources = Files.walk(dir).filter(path ->
-				Files.isRegularFile(path) && path.getFileName().toString().endsWith("java"))
-				.map(Path::toAbsolutePath).map(Path::toString).toArray(i -> new String[i]);
+			String[] sources = findSources(dir);
 			String[] encodings = new String[sources.length];
 			for (int index = 0; index < encodings.length; index++) {
 				encodings[index] = DEFAULT_ENCODING;
 			}
-			String[] classpathEntries = Files.walk(dir).filter(path -> Files.isRegularFile(path)
-				&& (path.getFileName().toString().endsWith(".jar")
-				|| path.getFileName().toString().endsWith(".zip")))
-				.map(Path::toAbsolutePath).map(Path::toString).toArray(i -> new String[i]);
+			String[] classpathEntries = findClasspathEntries(dir);
+			System.out.println("Parsing");
 			this.parseFilesWithJDT(classpathEntries, sources, encodings);
+			System.out.println("Resolving");
 			resolveBindings();
 		} catch (IOException e) {
 		}
 		ResourceSet result = this.resourceSet;
 		this.resourceSet = null;
 		return result;
+	}
+	
+	public String[] findSources(Path directory) throws IOException {
+		return findFiles(directory, ".java");
+	}
+	
+	public String[] findClasspathEntries(Path directory) throws IOException {
+		return findFiles(directory, ".jar", ".zip");
+	}
+	
+	private String[] findFiles(Path directory, String...extensions) throws IOException {
+		return Files.walk(directory).filter(path -> Files.isRegularFile(path)
+				&& testFileExtensions(path, extensions))
+				.map(Path::toAbsolutePath).map(Path::toString).filter(this::testPathStringForExclusion)
+				.toArray(i -> new String[i]);
+	}
+	
+	private boolean testFileExtensions(Path file, String...extensions) {
+		String fileName = file.getFileName().toString();
+		boolean result = false;
+		for (String ext : extensions) {
+			result = result || fileName.endsWith(ext);
+		}
+		return result;
+	}
+	
+	private boolean testPathStringForExclusion(String path) {
+		return exclusionPatterns.stream().map(pattern -> !path.matches(pattern))
+				.reduce(true, (i, j) -> i && j);
 	}
 	
 	private List<JavaRoot> parseFilesWithJDT(String[] classpathEntries, String[] sources, String[] encodings) {
@@ -151,16 +187,26 @@ public class JaMoPPJDTSingleFileParser implements JaMoPPParserAPI {
 	}
 	
 	public void resolveBindings() {
+		if (isResolving) {
+			return;
+		}
 		if (ParserOptions.TRUE_VALUE.equals(
 				ParserOptions.RESOLVE_BINDINGS.getValue())) {
+			isResolving = true;
 			CentralReferenceResolver.GLOBAL_INSTANCE.setBindingBasedResolver(
 					new CentralBindingBasedResolver(this.resourceSet));
 			int oldSize;
 			int newSize = this.resourceSet.getResources().size();
+			HashSet<Resource> alreadyResolved = new HashSet<>();
 			do {
 				oldSize = newSize;
 				List<Resource> resources = new ArrayList<>(this.resourceSet.getResources());
-				resources.forEach(r -> EcoreUtil.resolveAll(r));
+				resources.forEach(r -> {
+					if (!alreadyResolved.contains(r)) {
+						EcoreUtil.resolveAll(r);
+						alreadyResolved.add(r);
+					}
+				});
 				newSize = this.resourceSet.getResources().size();
 			} while (oldSize != newSize
 					&& ParserOptions.TRUE_VALUE.equals(
@@ -170,6 +216,7 @@ public class JaMoPPJDTSingleFileParser implements JaMoPPParserAPI {
 					IJavaContextDependentURIFragmentCollector.GLOBAL_INSTANCE
 					.getContextDependentURIFragmentMap();
 			fragments.values().forEach(v -> v.setBinding(null));
+			isResolving = false;
 		}
 	}
 
