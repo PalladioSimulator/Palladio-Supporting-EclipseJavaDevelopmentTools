@@ -249,7 +249,7 @@ public abstract class AbstractJaMoPPTests {
 	}
 	
 	protected void testReprint(ResourceSet set) throws Exception {
-		for (Resource res : set.getResources()) {
+		for (Resource res : new ArrayList<>(set.getResources())) {
 			if (res instanceof JavaResource2) {
 				testReprint((JavaResource2) res);
 			}

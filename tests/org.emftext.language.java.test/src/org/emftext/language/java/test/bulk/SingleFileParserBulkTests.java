@@ -24,8 +24,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.apache.commons.compress.archivers.ArchiveException;
 import org.apache.commons.compress.archivers.ArchiveStreamFactory;
@@ -37,6 +37,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import jamopp.parser.jdt.singlefile.JaMoPPJDTSingleFileParser;
+import jamopp.resource.JavaResource2;
 
 public class SingleFileParserBulkTests extends AbstractJaMoPPTests {
 	private final static String BASE_ZIP = "JaMoPP-BulkTest" + File.separator + "Tests" + File.separator
@@ -193,14 +194,24 @@ public class SingleFileParserBulkTests extends AbstractJaMoPPTests {
 			decompressZipFile();
 		}
 		Path target = Paths.get(getTestInputFolder());
-		Set<String> parsedFiles = null;
+		JaMoPPJDTSingleFileParser parser = new JaMoPPJDTSingleFileParser();
+		String sep = File.separator;
+		if (sep.equals("\\")) {
+			sep = "\\\\";
+		}
+		parser.setExclusionPatterns(".*?teammates" + sep + "src" + sep + "client" + sep + ".*?",
+				".*?teammates" + sep + "src" + sep + "e2e" + sep + ".*?",
+				".*?teammates" + sep + "src" + sep + "test" + sep + ".*?",
+				".*?teammates" + sep + "src" + sep + "web" + sep + ".*?");
+		Set<String> parsedFiles = new HashSet<>();
 		try {
-			parsedFiles = Files.walk(target).map(Path::toAbsolutePath).map(Path::toString)
-				.filter(s -> s.endsWith(".java")).collect(Collectors.toSet());
+			String[] sourceFiles = parser.findSources(target);
+			for (String source : sourceFiles) {
+				parsedFiles.add(source);
+			}
 		} catch (IOException e1) {
 			fail(e1.getMessage());
 		}
-		JaMoPPJDTSingleFileParser parser = new JaMoPPJDTSingleFileParser();
 		ResourceSet set = parser.parseDirectory(target);
 		int index = 0;
 		for (Resource res : new ArrayList<>(set.getResources())) {
@@ -212,10 +223,19 @@ public class SingleFileParserBulkTests extends AbstractJaMoPPTests {
 				index++;
 			}
 		}
-		try {
-			this.testReprint(set);
-		} catch (Exception e) {
-			fail(e.getMessage());
+		index = 0;
+		for (Resource res : new ArrayList<>(set.getResources())) {
+			if (parsedFiles.contains(res.getURI().toFileString())) {
+				System.out.println("Reprinting " + index + " of " + parsedFiles.size() + " ("
+						+ res.getURI().toString() + ")");
+				assertTrue(res.getContents().size() > 0);
+				try {
+					this.testReprint((JavaResource2) res);
+				} catch (Exception e) {
+					fail(e.getMessage());
+				}
+				index++;
+			}
 		}
 	}
 	
