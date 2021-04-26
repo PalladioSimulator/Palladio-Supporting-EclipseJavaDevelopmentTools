@@ -24,8 +24,8 @@ class ITypeBindingResolver extends AbstractBindingResolver<ITypeBinding> {
 	
 	protected ITypeBindingResolver(CentralBindingBasedResolver parentResolver) {
 		super(parentResolver);
-		parentNamePattern = Pattern.compile("([a-zA-Z0-9\\.]+?)((\\$[0-9]*?([a-zA-z][a-zA-z0-9]*?)??)+?)");
-		innerNamesPattern = Pattern.compile("\\$((([0-9]+?)([a-zA-Z][a-zA-Z0-9]*?))|([0-9]+?)|([a-zA-Z][a-zA-Z0-9]*?))");
+		parentNamePattern = Pattern.compile("([a-zA-Z0-9\\.]++)((\\$[0-9]*+([a-zA-z][a-zA-z0-9]*+)?+)++)");
+		innerNamesPattern = Pattern.compile("\\$((([0-9]++)([a-zA-Z][a-zA-Z0-9]*+))|([0-9]++)|([a-zA-Z][a-zA-Z0-9]*+))");
 	}
 
 	@Override
