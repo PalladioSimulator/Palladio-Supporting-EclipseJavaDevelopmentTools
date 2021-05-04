@@ -47,23 +47,49 @@ public class JDTBindingConverterUtility {
 				result.addAll(convertToTypeReferences(b));
 			}
 		} else {
-			org.emftext.language.java.types.ClassifierReference ref =
-					org.emftext.language.java.types.TypesFactory.eINSTANCE.createClassifierReference();
-			org.emftext.language.java.classifiers.Class classifier =
-					org.emftext.language.java.classifiers.ClassifiersFactory.eINSTANCE.createClass();
-			convertToNameAndSet(binding, classifier);
-			IJavaContextDependentURIFragmentCollector.GLOBAL_INSTANCE.registerContextDependentURIFragment(ref,
-					org.emftext.language.java.types.TypesPackage.Literals.CLASSIFIER_REFERENCE__TARGET,
-					classifier.getName(), classifier, -1, binding);
-			if (binding.isParameterizedType()) {
-				for (ITypeBinding b : binding.getTypeArguments()) {
-					ref.getTypeArguments().add(convertToTypeArgument(b));
+			String qualifiedName = binding.getQualifiedName();
+			if (qualifiedName != null && !qualifiedName.equals("") && qualifiedName.contains(".")) {
+				org.emftext.language.java.types.NamespaceClassifierReference parentRef =
+						org.emftext.language.java.types.TypesFactory.eINSTANCE
+						.createNamespaceClassifierReference();
+				int index = qualifiedName.indexOf("<");
+				if (index > -1) {
+					qualifiedName = qualifiedName.substring(0, index);
 				}
+				index = qualifiedName.indexOf("[");
+				if (index > -1) {
+					qualifiedName = qualifiedName.substring(0, index);
+				}
+				String[] nameParts = qualifiedName.split("\\.");
+				for (index = 0; index < nameParts.length - 1; index++) {
+					parentRef.getNamespaces().add(nameParts[index]);
+				}
+				parentRef.getClassifierReferences().add(convertToClassifierReference(binding));
+				result.add(parentRef);
+			} else {
+				result.add(convertToClassifierReference(binding));
 			}
-			ref.setTarget(classifier);
-			result.add(ref);
 		}
 		return result;
+	}
+	
+	private static org.emftext.language.java.types.ClassifierReference convertToClassifierReference(
+			ITypeBinding binding) {
+		org.emftext.language.java.types.ClassifierReference ref =
+				org.emftext.language.java.types.TypesFactory.eINSTANCE.createClassifierReference();
+		org.emftext.language.java.classifiers.Class classifier =
+				org.emftext.language.java.classifiers.ClassifiersFactory.eINSTANCE.createClass();
+		convertToNameAndSet(binding, classifier);
+		IJavaContextDependentURIFragmentCollector.GLOBAL_INSTANCE.registerContextDependentURIFragment(ref,
+				org.emftext.language.java.types.TypesPackage.Literals.CLASSIFIER_REFERENCE__TARGET,
+				classifier.getName(), classifier, -1, binding);
+		if (binding.isParameterizedType()) {
+			for (ITypeBinding b : binding.getTypeArguments()) {
+				ref.getTypeArguments().add(convertToTypeArgument(b));
+			}
+		}
+		ref.setTarget(classifier);
+		return ref;
 	}
 	
 	private static void convertToNameAndSet(ITypeBinding binding, org.emftext.language.java.commons.NamedElement element) {
