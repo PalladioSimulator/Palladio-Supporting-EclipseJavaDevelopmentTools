@@ -1831,4 +1831,9 @@ public class OldJaMoPPParserTests extends AbstractJaMoPPTests {
 	public void testToArray() throws Exception {
 		parseAndReprint("refs" + File.separator + "ToArray.java");
 	}
+	
+	@Test
+	public void testFieldLambdaExpressions() throws Exception {
+		parseAndReprint("refs" + File.separator + "FieldLambdaExpressions.java");
+	}
 }
