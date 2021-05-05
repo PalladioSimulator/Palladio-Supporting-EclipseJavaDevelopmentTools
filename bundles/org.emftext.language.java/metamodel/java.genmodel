@@ -48,12 +48,17 @@
       <genClasses image="false" ecoreClass="java.ecore#//arrays/ArrayInstantiation"/>
       <genClasses ecoreClass="java.ecore#//arrays/ArrayInstantiationBySize">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//arrays/ArrayInstantiationBySize/sizes"/>
+        <genOperations ecoreOperation="java.ecore#//arrays/ArrayInstantiationBySize/getArrayDimension"
+            body="return org.emftext.language.java.extensions.expressions.ExpressionExtension.getArrayDimension((org.emftext.language.java.expressions.Expression) this);"/>
       </genClasses>
       <genClasses image="false" ecoreClass="java.ecore#//arrays/ArrayInstantiationByValues">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//arrays/ArrayInstantiationByValues/arrayInitializer"/>
       </genClasses>
       <genClasses ecoreClass="java.ecore#//arrays/ArrayInstantiationByValuesUntyped"/>
-      <genClasses ecoreClass="java.ecore#//arrays/ArrayInstantiationByValuesTyped"/>
+      <genClasses ecoreClass="java.ecore#//arrays/ArrayInstantiationByValuesTyped">
+        <genOperations ecoreOperation="java.ecore#//arrays/ArrayInstantiationByValuesTyped/getArrayDimension"
+            body="return org.emftext.language.java.extensions.expressions.ExpressionExtension.getArrayDimension((org.emftext.language.java.expressions.Expression) this);"/>
+      </genClasses>
       <genClasses ecoreClass="java.ecore#//arrays/ArraySelector">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//arrays/ArraySelector/position"/>
       </genClasses>
