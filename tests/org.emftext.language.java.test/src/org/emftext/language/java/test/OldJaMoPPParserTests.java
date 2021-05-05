@@ -1826,4 +1826,9 @@ public class OldJaMoPPParserTests extends AbstractJaMoPPTests {
 	public void testVarLengthRef() throws Exception {
 		parseAndReprint("refs" + File.separator + "VarLengthRef.java");
 	}
+	
+	@Test
+	public void testToArray() throws Exception {
+		parseAndReprint("refs" + File.separator + "ToArray.java");
+	}
 }
