@@ -1836,4 +1836,9 @@ public class OldJaMoPPParserTests extends AbstractJaMoPPTests {
 	public void testFieldLambdaExpressions() throws Exception {
 		parseAndReprint("refs" + File.separator + "FieldLambdaExpressions.java");
 	}
+	
+	@Test
+	public void testNestedLambdaExpressions() throws Exception {
+		parseAndReprint("refs" + File.separator + "NestedLambdaExpressions.java");
+	}
 }
