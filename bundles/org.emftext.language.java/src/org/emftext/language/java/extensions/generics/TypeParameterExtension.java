@@ -28,6 +28,7 @@ import org.emftext.language.java.classifiers.ConcreteClassifier;
 import org.emftext.language.java.classifiers.Interface;
 import org.emftext.language.java.commons.Commentable;
 import org.emftext.language.java.commons.NamedElement;
+import org.emftext.language.java.expressions.AssignmentExpression;
 import org.emftext.language.java.expressions.CastExpression;
 import org.emftext.language.java.expressions.ConditionalExpression;
 import org.emftext.language.java.expressions.ExplicitlyTypedLambdaParameters;
@@ -44,6 +45,8 @@ import org.emftext.language.java.generics.TypeParameter;
 import org.emftext.language.java.generics.TypeParametrizable;
 import org.emftext.language.java.instantiations.NewConstructorCall;
 import org.emftext.language.java.literals.Super;
+import org.emftext.language.java.members.AdditionalField;
+import org.emftext.language.java.members.Field;
 import org.emftext.language.java.members.Member;
 import org.emftext.language.java.members.Method;
 import org.emftext.language.java.modifiers.AnnotableAndModifiable;
@@ -61,6 +64,8 @@ import org.emftext.language.java.types.TypeReference;
 import org.emftext.language.java.types.TypedElement;
 import org.emftext.language.java.util.TemporalCompositeClassifier;
 import org.emftext.language.java.util.TemporalTypeArgumentHolder;
+import org.emftext.language.java.variables.AdditionalLocalVariable;
+import org.emftext.language.java.variables.LocalVariable;
 
 public class TypeParameterExtension {
 	
@@ -233,14 +238,16 @@ public class TypeParameterExtension {
 						ElementReference parentElementReference = (ElementReference) parentReference;
 						for (Adapter adapter : parentElementReference.eAdapters()) {
 							if (adapter instanceof TemporalTypeArgumentHolder) {
-								TemporalTypeArgumentHolder ttah = (TemporalTypeArgumentHolder) adapter;
+								TemporalTypeArgumentHolder ttah =
+										(TemporalTypeArgumentHolder) adapter;
 								if (typeParameterIndex < ttah.getTypeArguments().size()) {
-									TypeArgument typeArg = ttah.getTypeArguments().get(typeParameterIndex);
-									if (typeArg instanceof QualifiedTypeArgument) {
-										TypeReference qualTypeRef = ((QualifiedTypeArgument) typeArg).getTypeReference();
-										if (qualTypeRef.getTarget() != me) {
-											resultList.add(qualTypeRef.getBoundTarget(null));
-										}
+									TypeArgument typeArg = ttah.getTypeArguments()
+											.get(typeParameterIndex);
+									TypeReference qualTypeRef =
+											getTypeReferenceOfTypeArgument(typeArg);
+									if (qualTypeRef != null
+											&& qualTypeRef.getTarget() != me) {
+										resultList.add(qualTypeRef.getBoundTarget(null));
 									}
 								}
 							}
@@ -354,10 +361,10 @@ public class TypeParameterExtension {
 				Method method = (Method) typeParameterDeclarator;
 				MethodCall methodCall = (MethodCall) reference;
 				if (method.getTypeParameters().size() == methodCall.getCallTypeArguments().size()) {
-					TypeArgument typeArgument = methodCall.getCallTypeArguments().get(method.getTypeParameters().indexOf(me));
-					if (typeArgument instanceof QualifiedTypeArgument) {
-						resultList.add(0, ((QualifiedTypeArgument)typeArgument).getTypeReference().getBoundTarget(parentReference)); 
-					} 
+					TypeArgument typeArgument = methodCall.getCallTypeArguments()
+							.get(method.getTypeParameters().indexOf(me));
+					resultList.add(0, getTypeReferenceOfTypeArgument(typeArgument)
+							.getBoundTarget(parentReference)); 
 				}
 
 				//class type parameter
@@ -369,41 +376,18 @@ public class TypeParameterExtension {
 					for (Parameter parameter : method.getParameters()) {
 						int oldIdx = idx;
 						for (TypeArgument typeArgument : parameter.getTypeArguments()) {
-							if (typeArgument instanceof QualifiedTypeArgument) {
-								if (((QualifiedTypeArgument) typeArgument)
-										.getTypeReference().getTarget().equals(me)) {
-									idx = method.getParameters().indexOf(parameter);
-								}
-							} else if (typeArgument instanceof ExtendsTypeArgument) {
-								if (me.equals(((ExtendsTypeArgument) typeArgument)
-										.getExtendType().getTarget())) {
-									idx = method.getParameters().indexOf(parameter);
-								}
-							} else if (typeArgument instanceof SuperTypeArgument) {
-								if (me.equals(((SuperTypeArgument) typeArgument)
-										.getSuperType().getTarget())) {
-									idx = method.getParameters().indexOf(parameter);
-								}
+							TypeReference argRef = getTypeReferenceOfTypeArgument(typeArgument);
+							if (argRef != null && me.equals(argRef.getTarget())) {
+								idx = method.getParameters().indexOf(parameter);
 							}
 						}
 						ClassifierReference paramTypeReference = parameter.getTypeReference().getPureClassifierReference();
 						if (paramTypeReference != null) {
 							for (TypeArgument typeArgument : paramTypeReference.getTypeArguments()) {
-								if (typeArgument instanceof QualifiedTypeArgument) {
-									if (me.equals(((QualifiedTypeArgument) typeArgument)
-											.getTypeReference().getTarget())) {
-										idx = method.getParameters().indexOf(parameter);
-									}
-								} else if (typeArgument instanceof ExtendsTypeArgument) {
-									if (me.equals(((ExtendsTypeArgument) typeArgument)
-											.getExtendType().getTarget())) {
-										idx = method.getParameters().indexOf(parameter);
-									}
-								} else if (typeArgument instanceof SuperTypeArgument) {
-									if (me.equals(((SuperTypeArgument) typeArgument)
-											.getSuperType().getTarget())) {
-										idx = method.getParameters().indexOf(parameter);
-									}
+								TypeReference argRef =
+										getTypeReferenceOfTypeArgument(typeArgument);
+								if (argRef != null && me.equals(argRef.getTarget())) {
+									idx = method.getParameters().indexOf(parameter);
 								}
 							}
 							Type paramType = paramTypeReference.getTarget();
@@ -436,13 +420,19 @@ public class TypeParameterExtension {
 					ClassifierReference parameterType = parameter.getTypeReference().getPureClassifierReference();
 					if (argument instanceof NewConstructorCall) {
 						ClassifierReference argumentType = ((NewConstructorCall)argument).getTypeReference().getPureClassifierReference();
-						if (argumentType != null && parameterType.getTypeArguments().size() == argumentType.getTypeArguments().size()) {
+						if (argumentType != null
+								&& parameterType.getTypeArguments().size()
+									== argumentType.getTypeArguments().size()) {
 							for (TypeArgument typeArgument : parameterType.getTypeArguments()) {
-								if (typeArgument instanceof QualifiedTypeArgument) {
-									if (((QualifiedTypeArgument) typeArgument).getTypeReference().getTarget().equals(me)) {
-										resultList.add(0, ((QualifiedTypeArgument)argumentType.getTypeArguments().get(parameterType.getTypeArguments().indexOf(typeArgument))).getTypeReference(
-											).getTarget());
-									}
+								TypeReference argRef =
+										getTypeReferenceOfTypeArgument(typeArgument);
+								if (argRef != null && argRef.getTarget().equals(me)) {
+									resultList.add(0,
+											((QualifiedTypeArgument) argumentType
+											.getTypeArguments()
+											.get(parameterType.getTypeArguments()
+												.indexOf(typeArgument)))
+											.getTypeReference().getTarget());
 								}
 							}
 						}
@@ -464,7 +454,7 @@ public class TypeParameterExtension {
 								elementReference = (ElementReference) elementReference.getNext();
 							}
 							if (elementReference.getTarget() instanceof TypedElement) {
-								TypeReference typeRef = ((TypedElement)elementReference.getTarget()).getTypeReference();
+								TypeReference typeRef = ((TypedElement) elementReference.getTarget()).getTypeReference();
 								if (typeRef != null) {
 									ClassifierReference argumentType = typeRef.getPureClassifierReference();
 									if (argumentType != null && parameterType.getTypeArguments().size() == argumentType.getTypeArguments().size()) {
@@ -472,20 +462,18 @@ public class TypeParameterExtension {
 											if (typeArgument instanceof QualifiedTypeArgument) {
 												if (((QualifiedTypeArgument) typeArgument).getTypeReference().getTarget().equals(me)) {
 													int idx2 = parameterType.getTypeArguments().indexOf(typeArgument);
-													if (argumentType.getTypeArguments().get(idx2) instanceof QualifiedTypeArgument) {
-														resultList.add(0, ((QualifiedTypeArgument)argumentType.getTypeArguments().get(idx2)).getTypeReference().getTarget());
-													} else if (argumentType.getTypeArguments().get(idx2) instanceof ExtendsTypeArgument) {
-														resultList.add(0, ((ExtendsTypeArgument) argumentType.getTypeArguments().get(idx2)).getExtendType().getTarget());
-													} else if (argumentType.getTypeArguments().get(idx2) instanceof SuperTypeArgument) {
-														resultList.add(0, ((SuperTypeArgument) argumentType.getTypeArguments().get(idx2)).getSuperType().getTarget());
-													}
+													resultList.add(0, getTypeReferenceOfTypeArgument(argumentType.getTypeArguments().get(idx2)).getTarget());
 												}
 											}
 										}
 									}
-									if (argumentType != null && parameterType.getTarget() instanceof TypeParameter) {
-										resultList.add(0,argumentType.getTarget());
+									if (argumentType != null && parameterType.getTarget().equals(me)) {
+										resultList.add(0, argumentType.getTarget());
 									}
+								}
+							} else if (elementReference.getNext() == null) {
+								if (parameter.getTypeReference().getTarget().equals(me)) {
+									resultList.add(elementReference.getReferencedType());
 								}
 							}
 							if (elementReference.getNext() instanceof ReflectiveClassReference) {
@@ -568,39 +556,7 @@ public class TypeParameterExtension {
 				}
 				
 				if (resultList.isEmpty()) {
-					Reference prevReference = reference;
-					while (prevReference.getPrevious() != null) {
-						prevReference = prevReference.getPrevious();
-					}
-					if (prevReference.getPrevious() == null
-							&& prevReference.eContainer() instanceof MethodCall) {
-						MethodCall containingCall = (MethodCall) prevReference.eContainer();
-						int index = containingCall.getArguments().indexOf(prevReference);
-						Method containingMethod = (Method) containingCall.getTarget();
-						if (containingMethod != null && !containingMethod.eIsProxy()) {
-							TypeReference typeRef = ((Method) containingCall.getTarget())
-									.getParameters().get(index).getTypeReference();
-							if (typeRef instanceof TypeArgumentable) {
-								TypeArgument typeArg =
-										((TypeArgumentable) typeRef).getTypeArguments()
-										.get(method.getTypeParameters().indexOf(me));
-								if (typeArg instanceof QualifiedTypeArgument) {
-									resultList.add(0, ((QualifiedTypeArgument) typeArg).getTypeReference()
-											.getBoundTarget(containingCall));
-								} else if (typeArg instanceof ExtendsTypeArgument) {
-									resultList.add(0, ((ExtendsTypeArgument) typeArg).getExtendType()
-											.getBoundTarget(containingCall));
-								} else if (typeArg instanceof SuperTypeArgument) {
-									resultList.add(0, ((SuperTypeArgument) typeArg).getSuperType()
-											.getBoundTarget(containingCall));
-								}
-							} else {
-								resultList.add(typeRef.getBoundTarget(containingCall));
-							}
-						} else {
-							return me;
-						}
-					}
+					resultList.addAll(inferTypeFromContext(me, typeReference, reference, method));
 				}
 			}
 		}
@@ -652,5 +608,137 @@ public class TypeParameterExtension {
 			temp.getSuperTypes().add(me);
 			return temp;
 		}
+	}
+	
+	/**
+	 * Tries to infer a bound type for an unbound type parameter declared for a method. The bound is inferred for a
+	 * method call and from the context of the method call, i. e., another method call contains the method call
+	 * or the result of the method call is assigned to a variable with an explicit type.
+	 * 
+	 * @param me the type parameter to find a bound for.
+	 * @param typeReference
+	 * @param reference context of the type parameter.
+	 * @param method the method for which the type parameter is declared.
+	 * @return a list of potential bounds.
+	 */
+	private static BasicEList<Type> inferTypeFromContext(TypeParameter me, TypeReference typeReference,
+			Reference reference, Method method) {
+		BasicEList<Type> resultList = new BasicEList<>();
+		if (me.getExtendTypes().size() != 0) {
+			return resultList;
+		}
+		Reference prevReference = reference;
+		while (prevReference.getPrevious() != null) {
+			prevReference = prevReference.getPrevious();
+		}
+		EObject contained = prevReference;
+		EObject container = contained.eContainer();
+		while (container != null && !(container instanceof MethodCall)
+				&& !(container instanceof AssignmentExpression)
+				&& !(container instanceof CastExpression)
+				&& container instanceof Expression) {
+			contained = container;
+			container = contained.eContainer();
+		}
+		if (container instanceof MethodCall) {
+			// Method call is contained within another method call.
+			MethodCall containingCall = (MethodCall) container;
+			int index = containingCall.getArguments().indexOf(contained);
+			Method containingMethod = (Method) containingCall.getTarget();
+			if (containingMethod != null && !containingMethod.eIsProxy()) {
+				TypeReference typeRef = ((Method) containingCall.getTarget())
+						.getParameters().get(index).getTypeReference();
+				if (typeRef instanceof TypeArgumentable) {
+					TypeArgument typeArg =
+							((TypeArgumentable) typeRef).getTypeArguments()
+							.get(method.getTypeParameters().indexOf(me));
+					TypeReference argRef = getTypeReferenceOfTypeArgument(typeArg);
+					if (argRef != null) {
+						resultList.add(0, argRef.getBoundTarget(containingCall));
+					}
+				} else {
+					resultList.add(typeRef.getBoundTarget(containingCall));
+				}
+			}
+		} else {
+			// Result of the method call is assigned to a variable with a type.
+			TypeReference ref = null;
+			if (container instanceof LocalVariable) {
+				ref = ((LocalVariable) container).getTypeReference();
+			} else if (container instanceof AdditionalLocalVariable) {
+				ref = ((LocalVariable) container.eContainer()).getTypeReference();
+			} else if (container instanceof Field) {
+				ref = ((Field) container).getTypeReference();
+			} else if (container instanceof AdditionalField) {
+				ref = ((Field) container.eContainer()).getTypeReference();
+			} else if (container instanceof AssignmentExpression) {
+				ref = ((AssignmentExpression) container).getChild().getOneTypeReference(false);
+			} else if (container instanceof CastExpression) {
+				ref = ((CastExpression) container).getTypeReference();
+			}
+			if (ref != null) {
+				Type potType = searchForTypeParameter(me, method.getTypeReference(), ref);
+				if (potType != null) {
+					resultList.add(potType);
+				}
+			}
+		}
+		return resultList;
+	}
+	
+	/**
+	 * Looks into a type reference to find the use of a type parameter while finding an instantiation in
+	 * another type reference. Type arguments are also considered.
+	 * 
+	 * @param me the type parameter which is looked for.
+	 * @param searchReference type reference in which the type parameter is searched.
+	 * @param targetReference type reference from which the instantiation is taken.
+	 * @return the found type or null if no type could be found.
+	 */
+	private static Type searchForTypeParameter(TypeParameter me, TypeReference searchReference,
+			TypeReference targetReference) {
+		if (searchReference == null || targetReference == null) {
+			return null;
+		}
+		if (searchReference.getTarget().equals(me)) {
+			return targetReference.getTarget();
+		} else if (searchReference instanceof TypeArgumentable
+				&& targetReference instanceof TypeArgumentable) {
+			TypeArgumentable typeArg = (TypeArgumentable) searchReference;
+			TypeArgumentable targetArg = (TypeArgumentable) targetReference;
+			for (int i = 0; i < typeArg.getTypeArguments().size(); i++) {
+				TypeArgument arg = typeArg.getTypeArguments().get(i);
+				TypeReference refOfArg = getTypeReferenceOfTypeArgument(arg);
+				Type potResult = searchForTypeParameter(me, refOfArg,
+						getTypeReferenceOfTypeArgument(targetArg.getTypeArguments().get(i)));
+				if (potResult != null) {
+					return potResult;
+				}
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * Returns the type reference for a type argument. If the type argument is a QualifiedTypeArgument,
+	 * the returned type reference is the qualified type. If the type argument is a SuperTypeArgument,
+	 * the lower bound is returned. If the type argument is an ExtendsTypeArgument, the upper bound
+	 * is returned. If the type argument is an UnknownTypeArgument, null is returned.
+	 * 
+	 * @param arg the type argument.
+	 * @return the type reference for the type argument or null.
+	 */
+	private static TypeReference getTypeReferenceOfTypeArgument(TypeArgument arg) {
+		if (arg instanceof QualifiedTypeArgument) {
+			QualifiedTypeArgument qual = (QualifiedTypeArgument) arg;
+			return qual.getTypeReference();
+		} else if (arg instanceof ExtendsTypeArgument) {
+			ExtendsTypeArgument qual = (ExtendsTypeArgument) arg;
+			return qual.getExtendType();
+		} else if (arg instanceof SuperTypeArgument) {
+			SuperTypeArgument qual = (SuperTypeArgument) arg;
+			return qual.getSuperType();
+		}
+		return null;
 	}
 }
