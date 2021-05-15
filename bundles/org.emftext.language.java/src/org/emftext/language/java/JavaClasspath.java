@@ -61,7 +61,6 @@ public class JavaClasspath {
 	private HashSet<org.emftext.language.java.containers.Package> packages = new HashSet<>();
 	private HashSet<ConcreteClassifier> classifiers = new HashSet<>();
 	private Map<String, Set<String>> packageClassifierMap = new LinkedHashMap<>();
-	private URIConverter uriConverter = URIConverter.INSTANCE;
 
 	public void clear() {
 		modules.clear();
@@ -83,11 +82,11 @@ public class JavaClasspath {
 	public void registerPackage(org.emftext.language.java.containers.Package pack, URI uri) {
 		packages.add(pack);
 		URI logicalURI = LogicalJavaURIGenerator.getPackageURI(pack.getNamespacesAsString());
-		getURIMap().put(logicalURI, uri);
+		updateMapping(logicalURI, uri);
 		List<String> names = pack.getNamespaces();
 		StringBuilder parentName = new StringBuilder();
 		registerPackage("");
-		for(int index = 0; index < names.size() - 1; index++) {
+		for (int index = 0; index < names.size() - 1; index++) {
 			parentName.append(names.get(index));
 			parentName.append(LogicalJavaURIGenerator.PACKAGE_SEPARATOR);
 			String parentNameString = parentName.toString();
@@ -102,14 +101,14 @@ public class JavaClasspath {
 		if (pack != null) {
 			registerPackage(pack, uri);
 		} else {
-			getURIMap().put(LogicalJavaURIGenerator.getPackageURI(packageName), uri);
+			updateMapping(LogicalJavaURIGenerator.getPackageURI(packageName), uri);
 		}
 	}
 
 	public void registerModule(org.emftext.language.java.containers.Module module, URI uri) {
 		modules.add(module);
 		URI logicalURI = LogicalJavaURIGenerator.getModuleURI(module.getNamespacesAsString());
-		getURIMap().put(logicalURI, uri);
+		updateMapping(logicalURI, uri);
 	}
 	
 	public void registerModule(String moduleName, URI uri) {
@@ -117,7 +116,7 @@ public class JavaClasspath {
 		if (mod != null) {
 			registerModule(mod, uri);
 		} else {
-			getURIMap().put(LogicalJavaURIGenerator.getModuleURI(moduleName), uri);
+			updateMapping(LogicalJavaURIGenerator.getModuleURI(moduleName), uri);
 		}
 	}
 	
@@ -170,8 +169,7 @@ public class JavaClasspath {
 	 * 
 	 * @param zipURI URI pointing to the zip file containing the source files of the JDK.
 	 */
-	private void internalRegisterJDK9AndUpSrcZip(URI zipURI)
-	{
+	private void internalRegisterJDK9AndUpSrcZip(URI zipURI) {
 		registerZip(zipURI, true);
 	}
 	
@@ -190,9 +188,8 @@ public class JavaClasspath {
 	 * @param zipURI URI pointing to the zip file containing source and class files.
 	 * @param isJDK true if the zip file contains the sources of the JDK. false otherwise.
 	 */
-	private void registerZip(URI zipURI, boolean isJDK)
-	{
-		try(ZipFile zipFile = new ZipFile(zipURI.toFileString())) {
+	private void registerZip(URI zipURI, boolean isJDK) {
+		try (ZipFile zipFile = new ZipFile(zipURI.toFileString())) {
 			
 			zipFile.stream().filter(entry -> entry.getName().endsWith(LogicalJavaURIGenerator.JAVA_FILE_EXTENSION)
 					|| entry.getName().endsWith(LogicalJavaURIGenerator.JAVA_CLASS_FILE_EXTENSION))
@@ -201,8 +198,9 @@ public class JavaClasspath {
 					String entryName = entry.getName();
 					String uri = "archive:" + zipURI.toString() + "!/" + entryName;
 					URI physicalURI = URI.createURI(uri);
-					// The entry name has the form "<module name>/<package>/<file name>.java" if the file is within the JDK
-					// where module name contains only "." as separator, package contains "/" as separator and file name
+					// The entry name has the form "<module name>/<package>/<file name>.java"
+					// if the file is within the JDK where module name contains only "." as separator,
+					// package contains "/" as separator and file name
 					// is a simple name.
 					
 					if (isJDK && entryName.endsWith(LogicalJavaURIGenerator.JAVA_MODULE_FILE_NAME)) {
@@ -213,7 +211,8 @@ public class JavaClasspath {
 						// Extract the package part.
 						int firstIndex = isJDK ? entryName.indexOf("/") + 1 : 0;
 						int lastIndex = entryName.lastIndexOf("/");
-						String packName = entryName.substring(firstIndex, lastIndex).replace("/", LogicalJavaURIGenerator.PACKAGE_SEPARATOR);
+						String packName = entryName.substring(firstIndex, lastIndex)
+								.replace("/", LogicalJavaURIGenerator.PACKAGE_SEPARATOR);
 						registerPackage(packName, physicalURI);
 					} else {
 						// Remove the module name if the file is in the JDK.
@@ -221,9 +220,11 @@ public class JavaClasspath {
 							(isJDK ? entryName.substring(entryName.indexOf("/") + 1) : entryName)
 							.replace("/", LogicalJavaURIGenerator.PACKAGE_SEPARATOR);
 						
-						int lastDotIndex = fullName.lastIndexOf(LogicalJavaURIGenerator.PACKAGE_SEPARATOR);
+						int lastDotIndex = fullName.lastIndexOf(
+								LogicalJavaURIGenerator.PACKAGE_SEPARATOR);
 						fullName = fullName.substring(0, lastDotIndex);
-						int preLastDotIndex = fullName.lastIndexOf(LogicalJavaURIGenerator.PACKAGE_SEPARATOR);
+						int preLastDotIndex = fullName.lastIndexOf(
+								LogicalJavaURIGenerator.PACKAGE_SEPARATOR);
 						
 						String packageName = "";
 						String className = fullName;
@@ -282,10 +283,15 @@ public class JavaClasspath {
 	}
 	
 	public Map<URI, URI> getURIMap() {
-		if (uriConverter == URIConverter.INSTANCE) {
-			return URIConverter.URI_MAP;
-		}
-		return uriConverter.getURIMap();
+		return URIConverter.URI_MAP;
+	}
+	
+	private void updateMapping(URI logicalURI, URI physicalURI) {
+		getURIMap().put(logicalURI, physicalURI);
+	}
+	
+	private void removeMapping(URI logicalURI) {
+		getURIMap().remove(logicalURI);
 	}
 	
 	/**
@@ -358,7 +364,7 @@ public class JavaClasspath {
 				// Do nothing: Silently replace old with new version.
 			}
 
-			getURIMap().put(logicalURI, physicalURI);
+			updateMapping(logicalURI, physicalURI);
 
 			String outerPackage = qualifiedName;
 			while (outerPackage.endsWith("$")) {
@@ -385,7 +391,8 @@ public class JavaClasspath {
 		for (Member innerCand : classifier.getMembers()) {
 			if (innerCand instanceof ConcreteClassifier) {
 				this.classifiers.add((ConcreteClassifier) innerCand);
-				String newClassName = className + LogicalJavaURIGenerator.CLASSIFIER_SEPARATOR + innerCand.getName();
+				String newClassName = className + LogicalJavaURIGenerator.CLASSIFIER_SEPARATOR
+						+ innerCand.getName();
 				registerClassifier(packageName, newClassName, uri);
 				registerInnerClassifiers((ConcreteClassifier) innerCand, packageName, newClassName, uri);
 			}
@@ -432,7 +439,7 @@ public class JavaClasspath {
 
 			URI logicalUri = LogicalJavaURIGenerator.getJavaFileResourceURI(fullName);
 
-			getURIMap().remove(logicalUri);
+			removeMapping(logicalUri);
 		}
 	}
 	

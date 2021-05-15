@@ -24,21 +24,41 @@ import org.emftext.language.java.commons.NamespaceAwareElement;
  * for Java classes, packages and modules represented as EMF-models.
  */
 public class LogicalJavaURIGenerator {
+	
+	/**
+	 * URI scheme for the logical URIs.
+	 */
+	public static final String JAVA_URI_SCHEME = "pathmap";
+	
+	/**
+	 * Logical URI segment for classifiers.
+	 */
+	public static final String JAVA_URI_SEGMENT_CLASSIFIER = "javaclass";
+	
+	/**
+	 * Logical URI segment for packages.
+	 */
+	public static final String JAVA_URI_SEGMENT_PACKAGE = "javapackage";
+	
+	/**
+	 * Logical URI segment for modules.
+	 */
+	public static final String JAVA_URI_SEGMENT_MODULE = "javamodule";
 
 	/**
 	 * Pathmap (URI scheme + first segment) for Java classes.
 	 */
-	public static final String JAVA_CLASSIFIER_PATHMAP = "pathmap:/javaclass/";
+	public static final String JAVA_CLASSIFIER_PATHMAP = JAVA_URI_SCHEME + ":/" + JAVA_URI_SEGMENT_CLASSIFIER + "/";
 
 	/**
 	 * Pathmap (URI scheme + first segment) for Java classes.
 	 */
-	public static final String JAVA_PACKAGE_PATHMAP    = "pathmap:/javapackage/";
+	public static final String JAVA_PACKAGE_PATHMAP = JAVA_URI_SCHEME + ":/" + JAVA_URI_SEGMENT_PACKAGE + "/";
 	
 	/**
 	 * Pathmap (URI scheme + first segment) for Java modules.
 	 */
-	public static final String JAVA_MODULE_PATHMAP = "pathmap:/javamodule/";
+	public static final String JAVA_MODULE_PATHMAP = JAVA_URI_SCHEME + ":/" + JAVA_URI_SEGMENT_MODULE + "/";
 
 	/**
 	 * Start of a URI fragment part pointing at a classifier contained in a
@@ -132,12 +152,11 @@ public class LogicalJavaURIGenerator {
 		String[] classNames = CLASSIFIER_SEPARATOR_REGEX_PATTERN.split(classesPart, -1);
 
 		StringBuilder uriFragment = new StringBuilder();
-		for(int i = 0; i < classNames.length; i++) {
+		for (int i = 0; i < classNames.length; i++) {
 			if (i == 0) {
 				uriFragment.append("//");
 				uriFragment.append(CLASSIFIERS_ROOT_PATH_PREFIX);
-			}
-			else {
+			} else {
 				uriFragment.append("/");
 				uriFragment.append(CLASSIFIERS_SUB_PATH_PREFIX);
 			}
@@ -163,17 +182,16 @@ public class LogicalJavaURIGenerator {
 		}
 		if (idx1 > idx2) {
 			return fullQualifiedName.substring(idx1 + 1);
-		}
-		else {
+		} else {
 			return fullQualifiedName.substring(idx2 + 1);
 		}
 	}
 	
 	/**
-	 * Creates a logical URI 
+	 * Creates a logical URI for modules.
 	 * 
-	 * @param moduleName
-	 * @return
+	 * @param moduleName the name of the module.
+	 * @return the logical URI for a module.
 	 */
 	public static URI getModuleURI(String moduleName) {
 		StringBuilder uri = new StringBuilder();
@@ -199,7 +217,7 @@ public class LogicalJavaURIGenerator {
 	 * (and not a classifier).
 	 *
 	 * @param nsaElement
-	 * @return
+	 * @return the namespace.
 	 */
 	public static String packageName(NamespaceAwareElement nsaElement) {
 		return nsaElement.getNamespacesAsString();
