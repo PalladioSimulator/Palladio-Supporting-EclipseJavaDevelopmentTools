@@ -57,6 +57,37 @@ public class ClassifierImportClassifierReferenceResolver implements
 					}
 				}
 			}
+			if (importedClassifier.eIsProxy()) {
+				StringBuilder builder = new StringBuilder();
+				List<String> namespaces = theImport.getNamespaces();
+				outerLoop: for (int i = namespaces.size() - 1; i >= 0; i--) {
+					builder.delete(0, builder.length());
+					for (int j = 0; j <= i; j++) {
+						builder.append(namespaces.get(j));
+						builder.append(LogicalJavaURIGenerator.PACKAGE_SEPARATOR);
+					}
+					builder.delete(builder.length() - 1, builder.length());
+					importedClassifier = (ConcreteClassifier) EcoreUtil.resolve(
+							JavaClasspath.get().getConcreteClassifier(builder.toString()),
+							theImport.eResource());
+					if (!importedClassifier.eIsProxy()) {
+						for (int j = i + 1; j < namespaces.size(); j++) {
+							for (ConcreteClassifier cc : importedClassifier.getInnerClassifiers()) {
+								if (cc.getName().equals(namespaces.get(j))) {
+									importedClassifier = cc;
+									break;
+								}
+							}
+						}
+						for (ConcreteClassifier cc : importedClassifier.getInnerClassifiers()) {
+							if (cc.getName().equals(identifier)) {
+								importedClassifier = cc;
+								break outerLoop;
+							}
+						}
+					}
+				}
+			}
 			if (!importedClassifier.eIsProxy()) {
 				result.addMapping(identifier, importedClassifier);
 			}
