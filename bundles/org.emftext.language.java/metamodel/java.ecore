@@ -845,6 +845,13 @@
         <eParameters name="typeReference" eType="#_Wo2ZPdz1Ed2bJ_pQViWxFg"/>
         <eParameters name="reference" eType="#//references/Reference"/>
       </eOperations>
+      <eOperations name="getBoundTypeReference" eType="#_Wo2ZPdz1Ed2bJ_pQViWxFg">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return org.emftext.language.java.extensions.generics.TypeParameterExtension.getBoundTypeReference((org.emftext.language.java.generics.TypeParameter) this, (org.emftext.language.java.types.TypeReference) typeReference, (org.emftext.language.java.references.Reference) reference);"/>
+        </eAnnotations>
+        <eParameters name="typeReference" eType="#_Wo2ZPdz1Ed2bJ_pQViWxFg"/>
+        <eParameters name="reference" eType="#//references/Reference"/>
+      </eOperations>
       <eStructuralFeatures xsi:type="ecore:EReference" name="extendTypes" upperBound="-1"
           eType="#_Wo2ZPdz1Ed2bJ_pQViWxFg" containment="true"/>
     </eClassifiers>
@@ -1657,6 +1664,12 @@
           <details key="documentation" value=""/>
         </eAnnotations>
       </eOperations>
+      <eOperations name="getBoundTargetReference" eType="#_Wo2ZPdz1Ed2bJ_pQViWxFg">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return org.emftext.language.java.extensions.types.TypeReferenceExtension.getBoundTargetReference((org.emftext.language.java.types.TypeReference) this, reference);"/>
+        </eAnnotations>
+        <eParameters name="reference" eType="#//references/Reference"/>
+      </eOperations>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="ClassifierReference" eSuperTypes="#_Wo2ZPdz1Ed2bJ_pQViWxFg #//generics/TypeArgumentable #//annotations/Annotable">
       <eStructuralFeatures xsi:type="ecore:EReference" name="target" lowerBound="1"
@@ -1702,6 +1715,12 @@
         eSuperTypes="#_Wo2ZR9z1Ed2bJ_pQViWxFg"/>
     <eClassifiers xsi:type="ecore:EClass" name="Void" eSuperTypes="#_Wo2ZR9z1Ed2bJ_pQViWxFg"/>
     <eClassifiers xsi:type="ecore:EClass" name="InferableType" eSuperTypes="#_Wo2ZPdz1Ed2bJ_pQViWxFg #//arrays/ArrayTypeable">
+      <eOperations name="getBoundTargetReference" eType="#_Wo2ZPdz1Ed2bJ_pQViWxFg">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return org.emftext.language.java.extensions.types.InferableTypeExtension.getBoundTargetReference((org.emftext.language.java.types.InferableType) this, reference);"/>
+        </eAnnotations>
+        <eParameters name="reference" eType="#//references/Reference"/>
+      </eOperations>
       <eStructuralFeatures xsi:type="ecore:EReference" name="actualTargets" upperBound="-1"
           eType="#_Wo2ZPdz1Ed2bJ_pQViWxFg" containment="true"/>
     </eClassifiers>

@@ -13,6 +13,7 @@
  *   DevBoost GmbH - Berlin, Germany
  *      - initial API and implementation
  ******************************************************************************/
+
 package org.emftext.language.java.extensions.types;
 
 import java.util.ArrayList;
@@ -21,19 +22,13 @@ import java.util.List;
 import org.eclipse.emf.ecore.EObject;
 import org.emftext.language.java.arrays.ArrayTypeable;
 import org.emftext.language.java.classifiers.Classifier;
-import org.emftext.language.java.classifiers.Interface;
-import org.emftext.language.java.expressions.Expression;
-import org.emftext.language.java.expressions.LambdaExpression;
-import org.emftext.language.java.expressions.LambdaParameters;
 import org.emftext.language.java.generics.ExtendsTypeArgument;
 import org.emftext.language.java.generics.GenericsFactory;
 import org.emftext.language.java.generics.QualifiedTypeArgument;
 import org.emftext.language.java.generics.SuperTypeArgument;
 import org.emftext.language.java.generics.TypeArgument;
 import org.emftext.language.java.generics.TypeParameter;
-import org.emftext.language.java.generics.TypeParametrizable;
 import org.emftext.language.java.generics.UnknownTypeArgument;
-import org.emftext.language.java.members.Method;
 import org.emftext.language.java.references.ElementReference;
 import org.emftext.language.java.references.MethodCall;
 import org.emftext.language.java.references.Reference;
@@ -45,17 +40,16 @@ import org.emftext.language.java.types.PrimitiveType;
 import org.emftext.language.java.types.Type;
 import org.emftext.language.java.types.TypeReference;
 import org.emftext.language.java.types.TypesFactory;
-import org.emftext.language.java.util.TemporalCompositeClassifier;
 import org.emftext.language.java.util.TemporalCompositeTypeReference;
-import org.emftext.language.java.variables.LocalVariable;
 
 public class TypeReferenceExtension {
 
 	/**
 	 * Returns the type referenced by this <code>TypeReference</code>
 	 * considering all concrete subclasses of <code>TypeReference</code> used
-	 * by the Java metamodel.
+	 * by the Java meta-model.
 	 * 
+	 * @param me the type reference to obtain the type from.
 	 * @return the referenced type
 	 */
 	public static Type getTarget(TypeReference me) {
@@ -63,8 +57,9 @@ public class TypeReferenceExtension {
 	}
 	
 	/**
-	 * Sets the type targeted by this type reference
+	 * Sets the type targeted by this type reference.
 	 * 
+	 * @param me the type reference whose type is set.
 	 * @param type the new type to set as target.
 	 */
 	public static void setTarget(TypeReference me, Classifier type) {
@@ -100,160 +95,104 @@ public class TypeReferenceExtension {
 	/**
 	 * Returns the type referenced by this <code>TypeReference</code>
 	 * considering all concrete subclasses of <code>TypeReference</code> used by
-	 * the Java metamodel. If type parameters are bound in the given reference,
+	 * the Java meta-model. If type parameters are bound in the given reference,
 	 * the bound type will be returned instead of the parameter.
 	 * 
-	 * @param reference.
-	 * 
+	 * @param me the type reference to obtain the type for.
+	 * @param reference the context of the type reference.
 	 * @return the referenced type.
 	 */
 	public static Type getBoundTarget(TypeReference me, Reference reference) {
-		Type type = null;
-		if (me instanceof ClassifierReference || 
-				me instanceof NamespaceClassifierReference) {
+		TypeReference ref = me.getBoundTargetReference(reference);
+		if (ref != null) {
+			if (ref instanceof TemporalCompositeTypeReference) {
+				return ((TemporalCompositeTypeReference) ref).asType();
+			} else if (ref instanceof PrimitiveType) {
+				return (PrimitiveType) ref;
+			}
+			return ref.getTarget();
+		}
+		return null;
+	}
+	
+	public static TypeReference getBoundTargetReference(TypeReference me, Reference reference) {
+		TypeReference type = null;
+		if (me instanceof ClassifierReference
+				|| me instanceof NamespaceClassifierReference) {
 			ClassifierReference classifierRef = me.getPureClassifierReference();
 			if (classifierRef != null) {
-				type = classifierRef.getTarget();
+				type = classifierRef;
 			}
 			
 			if (reference instanceof MethodCall) {
 				MethodCall potentialCloneCall = (MethodCall) reference;
-				//clone returns the type of the cloned in the case of arrays
+				// clone returns the type of the cloned type in the case of arrays.
 				ReferenceableElement potentialCloneCallTarget = potentialCloneCall.getTarget();
-				if (potentialCloneCallTarget != null && 
-						!potentialCloneCallTarget.eIsProxy() && 
-						"clone".equals(potentialCloneCallTarget.getName()))  {
+				if (potentialCloneCallTarget != null
+						&& !potentialCloneCallTarget.eIsProxy()
+						&& "clone".equals(potentialCloneCallTarget.getName()))  {
 					if (potentialCloneCall.getPrevious() instanceof ElementReference) {
 						ElementReference prevRef = (ElementReference) potentialCloneCall.getPrevious();
-						if (prevRef.getTarget() instanceof ArrayTypeable && 
-								((ArrayTypeable)prevRef.getTarget()).getArrayDimension() > 0) {
-							type = prevRef.getReferencedType();
+						if (prevRef.getTarget() instanceof ArrayTypeable
+								&& ((ArrayTypeable) prevRef.getTarget())
+									.getArrayDimension() > 0) {
+							type = prevRef.getReferencedTypeReference();
 						}
 					}
 				}
 			}
-		}
-
-		else if (me instanceof PrimitiveType) {
+		} else if (me instanceof PrimitiveType) {
 			return (PrimitiveType) me;
 		}
 		
-		else if (me instanceof InferableType) {
-			InferableType t = (InferableType) me;
-			if (t.getActualTargets().size() == 0) {
-				Type initType = null;
-				if (t.eContainer() instanceof LocalVariable) {
-					LocalVariable loc = (LocalVariable) t.eContainer();
-					TypeReference ref = loc.getInitialValue().getOneTypeReference(false);
-					if (ref == null) {
-						return null;
-					}
-					ref = clone(ref);
-					if (ref instanceof TemporalCompositeTypeReference) {
-						TemporalCompositeTypeReference tempRef = (TemporalCompositeTypeReference) ref;
-						t.getActualTargets().addAll(tempRef.getTypeReferences());
-						return tempRef.asType();
-					}
-					t.getActualTargets().add(ref);
-					return ref.getTarget();
-				} else if (t.eContainer().eContainer() instanceof LambdaParameters) {
-					LambdaExpression lambExpr = (LambdaExpression) t.eContainer().eContainer().eContainer();
-					TypeReference initTypeRef = lambExpr.getOneTypeReference(false);
-					initType = initTypeRef.getTarget();
-					if (!(initType instanceof Interface)) {
-						return initType;
-					}
-					Method m = ((Interface) initType).getAbstractMethodOfFunctionalInterface();
-					EObject container = lambExpr.eContainer();
-					while (container instanceof Expression && !(container instanceof MethodCall)) {
-						container = container.eContainer();
-					}
-					if (container instanceof MethodCall) {
-						initType = m.getParameters().get(
-								lambExpr.getParameters().getParameters().indexOf(t.eContainer()))
-									.getTypeReference().getBoundTarget((Reference) container);
-					} else {
-						initType = m.getParameters().get(
-							lambExpr.getParameters().getParameters().indexOf(t.eContainer()))
-								.getTypeReference().getBoundTarget(null);
-					}
-					if (initType instanceof TypeParameter) {
-						if (initType.eContainer().equals(initTypeRef.getTarget())) {
-							int index = ((TypeParametrizable) initTypeRef.getTarget()).getTypeParameters().indexOf(initType);
-							initTypeRef = getTypeReferenceOfTypeArgument(initTypeRef, index);
-							if (initTypeRef != null) {
-								initTypeRef = clone(initTypeRef);
-								if (initTypeRef instanceof TemporalCompositeTypeReference) {
-									TemporalCompositeTypeReference tempRef = (TemporalCompositeTypeReference) initTypeRef;
-									t.getActualTargets().addAll(tempRef.getTypeReferences());
-									return tempRef.asType();
-								} else if (initTypeRef.getTarget() instanceof TypeParameter
-										&& initTypeRef.getTarget().eContainer() instanceof Method) {
-									initTypeRef = TypeReferenceExtension.convertToTypeReference(
-											initTypeRef.getBoundTarget((Reference) container));
-								}
-								t.getActualTargets().add(initTypeRef);
-								return initTypeRef.getTarget();
-							}
-						}
-					}
-				}
-				if (initType != null) {
-					if (initType instanceof TemporalCompositeClassifier) {
-						for (EObject obj : ((TemporalCompositeClassifier) initType).getSuperTypes()) {
-							t.getActualTargets().add(convertToTypeReference(obj));
-						}
-					} else {
-						t.getActualTargets().add(convertToTypeReference(initType));
-					}
-					return initType;
-				}
-			} else if (t.getActualTargets().size() == 1) {
-				return t.getActualTargets().get(0).getBoundTarget(reference);
-			} else {
-				TemporalCompositeClassifier result = new TemporalCompositeClassifier(me);
-				for (TypeReference ref : t.getActualTargets()) {
-					result.getSuperTypes().add(ref.getBoundTarget(reference));
-				}
-				return result;
-			}
-		}
-		
-		//resolve parameter to real type
-		if (type instanceof TypeParameter) {
-			type = ((TypeParameter) type).getBoundType(me, reference);
+		// Resolve parameter to real type.
+		if (type != null && type.getTarget() instanceof TypeParameter) {
+			type = ((TypeParameter) type.getTarget()).getBoundTypeReference(me, reference);
 		}
 
-		if (type != null && type.eIsProxy()) {
-			//this may happen, when e.g. a super type is resolved. It is ok.
+		if (type != null && type.getTarget() != null && type.getTarget().eIsProxy()) {
+			// This may happen when, e.g., a super type is resolved. It is ok.
 			return null;
 		}
 		
 		return type;
 	}
 	
-	private static TypeReference getTypeReferenceOfTypeArgument(TypeReference ref, int index) {
-		ClassifierReference actualRef = null;
-		if (ref instanceof NamespaceClassifierReference) {
-			NamespaceClassifierReference ncr = (NamespaceClassifierReference) ref;
-			actualRef = ncr.getClassifierReferences().get(ncr.getClassifierReferences().size() - 1);
-		} else if (ref instanceof ClassifierReference) {
-			actualRef = (ClassifierReference) ref;
+	public static TypeReference getTypeReferenceOfTypeArgument(TypeReference ref, int index) {
+		ClassifierReference actualRef = ref.getPureClassifierReference();
+		if (actualRef == null) {
+			return null;
 		}
 		TypeArgument arg = actualRef.getTypeArguments().get(index);
+		return getTypeReferenceOfTypeArgument(arg);
+	}
+	
+	/**
+	 * Returns the type reference for a type argument. If the type argument is a QualifiedTypeArgument,
+	 * the returned type reference is the qualified type. If the type argument is a SuperTypeArgument,
+	 * the lower bound is returned. If the type argument is an ExtendsTypeArgument, the upper bound
+	 * is returned. If the type argument is an UnknownTypeArgument, null is returned.
+	 * 
+	 * @param arg the type argument.
+	 * @return the type reference for the type argument or null.
+	 */
+	public static TypeReference getTypeReferenceOfTypeArgument(TypeArgument arg) {
 		if (arg instanceof QualifiedTypeArgument) {
-			return ((QualifiedTypeArgument) arg).getTypeReference();
-		} else if (arg instanceof SuperTypeArgument) {
-			return ((SuperTypeArgument) arg).getSuperType();
+			QualifiedTypeArgument qual = (QualifiedTypeArgument) arg;
+			return qual.getTypeReference();
 		} else if (arg instanceof ExtendsTypeArgument) {
-			return ((ExtendsTypeArgument) arg).getExtendType();
+			ExtendsTypeArgument qual = (ExtendsTypeArgument) arg;
+			return qual.getExtendType();
+		} else if (arg instanceof SuperTypeArgument) {
+			SuperTypeArgument qual = (SuperTypeArgument) arg;
+			return qual.getSuperType();
 		}
 		return null;
 	}
 	
 	public static TypeReference convertToTypeReference(EObject obj) {
-		if (obj instanceof PrimitiveType) {
-			return clone((PrimitiveType) obj);
+		if (obj instanceof TypeReference) {
+			return clone((TypeReference) obj);
 		} else if (obj instanceof Classifier) {
 			ClassifierReference ref = TypesFactory.eINSTANCE.createClassifierReference();
 			ref.setTarget((Classifier) obj);
@@ -263,13 +202,16 @@ public class TypeReferenceExtension {
 	}
 	
 	public static TypeReference clone(TypeReference me) {
+		if (me.eContainer() == null) {
+			return me;
+		}
 		if (me instanceof NamespaceClassifierReference) {
 			NamespaceClassifierReference ncr = (NamespaceClassifierReference) me;
 			NamespaceClassifierReference result = TypesFactory.eINSTANCE.createNamespaceClassifierReference();
 			for (String s : ncr.getNamespaces()) {
 				result.getNamespaces().add(s);
 			}
-			for(ClassifierReference cR : ncr.getClassifierReferences()) {
+			for (ClassifierReference cR : ncr.getClassifierReferences()) {
 				result.getClassifierReferences().add((ClassifierReference) clone(cR));
 			}
 			return result;
@@ -341,10 +283,11 @@ public class TypeReferenceExtension {
 	}
 	
 	/**
-	 * Extracts the (possibly nested) classifier reference (if any) from this
-	 * type references.
+	 * Extracts the (possibly nested) ClassifierReference (if any) from a
+	 * TypeReference.
 	 * 
-	 * @return
+	 * @param me the TypeReference to extract the ClassifierReference from.
+	 * @return the extracted ClassifierReference.
 	 */
 	public static ClassifierReference getPureClassifierReference(TypeReference me) {
 		ClassifierReference classifierReference = null;

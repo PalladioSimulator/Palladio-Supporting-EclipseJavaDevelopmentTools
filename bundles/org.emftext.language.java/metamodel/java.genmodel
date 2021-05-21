@@ -453,6 +453,11 @@
           <genParameters ecoreParameter="java.ecore#//generics/TypeParameter/getBoundType/typeReference"/>
           <genParameters ecoreParameter="java.ecore#//generics/TypeParameter/getBoundType/reference"/>
         </genOperations>
+        <genOperations ecoreOperation="java.ecore#//generics/TypeParameter/getBoundTypeReference"
+            body="return org.emftext.language.java.extensions.generics.TypeParameterExtension.getBoundTypeReference((org.emftext.language.java.generics.TypeParameter) this, (org.emftext.language.java.types.TypeReference) typeReference, (org.emftext.language.java.references.Reference) reference);">
+          <genParameters ecoreParameter="java.ecore#//generics/TypeParameter/getBoundTypeReference/typeReference"/>
+          <genParameters ecoreParameter="java.ecore#//generics/TypeParameter/getBoundTypeReference/reference"/>
+        </genOperations>
       </genClasses>
       <genClasses ecoreClass="java.ecore#//generics/UnknownTypeArgument"/>
     </nestedGenPackages>
@@ -937,6 +942,10 @@
         </genOperations>
         <genOperations ecoreOperation="java.ecore#//types/TypeReference/getPureClassifierReference"
             body="return org.emftext.language.java.extensions.types.TypeReferenceExtension.getPureClassifierReference((org.emftext.language.java.types.TypeReference) this);"/>
+        <genOperations ecoreOperation="java.ecore#//types/TypeReference/getBoundTargetReference"
+            body="return org.emftext.language.java.extensions.types.TypeReferenceExtension.getBoundTargetReference((org.emftext.language.java.types.TypeReference) this, reference);">
+          <genParameters ecoreParameter="java.ecore#//types/TypeReference/getBoundTargetReference/reference"/>
+        </genOperations>
       </genClasses>
       <genClasses ecoreClass="java.ecore#//types/ClassifierReference">
         <genFeatures notify="false" createChild="false" propertySortChoices="true"
@@ -965,6 +974,10 @@
       <genClasses ecoreClass="java.ecore#//types/InferableType">
         <genFeatures notify="false" createChild="false" propertySortChoices="true"
             ecoreFeature="ecore:EReference java.ecore#//types/InferableType/actualTargets"/>
+        <genOperations ecoreOperation="java.ecore#//types/InferableType/getBoundTargetReference"
+            body="return org.emftext.language.java.extensions.types.InferableTypeExtension.getBoundTargetReference((org.emftext.language.java.types.InferableType) this, reference);">
+          <genParameters ecoreParameter="java.ecore#//types/InferableType/getBoundTargetReference/reference"/>
+        </genOperations>
       </genClasses>
     </nestedGenPackages>
     <nestedGenPackages prefix="Variables" basePackage="org.emftext.language.java"
