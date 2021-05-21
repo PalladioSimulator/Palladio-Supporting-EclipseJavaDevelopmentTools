@@ -3,6 +3,7 @@ package jamopp.resource;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -93,7 +94,7 @@ public class JavaResource2 extends ResourceImpl {
 			} catch (Exception e) {
 				String message = "An expection occured while resolving the proxy for: "+ id + ". (" + e.toString() + ")";
 //				System.err.println(message);
-//				e.printStackTrace();
+				e.printStackTrace();
 			}
 			if (result == null) {
 				// The resolving did call itself.
@@ -105,6 +106,7 @@ public class JavaResource2 extends ResourceImpl {
 			} else {
 				EObject proxy = uriFragment.getProxy();
 				// Remove an error that might have been added by an earlier attempt.
+				removeResolveError(result, proxy);
 				attachResolveWarnings(result, proxy);
 				IJavaReferenceMapping<? extends EObject> mapping = result.getMappings().iterator().next();
 				EObject resultElement = getResultElement(uriFragment, mapping, proxy, result.getErrorMessage());
@@ -179,7 +181,7 @@ public class JavaResource2 extends ResourceImpl {
 					if (errorMessage == null) {
 						assert false;
 					} else {
-						getErrors().add(new SimpleDiagnostic(errorMessage));
+						getErrors().add(new SimpleDiagnostic(errorMessage, proxy));
 					}
 				}
 				return result;
@@ -207,13 +209,23 @@ public class JavaResource2 extends ResourceImpl {
 		}
 	}
 	
+	private void removeResolveError(IJavaReferenceResolveResult<?> result, EObject proxy) {
+		String errorMessage = result.getErrorMessage();
+		for (Iterator<Diagnostic> iter = getErrors().iterator(); iter.hasNext();) {
+			Diagnostic diag = iter.next();
+			if (diag instanceof SimpleDiagnostic && ((SimpleDiagnostic) diag).corresponding == proxy) {
+				iter.remove();
+			}
+		}
+	}
+	
 	private void attachResolveError(IJavaReferenceResolveResult<?> result, EObject proxy) {
 		assert result != null;
 		final String errorMessage = result.getErrorMessage();
 		if (errorMessage == null) {
 			assert false;
 		} else {
-			getErrors().add(new SimpleDiagnostic(errorMessage));
+			getErrors().add(new SimpleDiagnostic(errorMessage, proxy));
 		}
 	}
 	
@@ -233,9 +245,15 @@ public class JavaResource2 extends ResourceImpl {
 	
 	public class SimpleDiagnostic implements Resource.Diagnostic {
 		private String message;
+		private EObject corresponding;
 		
 		SimpleDiagnostic(String message) {
+			this(message, null);
+		}
+		
+		SimpleDiagnostic(String message, EObject correspond) {
 			this.message = message;
+			corresponding = correspond;
 		}
 		
 		@Override
