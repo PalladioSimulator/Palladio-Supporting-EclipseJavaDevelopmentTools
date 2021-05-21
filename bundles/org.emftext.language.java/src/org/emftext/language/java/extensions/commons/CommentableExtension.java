@@ -210,7 +210,7 @@ public class CommentableExtension {
 			Collection<ConcreteClassifier> classi = JavaClasspath.get().getConcreteClassifiers(packageName);
 			if (classi != null) {
 				for (ConcreteClassifier clazz : classi) {
-					result.add((ConcreteClassifier) EcoreUtil.resolve(clazz, me));
+					result.add(clazz);
 				}
 			}
 		} else {
