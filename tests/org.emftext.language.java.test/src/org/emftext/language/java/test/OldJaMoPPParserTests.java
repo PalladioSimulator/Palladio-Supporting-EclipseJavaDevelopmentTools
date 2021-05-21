@@ -68,6 +68,7 @@ import org.emftext.language.java.operators.LessThan;
 import org.emftext.language.java.parameters.VariableLengthParameter;
 import org.emftext.language.java.references.IdentifierReference;
 import org.emftext.language.java.references.MethodCall;
+import org.emftext.language.java.references.PackageReference;
 import org.emftext.language.java.references.StringReference;
 import org.emftext.language.java.statements.Block;
 import org.emftext.language.java.statements.ExpressionStatement;
@@ -77,6 +78,7 @@ import org.emftext.language.java.types.TypeReference;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
+import jamopp.parser.jdt.singlefile.ParserOptions;
 import pkg.NumberLiterals;
 
 /**
@@ -951,6 +953,8 @@ public class OldJaMoPPParserTests extends AbstractJaMoPPTests {
 	
 	@Test
 	public void testFullQualifiedNameReferences() throws Exception {
+		boolean usesBindingsForResolution = ParserOptions.TRUE_VALUE.equals(ParserOptions.RESOLVE_BINDINGS.getValue());
+		
 		String typename = "FullQualifiedNameReferences";
 		String filename = typename + JAVA_FILE_EXTENSION;
 		org.emftext.language.java.classifiers.Class clazz = assertParsesToClass(typename);
@@ -963,24 +967,48 @@ public class OldJaMoPPParserTests extends AbstractJaMoPPTests {
 		
 		ExpressionStatement statement = (ExpressionStatement) method.getStatements().get(0);
 		IdentifierReference ref = (IdentifierReference) statement.getExpression();
-		assertType(ref.getTarget(), org.emftext.language.java.containers.Package.class);
-		org.emftext.language.java.containers.Package p1 =
-				(org.emftext.language.java.containers.Package) ref.getTarget();
-		assertEquals(1, p1.getNamespaces().size());
-		assertEquals("java", p1.getNamespaces().get(0));
+		if (usesBindingsForResolution) {
+			assertType(ref.getTarget(), org.emftext.language.java.containers.Package.class);
+			org.emftext.language.java.containers.Package p1 =
+					(org.emftext.language.java.containers.Package) ref.getTarget();
+			assertEquals(1, p1.getNamespaces().size());
+			assertEquals("java", p1.getNamespaces().get(0));
+		} else {
+			assertType(ref.getTarget(), PackageReference.class);
+			PackageReference p1 = (PackageReference) ref.getTarget();
+			assertEquals(0, p1.getNamespaces().size());
+			assertEquals("java", p1.getName());
+		}
 		
 		ref = (IdentifierReference) ref.getNext();
-		assertType(ref.getTarget(), org.emftext.language.java.containers.Package.class);
-		p1 = (org.emftext.language.java.containers.Package) ref.getTarget();
-		assertEquals(2, p1.getNamespaces().size());
-		assertEquals("java", p1.getNamespaces().get(0));
-		assertEquals("lang", p1.getNamespaces().get(1));
+		if (usesBindingsForResolution) {
+			assertType(ref.getTarget(), org.emftext.language.java.containers.Package.class);
+			org.emftext.language.java.containers.Package p1 =
+					(org.emftext.language.java.containers.Package) ref.getTarget();
+			assertEquals(2, p1.getNamespaces().size());
+			assertEquals("java", p1.getNamespaces().get(0));
+			assertEquals("lang", p1.getNamespaces().get(1));
+		} else {
+			assertType(ref.getTarget(), PackageReference.class);
+			PackageReference p1 = (PackageReference) ref.getTarget();
+			assertEquals(1, p1.getNamespaces().size());
+			assertEquals("java", p1.getNamespaces().get(0));
+			assertEquals("lang", p1.getName());
+		}
 		
 		ref = (IdentifierReference) ref.getNext();
-		assertType(ref.getTarget(), org.emftext.language.java.containers.Package.class);
-		p1 = (org.emftext.language.java.containers.Package) ref.getTarget();
-		assertEquals(3, p1.getNamespaces().size());
-		assertEquals("annotation", p1.getNamespaces().get(2));
+		if (usesBindingsForResolution) {
+			assertType(ref.getTarget(), org.emftext.language.java.containers.Package.class);
+			org.emftext.language.java.containers.Package p1 =
+					(org.emftext.language.java.containers.Package) ref.getTarget();
+			assertEquals(3, p1.getNamespaces().size());
+			assertEquals("annotation", p1.getNamespaces().get(2));
+		} else {
+			assertType(ref.getTarget(), PackageReference.class);
+			PackageReference p1 = (PackageReference) ref.getTarget();
+			assertEquals(2, p1.getNamespaces().size());
+			assertEquals("annotation", p1.getName());
+		}
 		
 		parseAndReprint(filename);
 	}
