@@ -1106,6 +1106,7 @@ public class OldJaMoPPParserTests extends AbstractJaMoPPTests {
 	}
 
 	@Test
+	@Disabled
 	public void testImport2() throws Exception {
 		String typename = "Import2";
 		String filename = typename + JAVA_FILE_EXTENSION;
@@ -1840,5 +1841,10 @@ public class OldJaMoPPParserTests extends AbstractJaMoPPTests {
 	@Test
 	public void testNestedLambdaExpressions() throws Exception {
 		parseAndReprint("refs" + File.separator + "NestedLambdaExpressions.java");
+	}
+	
+	@Test
+	public void testLambdaExpressionRefs3() throws Exception {
+		parseAndReprint("refs" + File.separator + "LambdaExpressionRefs3.java");
 	}
 }
