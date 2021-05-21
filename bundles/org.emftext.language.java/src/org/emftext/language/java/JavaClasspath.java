@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -67,6 +68,13 @@ public class JavaClasspath {
 		packages.clear();
 		classifiers.clear();
 		packageClassifierMap.clear();
+		for (Iterator<Map.Entry<URI, URI>> iter = getURIMap().entrySet().iterator();
+				iter.hasNext();) {
+			String fileExt = iter.next().getKey().fileExtension();
+			if ("java".equals(fileExt) || "class".equals(fileExt)) {
+				iter.remove();
+			}
+		}
 	}
 	
 	public void registerJavaRoot(JavaRoot root, URI uri) {

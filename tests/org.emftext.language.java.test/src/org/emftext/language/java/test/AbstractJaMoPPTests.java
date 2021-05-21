@@ -73,6 +73,7 @@ import org.emftext.language.java.members.MemberContainer;
 import org.emftext.language.java.members.Method;
 import org.emftext.language.java.modifiers.Public;
 import org.emftext.language.java.types.NamespaceClassifierReference;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 
 import jamopp.resource.JavaResource2;
@@ -91,6 +92,14 @@ public abstract class AbstractJaMoPPTests {
 		Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap().put("java", new JavaResource2Factory());
 		JavaClasspath.get().clear();
 		JavaClasspath.get().registerStdLib();
+	}
+	
+	@AfterEach
+	public void tearDown() {
+		for (Resource res : new ArrayList<>(testSet.getResources())) {
+			res.unload();
+			testSet.getResources().remove(res);
+		}
 	}
 
 	protected void registerInClassPath(String file) throws Exception {
