@@ -59,7 +59,7 @@ public class JavaResource2 extends ResourceImpl {
 		if (extension.equals("class")) {
 			try {
 				result = new ClassFileModelLoader().parse(input, "");
-				JavaClasspath.get().registerJavaRoot((JavaRoot) result, this.getURI());
+				JavaClasspath.get().registerJavaRoot((JavaRoot) result, physicalURI);
 				this.getContents().add(result);
 			} catch (IOException e) {
 			}
@@ -67,7 +67,7 @@ public class JavaResource2 extends ResourceImpl {
 			JaMoPPJDTSingleFileParser api = new JaMoPPJDTSingleFileParser();
 			api.setResourceSet(this.getResourceSet());
 			result = api.parse(this.getURI().toString(), input);
-			JavaClasspath.get().registerJavaRoot((JavaRoot) result, getURI());
+			JavaClasspath.get().registerJavaRoot((JavaRoot) result, physicalURI);
 			this.getContents().add(result);
 			api.setResourceSet(this.getResourceSet());
 			api.resolveBindings();
