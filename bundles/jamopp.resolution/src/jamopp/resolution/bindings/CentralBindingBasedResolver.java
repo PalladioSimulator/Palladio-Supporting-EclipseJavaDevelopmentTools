@@ -2,6 +2,7 @@ package jamopp.resolution.bindings;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.jdt.core.dom.IAnnotationBinding;
 import org.eclipse.jdt.core.dom.IBinding;
 import org.eclipse.jdt.core.dom.IMemberValuePairBinding;
@@ -20,6 +21,10 @@ public class CentralBindingBasedResolver {
 	private IMethodBindingResolver methodResolver;
 	private IVariableBindingResolver variableResolver;
 	private ResourceSet resSet;
+	
+	public CentralBindingBasedResolver() {
+		this(new ResourceSetImpl());
+	}
 	
 	public CentralBindingBasedResolver(ResourceSet set) {
 		typeResolver = new ITypeBindingResolver(this);

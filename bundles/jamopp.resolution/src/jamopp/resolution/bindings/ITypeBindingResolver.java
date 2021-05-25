@@ -65,9 +65,12 @@ class ITypeBindingResolver extends AbstractBindingResolver<ITypeBinding> {
 				return classifier;
 			}
 			CompilationUnit cu = JDTBindingConverterUtility.convertToCompilationUnit(binding);
+			// The logical URI is used to create the corresponding resource.
 			URI uri = LogicalJavaURIGenerator.getJavaFileResourceURI(cu.getClassifiers().get(0).getQualifiedName());
 			Resource res = this.getParentResolver().getResourceSet().createResource(uri);
 			res.getContents().add(cu);
+			// For the registration, the physical URI is used.
+			uri = JavaClasspath.get().getURIMap().get(uri);
 			JavaClasspath.get().registerJavaRoot(cu, uri);
 			return JavaClasspath.get().getConcreteClassifier(binding.getQualifiedName());
 		}

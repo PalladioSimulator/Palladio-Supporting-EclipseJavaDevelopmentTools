@@ -20,9 +20,12 @@ class IPackageBindingResolver extends AbstractBindingResolver<IPackageBinding> {
 			return pack;
 		}
 		pack = JDTBindingConverterUtility.convertToPackage(binding);
+		// The logical URI is used to create the corresponding resource.
 		URI uri = LogicalJavaURIGenerator.getPackageURI(pack.getNamespacesAsString());
 		Resource packContainer = this.getParentResolver().getResourceSet().createResource(uri);
 		packContainer.getContents().add(pack);
+		// For the registration, the physical URI is used.
+		uri = JavaClasspath.get().getURIMap().get(uri);
 		JavaClasspath.get().registerJavaRoot(pack, uri);
 		return pack;
 	}

@@ -20,9 +20,12 @@ class IModuleBindingResolver extends AbstractBindingResolver<IModuleBinding> {
 			return mod;
 		}
 		mod = JDTBindingConverterUtility.convertToModule(binding);
+		// Logical URI of the module is used to create the corresponding resource.
 		URI uri = LogicalJavaURIGenerator.getModuleURI(mod.getNamespacesAsString());
 		Resource modContainer = this.getParentResolver().getResourceSet().createResource(uri);
 		modContainer.getContents().add(mod);
+		// For the registration, the physical URI is used.
+		uri = JavaClasspath.get().getURIMap().get(uri);
 		JavaClasspath.get().registerJavaRoot(mod, uri);
 		return mod;
 	}

@@ -77,20 +77,21 @@ public class JavaClasspath {
 		}
 	}
 	
-	public void registerJavaRoot(JavaRoot root, URI uri) {
+	public void registerJavaRoot(JavaRoot root, URI physicalUri) {
 		if (root instanceof CompilationUnit) {
-			registerClassifier((CompilationUnit) root, uri);
+			registerClassifier((CompilationUnit) root, physicalUri);
 		} else if (root instanceof org.emftext.language.java.containers.Package) {
-			registerPackage((org.emftext.language.java.containers.Package) root, uri);
+			registerPackage((org.emftext.language.java.containers.Package) root, physicalUri);
 		} else if (root instanceof org.emftext.language.java.containers.Module) {
-			registerModule((org.emftext.language.java.containers.Module) root, uri);
+			registerModule((org.emftext.language.java.containers.Module) root, physicalUri);
 		}
 	}
 
-	public void registerPackage(org.emftext.language.java.containers.Package pack, URI uri) {
+	public void registerPackage(org.emftext.language.java.containers.Package pack,
+			URI physicalUri) {
 		packages.add(pack);
 		URI logicalURI = LogicalJavaURIGenerator.getPackageURI(pack.getNamespacesAsString());
-		updateMapping(logicalURI, uri);
+		updateMapping(logicalURI, physicalUri);
 		List<String> names = pack.getNamespaces();
 		StringBuilder parentName = new StringBuilder();
 		registerPackage("");
@@ -104,27 +105,28 @@ public class JavaClasspath {
 		}
 	}
 	
-	public void registerPackage(String packageName, URI uri) {
+	public void registerPackage(String packageName, URI physicalUri) {
 		org.emftext.language.java.containers.Package pack = getPackage(packageName);
 		if (pack != null) {
-			registerPackage(pack, uri);
+			registerPackage(pack, physicalUri);
 		} else {
-			updateMapping(LogicalJavaURIGenerator.getPackageURI(packageName), uri);
+			updateMapping(LogicalJavaURIGenerator.getPackageURI(packageName), physicalUri);
 		}
 	}
 
-	public void registerModule(org.emftext.language.java.containers.Module module, URI uri) {
+	public void registerModule(org.emftext.language.java.containers.Module module,
+			URI physicalUri) {
 		modules.add(module);
 		URI logicalURI = LogicalJavaURIGenerator.getModuleURI(module.getNamespacesAsString());
-		updateMapping(logicalURI, uri);
+		updateMapping(logicalURI, physicalUri);
 	}
 	
-	public void registerModule(String moduleName, URI uri) {
+	public void registerModule(String moduleName, URI physicalUri) {
 		org.emftext.language.java.containers.Module mod = getModule(moduleName);
 		if (mod != null) {
-			registerModule(mod, uri);
+			registerModule(mod, physicalUri);
 		} else {
-			updateMapping(LogicalJavaURIGenerator.getModuleURI(moduleName), uri);
+			updateMapping(LogicalJavaURIGenerator.getModuleURI(moduleName), physicalUri);
 		}
 	}
 	
