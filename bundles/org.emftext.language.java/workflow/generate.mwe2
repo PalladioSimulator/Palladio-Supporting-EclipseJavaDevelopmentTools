@@ -1,16 +1,13 @@
 module generate
 
 import org.eclipse.emf.mwe2.ecore.EcoreGenerator
-import tools.mdsd.ecoreworkflow.mwe2lib.bean.EclipseRCPSupportingStandaloneSetup
-import tools.mdsd.ecoreworkflow.mwe2lib.component.ContextDependentMapping
-import tools.mdsd.ecoreworkflow.mwe2lib.component.URISupportingDirectoryCleaner
-import tools.mdsd.ecoreworkflow.mwe2lib.component.GapPatternPostProcessor
+import org.eclipse.emf.mwe.utils.StandaloneSetup
 
-var workspaceRoot = "../../"
+var workspaceRoot = "../"
 
 Workflow {
 	
-	bean = EclipseRCPSupportingStandaloneSetup {
+	bean = StandaloneSetup {
 		scanClassPath = true
 		platformUri = workspaceRoot
 		
@@ -29,6 +26,6 @@ Workflow {
 		genModel = "platform:/resource/org.emftext.language.java/metamodel/java.genmodel"
 		srcPath = "platform:/resource/org.emftext.language.java/src-gen"
 		generateEdit = true
-                generateEditor = true
+        generateEditor = true
 	}
 }
