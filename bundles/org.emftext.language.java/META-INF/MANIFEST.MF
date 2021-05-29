@@ -8,7 +8,10 @@ Bundle-Vendor: Martin Armbruster
 Bundle-Localization: plugin
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Automatic-Module-Name: org.emftext.language.java
-Export-Package: org.emftext.language.java,
+Export-Package: org.emftext.commons.layout,
+ org.emftext.commons.layout.impl,
+ org.emftext.commons.layout.util,
+ org.emftext.language.java,
  org.emftext.language.java.annotations,
  org.emftext.language.java.annotations.impl,
  org.emftext.language.java.annotations.util,
@@ -31,6 +34,7 @@ Export-Package: org.emftext.language.java,
  org.emftext.language.java.generics,
  org.emftext.language.java.generics.impl,
  org.emftext.language.java.generics.util,
+ org.emftext.language.java.impl,
  org.emftext.language.java.imports,
  org.emftext.language.java.imports.impl,
  org.emftext.language.java.imports.util,
@@ -70,7 +74,6 @@ Export-Package: org.emftext.language.java,
  org.emftext.language.java.variables.util
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.emf.ecore;visibility:=reexport,
- org.emftext.commons.layout;visibility:=reexport,
  org.eclipse.emf.mwe2.launch,
  org.objectweb.asm,
  org.eclipse.emf.mwe2.lib,

@@ -5,7 +5,7 @@
     editorDirectory="/org.emftext.language.java.editor/src-gen" modelPluginID="org.emftext.language.java"
     templateDirectory="" modelName="Java" rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl"
     importerID="org.eclipse.emf.importer.ecore" bundleManifest="false" containmentProxies="true"
-    complianceLevel="11.0" copyrightFields="false" usedGenPackages="../../org.emftext.commons.layout/metamodel/layout.genmodel#//layout">
+    complianceLevel="11.0" copyrightFields="false">
   <foreignModel>java.ecore</foreignModel>
   <genPackages prefix="Java" basePackage="org.emftext.language" disposableProviderFactory="true"
       ecorePackage="java.ecore#_WosmsNz1Ed2bJ_pQViWxFg">
@@ -1019,6 +1019,28 @@
       <genClasses ecoreClass="java.ecore#//modules/ExportsModuleDirective"/>
       <genClasses ecoreClass="java.ecore#//modules/ModuleReference">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference java.ecore#//modules/ModuleReference/target"/>
+      </genClasses>
+    </nestedGenPackages>
+    <nestedGenPackages prefix="Layout" basePackage="org.emftext.commons" disposableProviderFactory="true"
+        ecorePackage="java.ecore#//layout">
+      <genClasses image="false" ecoreClass="java.ecore#//layout/LayoutInformation">
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute java.ecore#//layout/LayoutInformation/startOffset"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute java.ecore#//layout/LayoutInformation/hiddenTokenText"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute java.ecore#//layout/LayoutInformation/visibleTokenText"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute java.ecore#//layout/LayoutInformation/syntaxElementID"/>
+      </genClasses>
+      <genClasses ecoreClass="java.ecore#//layout/ReferenceLayoutInformation">
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference java.ecore#//layout/ReferenceLayoutInformation/object"/>
+      </genClasses>
+      <genClasses ecoreClass="java.ecore#//layout/AttributeLayoutInformation"/>
+      <genClasses ecoreClass="java.ecore#//layout/KeywordLayoutInformation"/>
+      <genClasses ecoreClass="java.ecore#//layout/MinimalLayoutInformation">
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute java.ecore#//layout/MinimalLayoutInformation/length"/>
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference java.ecore#//layout/MinimalLayoutInformation/rootLayout"/>
+        <genOperations ecoreOperation="java.ecore#//layout/MinimalLayoutInformation/getSourceString"
+            body="if (rootLayout != null) { String rootSource = rootLayout.getVisibleTokenText(); if (rootSource.length() >= getStartOffset() + getLength()) { return rootSource.substring(getStartOffset(), getStartOffset() + getLength()); } return &quot;&quot;; } else { return &quot;&quot;; }"/>
       </genClasses>
     </nestedGenPackages>
   </genPackages>

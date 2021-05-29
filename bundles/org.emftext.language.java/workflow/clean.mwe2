@@ -3,14 +3,6 @@ module clean
 import org.eclipse.emf.mwe.utils.DirectoryCleaner
 
 Workflow {
-	component = DirectoryCleaner {
-        directory = "../org.emftext.commons.layout/src-gen"
-    }
-    
-    component = DirectoryCleaner {
-        directory = "../org.emftext.commons.layout.edit/src-gen"
-    }
-    
     component = DirectoryCleaner {
         directory = "../org.emftext.language.java/src-gen"
     }

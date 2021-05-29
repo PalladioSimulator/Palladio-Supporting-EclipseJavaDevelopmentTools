@@ -547,4 +547,32 @@
       </editor>
    </extension>
 
+   <extension point="org.eclipse.ui.newWizards">
+      <!-- @generated java -->
+      <category
+            id="org.eclipse.emf.ecore.Wizard.category.ID"
+            name="%_UI_Wizard_category"/>
+      <wizard
+            id="org.emftext.commons.layout.presentation.LayoutModelWizardID"
+            name="%_UI_LayoutModelWizard_label"
+            class="org.emftext.commons.layout.presentation.LayoutModelWizard"
+            category="org.eclipse.emf.ecore.Wizard.category.ID"
+            icon="icons/full/obj16/LayoutModelFile.gif">
+         <description>%_UI_LayoutModelWizard_description</description>
+         <selection class="org.eclipse.core.resources.IResource"/>
+      </wizard>
+   </extension>
+
+   <extension point="org.eclipse.ui.editors">
+      <!-- @generated java -->
+      <editor
+            id="org.emftext.commons.layout.presentation.LayoutEditorID"
+            name="%_UI_LayoutEditor_label"
+            icon="icons/full/obj16/LayoutModelFile.gif"
+            extensions="layout"
+            class="org.emftext.commons.layout.presentation.LayoutEditor"
+            contributorClass="org.emftext.commons.layout.presentation.LayoutActionBarContributor">
+      </editor>
+   </extension>
+
 </plugin>
