@@ -21,6 +21,7 @@ package org.emftext.language.java;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -32,12 +33,15 @@ import java.util.zip.ZipFile;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.common.util.UniqueEList;
+import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.URIConverter;
 import org.emftext.language.java.classifiers.ClassifiersFactory;
 import org.emftext.language.java.classifiers.ConcreteClassifier;
 import org.emftext.language.java.containers.CompilationUnit;
 import org.emftext.language.java.containers.JavaRoot;
 import org.emftext.language.java.members.Member;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.InternalEObject;
 
 /**
@@ -45,10 +49,8 @@ import org.eclipse.emf.ecore.InternalEObject;
  * different Java classes represented as EMF-models.
  */
 public class JavaClasspath {
-	/**
-	 * Singleton instance.
-	 */
 	private static JavaClasspath globalClasspath = null;
+	private static HashMap<ResourceSet, JavaClasspath> classpaths = new HashMap<>();
 
 	public static JavaClasspath get() {
 		if (globalClasspath == null) {
@@ -56,6 +58,21 @@ public class JavaClasspath {
 			globalClasspath.registerStdLib();
 		}
 		return globalClasspath;
+	}
+	
+	public static JavaClasspath get(EObject obj) {
+		return get(obj.eResource());
+	}
+	
+	public static JavaClasspath get(Resource resource) {
+		return get(resource.getResourceSet());
+	}
+	
+	public static JavaClasspath get(ResourceSet set) {
+		if (!classpaths.containsKey(set)) {
+			classpaths.put(set, new JavaClasspath());
+		}
+		return classpaths.get(set);
 	}
 	
 	private HashSet<org.emftext.language.java.containers.Module> modules = new HashSet<>();
@@ -293,7 +310,9 @@ public class JavaClasspath {
 	}
 	
 	public Map<URI, URI> getURIMap() {
-		return URIConverter.URI_MAP;
+		ResourceSet set = classpaths.entrySet().stream().filter(e -> e.getValue() == this)
+				.map(e -> e.getKey()).findFirst().orElse(null);
+		return set != null ? set.getURIConverter().getURIMap() : URIConverter.URI_MAP;
 	}
 	
 	private void updateMapping(URI logicalURI, URI physicalURI) {
