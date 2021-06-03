@@ -12,6 +12,14 @@ Workflow {
     }
     
     component = DirectoryCleaner {
+    	directory = "../org.emftext.language.java.edit/icons"
+    }
+    
+    component = DirectoryCleaner {
         directory = "../org.emftext.language.java.editor/src-gen"
+    }
+    
+    component = DirectoryCleaner {
+    	directory = "../org.emftext.language.java.editor/icons"
     }
 }

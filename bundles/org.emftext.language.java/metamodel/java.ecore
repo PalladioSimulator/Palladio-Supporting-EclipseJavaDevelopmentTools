@@ -1352,7 +1352,7 @@
     </eClassifiers>
   </eSubpackages>
   <eSubpackages name="references" nsURI="http://www.emftext.org/java/references" nsPrefix="references">
-    <eClassifiers xsi:type="ecore:EClass" name="Reference" abstract="true" eSuperTypes="#//expressions/PrimaryExpression #//generics/TypeArgumentable">
+    <eClassifiers xsi:type="ecore:EClass" name="Reference" abstract="true" eSuperTypes="#//expressions/PrimaryExpression #//generics/TypeArgumentable #//types/TypedElementExtension">
       <eOperations name="getReferencedType" eType="#_Wo2ZO9z1Ed2bJ_pQViWxFg">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="body" value="return org.emftext.language.java.extensions.references.ReferenceExtension.getReferencedType((org.emftext.language.java.references.Reference) this);"/>
@@ -1635,6 +1635,11 @@
       <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_Wo2ZQdz1Ed2bJ_pQViWxFg"
           name="typeReference" lowerBound="1" eType="#_Wo2ZPdz1Ed2bJ_pQViWxFg" containment="true"/>
     </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="TypedElementExtension" abstract="true"
+        eSuperTypes="#//commons/Commentable">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="actualTargets" upperBound="-1"
+          eType="#_Wo2ZPdz1Ed2bJ_pQViWxFg" containment="true"/>
+    </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" xmi:id="_Wo2ZPdz1Ed2bJ_pQViWxFg" name="TypeReference"
         abstract="true" eSuperTypes="#//commons/Commentable">
       <eOperations name="getTarget" eType="#_Wo2ZO9z1Ed2bJ_pQViWxFg">
@@ -1713,15 +1718,13 @@
     <eClassifiers xsi:type="ecore:EClass" xmi:id="_Wo2ZUdz1Ed2bJ_pQViWxFg" name="Short"
         eSuperTypes="#_Wo2ZR9z1Ed2bJ_pQViWxFg"/>
     <eClassifiers xsi:type="ecore:EClass" name="Void" eSuperTypes="#_Wo2ZR9z1Ed2bJ_pQViWxFg"/>
-    <eClassifiers xsi:type="ecore:EClass" name="InferableType" eSuperTypes="#_Wo2ZPdz1Ed2bJ_pQViWxFg #//arrays/ArrayTypeable">
+    <eClassifiers xsi:type="ecore:EClass" name="InferableType" eSuperTypes="#_Wo2ZPdz1Ed2bJ_pQViWxFg #//arrays/ArrayTypeable #//types/TypedElementExtension">
       <eOperations name="getBoundTargetReference" eType="#_Wo2ZPdz1Ed2bJ_pQViWxFg">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="body" value="return org.emftext.language.java.extensions.types.InferableTypeExtension.getBoundTargetReference((org.emftext.language.java.types.InferableType) this, reference);"/>
         </eAnnotations>
         <eParameters name="reference" eType="#//references/Reference"/>
       </eOperations>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="actualTargets" upperBound="-1"
-          eType="#_Wo2ZPdz1Ed2bJ_pQViWxFg" containment="true"/>
     </eClassifiers>
   </eSubpackages>
   <eSubpackages name="variables" nsURI="http://www.emftext.org/java/variables" nsPrefix="variables">
