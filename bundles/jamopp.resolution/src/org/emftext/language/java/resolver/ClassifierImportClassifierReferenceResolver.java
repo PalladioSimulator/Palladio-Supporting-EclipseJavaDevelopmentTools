@@ -15,12 +15,8 @@
  ******************************************************************************/
 package org.emftext.language.java.resolver;
 
-import java.util.List;
-
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.util.EcoreUtil;
-import org.emftext.language.java.JavaClasspath;
-import org.emftext.language.java.LogicalJavaURIGenerator;
 import org.emftext.language.java.classifiers.ConcreteClassifier;
 import org.emftext.language.java.imports.Import;
 import org.emftext.language.java.resolver.result.IJavaReferenceResolveResult;
@@ -34,59 +30,6 @@ public class ClassifierImportClassifierReferenceResolver implements
 		if (importedClassifier != null) {
 			if (importedClassifier.eIsProxy()) {
 				importedClassifier = (ConcreteClassifier) EcoreUtil.resolve(importedClassifier, theImport.eResource());
-			}
-			if (importedClassifier.eIsProxy()) {
-				StringBuilder builder = new StringBuilder();
-				List<String> namespaces = theImport.getNamespaces();
-				for (int i = namespaces.size() - 1; i >= 0; i--) {
-					builder.delete(0, builder.length());
-					for (int j = 0; j < i; j++) {
-						builder.append(namespaces.get(j));
-						builder.append(LogicalJavaURIGenerator.PACKAGE_SEPARATOR);
-					}
-					for (int j = i; j < namespaces.size(); j++) {
-						builder.append(namespaces.get(j));
-						builder.append(LogicalJavaURIGenerator.CLASSIFIER_SEPARATOR);
-					}
-					builder.append(identifier);
-					importedClassifier = (ConcreteClassifier) EcoreUtil.resolve(
-						JavaClasspath.get().getConcreteClassifier(builder.toString()),
-						theImport.eResource());
-					if (!importedClassifier.eIsProxy()) {
-						break;
-					}
-				}
-			}
-			if (importedClassifier.eIsProxy()) {
-				StringBuilder builder = new StringBuilder();
-				List<String> namespaces = theImport.getNamespaces();
-				outerLoop: for (int i = namespaces.size() - 1; i >= 0; i--) {
-					builder.delete(0, builder.length());
-					for (int j = 0; j <= i; j++) {
-						builder.append(namespaces.get(j));
-						builder.append(LogicalJavaURIGenerator.PACKAGE_SEPARATOR);
-					}
-					builder.delete(builder.length() - 1, builder.length());
-					importedClassifier = (ConcreteClassifier) EcoreUtil.resolve(
-							JavaClasspath.get().getConcreteClassifier(builder.toString()),
-							theImport.eResource());
-					if (!importedClassifier.eIsProxy()) {
-						for (int j = i + 1; j < namespaces.size(); j++) {
-							for (ConcreteClassifier cc : importedClassifier.getInnerClassifiers()) {
-								if (cc.getName().equals(namespaces.get(j))) {
-									importedClassifier = cc;
-									break;
-								}
-							}
-						}
-						for (ConcreteClassifier cc : importedClassifier.getInnerClassifiers()) {
-							if (cc.getName().equals(identifier)) {
-								importedClassifier = cc;
-								break outerLoop;
-							}
-						}
-					}
-				}
 			}
 			if (!importedClassifier.eIsProxy()) {
 				result.addMapping(identifier, importedClassifier);

@@ -20,6 +20,7 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.emftext.language.java.JavaClasspath;
+import org.emftext.language.java.classifiers.ConcreteClassifier;
 import org.emftext.language.java.containers.JavaRoot;
 import org.emftext.language.java.references.IdentifierReference;
 import org.emftext.language.java.references.PackageReference;
@@ -65,16 +66,22 @@ public class PackageDecider extends AbstractDecider {
 			String pack = parentPackage.getTarget().getName();
 			
 			Reference parent = parentPackage.getPrevious();
-			while (parent != null && parent instanceof IdentifierReference) {
+			while (parent != null) {
+				if (!(parent instanceof IdentifierReference)) {
+					return resultList;
+				}
 				IdentifierReference parentCast = (IdentifierReference) parent;
 				if (parentCast.getTarget() instanceof org.emftext.language.java.containers.Package) {
 					pack = ((org.emftext.language.java.containers.Package) parentCast.getTarget())
-						.getNamespacesAsString() + "." + pack;
+						.getNamespacesAsString() + pack;
 					break;
+				} else if (parentCast.getTarget() instanceof PackageReference) {
+					var packRef = (PackageReference) parentCast.getTarget();
+					pack = packRef.getNamespacesAsString() + packRef.getName();
 				} else {
-					pack = parentCast.getTarget().getName() + "." + pack;
-					parent = parentCast.getPrevious();
+					return resultList;
 				}
+				parent = parentCast.getPrevious();
 			}
 			
 			if (JavaClasspath.get().isPackageRegistered(pack)) {
@@ -97,9 +104,11 @@ public class PackageDecider extends AbstractDecider {
 		if (container instanceof JavaRoot && container.eResource() != null) {
 			EList<EObject> resultList = new BasicEList<EObject>();
 
-			PackageReference p = ReferencesFactory.eINSTANCE.createPackageReference();
-			p.setName(identifier);
-			resultList.add(p);
+			if (JavaClasspath.get().isPackageRegistered(((JavaRoot) container).getNamespacesAsString() + identifier)) {
+				PackageReference p = ReferencesFactory.eINSTANCE.createPackageReference();
+				p.setName(identifier);
+				resultList.add(p);
+			}
 
 			return resultList;
 		}

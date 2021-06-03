@@ -216,7 +216,6 @@ public class CommentableExtension {
 		} else {
 			ConcreteClassifier classifier = JavaClasspath.get().getConcreteClassifier(packageName + classifierQuery);
 			if (classifier != null) {
-				EcoreUtil.resolve(classifier, me);
 				result.add(classifier);
 			}
 		}

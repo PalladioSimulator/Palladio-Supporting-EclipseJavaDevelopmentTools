@@ -29,7 +29,9 @@ class ContainersPrinterSwitch extends ContainersSwitch<Boolean> {
 			} else {
 				if (root.getNamespaces().size() > 0) {
 					parent.doSwitch(AnnotationsPackage.Literals.ANNOTABLE, root);
-					writer.append("package " + root.getNamespacesAsString() + ";\n\n");
+					String p = root.getNamespacesAsString();
+					p = p.substring(0, p.length() - 1);
+					writer.append("package " + p + ";\n\n");
 				}
 				parent.doSwitch(ImportsPackage.Literals.IMPORTING_ELEMENT, root);
 				if (root instanceof CompilationUnit) {

@@ -146,10 +146,14 @@ public class JavaResource2 extends ResourceImpl {
 				while (j < size && eObject == null) {
 					// this is required for classifiers with '$' in their names
 					String subUriFragment = uriFragmentPath.get(j);
-					name = name + "$" + subUriFragment.substring(
+					String subName = subUriFragment.substring(
 							LogicalJavaURIGenerator.CLASSIFIERS_SUB_PATH_PREFIX.length(),
 							subUriFragment.length() - 2);
+					name = name + "$" + subName;
 					eObject = compilationUnit.getContainedClassifier(name);
+					if (eObject == null) {
+						eObject = compilationUnit.getContainedClassifier(subName);
+					}
 					if (eObject != null) {
 						i = j;
 					} else {

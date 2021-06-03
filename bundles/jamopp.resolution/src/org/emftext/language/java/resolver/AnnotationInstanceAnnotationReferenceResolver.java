@@ -66,7 +66,7 @@ public class AnnotationInstanceAnnotationReferenceResolver implements
 			String containerName = annotationInstance.getNamespacesAsString();
 			ConcreteClassifier target = (ConcreteClassifier) EcoreUtil.resolve(
 					JavaClasspath.get().getConcreteClassifier(containerName
-						+ LogicalJavaURIGenerator.PACKAGE_SEPARATOR + identifier),
+						+ identifier),
 						annotationInstance.eResource());
 
 			if (target instanceof Annotation) {

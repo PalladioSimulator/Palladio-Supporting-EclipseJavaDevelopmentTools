@@ -23,6 +23,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.emftext.language.java.JavaClasspath;
+import org.emftext.language.java.LogicalJavaURIGenerator;
 import org.emftext.language.java.classifiers.AnonymousClass;
 import org.emftext.language.java.classifiers.Classifier;
 import org.emftext.language.java.classifiers.ConcreteClassifier;
@@ -105,8 +106,15 @@ public class ConcreteClassifierDecider extends AbstractDecider {
 				if (classifier instanceof ConcreteClassifier) {
 					innerTypeSuperTypeList.addAll(
 						((ConcreteClassifier) classifier).getAllInnerClassifiers());
+					String cqualifiedName = ((ConcreteClassifier) classifier).getQualifiedName();
+					if (JavaClasspath.get().isPackageRegistered(cqualifiedName
+							+ LogicalJavaURIGenerator.CLASSIFIER_SEPARATOR)) {
+						cqualifiedName += LogicalJavaURIGenerator.CLASSIFIER_SEPARATOR + identifier;
+					} else {
+						cqualifiedName += LogicalJavaURIGenerator.PACKAGE_SEPARATOR + identifier;
+					}
 					ConcreteClassifier cc = JavaClasspath.get().getConcreteClassifier(
-							((ConcreteClassifier) classifier).getQualifiedName() + "." + identifier);
+							cqualifiedName);
 					if (cc.eIsProxy()) {
 						cc = (ConcreteClassifier) EcoreUtil.resolve(cc, classifier);
 						if (!cc.eIsProxy()) {
@@ -150,7 +158,7 @@ public class ConcreteClassifierDecider extends AbstractDecider {
 				break;
 			} else if (p.getTarget() instanceof PackageReference) {
 				PackageReference ref = (PackageReference) p.getTarget();
-				s = ref.getNamespacesAsString() + "." + ref.getName() + "." + s;
+				s = ref.getNamespacesAsString() + ref.getName() + "." + s;
 				break;
 			} else {
 				s = p.getTarget().getName() + "." + s;
