@@ -20,6 +20,7 @@ package org.emftext.language.java;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -74,16 +75,10 @@ public class JavaClasspath {
 		}
 		return classpaths.get(set);
 	}
-	
-	private HashSet<org.emftext.language.java.containers.Module> modules = new HashSet<>();
-	private HashSet<org.emftext.language.java.containers.Package> packages = new HashSet<>();
-	private HashSet<ConcreteClassifier> classifiers = new HashSet<>();
+
 	private Map<String, Set<String>> packageClassifierMap = new LinkedHashMap<>();
 
 	public void clear() {
-		modules.clear();
-		packages.clear();
-		classifiers.clear();
 		packageClassifierMap.clear();
 		for (Iterator<Map.Entry<URI, URI>> iter = getURIMap().entrySet().iterator();
 				iter.hasNext();) {
@@ -106,53 +101,43 @@ public class JavaClasspath {
 
 	public void registerPackage(org.emftext.language.java.containers.Package pack,
 			URI physicalUri) {
-		packages.add(pack);
 		URI logicalURI = LogicalJavaURIGenerator.getPackageURI(pack.getNamespacesAsString());
 		updateMapping(logicalURI, physicalUri);
-		List<String> names = pack.getNamespaces();
-		StringBuilder parentName = new StringBuilder();
-		registerPackage("");
-		for (int index = 0; index < names.size() - 1; index++) {
-			parentName.append(names.get(index));
-			parentName.append(LogicalJavaURIGenerator.PACKAGE_SEPARATOR);
-			String parentNameString = parentName.toString();
-			if (getPackage(parentNameString) == null) {
-				registerPackage(parentNameString);
-			}
-		}
+		registerPackages(pack.getNamespaces().toArray(new String[0]));
 	}
 	
 	public void registerPackage(String packageName, URI physicalUri) {
-		org.emftext.language.java.containers.Package pack = getPackage(packageName);
-		if (pack != null) {
-			registerPackage(pack, physicalUri);
-		} else {
-			updateMapping(LogicalJavaURIGenerator.getPackageURI(packageName), physicalUri);
+		updateMapping(LogicalJavaURIGenerator.getPackageURI(packageName), physicalUri);
+		registerPackages(packageName.split("\\" + LogicalJavaURIGenerator.PACKAGE_SEPARATOR));
+	}
+	
+	private void registerPackages(String[] packages) {
+		StringBuilder parentName = new StringBuilder();
+		registerPackage("");
+		for (String p : packages) {
+			parentName.append(p);
+			parentName.append(LogicalJavaURIGenerator.PACKAGE_SEPARATOR);
+			String parentNameString = parentName.toString();
+			registerPackage(parentNameString);
 		}
 	}
 
 	public void registerModule(org.emftext.language.java.containers.Module module,
 			URI physicalUri) {
-		modules.add(module);
 		URI logicalURI = LogicalJavaURIGenerator.getModuleURI(module.getNamespacesAsString());
 		updateMapping(logicalURI, physicalUri);
 	}
 	
 	public void registerModule(String moduleName, URI physicalUri) {
-		org.emftext.language.java.containers.Module mod = getModule(moduleName);
-		if (mod != null) {
-			registerModule(mod, physicalUri);
-		} else {
-			updateMapping(LogicalJavaURIGenerator.getModuleURI(moduleName), physicalUri);
-		}
+		updateMapping(LogicalJavaURIGenerator.getModuleURI(moduleName), physicalUri);
 	}
 	
 	public org.emftext.language.java.containers.Package getPackage(String packageName) {
-		return packages.stream().filter(p -> p.getNamespacesAsString().equals(packageName)).findFirst().orElse(null);
+		return null;
 	}
 	
 	public org.emftext.language.java.containers.Module getModule(String moduleName) {
-		return modules.stream().filter(m -> m.getNamespacesAsString().equals(moduleName)).findFirst().orElse(null);
+		return null;
 	}
 	
 	public ConcreteClassifier getConcreteClassifier(String fullQualifiedClassifierName) {
@@ -162,17 +147,59 @@ public class JavaClasspath {
 		} else {
 			actualName = fullQualifiedClassifierName;
 		}
-		String potSecondName = actualName.replaceAll("\\" + LogicalJavaURIGenerator.CLASSIFIER_SEPARATOR,
-				LogicalJavaURIGenerator.PACKAGE_SEPARATOR);
-		return classifiers.stream().filter(c -> c.getQualifiedName().equals(actualName)
-				|| c.getQualifiedName().equals(potSecondName))
-			.findFirst().orElse(getProxyConcreteClassifier(potSecondName));
+		return getProxyConcreteClassifier(actualName);
 	}
 	
 	public Collection<ConcreteClassifier> getConcreteClassifiers(String packageName) {
 		String actualPackName = checkPackageName(packageName);
-		return this.getPackageContents(actualPackName).stream().map(c -> actualPackName + c)
-			.map(this::getConcreteClassifier).filter(c -> c != null).collect(Collectors.toList());
+		var contents = this.packageClassifierMap.entrySet().stream().filter(e -> {
+			String k = e.getKey();
+			if (k.equals(actualPackName)) {
+				return true;
+			} else if (actualPackName.equals(LogicalJavaURIGenerator.PACKAGE_SEPARATOR)) {
+				return !k.contains(LogicalJavaURIGenerator.PACKAGE_SEPARATOR)
+						&& k.contains(LogicalJavaURIGenerator.CLASSIFIER_SEPARATOR);
+			} else if (k.startsWith(actualPackName)) {
+				String kSub = k.substring(actualPackName.length());
+				return !kSub.contains(LogicalJavaURIGenerator.PACKAGE_SEPARATOR)
+						&& kSub.contains(LogicalJavaURIGenerator.CLASSIFIER_SEPARATOR);
+			}
+			return false;
+		}).collect(Collectors.toList());
+		var result = new ArrayList<ConcreteClassifier>();
+		contents.forEach(e -> {
+			e.getValue().stream().map(cc -> e.getKey() + cc).map(this::getProxyConcreteClassifiers)
+				.filter(p -> p != null && !p.isEmpty()).forEach(p -> result.addAll(p));
+		});
+		return result;
+	}
+	
+	private Collection<ConcreteClassifier> getProxyConcreteClassifiers(String fullQualifiedClassifierName) {
+		if (fullQualifiedClassifierName.startsWith(LogicalJavaURIGenerator.PACKAGE_SEPARATOR)) {
+			fullQualifiedClassifierName = fullQualifiedClassifierName.substring(1);
+		}
+		var result = new ArrayList<ConcreteClassifier>();
+		int dotIdx = fullQualifiedClassifierName.lastIndexOf(LogicalJavaURIGenerator.PACKAGE_SEPARATOR);
+		int dollarIdx = fullQualifiedClassifierName.lastIndexOf(LogicalJavaURIGenerator.CLASSIFIER_SEPARATOR);
+		if (dollarIdx != -1 && dollarIdx > dotIdx) {
+			URI logURI = LogicalJavaURIGenerator.getClassifierURI(fullQualifiedClassifierName);
+			String outerPack = fullQualifiedClassifierName;
+			String innerClass = "";
+			do {
+				innerClass = outerPack.substring(dollarIdx + 1)
+						+ LogicalJavaURIGenerator.CLASSIFIER_SEPARATOR + innerClass;
+				outerPack = outerPack.substring(0, dollarIdx);
+				org.emftext.language.java.classifiers.Class proxy =
+						ClassifiersFactory.eINSTANCE.createClass();
+				((InternalEObject) proxy).eSetProxyURI(logURI);
+				proxy.setName(innerClass);
+				result.add(proxy);
+				dollarIdx = outerPack.lastIndexOf(LogicalJavaURIGenerator.CLASSIFIER_SEPARATOR);
+			} while (dollarIdx != -1 && dollarIdx > dotIdx);
+		} else {
+			result.add(getProxyConcreteClassifier(fullQualifiedClassifierName));
+		}
+		return result;
 	}
 	
 	private ConcreteClassifier getProxyConcreteClassifier(String fullQualifiedClassifierName) {
@@ -332,7 +359,6 @@ public class JavaClasspath {
 	public void registerClassifier(CompilationUnit compilationUnit, URI uri) {
 		String packageName = LogicalJavaURIGenerator.packageName(compilationUnit);
 		for (ConcreteClassifier classifier : compilationUnit.getClassifiers()) {
-			this.classifiers.add(classifier);
 			registerClassifier(packageName, classifier.getName(), uri);
 			registerInnerClassifiers(classifier, packageName, classifier.getName(), uri);
 		}
@@ -373,8 +399,7 @@ public class JavaClasspath {
 		}
 
 		synchronized (this) {
-			registerPackage(qualifiedName.replaceAll("\\" + LogicalJavaURIGenerator.CLASSIFIER_SEPARATOR,
-					LogicalJavaURIGenerator.PACKAGE_SEPARATOR), innerName);
+			registerPackage(qualifiedName, innerName);
 
 			final String qualifiedClassifierName;
 			if (LogicalJavaURIGenerator.PACKAGE_SEPARATOR.equals(packageName)) {
@@ -383,15 +408,7 @@ public class JavaClasspath {
 				qualifiedClassifierName = packageName + classifierName;
 			}
 
-			URI logicalURI = LogicalJavaURIGenerator.getJavaFileResourceURI(qualifiedClassifierName
-					.replaceAll("\\" + LogicalJavaURIGenerator.CLASSIFIER_SEPARATOR,
-							LogicalJavaURIGenerator.PACKAGE_SEPARATOR));
-
-			URI existingMapping = getURIMap().get(logicalURI);
-
-			if (existingMapping != null && !physicalURI.equals(existingMapping)) {
-				// Do nothing: Silently replace old with new version.
-			}
+			URI logicalURI = LogicalJavaURIGenerator.getJavaFileResourceURI(qualifiedClassifierName);
 
 			updateMapping(logicalURI, physicalURI);
 
@@ -410,8 +427,7 @@ public class JavaClasspath {
 				outerPackage = outerPackage.substring(0, indexPlusOne);
 				outerPackage = checkPackageName(outerPackage);
 
-				registerPackage(outerPackage.replaceAll("\\" + LogicalJavaURIGenerator.CLASSIFIER_SEPARATOR,
-						LogicalJavaURIGenerator.PACKAGE_SEPARATOR), outerClassifier);
+				registerPackage(outerPackage, outerClassifier);
 			}
 		}
 	}
@@ -419,7 +435,6 @@ public class JavaClasspath {
 	private void registerInnerClassifiers(ConcreteClassifier classifier, String packageName, String className, URI uri) {
 		for (Member innerCand : classifier.getMembers()) {
 			if (innerCand instanceof ConcreteClassifier) {
-				this.classifiers.add((ConcreteClassifier) innerCand);
 				String newClassName = className + LogicalJavaURIGenerator.CLASSIFIER_SEPARATOR
 						+ innerCand.getName();
 				registerClassifier(packageName, newClassName, uri);
