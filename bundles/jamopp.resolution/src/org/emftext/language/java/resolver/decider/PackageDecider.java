@@ -20,6 +20,7 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.emftext.language.java.JavaClasspath;
+import org.emftext.language.java.LogicalJavaURIGenerator;
 import org.emftext.language.java.classifiers.ConcreteClassifier;
 import org.emftext.language.java.containers.JavaRoot;
 import org.emftext.language.java.references.IdentifierReference;
@@ -66,7 +67,7 @@ public class PackageDecider extends AbstractDecider {
 			String pack = parentPackage.getTarget().getName();
 			
 			Reference parent = parentPackage.getPrevious();
-			while (parent != null) {
+			if (parent != null) {
 				if (!(parent instanceof IdentifierReference)) {
 					return resultList;
 				}
@@ -74,15 +75,15 @@ public class PackageDecider extends AbstractDecider {
 				if (parentCast.getTarget() instanceof org.emftext.language.java.containers.Package) {
 					pack = ((org.emftext.language.java.containers.Package) parentCast.getTarget())
 						.getNamespacesAsString() + pack;
-					break;
 				} else if (parentCast.getTarget() instanceof PackageReference) {
 					var packRef = (PackageReference) parentCast.getTarget();
-					pack = packRef.getNamespacesAsString() + packRef.getName();
+					pack = packRef.getNamespacesAsString() + packRef.getName()
+						+ LogicalJavaURIGenerator.PACKAGE_SEPARATOR + pack;
 				} else {
 					return resultList;
 				}
-				parent = parentCast.getPrevious();
 			}
+			
 			
 			if (JavaClasspath.get().isPackageRegistered(pack)) {
 				org.emftext.language.java.containers.Package p = JavaClasspath.get().getPackage(pack);
