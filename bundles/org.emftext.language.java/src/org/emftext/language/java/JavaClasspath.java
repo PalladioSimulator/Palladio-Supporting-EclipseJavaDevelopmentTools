@@ -429,6 +429,10 @@ public class JavaClasspath {
 
 				registerPackage(outerPackage, outerClassifier);
 			}
+			outerPackage = outerPackage.substring(0, outerPackage.length() - 1);
+			if (outerPackage.contains(LogicalJavaURIGenerator.PACKAGE_SEPARATOR)) {
+				registerPackages(outerPackage.split("\\" + LogicalJavaURIGenerator.PACKAGE_SEPARATOR));
+			}
 		}
 	}
 
