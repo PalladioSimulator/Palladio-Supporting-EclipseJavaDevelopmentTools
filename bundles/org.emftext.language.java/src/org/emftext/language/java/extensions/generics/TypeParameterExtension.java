@@ -246,7 +246,7 @@ public class TypeParameterExtension {
 						ElementReference parentElementReference = (ElementReference) parentReference;
 						ReferenceableElement prevReferenced = parentElementReference.getTarget();
 						if (prevReferenced instanceof TypedElement) {
-							TypeReference prevTypeReference = ((TypedElement) prevReferenced).getTypeReference();
+							TypeReference prevTypeReference = parentElementReference.getReferencedTypeReference();
 							if (prevTypeReference != null) {
 								classifierReference = prevTypeReference.getPureClassifierReference();
 							}
