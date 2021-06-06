@@ -27,7 +27,6 @@ import org.emftext.language.java.classifiers.Classifier;
 import org.emftext.language.java.classifiers.ConcreteClassifier;
 import org.emftext.language.java.classifiers.Interface;
 import org.emftext.language.java.commons.Commentable;
-import org.emftext.language.java.commons.NamedElement;
 import org.emftext.language.java.expressions.AssignmentExpression;
 import org.emftext.language.java.expressions.CastExpression;
 import org.emftext.language.java.expressions.ConditionalExpression;
@@ -57,6 +56,7 @@ import org.emftext.language.java.references.ReferenceableElement;
 import org.emftext.language.java.references.ReflectiveClassReference;
 import org.emftext.language.java.references.SelfReference;
 import org.emftext.language.java.types.ClassifierReference;
+import org.emftext.language.java.types.InferableType;
 import org.emftext.language.java.types.Type;
 import org.emftext.language.java.types.TypeReference;
 import org.emftext.language.java.types.TypedElement;
@@ -347,7 +347,8 @@ public class TypeParameterExtension {
 		}
 		
 		if (resultList.isEmpty()
-				|| (resultList.size() == 1 && resultList.get(0).getTarget() != null && resultList.get(0).getTarget().equals(me))) {
+				|| (resultList.size() == 1 && !(resultList.get(0) instanceof InferableType)
+				&& resultList.get(0).getTarget() != null && resultList.get(0).getTarget().equals(me))) {
 			if (me.getExtendTypes().size() > 0 && typeParameterDeclarator instanceof ConcreteClassifier) {
 				TypeReference result = me.getExtendTypes().get(0);
 				return result;
@@ -374,7 +375,7 @@ public class TypeParameterExtension {
 	private static void inferTypeReferenceFromMethod(TypeParameter me, TypeReference typeReference,
 			Reference reference, Method method, MethodCall methodCall, EList<TypeReference> resultList,
 			Reference parentReference) {
-		if(!method.equals(methodCall.getTarget())) {
+		if (!method.equals(methodCall.getTarget())) {
 			return;
 		}
 		if (method.getTypeParameters().size() == methodCall.getCallTypeArguments().size()) {
@@ -522,13 +523,38 @@ public class TypeParameterExtension {
 						? (LambdaExpression) argument
 						: argument.getFirstChildByType(LambdaExpression.class);
 				if (lambda != null) {
-					Method correspondingMethod = ((Interface) parameterType.getTarget())
+					Interface narrowedParameterType = (Interface) parameterType.getTarget();
+					TypeParameter correspondingTypeParameter = null;
+					for (int typeArgIndex = 0; typeArgIndex
+							< parameterType.getTypeArguments().size(); typeArgIndex++) {
+						TypeArgument typeArg = parameterType.getTypeArguments().get(typeArgIndex);
+						TypeReference typeArgRef = TypeReferenceExtension
+								.getTypeReferenceOfTypeArgument(typeArg);
+						if (typeArgRef.getTarget().equals(me)) {
+							correspondingTypeParameter = narrowedParameterType
+									.getTypeParameters().get(typeArgIndex);
+						}
+					}
+					Method correspondingMethod = narrowedParameterType
 							.getAbstractMethodOfFunctionalInterface();
 					Type potT = correspondingMethod.getTypeReference().getTarget();
-					if (((NamedElement) potT).getName().equals(me.getName())) {
+					if (potT.equals(correspondingTypeParameter)) {
 						Type ret = lambda.getReturnType(null);
 						if (ret != null) {
 							resultList.add(0, TypeReferenceExtension.convertToTypeReference(ret));
+						}
+					} else {
+						for (int cmIndex = 0; cmIndex < correspondingMethod.getParameters().size();
+								cmIndex++) {
+							potT = correspondingMethod.getParameters().get(cmIndex)
+									.getTypeReference().getTarget();
+							if (potT.equals(correspondingTypeParameter)) {
+								TypeReference potRes = lambda.getParameters().getParameters()
+										.get(cmIndex).getTypeReference();
+								if (!(potRes instanceof InferableType)) {
+									resultList.add(0, potRes);
+								}
+							}
 						}
 					}
 				} else {

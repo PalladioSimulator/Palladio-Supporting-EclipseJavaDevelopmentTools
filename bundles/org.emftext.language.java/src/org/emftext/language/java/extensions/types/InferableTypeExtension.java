@@ -5,8 +5,6 @@ import org.emftext.language.java.classifiers.Interface;
 import org.emftext.language.java.expressions.Expression;
 import org.emftext.language.java.expressions.LambdaExpression;
 import org.emftext.language.java.expressions.LambdaParameters;
-import org.emftext.language.java.generics.TypeArgument;
-import org.emftext.language.java.generics.TypeArgumentable;
 import org.emftext.language.java.generics.TypeParameter;
 import org.emftext.language.java.generics.TypeParametrizable;
 import org.emftext.language.java.instantiations.Instantiation;
@@ -63,11 +61,6 @@ public class InferableTypeExtension {
 				}
 				initType = TypeReferenceExtension.clone(initType);
 				Type initTypeTarget = initType.getTarget();
-//				if (initType instanceof TypeArgumentable && container instanceof Reference) {
-//					TypeArgument ar = ((TypeArgumentable) initType).getTypeArguments().get(0);
-//					TypeReference ref = TypeReferenceExtension.getTypeReferenceOfTypeArgument(ar);
-//					ref = ref.getBoundTargetReference((Reference) container);
-//				}
 				if (initTypeTarget instanceof TypeParameter) {
 					if (initTypeTarget.eContainer().equals(lambdaTypeTarget)) {
 						int index = ((TypeParametrizable) lambdaTypeTarget)
