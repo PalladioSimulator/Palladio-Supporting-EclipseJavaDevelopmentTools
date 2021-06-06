@@ -4,6 +4,8 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 
 import org.eclipse.emf.ecore.util.Switch;
+import org.emftext.language.java.LogicalJavaURIGenerator;
+import org.emftext.language.java.commons.NamespaceAwareElement;
 import org.emftext.language.java.modifiers.Static;
 import org.emftext.language.java.modules.AccessProvidingModuleDirective;
 import org.emftext.language.java.modules.ExportsModuleDirective;
@@ -45,7 +47,7 @@ class ModulesPrinterSwitch extends ModulesSwitch<Boolean> {
 				TypeReference ref = element.getServiceProviders().get(index);
 				parent.doSwitch(ref);
 				if (index < element.getServiceProviders().size() - 1) {
-					writer.append(".");
+					writer.append(LogicalJavaURIGenerator.PACKAGE_SEPARATOR);
 				}
 			}
 			writer.append(";\n");
@@ -66,9 +68,9 @@ class ModulesPrinterSwitch extends ModulesSwitch<Boolean> {
 				}
 			}
 			if (element.getRequiredModule().getTarget() != null) {
-				writer.append(element.getRequiredModule().getTarget().getNamespacesAsString());
+				printNamespaceAwareElementWithoutTrailingDot(element.getRequiredModule().getTarget());
 			} else {
-				writer.append(element.getRequiredModule().getNamespacesAsString());
+				printNamespaceAwareElementWithoutTrailingDot(element.getRequiredModule());
 			}
 			writer.append(";\n");
 		} catch (IOException e) {
@@ -99,30 +101,36 @@ class ModulesPrinterSwitch extends ModulesSwitch<Boolean> {
 	private void printRemainingAccessProvidingModuleDirective(AccessProvidingModuleDirective element) {
 		try {
 			if (element.getAccessablePackage() != null) {
-				writer.append(element.getAccessablePackage().getNamespacesAsString());
+				printNamespaceAwareElementWithoutTrailingDot(element.getAccessablePackage());
 			} else {
-				writer.append(element.getNamespacesAsString());
+				printNamespaceAwareElementWithoutTrailingDot(element);
 			}
 			if (element.getModules().size() > 0) {
 				writer.append(" to ");
 				ModuleReference m = element.getModules().get(0);
 				if (m.getTarget() != null) {
-					writer.append(m.getTarget().getNamespacesAsString());
+					printNamespaceAwareElementWithoutTrailingDot(m.getTarget());
 				} else {
-					writer.append(m.getNamespacesAsString());
+					printNamespaceAwareElementWithoutTrailingDot(m);
 				}
 				for (int index = 1; index < element.getModules().size(); index++) {
 					writer.append(", ");
 					m = element.getModules().get(index);
 					if (m.getTarget() != null) {
-						writer.append(m.getTarget().getNamespacesAsString());
+						printNamespaceAwareElementWithoutTrailingDot(m.getTarget());
 					} else {
-						writer.append(m.getNamespacesAsString());
+						printNamespaceAwareElementWithoutTrailingDot(m);
 					}
 				}
 			}
 			writer.append(";\n");
 		} catch (IOException e) {
 		}
+	}
+	
+	private void printNamespaceAwareElementWithoutTrailingDot(NamespaceAwareElement nae) throws IOException {
+		String n = LogicalJavaURIGenerator.packageName(nae);
+		n = n.substring(0, n.length() - 1);
+		writer.append(n);
 	}
 }

@@ -215,6 +215,11 @@ public class LogicalJavaURIGenerator {
 	 * @return the namespace.
 	 */
 	public static String packageName(NamespaceAwareElement nsaElement) {
-		return nsaElement.getNamespaces().stream().reduce((s, t) -> s + PACKAGE_SEPARATOR + t).orElse("");
+		StringBuilder builder = new StringBuilder();
+		nsaElement.getNamespaces().forEach(s -> {
+			builder.append(s);
+			builder.append(LogicalJavaURIGenerator.PACKAGE_SEPARATOR);
+		});
+		return builder.toString();
 	}
 }
