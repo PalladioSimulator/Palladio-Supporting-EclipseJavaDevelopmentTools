@@ -21,6 +21,7 @@ import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
+import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.emftext.language.java.JavaClasspath;
 import org.emftext.language.java.LogicalJavaURIGenerator;
@@ -226,7 +227,9 @@ public class ConcreteClassifierDecider extends AbstractDecider {
 	public boolean isPossibleTarget(String id, EObject element) {
 		if (element instanceof ConcreteClassifier) {
 			ConcreteClassifier concreteClassifier = (ConcreteClassifier) element;
-			if (id.equals(concreteClassifier.getName())) {
+			if (id.equals(concreteClassifier.getName())
+					|| element.eIsProxy() && ((InternalEObject) element).eProxyURI()
+					.lastSegment().endsWith(id + LogicalJavaURIGenerator.JAVA_FILE_EXTENSION)) {
 				return true;
 			}
 		}
