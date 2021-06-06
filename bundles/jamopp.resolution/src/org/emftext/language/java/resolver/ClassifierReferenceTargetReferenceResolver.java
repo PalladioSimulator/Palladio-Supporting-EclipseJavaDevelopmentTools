@@ -118,9 +118,15 @@ public class ClassifierReferenceTargetReferenceResolver implements
 					}
 					if (target == null) {
 						String potName = ((ConcreteClassifier) startingPoint).getQualifiedName()
-								+ "." + identifier;
+								+ LogicalJavaURIGenerator.CLASSIFIER_SEPARATOR + identifier;
 						target = EcoreUtil.resolve(JavaClasspath.get().getConcreteClassifier(potName),
 								container);
+						if (target.eIsProxy()) {
+							potName = ((ConcreteClassifier) startingPoint).getQualifiedName()
+									+ LogicalJavaURIGenerator.PACKAGE_SEPARATOR + identifier;
+							target = EcoreUtil.resolve(JavaClasspath.get().getConcreteClassifier(potName),
+									container);
+						}
 					}
 				} else if (startingPoint instanceof TypeParameter) {
 					for (TypeReference extendsClassifierReference
