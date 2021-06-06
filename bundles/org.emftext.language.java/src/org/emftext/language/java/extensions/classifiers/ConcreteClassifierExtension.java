@@ -28,6 +28,7 @@ import org.emftext.language.java.classifiers.Classifier;
 import org.emftext.language.java.classifiers.ConcreteClassifier;
 import org.emftext.language.java.classifiers.Interface;
 import org.emftext.language.java.commons.Commentable;
+import org.emftext.language.java.commons.NamespaceAwareElement;
 import org.emftext.language.java.members.Member;
 import org.emftext.language.java.modifiers.AnnotableAndModifiable;
 import org.emftext.language.java.types.ClassifierReference;
@@ -176,18 +177,23 @@ public class ConcreteClassifierExtension {
 
 	/**
 	 * Returns the qualified name of this concrete classifier.
+	 * 
+	 * @param me the classifier to return the qualified name for.
+	 * @return the qualified name.
 	 */
 	public static String getQualifiedName(ConcreteClassifier me) {
 		StringBuilder qualifiedName = new StringBuilder();
 		if (me.eContainer() instanceof ConcreteClassifier) {
 			qualifiedName.append(((ConcreteClassifier) me.eContainer()).getQualifiedName());
-			qualifiedName.append(".");
+			qualifiedName.append(LogicalJavaURIGenerator.PACKAGE_SEPARATOR);
+		} else if (me.eContainer() instanceof NamespaceAwareElement) {
+			qualifiedName.append(((NamespaceAwareElement) me.eContainer()).getNamespacesAsString());
 		} else {
 			List<String> packageParts = me.getContainingPackageName();
 			if (packageParts != null) {
 				for (String packagePart : packageParts) {
 					qualifiedName.append(packagePart);
-					qualifiedName.append(".");
+					qualifiedName.append(LogicalJavaURIGenerator.PACKAGE_SEPARATOR);
 				}
 			}
 		}
