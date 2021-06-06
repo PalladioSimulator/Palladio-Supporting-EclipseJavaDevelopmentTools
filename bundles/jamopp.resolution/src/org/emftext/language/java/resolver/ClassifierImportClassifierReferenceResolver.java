@@ -17,8 +17,11 @@ package org.emftext.language.java.resolver;
 
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.util.EcoreUtil;
+import org.emftext.language.java.JavaClasspath;
+import org.emftext.language.java.LogicalJavaURIGenerator;
 import org.emftext.language.java.classifiers.ConcreteClassifier;
 import org.emftext.language.java.imports.Import;
+import org.emftext.language.java.members.Member;
 import org.emftext.language.java.resolver.result.IJavaReferenceResolveResult;
 
 public class ClassifierImportClassifierReferenceResolver implements
@@ -29,7 +32,44 @@ public class ClassifierImportClassifierReferenceResolver implements
 		ConcreteClassifier importedClassifier = theImport.getImportedClassifier(identifier);
 		if (importedClassifier != null) {
 			if (importedClassifier.eIsProxy()) {
-				importedClassifier = (ConcreteClassifier) EcoreUtil.resolve(importedClassifier, theImport.eResource());
+				importedClassifier = (ConcreteClassifier) EcoreUtil.resolve(importedClassifier, theImport);
+				if (importedClassifier.eIsProxy()) {
+					StringBuilder builder = new StringBuilder();
+					for (int index = 0; index < theImport.getNamespaces().size(); index++) {
+						builder.append(theImport.getNamespaces().get(index));
+						builder.append(LogicalJavaURIGenerator.CLASSIFIER_SEPARATOR);
+						if (JavaClasspath.get().isPackageRegistered(builder.toString())) {
+							continue;
+						}
+						builder.replace(builder.length() - 1, builder.length(), LogicalJavaURIGenerator.PACKAGE_SEPARATOR);
+						if (JavaClasspath.get().isPackageRegistered(builder.toString())) {
+							continue;
+						}
+						builder.delete(builder.length() - 1, builder.length());
+						importedClassifier = (ConcreteClassifier) EcoreUtil.resolve(
+								JavaClasspath.get().getConcreteClassifier(builder.toString()), theImport);
+						if (importedClassifier.eIsProxy()) {
+							break;
+						}
+						for (int j = index + 1; j < theImport.getNamespaces().size(); j++) {
+							for (Member m : importedClassifier.getMembers()) {
+								if (m instanceof ConcreteClassifier
+										&& m.getName().equals(theImport.getNamespaces().get(j))) {
+									importedClassifier = (ConcreteClassifier) m;
+									break;
+								}
+							}
+						}
+						for (Member m : importedClassifier.getMembers()) {
+							if (m instanceof ConcreteClassifier
+									&& m.getName().equals(identifier)) {
+								importedClassifier = (ConcreteClassifier) m;
+								break;
+							}
+						}
+						break;
+					}
+				}
 			}
 			if (!importedClassifier.eIsProxy()) {
 				result.addMapping(identifier, importedClassifier);
