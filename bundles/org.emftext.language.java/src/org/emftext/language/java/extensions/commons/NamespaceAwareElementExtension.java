@@ -36,22 +36,12 @@ public class NamespaceAwareElementExtension {
 		StringBuilder builder = new StringBuilder();
 		for (int index = 0; index < me.getNamespaces().size(); index++) {
 			builder.append(me.getNamespaces().get(index));
-			if (index == me.getNamespaces().size() - 1) {
-				builder.append(LogicalJavaURIGenerator.PACKAGE_SEPARATOR);
-				if (JavaClasspath.get().existsPackage(builder.toString())) {
-					continue;
-				} else {
-					builder.replace(builder.length() - 1, builder.length(),
-							LogicalJavaURIGenerator.CLASSIFIER_SEPARATOR);
-				}
+			builder.append(LogicalJavaURIGenerator.CLASSIFIER_SEPARATOR);
+			if (JavaClasspath.get().existsPackage(builder.toString())) {
+				continue;
 			} else {
-				builder.append(LogicalJavaURIGenerator.CLASSIFIER_SEPARATOR);
-				if (JavaClasspath.get().existsPackage(builder.toString())) {
-					continue;
-				} else {
-					builder.replace(builder.length() - 1, builder.length(),
-							LogicalJavaURIGenerator.PACKAGE_SEPARATOR);
-				}
+				builder.replace(builder.length() - 1, builder.length(),
+						LogicalJavaURIGenerator.PACKAGE_SEPARATOR);
 			}
 		}
 		return builder.toString();
@@ -66,7 +56,7 @@ public class NamespaceAwareElementExtension {
 	 */
 	public static ConcreteClassifier getClassifierAtNamespaces(NamespaceAwareElement me) {
 		String s = me.getNamespacesAsString();
-		s = s.substring(0, s.length()-1);
+		s = s.substring(0, s.length() - 1);
 		return JavaClasspath.get().getConcreteClassifier(s);
 	}
 }
