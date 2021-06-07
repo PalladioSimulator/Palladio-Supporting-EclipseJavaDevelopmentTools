@@ -41,22 +41,23 @@ public class CentralBindingBasedResolver {
 		if (binding == null || binding.isRecovered()) {
 			return null;
 		}
+		EObject res = null;
 		if (binding.getKind() == IBinding.TYPE) {
-			return typeResolver.resolve((ITypeBinding) binding);
+			res =  typeResolver.resolve((ITypeBinding) binding);
 		} else if (binding.getKind() == IBinding.MODULE) {
-			return moduleResolver.resolve((IModuleBinding) binding);
+			res =  moduleResolver.resolve((IModuleBinding) binding);
 		} else if (binding.getKind() == IBinding.PACKAGE) {
-			return packageResolver.resolve((IPackageBinding) binding);
+			res =  packageResolver.resolve((IPackageBinding) binding);
 		} else if (binding.getKind() == IBinding.ANNOTATION) {
-			return annotationResolver.resolve((IAnnotationBinding) binding);
+			res =  annotationResolver.resolve((IAnnotationBinding) binding);
 		} else if (binding.getKind() == IBinding.MEMBER_VALUE_PAIR) {
-			return memberValueResolver.resolve((IMemberValuePairBinding) binding);
+			res =  memberValueResolver.resolve((IMemberValuePairBinding) binding);
 		} else if (binding.getKind() == IBinding.METHOD) {
-			return methodResolver.resolve((IMethodBinding) binding);
+			res =  methodResolver.resolve((IMethodBinding) binding);
 		} else if (binding.getKind() == IBinding.VARIABLE) {
-			return variableResolver.resolve((IVariableBinding) binding);
+			res = variableResolver.resolve((IVariableBinding) binding);
 		}
-		return null;
+		return res;
 	}
 	
 	ResourceSet getResourceSet() {

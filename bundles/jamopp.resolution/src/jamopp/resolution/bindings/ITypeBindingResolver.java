@@ -6,6 +6,7 @@ import java.util.regex.Pattern;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.emftext.language.java.JavaClasspath;
 import org.emftext.language.java.LogicalJavaURIGenerator;
@@ -42,6 +43,9 @@ class ITypeBindingResolver extends AbstractBindingResolver<ITypeBinding> {
 			} else {
 				param = (TypeParametrizable) this.getParentResolver().resolve(binding.getDeclaringMethod());
 			}
+			if (param == null || param.getTypeParameters() == null) {
+				return null;
+			}
 			for (TypeParameter p : param.getTypeParameters()) {
 				if (p.getName().equals(binding.getName())) {
 					return p;
@@ -61,6 +65,10 @@ class ITypeBindingResolver extends AbstractBindingResolver<ITypeBinding> {
 		} else if (binding.isTopLevel()) {
 			ConcreteClassifier classifier =	JavaClasspath.get().getConcreteClassifier(
 					binding.getQualifiedName());
+			if (classifier != null) {
+				classifier = (ConcreteClassifier) EcoreUtil.resolve(classifier,
+						this.getParentResolver().getResourceSet());
+			}
 			if (classifier != null && !classifier.eIsProxy()) {
 				return classifier;
 			}
@@ -72,7 +80,9 @@ class ITypeBindingResolver extends AbstractBindingResolver<ITypeBinding> {
 			// For the registration, the physical URI is used.
 			uri = JavaClasspath.get().getURIMap().get(uri);
 			JavaClasspath.get().registerJavaRoot(cu, uri);
-			return JavaClasspath.get().getConcreteClassifier(binding.getQualifiedName());
+			return (ConcreteClassifier) EcoreUtil.resolve(JavaClasspath.get()
+					.getConcreteClassifier(binding.getQualifiedName()),
+					this.getParentResolver().getResourceSet());
 		}
 		return null;
 	}
@@ -82,6 +92,10 @@ class ITypeBindingResolver extends AbstractBindingResolver<ITypeBinding> {
 		if (m1.matches()) {
 			String parentName = m1.group(1);
 			ConcreteClassifier parentClassifier = JavaClasspath.get().getConcreteClassifier(parentName);
+			if (parentClassifier != null) {
+				parentClassifier = (ConcreteClassifier) EcoreUtil.resolve(parentClassifier,
+						this.getParentResolver().getResourceSet());
+			}
 			if (parentClassifier != null && !parentClassifier.eIsProxy()) {
 				Matcher m2 = innerNamesPattern.matcher(m1.group(2));
 				MemberContainer currentContainer = parentClassifier;
