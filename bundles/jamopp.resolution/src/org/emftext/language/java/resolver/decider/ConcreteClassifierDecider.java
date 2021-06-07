@@ -227,10 +227,15 @@ public class ConcreteClassifierDecider extends AbstractDecider {
 	public boolean isPossibleTarget(String id, EObject element) {
 		if (element instanceof ConcreteClassifier) {
 			ConcreteClassifier concreteClassifier = (ConcreteClassifier) element;
-			if (id.equals(concreteClassifier.getName())
-					|| element.eIsProxy() && ((InternalEObject) element).eProxyURI()
-					.lastSegment().endsWith(id + LogicalJavaURIGenerator.JAVA_FILE_EXTENSION)) {
+			if (id.equals(concreteClassifier.getName())) {
 				return true;
+			}
+			if (element.eIsProxy()) {
+				String lastSegment = ((InternalEObject) element).eProxyURI().lastSegment();
+				if (lastSegment.endsWith("." + id + LogicalJavaURIGenerator.JAVA_FILE_EXTENSION)
+						|| lastSegment.equals(id + LogicalJavaURIGenerator.JAVA_FILE_EXTENSION)) {
+					return true;
+				}
 			}
 		}
 		return false;
