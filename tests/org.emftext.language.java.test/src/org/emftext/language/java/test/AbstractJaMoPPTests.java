@@ -39,6 +39,9 @@ import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import org.apache.log4j.ConsoleAppender;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
@@ -74,6 +77,7 @@ import org.emftext.language.java.members.Method;
 import org.emftext.language.java.modifiers.Public;
 import org.emftext.language.java.types.NamespaceClassifierReference;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 
 import jamopp.resource.JavaResource2;
@@ -85,6 +89,15 @@ import jamopp.resource.JavaResource2Factory;
 public abstract class AbstractJaMoPPTests {
 
 	protected static final String TEST_OUTPUT_FOLDER = "output";
+
+	@BeforeAll
+	public static void initLogging() {
+		Logger logger = Logger.getLogger("jamopp");
+		logger.setLevel(Level.ALL);
+		ConsoleAppender ca = new ConsoleAppender();
+		ca.setTarget(ConsoleAppender.SYSTEM_OUT);
+		logger.addAppender(ca);
+	}
 
 	@BeforeEach
 	public final void initResourceFactory() {
