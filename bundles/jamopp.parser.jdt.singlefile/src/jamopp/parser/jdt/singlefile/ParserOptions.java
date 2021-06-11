@@ -8,7 +8,8 @@ package jamopp.parser.jdt.singlefile;
 public enum ParserOptions {
 	RESOLVE_ALL_BINDINGS,
 	RESOLVE_BINDINGS,
-	RESOLVE_BINDINGS_OF_INFERABLE_TYPES;
+	RESOLVE_BINDINGS_OF_INFERABLE_TYPES,
+	CREATE_LAYOUT_INFORMATION;
 	
 	public static final String TRUE_VALUE = "true";
 	

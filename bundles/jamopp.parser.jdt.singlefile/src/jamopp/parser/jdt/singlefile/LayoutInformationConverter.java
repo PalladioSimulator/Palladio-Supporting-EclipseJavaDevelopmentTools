@@ -24,13 +24,15 @@ class LayoutInformationConverter {
 	
 	static void convertJavaRootLayoutInformation(JavaRoot root, ASTNode rootSource, String sourceCode) {
 		currentRootLayout = null;
-		currentRootLayout = LayoutFactory.eINSTANCE.createMinimalLayoutInformation();
-		currentRootLayout.setVisibleTokenText(sourceCode == null ? "" : sourceCode);
-		currentRootLayout.setStartOffset(rootSource.getStartPosition());
-		currentRootLayout.setLength(rootSource.getLength());
-		currentRootLayout.setObject(root);
-		currentRootLayout.setRootLayout(currentRootLayout);
-		root.getLayoutInformations().add(currentRootLayout);
+		if (ParserOptions.TRUE_VALUE.equals(ParserOptions.CREATE_LAYOUT_INFORMATION.getValue())) {
+			currentRootLayout = LayoutFactory.eINSTANCE.createMinimalLayoutInformation();
+			currentRootLayout.setVisibleTokenText(sourceCode == null ? "" : sourceCode);
+			currentRootLayout.setStartOffset(rootSource.getStartPosition());
+			currentRootLayout.setLength(rootSource.getLength());
+			currentRootLayout.setObject(root);
+			currentRootLayout.setRootLayout(currentRootLayout);
+			root.getLayoutInformations().add(currentRootLayout);
+		}
 	}
 	
 	static void convertToMinimalLayoutInformation(Commentable target, ASTNode source) {

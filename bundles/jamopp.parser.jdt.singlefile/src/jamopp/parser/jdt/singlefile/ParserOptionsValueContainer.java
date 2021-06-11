@@ -29,6 +29,7 @@ public final class ParserOptionsValueContainer {
 			instance.setValue(ParserOptions.RESOLVE_ALL_BINDINGS, ParserOptions.TRUE_VALUE);
 			instance.setValue(ParserOptions.RESOLVE_BINDINGS, ParserOptions.TRUE_VALUE);
 			instance.setValue(ParserOptions.RESOLVE_BINDINGS_OF_INFERABLE_TYPES, ParserOptions.TRUE_VALUE);
+			instance.setValue(ParserOptions.CREATE_LAYOUT_INFORMATION, ParserOptions.TRUE_VALUE);
 		}
 		return instance;
 	}
