@@ -197,19 +197,22 @@ public class JaMoPPJDTSingleFileParser implements JaMoPPParserAPI {
 			int oldSize;
 			int newSize = this.resourceSet.getResources().size();
 			HashSet<Resource> alreadyResolved = new HashSet<>();
+			boolean resolveAllBindings = ParserOptions.TRUE_VALUE.equals(
+					ParserOptions.RESOLVE_ALL_BINDINGS.getValue());
 			do {
 				oldSize = newSize;
 				List<Resource> resources = new ArrayList<>(this.resourceSet.getResources());
 				resources.forEach(r -> {
 					if (!alreadyResolved.contains(r)) {
-						EcoreUtil.resolveAll(r);
-						alreadyResolved.add(r);
+						if (resolveAllBindings || r.getURI().isFile()) {
+							EcoreUtil.resolveAll(r);
+							alreadyResolved.add(r);
+						}
 					}
 				});
 				newSize = this.resourceSet.getResources().size();
 			} while (oldSize != newSize
-					&& ParserOptions.TRUE_VALUE.equals(
-					ParserOptions.RESOLVE_ALL_BINDINGS.getValue()));
+					&& resolveAllBindings);
 			CentralReferenceResolver.GLOBAL_INSTANCE.setBindingBasedResolver(null);
 			Map<String, IJavaContextDependentURIFragment> fragments =
 					IJavaContextDependentURIFragmentCollector.GLOBAL_INSTANCE
