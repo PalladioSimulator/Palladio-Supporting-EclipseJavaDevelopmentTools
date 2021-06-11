@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
@@ -32,6 +33,7 @@ import jamopp.proxy.IJavaContextDependentURIFragment;
 import jamopp.proxy.IJavaContextDependentURIFragmentCollector;
 
 public class JavaResource2 extends ResourceImpl {
+	private static final Logger logger = Logger.getLogger("jamopp.JavaResource2");
 	private Map<String, IJavaContextDependentURIFragment> internalURIFragmentMap = IJavaContextDependentURIFragmentCollector.GLOBAL_INSTANCE.getContextDependentURIFragmentMap();
 	
 	public JavaResource2() {
@@ -53,8 +55,10 @@ public class JavaResource2 extends ResourceImpl {
 			physicalURI = JavaClasspath.get().getURIMap().get(this.getURI());
 		}
 		if (physicalURI == null) {
+			logger.error(this.getURI() + " has no physical URI.");
 			throw new IllegalStateException("There has to be a physical URI.");
 		}
+		logger.debug("Loading " + physicalURI);
 		String extension = physicalURI.fileExtension();
 		if (extension.equals("class")) {
 			try {
@@ -104,6 +108,7 @@ public class JavaResource2 extends ResourceImpl {
 				attachResolveError(result, uriFragment.getProxy());
 				return null;
 			} else {
+				logger.debug("Resolved " + id + ".");
 				EObject proxy = uriFragment.getProxy();
 				// Remove an error that might have been added by an earlier attempt.
 				removeResolveError(result, proxy);
