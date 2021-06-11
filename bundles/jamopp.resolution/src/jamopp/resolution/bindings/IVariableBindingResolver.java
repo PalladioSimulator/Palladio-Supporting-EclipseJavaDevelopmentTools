@@ -17,9 +17,11 @@ class IVariableBindingResolver extends AbstractBindingResolver<IVariableBinding>
 	protected EObject resolve(IVariableBinding binding) {
 		if (binding.isEnumConstant()) {
 			Enumeration e = (Enumeration) this.getParentResolver().resolve(binding.getDeclaringClass());
-			for (EnumConstant enCons : e.getConstants()) {
-				if (enCons.getName().equals(binding.getName())) {
-					return enCons;
+			if (e != null) {
+				for (EnumConstant enCons : e.getConstants()) {
+					if (enCons.getName().equals(binding.getName())) {
+						return enCons;
+					}
 				}
 			}
 		} else if (binding.isField()) {
