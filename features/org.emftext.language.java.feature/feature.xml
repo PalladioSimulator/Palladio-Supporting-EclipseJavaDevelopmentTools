@@ -48,20 +48,6 @@ Contributors:
          unpack="false"/>
 
    <plugin
-         id="org.emftext.commons.layout"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.emftext.commons.layout.edit"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="jamopp.parser"
          download-size="0"
          install-size="0"
@@ -70,6 +56,27 @@ Contributors:
 
    <plugin
          id="jamopp.parser.jdt"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="jamopp.parser.jdt.singlefile"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="jamopp.parser.bcel"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="jamopp.resolution"
          download-size="0"
          install-size="0"
          version="0.0.0"
