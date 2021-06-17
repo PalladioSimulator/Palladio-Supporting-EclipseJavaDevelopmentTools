@@ -28,6 +28,7 @@ import org.emftext.language.java.expressions.NestedExpression;
 import org.emftext.language.java.expressions.PrimaryExpressionReferenceExpression;
 import org.emftext.language.java.extensions.members.MethodExtension;
 import org.emftext.language.java.instantiations.NewConstructorCall;
+import org.emftext.language.java.members.Field;
 import org.emftext.language.java.members.Member;
 import org.emftext.language.java.members.Method;
 import org.emftext.language.java.references.ElementReference;
@@ -144,7 +145,9 @@ public class ElementReferenceTargetReferenceResolver implements
 				target = EcoreUtil.resolve(target, container);
 			}
 			if (!target.eIsProxy()) {
-				if (target instanceof PackageReference) {
+				if (target instanceof PackageReference
+						|| target instanceof Field && target.eContainer() == null
+							&& ((Field) target).getName().equals("length")) {
 					container.setContainedTarget((ReferenceableElement) target);
 				}
 				result.addMapping(identifier, (ReferenceableElement) target);
