@@ -1,6 +1,7 @@
 package jamopp.parser.jdt.singlefile;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -115,7 +116,9 @@ public class JaMoPPJDTSingleFileParser implements JaMoPPParserAPI {
 	private String[] findFiles(Path directory, String...extensions) throws IOException {
 		return Files.walk(directory).filter(path -> Files.isRegularFile(path)
 				&& testFileExtensions(path, extensions))
-				.map(Path::toAbsolutePath).map(Path::toString).filter(this::testPathStringForExclusion)
+				.map(Path::toAbsolutePath).map(Path::toString)
+				.map(s -> s.replace(File.separator, "/"))
+				.filter(this::testPathStringForExclusion)
 				.toArray(i -> new String[i]);
 	}
 	
