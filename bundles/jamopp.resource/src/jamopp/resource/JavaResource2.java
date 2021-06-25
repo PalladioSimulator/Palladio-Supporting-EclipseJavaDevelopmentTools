@@ -13,8 +13,8 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.resource.impl.ResourceImpl;
 import org.eclipse.emf.ecore.util.EObjectWithInverseResolvingEList;
+import org.eclipse.emf.ecore.xmi.impl.XMIResourceImpl;
 import org.emftext.language.java.JavaClasspath;
 import org.emftext.language.java.LogicalJavaURIGenerator;
 import org.emftext.language.java.containers.CompilationUnit;
@@ -32,7 +32,8 @@ import jamopp.printer.JaMoPPPrinter;
 import jamopp.proxy.IJavaContextDependentURIFragment;
 import jamopp.proxy.IJavaContextDependentURIFragmentCollector;
 
-public class JavaResource2 extends ResourceImpl {
+public class JavaResource2 extends XMIResourceImpl {
+	public static final String JAVAXMI_FILE_EXTENSION = "javaxmi";
 	private static final Logger logger = Logger.getLogger("jamopp.JavaResource2");
 	private Map<String, IJavaContextDependentURIFragment> internalURIFragmentMap = IJavaContextDependentURIFragmentCollector.GLOBAL_INSTANCE.getContextDependentURIFragmentMap();
 	
@@ -45,7 +46,11 @@ public class JavaResource2 extends ResourceImpl {
 	}
 	
 	@Override
-	protected void doLoad(InputStream input, Map<?, ?> options) {
+	public void doLoad(InputStream input, Map<?, ?> options) throws IOException {
+		if (this.getURI().fileExtension().equals(JAVAXMI_FILE_EXTENSION)) {
+			super.doLoad(input, options);
+			return;
+		}
 		IJavaContextDependentURIFragmentCollector.GLOBAL_INSTANCE.setBaseURI(getURI());
 		EObject result = null;
 		URI physicalURI;
@@ -79,12 +84,16 @@ public class JavaResource2 extends ResourceImpl {
 	}
 	
 	@Override
-	protected void doSave(OutputStream output, Map<?, ?> options) {
-		this.getContents().forEach(object -> {
-			if (object instanceof JavaRoot) {
-				JaMoPPPrinter.print((JavaRoot) object, output);
-			}
-		});
+	public void doSave(OutputStream output, Map<?, ?> options) throws IOException {
+		if (this.getURI().fileExtension().equals(JAVAXMI_FILE_EXTENSION)) {
+			super.doSave(output, options);
+		} else {
+			this.getContents().forEach(object -> {
+				if (object instanceof JavaRoot) {
+					JaMoPPPrinter.print((JavaRoot) object, output);
+				}
+			});
+		}
 	}
 	
 	@Override

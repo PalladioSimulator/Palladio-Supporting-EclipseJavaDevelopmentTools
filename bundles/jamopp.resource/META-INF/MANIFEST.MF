@@ -15,5 +15,6 @@ Require-Bundle: org.eclipse.emf.ecore;bundle-version="2.22.0",
  jamopp.resolution;bundle-version="5.0.0",
  jamopp.parser.jdt.singlefile;bundle-version="5.0.0",
  jamopp.parser.bcel;bundle-version="5.0.0",
- org.apache.log4j
+ org.apache.log4j,
+ org.eclipse.emf.ecore.xmi
 Export-Package: jamopp.resource
