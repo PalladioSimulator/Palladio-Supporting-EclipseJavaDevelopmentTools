@@ -73,7 +73,8 @@ public class InferableTypeExtension {
 							if (initTypeTarget instanceof TypeParameter) {
 								initType = TypeReferenceExtension.clone(
 										initType.getBoundTargetReference(
-												(Reference) container));
+												container instanceof Reference
+													? (Reference) container : null));
 							}
 						}
 					}

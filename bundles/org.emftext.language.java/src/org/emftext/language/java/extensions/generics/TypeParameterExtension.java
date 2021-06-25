@@ -57,6 +57,7 @@ import org.emftext.language.java.references.ReflectiveClassReference;
 import org.emftext.language.java.references.SelfReference;
 import org.emftext.language.java.types.ClassifierReference;
 import org.emftext.language.java.types.InferableType;
+import org.emftext.language.java.types.PrimitiveType;
 import org.emftext.language.java.types.Type;
 import org.emftext.language.java.types.TypeReference;
 import org.emftext.language.java.types.TypedElement;
@@ -576,7 +577,13 @@ public class TypeParameterExtension {
 			for (Parameter parameter : method.getParameters()) {
 				if (me.equals(parameter.getTypeReference().getTarget())) {
 					idx = method.getParameters().indexOf(parameter);
-					Classifier argumentType = (Classifier) methodCall.getArguments().get(idx).getType();
+					Type originalArgType = methodCall.getArguments().get(idx).getType();
+					Classifier argumentType;
+					if (originalArgType instanceof PrimitiveType) {
+						argumentType = ((PrimitiveType) originalArgType).wrapPrimitiveType();
+					} else {
+						argumentType = (Classifier) originalArgType;
+					}
 					allSuperTypes.add(argumentType);
 					allSuperTypes.addAll(argumentType.getAllSuperClassifiers());
 				}
