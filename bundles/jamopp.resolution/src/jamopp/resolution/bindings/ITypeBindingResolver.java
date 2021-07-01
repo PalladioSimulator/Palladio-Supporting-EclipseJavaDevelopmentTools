@@ -63,28 +63,32 @@ class ITypeBindingResolver extends AbstractBindingResolver<ITypeBinding> {
 				}
 			}
 		} else if (binding.isTopLevel()) {
+			URI baseURI = LogicalJavaURIGenerator.getClassifierURI(binding.getQualifiedName()).trimFragment();
+			Resource potRes = this.getParentResolver().getResourceSet().getResource(baseURI, false);
+			if (potRes == null) {
+				return convertBinding(binding, baseURI);
+			}
 			ConcreteClassifier classifier =	JavaClasspath.get().getConcreteClassifier(
 					binding.getQualifiedName());
-			if (classifier != null) {
-				classifier = (ConcreteClassifier) EcoreUtil.resolve(classifier,
-						this.getParentResolver().getResourceSet());
-			}
-			if (classifier != null && !classifier.eIsProxy()) {
-				return classifier;
-			}
-			CompilationUnit cu = JDTBindingConverterUtility.convertToCompilationUnit(binding);
-			// The logical URI is used to create the corresponding resource.
-			URI uri = LogicalJavaURIGenerator.getJavaFileResourceURI(cu.getClassifiers().get(0).getQualifiedName());
-			Resource res = this.getParentResolver().getResourceSet().createResource(uri);
-			res.getContents().add(cu);
-			// For the registration, the physical URI is used.
-			uri = JavaClasspath.get().getURIMap().get(uri);
-			JavaClasspath.get().registerJavaRoot(cu, uri);
-			return (ConcreteClassifier) EcoreUtil.resolve(JavaClasspath.get()
-					.getConcreteClassifier(binding.getQualifiedName()),
+			classifier = (ConcreteClassifier) EcoreUtil.resolve(classifier,
 					this.getParentResolver().getResourceSet());
+			if (classifier == null || classifier.eIsProxy()) {
+				classifier = convertBinding(binding, baseURI);
+			}
+			return classifier;
 		}
 		return null;
+	}
+	
+	private ConcreteClassifier convertBinding(ITypeBinding binding, URI baseURI) {
+		CompilationUnit cu = JDTBindingConverterUtility.convertToCompilationUnit(binding);
+		// The logical URI is used to create the corresponding resource.
+		Resource potRes = this.getParentResolver().getResourceSet().createResource(baseURI);
+		potRes.getContents().add(cu);
+		// For the registration, the physical URI is used.
+		baseURI = JavaClasspath.get().getURIMap().get(baseURI);
+		JavaClasspath.get().registerJavaRoot(cu, baseURI);
+		return cu.getClassifiers().get(0);
 	}
 	
 	private EObject findLocalOrAnonymousClass(String binaryName) {
