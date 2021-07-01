@@ -19,6 +19,8 @@ import org.emftext.language.java.generics.TypeParametrizable;
 import org.emftext.language.java.members.Member;
 import org.emftext.language.java.members.MemberContainer;
 
+import jamopp.options.ParserOptions;
+
 class ITypeBindingResolver extends AbstractBindingResolver<ITypeBinding> {
 	private Pattern parentNamePattern;
 	private Pattern innerNamesPattern;
@@ -65,7 +67,7 @@ class ITypeBindingResolver extends AbstractBindingResolver<ITypeBinding> {
 		} else if (binding.isTopLevel()) {
 			URI baseURI = LogicalJavaURIGenerator.getClassifierURI(binding.getQualifiedName()).trimFragment();
 			Resource potRes = this.getParentResolver().getResourceSet().getResource(baseURI, false);
-			if (potRes == null) {
+			if (potRes == null && ParserOptions.PREFER_BINDING_CONVERSION.isTrue()) {
 				return convertBinding(binding, baseURI);
 			}
 			ConcreteClassifier classifier =	JavaClasspath.get().getConcreteClassifier(
