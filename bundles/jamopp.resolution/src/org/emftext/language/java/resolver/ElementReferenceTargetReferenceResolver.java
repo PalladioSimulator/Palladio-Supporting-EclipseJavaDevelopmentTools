@@ -20,6 +20,7 @@ import java.util.List;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.util.EcoreUtil;
+import org.emftext.language.java.JavaClasspath;
 import org.emftext.language.java.classifiers.ConcreteClassifier;
 import org.emftext.language.java.classifiers.Interface;
 import org.emftext.language.java.expressions.Expression;
@@ -32,6 +33,7 @@ import org.emftext.language.java.members.Field;
 import org.emftext.language.java.members.Member;
 import org.emftext.language.java.members.Method;
 import org.emftext.language.java.references.ElementReference;
+import org.emftext.language.java.references.IdentifierReference;
 import org.emftext.language.java.references.PackageReference;
 import org.emftext.language.java.references.Reference;
 import org.emftext.language.java.references.ReferenceableElement;
@@ -139,6 +141,10 @@ public class ElementReferenceTargetReferenceResolver implements
 		if (target == null && alternativeStartingPoint != null && !alternativeStartingPoint.equals(startingPoint)) {
 			target = searchFromStartingPoint(identifier, container, reference, alternativeStartingPoint);
 		}
+		
+		if (target == null) {
+			target = checkPrimitiveTypeReference(identifier, container);
+		}
 
 		if (target != null) {
 			if (target.eIsProxy()) {
@@ -161,5 +167,42 @@ public class ElementReferenceTargetReferenceResolver implements
 				new FieldDecider(), new LocalVariableDecider(), new ParameterDecider(), new MethodDecider(),
 				new ConcreteClassifierDecider(), new TypeParameterDecider(), new PackageDecider()));
 		return resolutionWalker.walk(startingPoint, identifier, container, reference);
+	}
+	
+	private ConcreteClassifier checkPrimitiveTypeReference(String identifier, ElementReference ref) {
+		if (ref instanceof IdentifierReference) {
+			String potClassifierName = null;
+			switch (identifier) {
+				case "void":
+					potClassifierName = Void.class.getCanonicalName();
+					break;
+				case "int":
+					potClassifierName = Integer.class.getCanonicalName();
+					break;
+				case "short":
+					potClassifierName = Short.class.getCanonicalName();
+					break;
+				case "byte":
+					potClassifierName = Byte.class.getCanonicalName();
+					break;
+				case "long":
+					potClassifierName = Long.class.getCanonicalName();
+					break;
+				case "float":
+					potClassifierName = Float.class.getCanonicalName();
+					break;
+				case "double":
+					potClassifierName = Double.class.getCanonicalName();
+					break;
+				case "boolean":
+					potClassifierName = Boolean.class.getCanonicalName();
+					break;
+				default:
+					return null;
+			}
+			return (ConcreteClassifier) EcoreUtil.resolve(
+					JavaClasspath.get().getConcreteClassifier(potClassifierName), ref);
+		}
+		return null;
 	}
 }
