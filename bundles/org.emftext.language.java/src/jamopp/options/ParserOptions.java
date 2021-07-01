@@ -1,4 +1,4 @@
-package jamopp.parser.jdt.singlefile;
+package jamopp.options;
 
 /**
  * Options for the single file parser.

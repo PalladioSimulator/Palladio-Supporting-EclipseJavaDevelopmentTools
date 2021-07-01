@@ -64,7 +64,7 @@ import org.emftext.language.java.variables.LocalVariable;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import jamopp.parser.jdt.singlefile.ParserOptions;
+import jamopp.options.ParserOptions;
 
 /**
  * Test class for the features of Java 7+.
@@ -433,7 +433,7 @@ public class JavaSevenAndUpTest extends AbstractJaMoPPTests {
 			this.assertType(typeRef, InferableType.class);
 			InferableType inferType = (InferableType) typeRef;
 			int expectedTypes = 0;
-			if (ParserOptions.TRUE_VALUE.equals(ParserOptions.RESOLVE_BINDINGS_OF_INFERABLE_TYPES.getValue())) {
+			if (ParserOptions.RESOLVE_BINDINGS_OF_INFERABLE_TYPES.isTrue()) {
 				expectedTypes = 1;
 			}
 			assertEquals(expectedTypes, inferType.getActualTargets().size());

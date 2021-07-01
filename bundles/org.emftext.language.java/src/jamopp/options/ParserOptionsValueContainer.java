@@ -1,4 +1,4 @@
-package jamopp.parser.jdt.singlefile;
+package jamopp.options;
 
 import java.util.EnumMap;
 

@@ -28,6 +28,7 @@ import org.eclipse.jdt.core.dom.SimpleType;
 import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.WildcardType;
 
+import jamopp.options.ParserOptions;
 import jamopp.proxy.IJavaContextDependentURIFragmentCollector;
 import jamopp.resolution.bindings.JDTBindingConverterUtility;
 

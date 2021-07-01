@@ -19,6 +19,8 @@ import org.emftext.commons.layout.MinimalLayoutInformation;
 import org.emftext.language.java.commons.Commentable;
 import org.emftext.language.java.containers.JavaRoot;
 
+import jamopp.options.ParserOptions;
+
 class LayoutInformationConverter {
 	private static MinimalLayoutInformation currentRootLayout;
 	

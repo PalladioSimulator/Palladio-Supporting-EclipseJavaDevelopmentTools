@@ -8,7 +8,8 @@ Bundle-Vendor: Martin Armbruster
 Bundle-Localization: plugin
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Automatic-Module-Name: org.emftext.language.java
-Export-Package: org.emftext.commons.layout,
+Export-Package: jamopp.options,
+ org.emftext.commons.layout,
  org.emftext.commons.layout.impl,
  org.emftext.commons.layout.util,
  org.emftext.language.java,

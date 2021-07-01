@@ -29,6 +29,7 @@ import org.emftext.language.java.JavaClasspath;
 import org.emftext.language.java.containers.JavaRoot;
 import org.emftext.language.java.resolver.CentralReferenceResolver;
 
+import jamopp.options.ParserOptions;
 import jamopp.parser.api.JaMoPPParserAPI;
 import jamopp.proxy.IJavaContextDependentURIFragment;
 import jamopp.proxy.IJavaContextDependentURIFragmentCollector;

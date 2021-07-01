@@ -40,6 +40,7 @@ import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeMethodReference;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 
+import jamopp.options.ParserOptions;
 import jamopp.resolution.bindings.JDTBindingConverterUtility;
 
 class ExpressionConverterUtility {
