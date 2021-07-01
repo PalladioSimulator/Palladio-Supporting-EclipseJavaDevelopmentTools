@@ -9,7 +9,8 @@ public enum ParserOptions {
 	RESOLVE_ALL_BINDINGS,
 	RESOLVE_BINDINGS,
 	RESOLVE_BINDINGS_OF_INFERABLE_TYPES,
-	CREATE_LAYOUT_INFORMATION;
+	CREATE_LAYOUT_INFORMATION,
+	PREFER_BINDING_CONVERSION;
 	
 	public void setValue(Object v) {
 		ParserOptionsValueContainer.getInstance().setValue(this, v);

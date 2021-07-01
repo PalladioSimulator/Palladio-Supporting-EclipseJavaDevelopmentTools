@@ -30,6 +30,7 @@ public final class ParserOptionsValueContainer {
 			instance.setValue(ParserOptions.RESOLVE_BINDINGS, Boolean.TRUE);
 			instance.setValue(ParserOptions.RESOLVE_BINDINGS_OF_INFERABLE_TYPES, Boolean.TRUE);
 			instance.setValue(ParserOptions.CREATE_LAYOUT_INFORMATION, Boolean.TRUE);
+			instance.setValue(ParserOptions.PREFER_BINDING_CONVERSION, Boolean.TRUE);
 		}
 		return instance;
 	}
