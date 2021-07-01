@@ -192,16 +192,14 @@ public class JaMoPPJDTSingleFileParser implements JaMoPPParserAPI {
 		if (isResolving) {
 			return;
 		}
-		if (ParserOptions.TRUE_VALUE.equals(
-				ParserOptions.RESOLVE_BINDINGS.getValue())) {
+		if (ParserOptions.RESOLVE_BINDINGS.isTrue()) {
 			isResolving = true;
 			CentralReferenceResolver.GLOBAL_INSTANCE.setBindingBasedResolver(
 					new CentralBindingBasedResolver(this.resourceSet));
 			int oldSize;
 			int newSize = this.resourceSet.getResources().size();
 			HashSet<Resource> alreadyResolved = new HashSet<>();
-			boolean resolveAllBindings = ParserOptions.TRUE_VALUE.equals(
-					ParserOptions.RESOLVE_ALL_BINDINGS.getValue());
+			boolean resolveAllBindings = ParserOptions.RESOLVE_ALL_BINDINGS.isTrue();
 			do {
 				oldSize = newSize;
 				List<Resource> resources = new ArrayList<>(this.resourceSet.getResources());

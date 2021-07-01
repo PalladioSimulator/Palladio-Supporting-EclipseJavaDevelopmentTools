@@ -24,7 +24,7 @@ class LayoutInformationConverter {
 	
 	static void convertJavaRootLayoutInformation(JavaRoot root, ASTNode rootSource, String sourceCode) {
 		currentRootLayout = null;
-		if (ParserOptions.TRUE_VALUE.equals(ParserOptions.CREATE_LAYOUT_INFORMATION.getValue())) {
+		if (ParserOptions.CREATE_LAYOUT_INFORMATION.isTrue()) {
 			currentRootLayout = LayoutFactory.eINSTANCE.createMinimalLayoutInformation();
 			currentRootLayout.setVisibleTokenText(sourceCode == null ? "" : sourceCode);
 			currentRootLayout.setStartOffset(rootSource.getStartPosition());

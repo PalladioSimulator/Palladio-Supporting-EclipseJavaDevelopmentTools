@@ -11,13 +11,15 @@ public enum ParserOptions {
 	RESOLVE_BINDINGS_OF_INFERABLE_TYPES,
 	CREATE_LAYOUT_INFORMATION;
 	
-	public static final String TRUE_VALUE = "true";
-	
-	public void setValue(String v) {
+	public void setValue(Object v) {
 		ParserOptionsValueContainer.getInstance().setValue(this, v);
 	}
 	
-	public String getValue() {
+	public Object getValue() {
 		return ParserOptionsValueContainer.getInstance().getValue(this);
+	}
+	
+	public boolean isTrue() {
+		return getValue() == Boolean.TRUE;
 	}
 }

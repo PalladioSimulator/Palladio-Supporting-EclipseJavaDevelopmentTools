@@ -9,27 +9,27 @@ import java.util.EnumMap;
  */
 public final class ParserOptionsValueContainer {
 	private static ParserOptionsValueContainer instance;
-	private EnumMap<ParserOptions, String> values;
+	private EnumMap<ParserOptions, Object> values;
 	
 	private ParserOptionsValueContainer() {
 		values = new EnumMap<>(ParserOptions.class);
 	}
 	
-	public String getValue(ParserOptions option) {
+	public Object getValue(ParserOptions option) {
 		return values.get(option);
 	}
 	
-	public void setValue(ParserOptions option, String value) {
+	public void setValue(ParserOptions option, Object value) {
 		values.put(option, value);
 	}
 	
 	public static ParserOptionsValueContainer getInstance() {
 		if (instance == null) {
 			instance = new ParserOptionsValueContainer();
-			instance.setValue(ParserOptions.RESOLVE_ALL_BINDINGS, ParserOptions.TRUE_VALUE);
-			instance.setValue(ParserOptions.RESOLVE_BINDINGS, ParserOptions.TRUE_VALUE);
-			instance.setValue(ParserOptions.RESOLVE_BINDINGS_OF_INFERABLE_TYPES, ParserOptions.TRUE_VALUE);
-			instance.setValue(ParserOptions.CREATE_LAYOUT_INFORMATION, ParserOptions.TRUE_VALUE);
+			instance.setValue(ParserOptions.RESOLVE_ALL_BINDINGS, Boolean.TRUE);
+			instance.setValue(ParserOptions.RESOLVE_BINDINGS, Boolean.TRUE);
+			instance.setValue(ParserOptions.RESOLVE_BINDINGS_OF_INFERABLE_TYPES, Boolean.TRUE);
+			instance.setValue(ParserOptions.CREATE_LAYOUT_INFORMATION, Boolean.TRUE);
 		}
 		return instance;
 	}
