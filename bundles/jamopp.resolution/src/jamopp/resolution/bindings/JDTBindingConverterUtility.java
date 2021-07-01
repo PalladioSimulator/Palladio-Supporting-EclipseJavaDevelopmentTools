@@ -367,6 +367,10 @@ public class JDTBindingConverterUtility {
 		for (ITypeBinding typeBind : binding.getExceptionTypes()) {
 			result.getExceptions().add(convertToNamespaceClassifierReference(typeBind));
 		}
+		org.emftext.language.java.statements.Block statement =
+				org.emftext.language.java.statements.StatementsFactory.eINSTANCE.createBlock();
+		statement.setName("");
+		result.setBlock(statement);
 		return result;
 	}
 	
@@ -447,6 +451,12 @@ public class JDTBindingConverterUtility {
 						.eINSTANCE.createEmptyStatement());
 			}
 		}
+		if (result.getStatement() == null) {
+			org.emftext.language.java.statements.Block block =
+					org.emftext.language.java.statements.StatementsFactory.eINSTANCE.createBlock();
+			block.setName("");
+			result.setStatement(block);
+		}
 		return result;
 	}
 	
@@ -465,6 +475,7 @@ public class JDTBindingConverterUtility {
 		IJavaContextDependentURIFragmentCollector.GLOBAL_INSTANCE.registerContextDependentURIFragment(classRef,
 				org.emftext.language.java.types.TypesPackage.Literals.CLASSIFIER_REFERENCE__TARGET,
 				proxyClass.getName(), proxyClass, -1, binding);
+		classRef.setTarget(proxyClass);
 		ref.getClassifierReferences().add(classRef);
 		return ref;
 	}
