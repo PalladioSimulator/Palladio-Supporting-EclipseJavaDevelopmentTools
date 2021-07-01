@@ -142,6 +142,7 @@ public class JDTBindingConverterUtility {
 		binding = binding.getTypeDeclaration();
 		org.emftext.language.java.containers.CompilationUnit result =
 				org.emftext.language.java.containers.ContainersFactory.eINSTANCE.createCompilationUnit();
+		result.setName(binding.getName());
 		convertIPackageNameComponentsToNamespaces(binding.getPackage(), result);
 		result.getClassifiers().add(convertToConcreteClassifier(binding));
 		return result;
