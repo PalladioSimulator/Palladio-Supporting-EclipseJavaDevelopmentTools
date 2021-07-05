@@ -13,6 +13,7 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.internal.compiler.problem.AbortCompilation;
+import org.emftext.language.java.containers.Origin;
 
 import jamopp.proxy.IJavaContextDependentURIFragmentCollector;
 
@@ -142,6 +143,7 @@ public class JDTBindingConverterUtility {
 		binding = binding.getTypeDeclaration();
 		org.emftext.language.java.containers.CompilationUnit result =
 				org.emftext.language.java.containers.ContainersFactory.eINSTANCE.createCompilationUnit();
+		result.setOrigin(Origin.BINDING);
 		result.setName(binding.getName());
 		convertIPackageNameComponentsToNamespaces(binding.getPackage(), result);
 		result.getClassifiers().add(convertToConcreteClassifier(binding));
@@ -654,6 +656,7 @@ public class JDTBindingConverterUtility {
 	static org.emftext.language.java.containers.Package convertToPackage(IPackageBinding binding) {
 		org.emftext.language.java.containers.Package pack =
 				org.emftext.language.java.containers.ContainersFactory.eINSTANCE.createPackage();
+		pack.setOrigin(Origin.BINDING);
 		convertIPackageNameComponentsToNamespaces(binding, pack);
 		pack.setName("");
 		try {
@@ -675,6 +678,7 @@ public class JDTBindingConverterUtility {
 	static org.emftext.language.java.containers.Module convertToModule(IModuleBinding binding) {
 		org.emftext.language.java.containers.Module result =
 				org.emftext.language.java.containers.ContainersFactory.eINSTANCE.createModule();
+		result.setOrigin(Origin.BINDING);
 		try {
 			for (IAnnotationBinding annotBind : binding.getAnnotations()) {
 				result.getAnnotations().add(convertToAnnotationInstance(annotBind));

@@ -27,6 +27,7 @@ import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.FileASTRequestor;
 import org.emftext.language.java.JavaClasspath;
 import org.emftext.language.java.containers.JavaRoot;
+import org.emftext.language.java.containers.Origin;
 import org.emftext.language.java.resolver.CentralReferenceResolver;
 
 import jamopp.options.ParserOptions;
@@ -153,6 +154,7 @@ public class JaMoPPJDTSingleFileParser implements JaMoPPParserAPI {
 				IJavaContextDependentURIFragmentCollector.GLOBAL_INSTANCE.setBaseURI(fileURI);
 				node.accept(converter);
 				JavaRoot root = converter.getConvertedElement();
+				root.setOrigin(Origin.FILE);
 				Resource newResource;
 				if (root.eResource() == null) {
 					newResource = JaMoPPJDTSingleFileParser.this.resourceSet.createResource(fileURI);

@@ -19,6 +19,7 @@ import org.emftext.language.java.JavaClasspath;
 import org.emftext.language.java.LogicalJavaURIGenerator;
 import org.emftext.language.java.containers.CompilationUnit;
 import org.emftext.language.java.containers.JavaRoot;
+import org.emftext.language.java.containers.Origin;
 import org.emftext.language.java.members.MemberContainer;
 import org.emftext.language.java.resolver.CentralReferenceResolver;
 import org.emftext.language.java.resolver.result.IJavaElementMapping;
@@ -76,7 +77,9 @@ public class JavaResource2 extends XMIResourceImpl {
 			JaMoPPJDTSingleFileParser api = new JaMoPPJDTSingleFileParser();
 			api.setResourceSet(this.getResourceSet());
 			result = api.parse(this.getURI().toString(), input);
-			JavaClasspath.get().registerJavaRoot((JavaRoot) result, physicalURI);
+			JavaRoot root = (JavaRoot) result;
+			root.setOrigin(physicalURI.isFile() ? Origin.FILE : Origin.ARCHIVE);
+			JavaClasspath.get().registerJavaRoot(root, physicalURI);
 			this.getContents().add(result);
 			api.setResourceSet(this.getResourceSet());
 			api.resolveBindings();

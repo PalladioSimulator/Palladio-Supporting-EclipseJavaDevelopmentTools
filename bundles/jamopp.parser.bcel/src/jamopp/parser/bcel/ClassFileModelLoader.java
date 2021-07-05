@@ -39,6 +39,7 @@ import org.emftext.language.java.classifiers.Enumeration;
 import org.emftext.language.java.classifiers.Interface;
 import org.emftext.language.java.containers.CompilationUnit;
 import org.emftext.language.java.containers.ContainersFactory;
+import org.emftext.language.java.containers.Origin;
 import org.emftext.language.java.generics.GenericsFactory;
 import org.emftext.language.java.generics.QualifiedTypeArgument;
 import org.emftext.language.java.generics.TypeArgument;
@@ -75,6 +76,7 @@ public class ClassFileModelLoader {
 			JavaClass myClass = classParser.parse();
 			ConcreteClassifier classifier = constructClassifier(myClass);
 			CompilationUnit cu = ContainersFactory.eINSTANCE.createCompilationUnit();
+			cu.setOrigin(Origin.CLASS);
 			cu.setName(classFileName);
 			List<String> namespace1 = Arrays.asList(myClass.getClassName().split("\\."));
 			List<String> namespace2 = Arrays.asList(namespace1.get(namespace1.size() - 1).split("\\$"));
