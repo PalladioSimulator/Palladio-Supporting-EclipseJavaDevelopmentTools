@@ -445,6 +445,8 @@
           <details key="documentation" value=""/>
         </eAnnotations>
       </eOperations>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="origin" lowerBound="1"
+          eType="#//containers/Origin"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="CompilationUnit" eSuperTypes="#//containers/JavaRoot">
       <eOperations name="getContainedClassifier" eType="#//classifiers/ConcreteClassifier">
@@ -514,6 +516,12 @@
           eType="#//modules/ModuleDirective" containment="true"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="packages" upperBound="-1"
           eType="#//containers/Package"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="Origin">
+      <eLiterals name="FILE"/>
+      <eLiterals name="CLASS" value="1"/>
+      <eLiterals name="ARCHIVE" value="2"/>
+      <eLiterals name="BINDING" value="3"/>
     </eClassifiers>
   </eSubpackages>
   <eSubpackages xmi:id="_Wo2YC9z1Ed2bJ_pQViWxFg" name="expressions" nsURI="http://www.emftext.org/java/expressions"

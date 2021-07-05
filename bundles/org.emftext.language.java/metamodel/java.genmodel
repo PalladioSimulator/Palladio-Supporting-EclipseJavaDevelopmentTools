@@ -233,7 +233,14 @@
     </nestedGenPackages>
     <nestedGenPackages prefix="Containers" basePackage="org.emftext.language.java"
         disposableProviderFactory="true" ecorePackage="java.ecore#//containers">
+      <genEnums typeSafeEnumCompatible="false" ecoreEnum="java.ecore#//containers/Origin">
+        <genEnumLiterals ecoreEnumLiteral="java.ecore#//containers/Origin/FILE"/>
+        <genEnumLiterals ecoreEnumLiteral="java.ecore#//containers/Origin/CLASS"/>
+        <genEnumLiterals ecoreEnumLiteral="java.ecore#//containers/Origin/ARCHIVE"/>
+        <genEnumLiterals ecoreEnumLiteral="java.ecore#//containers/Origin/BINDING"/>
+      </genEnums>
       <genClasses image="false" ecoreClass="java.ecore#//containers/JavaRoot">
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute java.ecore#//containers/JavaRoot/origin"/>
         <genOperations ecoreOperation="java.ecore#//containers/JavaRoot/getClassifiersInSamePackage"
             body="return org.emftext.language.java.extensions.containers.JavaRootExtension.getClassifiersInSamePackage((org.emftext.language.java.containers.JavaRoot) this);"/>
       </genClasses>
