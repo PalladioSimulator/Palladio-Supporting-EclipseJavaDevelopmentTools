@@ -17,6 +17,7 @@ package org.emftext.language.java.extensions.classifiers;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.UniqueEList;
+import org.eclipse.emf.ecore.InternalEObject;
 import org.emftext.language.java.classifiers.ConcreteClassifier;
 import org.emftext.language.java.classifiers.Interface;
 import org.emftext.language.java.types.PrimitiveType;
@@ -94,31 +95,33 @@ public class ClassExtension {
 	public static PrimitiveType unWrapPrimitiveType(
 			org.emftext.language.java.classifiers.Class me) {
 		
-		if (me.getLibClass("Boolean").equals(me)) {
+		String type = me.eIsProxy() ? ((InternalEObject) me).eProxyURI().toString() : me.getQualifiedName();
+		
+		if (type.contains("java.lang.Boolean")) {
 			return TypesFactory.eINSTANCE.createBoolean();
 		}
-		if (me.getLibClass("Byte").equals(me)) {
+		if (type.contains("java.lang.Byte")) {
 			return TypesFactory.eINSTANCE.createByte();
 		}
-		if (me.getLibClass("Character").equals(me)) {
+		if (type.contains("java.lang.Character")) {
 			return TypesFactory.eINSTANCE.createChar();
 		}
-		if (me.getLibClass("Float").equals(me)) {
+		if (type.contains("java.lang.Float")) {
 			return TypesFactory.eINSTANCE.createFloat();
 		}
-		if (me.getLibClass("Double").equals(me)) {
+		if (type.contains("java.lang.Double")) {
 			return TypesFactory.eINSTANCE.createDouble();
 		}
-		if (me.getLibClass("Integer").equals(me)) {
+		if (type.contains("java.lang.Integer")) {
 			return TypesFactory.eINSTANCE.createInt();
 		}
-		if (me.getLibClass("Long").equals(me)) {
+		if (type.contains("java.lang.Long")) {
 			return TypesFactory.eINSTANCE.createLong();
 		}
-		if (me.getLibClass("Short").equals(me)) {
+		if (type.contains("java.lang.Short")) {
 			return TypesFactory.eINSTANCE.createShort();
 		}
-		if (me.getLibClass("Void").equals(me)) {
+		if (type.contains("java.lang.Void")) {
 			return TypesFactory.eINSTANCE.createVoid();
 		}
 		return null;

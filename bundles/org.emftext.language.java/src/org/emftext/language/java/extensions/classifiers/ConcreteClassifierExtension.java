@@ -20,12 +20,14 @@ import java.util.List;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.UniqueEList;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.util.EcoreUtil;
+import org.emftext.language.java.JavaClasspath;
+import org.emftext.language.java.LogicalJavaURIGenerator;
 import org.emftext.language.java.classifiers.Classifier;
 import org.emftext.language.java.classifiers.ConcreteClassifier;
 import org.emftext.language.java.classifiers.Interface;
 import org.emftext.language.java.commons.Commentable;
-import org.emftext.language.java.containers.CompilationUnit;
 import org.emftext.language.java.members.Member;
 import org.emftext.language.java.modifiers.AnnotableAndModifiable;
 import org.emftext.language.java.types.ClassifierReference;
@@ -39,6 +41,9 @@ public class ConcreteClassifierExtension {
 		innerClassifierList.addAll(me.getInnerClassifiers());
 
 		for (ConcreteClassifier superClassifier : me.getAllSuperClassifiers()) {
+			if (superClassifier == null) {
+				continue;
+			}
 			List<ConcreteClassifier> superInnerList = superClassifier
 					.getInnerClassifiers();
 
@@ -59,19 +64,12 @@ public class ConcreteClassifierExtension {
 	
 	public static EList<ConcreteClassifier> getInnerClassifiers(ConcreteClassifier me) {
 		if (me.eIsProxy()) {
-			 return null;
-		} else {
-			String suffix = "";
-			ConcreteClassifier containingClass = me;
-			while (containingClass.eContainer() instanceof ConcreteClassifier) {
-				containingClass = (ConcreteClassifier) containingClass.eContainer();
-				suffix = containingClass.getName() + "." + suffix;
-			}
-			if (containingClass.eContainer() instanceof CompilationUnit) {
-				CompilationUnit compilationUnit = (CompilationUnit) containingClass.eContainer();
-			    String fullName = compilationUnit.getNamespacesAsString() + suffix + me.getName();
-			    return me.getConcreteClassifiers(fullName, "*");
-			}
+			String uriString = ((InternalEObject) me).eProxyURI().trimFragment().toString();
+			String fullName = uriString.substring(LogicalJavaURIGenerator.JAVA_CLASSIFIER_PATHMAP.length(), 
+				uriString.length() - LogicalJavaURIGenerator.JAVA_FILE_EXTENSION.length());
+			EList<ConcreteClassifier> result = new UniqueEList<>();
+			result.add(JavaClasspath.get().getConcreteClassifier(fullName));
+			return result;
 		}
 
 		// For classes declared locally inside methods that are not registered
@@ -82,13 +80,7 @@ public class ConcreteClassifierExtension {
 		for (Member member : me.getMembers()) {
 			if (member instanceof ConcreteClassifier) {
 				result.add((ConcreteClassifier) member);
-			}
-		}
-		for (ConcreteClassifier superClassifier : me.getAllSuperClassifiers()) {
-			for (Member member : superClassifier.getMembers()) {
-				if (member instanceof ConcreteClassifier) {
-					result.add((ConcreteClassifier) member);
-				}
+				result.addAll(((ConcreteClassifier) member).getInnerClassifiers());
 			}
 		}
 		
@@ -159,6 +151,12 @@ public class ConcreteClassifierExtension {
 		memberList.addAll(concreteClassifier.getAllInnerClassifiers());
 		
 		for (ConcreteClassifier superClassifier : me.getAllSuperClassifiers()) {
+			if (superClassifier == null) {
+				continue;
+			}
+			if (superClassifier.eIsProxy()) {
+				superClassifier = (ConcreteClassifier) EcoreUtil.resolve(superClassifier, context);
+			}
 			for (Member member : superClassifier.getMembers()) {
 				if (member instanceof AnnotableAndModifiable) {
 					AnnotableAndModifiable modifiable = (AnnotableAndModifiable) member;

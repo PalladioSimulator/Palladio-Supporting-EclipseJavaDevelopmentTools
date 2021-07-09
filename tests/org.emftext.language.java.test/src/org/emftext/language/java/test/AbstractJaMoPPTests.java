@@ -73,6 +73,7 @@ import org.emftext.language.java.members.MemberContainer;
 import org.emftext.language.java.members.Method;
 import org.emftext.language.java.modifiers.Public;
 import org.emftext.language.java.types.NamespaceClassifierReference;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 
 import jamopp.resource.JavaResource2;
@@ -87,8 +88,18 @@ public abstract class AbstractJaMoPPTests {
 
 	@BeforeEach
 	public final void initResourceFactory() {
+		this.createNewResourceSet();
 		Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap().put("java", new JavaResource2Factory());
 		JavaClasspath.get().clear();
+		JavaClasspath.get().registerStdLib();
+	}
+	
+	@AfterEach
+	public void tearDown() {
+		for (Resource res : new ArrayList<>(testSet.getResources())) {
+			res.unload();
+			testSet.getResources().remove(res);
+		}
 	}
 
 	protected void registerInClassPath(String file) throws Exception {
@@ -99,6 +110,7 @@ public abstract class AbstractJaMoPPTests {
 		CompilationUnit cu = (CompilationUnit) parseResource(inputFile.getPath());
 
 		inputFile = new File(inputFolder + File.separator + file);
+		JavaClasspath.get().registerClassifier(cu, URI.createFileURI(inputFile.getAbsolutePath().toString()));
 	}
 
 	protected JavaRoot parseResource(String filename, String inputFolderName) throws Exception {
@@ -148,7 +160,7 @@ public abstract class AbstractJaMoPPTests {
 			packageName = fullName.substring(0, idx);
 			classifierName = fullName.substring(idx + 1);			
 		}
-//		cp.registerClassifier(packageName, classifierName, URI.createFileURI(file.getAbsolutePath()));
+		cp.registerClassifier(packageName, classifierName, URI.createFileURI(file.getAbsolutePath()));
 	}
 
 	protected Map<? extends Object, ? extends Object> getLoadOptions() {
@@ -235,6 +247,7 @@ public abstract class AbstractJaMoPPTests {
 		for (File libFile : allLibFiles) {
 			String libPath = libFile.getAbsolutePath();
 			URI libURI = URI.createFileURI(libPath);
+			classpath.registerZip(libURI);
 		}
 	}
 
@@ -245,7 +258,7 @@ public abstract class AbstractJaMoPPTests {
 	}
 	
 	protected void testReprint(ResourceSet set) throws Exception {
-		for (Resource res : set.getResources()) {
+		for (Resource res : new ArrayList<>(set.getResources())) {
 			if (res instanceof JavaResource2) {
 				testReprint((JavaResource2) res);
 			}
@@ -325,7 +338,7 @@ public abstract class AbstractJaMoPPTests {
 
 	private org.eclipse.jdt.core.dom.CompilationUnit parseWithJDT(InputStream inputStream, boolean isModule) {
 
-		ASTParser jdtParser = ASTParser.newParser(AST.JLS14);
+		ASTParser jdtParser = ASTParser.newParser(AST.JLS15);
 		char[] charArray = readTextContents(inputStream).toCharArray();
 		jdtParser.setSource(charArray);
 		
@@ -334,7 +347,7 @@ public abstract class AbstractJaMoPPTests {
 		}
 
 		Map<String, String> options = new HashMap<String, String>();
-		options.put(JavaCore.COMPILER_SOURCE, JavaCore.VERSION_14);
+		options.put(JavaCore.COMPILER_SOURCE, JavaCore.VERSION_15);
 		jdtParser.setCompilerOptions(options);
 
 		org.eclipse.jdt.core.dom.CompilationUnit result1 =
@@ -599,11 +612,16 @@ public abstract class AbstractJaMoPPTests {
 	protected void assertResolveAllProxies(EObject element) {
 		assertResolveAllProxies(element.eResource());
 	}
+	
+	private ResourceSet testSet;
+	
+	private void createNewResourceSet() {
+		testSet = new ResourceSetImpl();
+		testSet.getLoadOptions().putAll(getLoadOptions());
+	}
 
 	protected ResourceSet getResourceSet() throws Exception {
-		ResourceSet rs = new ResourceSetImpl();
-		rs.getLoadOptions().putAll(getLoadOptions());
-		return rs;
+		return testSet;
 	}
 
 	protected boolean assertResolveAllProxies(Resource resource) {

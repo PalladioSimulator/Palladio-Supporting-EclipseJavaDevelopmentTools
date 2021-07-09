@@ -21,6 +21,9 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.UniqueEList;
 import org.emftext.language.java.classifiers.ConcreteClassifier;
 import org.emftext.language.java.classifiers.Interface;
+import org.emftext.language.java.members.Member;
+import org.emftext.language.java.members.Method;
+import org.emftext.language.java.modifiers.Default;
 import org.emftext.language.java.types.Type;
 import org.emftext.language.java.types.TypeReference;
 
@@ -64,5 +67,23 @@ public class InterfaceExtension {
 				result.addAll(((Interface) superInterface).getAllSuperClassifiers());
 			}
 		}
+	}
+	
+	/**
+	 * Finds the method of a functional interface.
+	 * 
+	 * @param classifier the functional interface.
+	 * @return the method.
+	 */
+	public static Method getAbstractMethodOfFunctionalInterface(Interface me) {
+		ConcreteClassifier objectClass = me.getObjectClass();
+		for (Member mem : me.getAllMembers(me)) {
+			if (mem instanceof Method && !((Method) mem).isStatic() && !((Method) mem).hasModifier(Default.class)) {
+				if (objectClass.getMembersByName(mem.getName()).isEmpty()) {
+					return (Method) mem;
+				}
+			}
+		}
+		return null;
 	}
 }

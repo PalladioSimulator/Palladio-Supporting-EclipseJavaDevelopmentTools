@@ -25,7 +25,7 @@ import org.emftext.language.java.test.bugs.AbstractBugTestCase;
 import org.junit.jupiter.api.Test;
 
 import jamopp.parser.api.JaMoPPParserAPI;
-import jamopp.parser.jdt.JaMoPPJDTParser;
+import jamopp.parser.jdt.singlefile.JaMoPPJDTSingleFileParser;
 import jamopp.resource.JavaResource2Factory;
 
 /**
@@ -51,7 +51,7 @@ public class StandaloneTest extends AbstractBugTestCase {
         final ResourceSet rs = new ResourceSetImpl();
         rs.getResourceFactoryRegistry().getExtensionToFactoryMap().put("containers", new XMIResourceFactoryImpl());
 
-        final JaMoPPParserAPI parser = new JaMoPPJDTParser();
+        final JaMoPPParserAPI parser = new JaMoPPJDTSingleFileParser();
         final ResourceSet units = parser.parseDirectory(Paths.get("src-standalone"));
     }
 }

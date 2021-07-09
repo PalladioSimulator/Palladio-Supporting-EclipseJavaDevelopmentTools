@@ -30,6 +30,7 @@ import org.emftext.language.java.classifiers.ConcreteClassifier;
 import org.emftext.language.java.classifiers.Interface;
 import org.emftext.language.java.commons.Commentable;
 import org.emftext.language.java.literals.Self;
+import org.emftext.language.java.members.Field;
 import org.emftext.language.java.modifiers.AnnotableAndModifiable;
 import org.emftext.language.java.modifiers.AnnotationInstanceOrModifier;
 import org.emftext.language.java.modifiers.Modifier;
@@ -177,7 +178,11 @@ public class AnnotableAndModifiableExtension {
 	public static boolean isStatic(AnnotableAndModifiable me) {
 		//all members of an interface are static by default
 		if (me.eContainer() instanceof Interface) {
-			return true;
+			if (me.hasModifier(Static.class)
+					|| me instanceof Field
+					|| me instanceof ConcreteClassifier) {
+				return true;
+			}
 		}
 		
 		for (AnnotationInstanceOrModifier modifier : me.getAnnotationsAndModifiers()) {

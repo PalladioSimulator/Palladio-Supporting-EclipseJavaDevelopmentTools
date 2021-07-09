@@ -941,19 +941,7 @@ public class JDTResolverUtility {
 		methBindToCM.forEach(JDTResolverUtility::completeMethod);
 		
 		convertPureTypeBindings();
-		
-		modBindToMod.values().forEach(module -> JavaClasspath.get().registerModule(module));
-		
-		nameToPackage.values().forEach(pack -> JavaClasspath.get().registerPackage(pack));
-		
-		typeBindToAnnot.values().forEach(ann -> JavaClasspath.get().registerConcreteClassifier(ann));
-		
-		typeBindToEnum.values().forEach(enume -> JavaClasspath.get().registerConcreteClassifier(enume));
-		
-		typeBindToInterface.values().forEach(interf -> JavaClasspath.get().registerConcreteClassifier(interf));
-		
-		typeBindToClass.values().forEach(clazz -> JavaClasspath.get().registerConcreteClassifier(clazz));
-		
+
 		escapeAllIdentifiers();
 		
 		modBindToMod.clear();

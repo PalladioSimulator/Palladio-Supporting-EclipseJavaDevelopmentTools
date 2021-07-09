@@ -18,6 +18,7 @@ package org.emftext.language.java.extensions.types;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.UniqueEList;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.emftext.language.java.JavaClasspath;
 import org.emftext.language.java.arrays.ArrayTypeable;
 import org.emftext.language.java.classifiers.Annotation;
@@ -150,7 +151,8 @@ public class TypeExtension {
 		}
 		
 		//String, primitives, and arrays are serializable
-		ConcreteClassifier serializableClass = JavaClasspath.get().getConcreteClassifier("java.io.Serializable");
+		ConcreteClassifier serializableClass = (ConcreteClassifier) EcoreUtil.resolve(
+			JavaClasspath.get().getConcreteClassifier("java.io.Serializable"), _this);
 		if (lOtherType.equals(serializableClass)) {
 			if (_this.equals(serializableClass)) {
 	 			return true;
