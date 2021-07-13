@@ -22,7 +22,6 @@ Require-Bundle: org.eclipse.core.runtime,
  org.junit.jupiter.params,
  jamopp.parser.jdt.singlefile,
  org.apache.log4j,
- org.palladiosimulator.pcm,
  jamopp.parser
 Export-Package: org.emftext.language.java.test
 Import-Package: jamopp.parser.jdt

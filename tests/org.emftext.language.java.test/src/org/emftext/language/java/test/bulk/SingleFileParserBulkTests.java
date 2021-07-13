@@ -30,6 +30,7 @@ import java.util.Set;
 import org.apache.commons.compress.archivers.ArchiveException;
 import org.apache.commons.compress.archivers.ArchiveStreamFactory;
 import org.apache.commons.compress.archivers.examples.Expander;
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.emftext.language.java.test.AbstractJaMoPPTests;
@@ -195,47 +196,31 @@ public class SingleFileParserBulkTests extends AbstractJaMoPPTests {
 		}
 		Path target = Paths.get(getTestInputFolder());
 		JaMoPPJDTSingleFileParser parser = new JaMoPPJDTSingleFileParser();
-		String sep = File.separator;
-		if (sep.equals("\\")) {
-			sep = "\\\\";
-		}
-		parser.setExclusionPatterns(".*?teammates" + sep + "src" + sep + "client" + sep + ".*?",
-				".*?teammates" + sep + "src" + sep + "e2e" + sep + ".*?",
-				".*?teammates" + sep + "src" + sep + "test" + sep + ".*?",
-				".*?teammates" + sep + "src" + sep + "web" + sep + ".*?");
-		Set<String> parsedFiles = new HashSet<>();
-		try {
-			String[] sourceFiles = parser.findSources(target);
-			for (String source : sourceFiles) {
-				parsedFiles.add(source);
-			}
-		} catch (IOException e1) {
-			fail(e1.getMessage());
-		}
+		parser.setExclusionPatterns(".*?teammates/src/client/.*?",
+				".*?teammates/src/e2e/.*?",
+				".*?teammates/src/test/.*?",
+				".*?teammates/src/web/.*?");
 		ResourceSet set = parser.parseDirectory(target);
+		Set<Resource> parsedFiles = new HashSet<>(set.getResources());
 		int index = 0;
-		for (Resource res : new ArrayList<>(set.getResources())) {
-			if (parsedFiles.contains(res.getURI().toFileString())) {
-				System.out.println(index + " of " + parsedFiles.size() + " ("
-						+ res.getURI().toString() + ")");
-				assertTrue(res.getContents().size() > 0);
-				this.assertResolveAllProxies(res);
-				index++;
-			}
+		for (Resource res : parsedFiles) {
+			System.out.println(index + " of " + parsedFiles.size() + " ("
+					+ res.getURI().toString() + ")");
+			assertTrue(res.getContents().size() > 0);
+			this.assertResolveAllProxies(res);
+			index++;
 		}
 		index = 0;
-		for (Resource res : new ArrayList<>(set.getResources())) {
-			if (parsedFiles.contains(res.getURI().toFileString())) {
-				System.out.println("Reprinting " + index + " of " + parsedFiles.size() + " ("
-						+ res.getURI().toString() + ")");
-				assertTrue(res.getContents().size() > 0);
-				try {
-					this.testReprint((JavaResource2) res);
-				} catch (Exception e) {
-					fail(e.getMessage());
-				}
-				index++;
+		for (Resource res : parsedFiles) {
+			System.out.println("Reprinting " + index + " of " + parsedFiles.size() + " ("
+					+ res.getURI().toString() + ")");
+			assertTrue(res.getContents().size() > 0);
+			try {
+				this.testReprint((JavaResource2) res);
+			} catch (Exception e) {
+				fail(e.getMessage());
 			}
+			index++;
 		}
 	}
 	
