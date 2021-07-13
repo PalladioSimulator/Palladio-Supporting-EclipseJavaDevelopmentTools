@@ -7,6 +7,8 @@ import org.eclipse.jdt.core.dom.IPackageBinding;
 import org.emftext.language.java.JavaClasspath;
 import org.emftext.language.java.LogicalJavaURIGenerator;
 
+import jamopp.options.ParserOptions;
+
 class IPackageBindingResolver extends AbstractBindingResolver<IPackageBinding> {
 	protected IPackageBindingResolver(CentralBindingBasedResolver parentResolver) {
 		super(parentResolver);
@@ -14,19 +16,33 @@ class IPackageBindingResolver extends AbstractBindingResolver<IPackageBinding> {
 
 	@Override
 	protected EObject resolve(IPackageBinding binding) {
-		org.emftext.language.java.containers.Package pack =
-				JavaClasspath.get().getPackage(binding.getName());
-		if (pack != null && !pack.eIsProxy()) {
-			return pack;
+		URI uri = LogicalJavaURIGenerator.getPackageURI(binding.getName());
+		Resource packContainer = this.getParentResolver().getResourceSet().getResource(uri, false);
+		if (packContainer == null) {
+			if (ParserOptions.PREFER_BINDING_CONVERSION.isTrue()) {
+				return convertBindingToPackage(binding, uri);
+			}
+			try {
+				packContainer = this.getParentResolver().getResourceSet().getResource(uri, true);
+				if (packContainer != null) {
+					return (org.emftext.language.java.containers.Package) packContainer.getContents().get(0);
+				}
+			} catch (RuntimeException e) {
+			}
+		} else {
+			return (org.emftext.language.java.containers.Package) packContainer.getContents().get(0);
 		}
-		pack = JDTBindingConverterUtility.convertToPackage(binding);
+		return convertBindingToPackage(binding, uri);
+	}
+	
+	private org.emftext.language.java.containers.Package convertBindingToPackage(IPackageBinding binding, URI uri) {
+		org.emftext.language.java.containers.Package result = JDTBindingConverterUtility.convertToPackage(binding);
 		// The logical URI is used to create the corresponding resource.
-		URI uri = LogicalJavaURIGenerator.getPackageURI(pack.getNamespacesAsString());
 		Resource packContainer = this.getParentResolver().getResourceSet().createResource(uri);
-		packContainer.getContents().add(pack);
+		packContainer.getContents().add(result);
 		// For the registration, the physical URI is used.
 		uri = JavaClasspath.get().getURIMap().get(uri);
-		JavaClasspath.get().registerJavaRoot(pack, uri);
-		return pack;
+		JavaClasspath.get().registerJavaRoot(result, uri);
+		return result;
 	}
 }
