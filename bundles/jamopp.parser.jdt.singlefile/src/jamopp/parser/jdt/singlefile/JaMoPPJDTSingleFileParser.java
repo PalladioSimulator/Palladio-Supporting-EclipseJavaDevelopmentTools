@@ -100,6 +100,7 @@ public class JaMoPPJDTSingleFileParser implements JaMoPPParserAPI {
 			this.parseFilesWithJDT(classpathEntries, sources, encodings);
 			System.out.println("Resolving");
 			resolveBindings();
+			resolveEverything();
 		} catch (IOException e) {
 		}
 		ResourceSet result = this.resourceSet;
@@ -223,6 +224,21 @@ public class JaMoPPJDTSingleFileParser implements JaMoPPParserAPI {
 					.getContextDependentURIFragmentMap();
 			fragments.values().forEach(v -> v.setBinding(null));
 			isResolving = false;
+		}
+	}
+	
+	private void resolveEverything() {
+		if (ParserOptions.RESOLVE_EVERYTHING.isTrue()) {
+			int oldSize;
+			do {
+				oldSize = resourceSet.getResources().size();
+				for (Resource res : new ArrayList<>(resourceSet.getResources())) {
+					if (res.getContents().isEmpty()) {
+						continue;
+					}
+					EcoreUtil.resolveAll(res);
+				}
+			} while (oldSize != resourceSet.getResources().size());
 		}
 	}
 
