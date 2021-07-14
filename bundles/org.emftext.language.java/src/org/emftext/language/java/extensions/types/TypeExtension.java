@@ -152,7 +152,7 @@ public class TypeExtension {
 		
 		//String, primitives, and arrays are serializable
 		ConcreteClassifier serializableClass = (ConcreteClassifier) EcoreUtil.resolve(
-			JavaClasspath.get().getConcreteClassifier("java.io.Serializable"), _this);
+			JavaClasspath.get(me).getConcreteClassifier("java.io.Serializable"), _this);
 		if (lOtherType.equals(serializableClass)) {
 			if (_this.equals(serializableClass)) {
 	 			return true;

@@ -42,8 +42,8 @@ class IModuleBindingResolver extends AbstractBindingResolver<IModuleBinding> {
 		Resource modContainer = this.getParentResolver().getResourceSet().createResource(uri);
 		modContainer.getContents().add(result);
 		// For the registration, the physical URI is used.
-		uri = JavaClasspath.get().getURIMap().get(uri);
-		JavaClasspath.get().registerJavaRoot(result, uri);
+		uri = JavaClasspath.get(this.getParentResolver().getResourceSet()).getURIMap().get(uri);
+		JavaClasspath.get(this.getParentResolver().getResourceSet()).registerJavaRoot(result, uri);
 		return result;
 	}
 }

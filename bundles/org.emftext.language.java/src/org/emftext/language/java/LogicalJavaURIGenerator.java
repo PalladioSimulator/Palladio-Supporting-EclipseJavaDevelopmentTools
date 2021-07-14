@@ -86,16 +86,36 @@ public class LogicalJavaURIGenerator {
 	 * Java's separator for classifier names ($).
 	 */
 	public static final String CLASSIFIER_SEPARATOR = "$";
+	
+	/**
+	 * The simple file extension for Java files without a preceding dot.
+	 */
+	public static final String JAVA_FILE_EXTENSION_NAME = "java";
 
 	/**
 	 * Java's file extension (.java).
 	 */
-	public static final String JAVA_FILE_EXTENSION = ".java";
+	public static final String JAVA_FILE_EXTENSION = PACKAGE_SEPARATOR + JAVA_FILE_EXTENSION_NAME;
+	
+	/**
+	 * The simple file extension for class files without the preceding dot.
+	 */
+	public static final String JAVA_CLASS_FILE_EXTENSION_NAME = "class";
 
 	/**
 	 * Java's class file extension (.class).
 	 */
-	public static final String JAVA_CLASS_FILE_EXTENSION = ".class";
+	public static final String JAVA_CLASS_FILE_EXTENSION = PACKAGE_SEPARATOR + JAVA_CLASS_FILE_EXTENSION_NAME;
+	
+	/**
+	 * The simple file extension for javaxmi files without the preceding dot.
+	 */
+	public static final String JAVAXMI_FILE_EXTENSION_NAME = "javaxmi";
+	
+	/**
+	 * File extension for javaxmi files.
+	 */
+	public static final String JAVAXMI_FILE_EXTENSION = PACKAGE_SEPARATOR + JAVAXMI_FILE_EXTENSION_NAME;
 	
 	/**
 	 * File name of a module declaration.

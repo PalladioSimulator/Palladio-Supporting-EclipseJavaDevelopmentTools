@@ -119,13 +119,13 @@ public class ClassifierReferenceTargetReferenceResolver implements
 					if (target == null) {
 						String potName = ((ConcreteClassifier) startingPoint).getQualifiedName()
 								+ LogicalJavaURIGenerator.CLASSIFIER_SEPARATOR + identifier;
-						target = EcoreUtil.resolve(JavaClasspath.get().getConcreteClassifier(potName),
-								container);
+						target = EcoreUtil.resolve(JavaClasspath.get(container)
+								.getConcreteClassifier(potName), container);
 						if (target.eIsProxy()) {
 							potName = ((ConcreteClassifier) startingPoint).getQualifiedName()
 									+ LogicalJavaURIGenerator.PACKAGE_SEPARATOR + identifier;
-							target = EcoreUtil.resolve(JavaClasspath.get().getConcreteClassifier(potName),
-									container);
+							target = EcoreUtil.resolve(JavaClasspath.get(container)
+									.getConcreteClassifier(potName), container);
 						}
 					}
 				} else if (startingPoint instanceof TypeParameter) {
@@ -179,7 +179,7 @@ public class ClassifierReferenceTargetReferenceResolver implements
 				}
 				builder.append(identifier);
 				target = (ConcreteClassifier) EcoreUtil.resolve(
-					JavaClasspath.get().getConcreteClassifier(builder.toString()), container);
+					JavaClasspath.get(ncr).getConcreteClassifier(builder.toString()), container);
 				if (!target.eIsProxy()) {
 					break;
 				} else {
@@ -190,6 +190,5 @@ public class ClassifierReferenceTargetReferenceResolver implements
 			return target;
 		}
 		return null;
-
 	}
 }

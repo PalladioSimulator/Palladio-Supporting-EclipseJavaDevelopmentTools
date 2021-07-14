@@ -143,7 +143,7 @@ public class JaMoPPJDTSingleFileParser implements JaMoPPParserAPI {
 		ArrayList<JavaRoot> result = new ArrayList<>();
 		ASTParser parser = setUpParser();
 		for (String entry : classpathEntries) {
-			JavaClasspath.get().registerZip(URI.createFileURI(entry));
+			JavaClasspath.get(resourceSet).registerZip(URI.createFileURI(entry));
 		}
 		parser.setEnvironment(classpathEntries, new String[] {}, new String[] {}, true);
 		OrdinaryCompilationUnitJDTASTVisitorAndConverter converter =
@@ -160,12 +160,12 @@ public class JaMoPPJDTSingleFileParser implements JaMoPPParserAPI {
 				if (root.eResource() == null) {
 					newResource = JaMoPPJDTSingleFileParser.this.resourceSet.createResource(fileURI);
 					newResource.getContents().add(root);
-					JavaClasspath.get().registerJavaRoot(root, fileURI);
+					JavaClasspath.get(resourceSet).registerJavaRoot(root, fileURI);
 				} else {
 					newResource = root.eResource();
 					if (!newResource.getURI().toFileString().equals(sourceFilePath)) {
 						newResource.setURI(fileURI);
-						JavaClasspath.get().registerJavaRoot(root, fileURI);
+						JavaClasspath.get(resourceSet).registerJavaRoot(root, fileURI);
 					}
 				}
 				result.add(root);
@@ -177,6 +177,9 @@ public class JaMoPPJDTSingleFileParser implements JaMoPPParserAPI {
 	private void setUpResourceSet() {
 		if (this.resourceSet == null) {
 			this.resourceSet = new ResourceSetImpl();
+		}
+		if (ParserOptions.REGISTER_LOCAL.isTrue()) {
+			JavaClasspath.get(this.resourceSet).enableLocalRegistration();
 		}
 	}
 	

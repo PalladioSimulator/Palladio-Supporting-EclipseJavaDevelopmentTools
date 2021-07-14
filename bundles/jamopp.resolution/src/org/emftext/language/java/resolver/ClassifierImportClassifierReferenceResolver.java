@@ -38,23 +38,26 @@ public class ClassifierImportClassifierReferenceResolver implements
 					for (int index = 0; index < theImport.getNamespaces().size(); index++) {
 						builder.append(theImport.getNamespaces().get(index));
 						builder.append(LogicalJavaURIGenerator.CLASSIFIER_SEPARATOR);
-						if (JavaClasspath.get().isPackageRegistered(builder.toString())) {
+						if (JavaClasspath.get(theImport).isPackageRegistered(builder.toString())) {
 							continue;
 						}
-						builder.replace(builder.length() - 1, builder.length(), LogicalJavaURIGenerator.PACKAGE_SEPARATOR);
-						if (JavaClasspath.get().isPackageRegistered(builder.toString())) {
+						builder.replace(builder.length() - 1, builder.length(),
+								LogicalJavaURIGenerator.PACKAGE_SEPARATOR);
+						if (JavaClasspath.get(theImport).isPackageRegistered(builder.toString())) {
 							continue;
 						}
 						builder.delete(builder.length() - 1, builder.length());
 						importedClassifier = (ConcreteClassifier) EcoreUtil.resolve(
-								JavaClasspath.get().getConcreteClassifier(builder.toString()), theImport);
+								JavaClasspath.get(theImport).getConcreteClassifier(
+										builder.toString()), theImport);
 						if (importedClassifier.eIsProxy()) {
 							break;
 						}
 						for (int j = index + 1; j < theImport.getNamespaces().size(); j++) {
 							for (Member m : importedClassifier.getMembers()) {
 								if (m instanceof ConcreteClassifier
-										&& m.getName().equals(theImport.getNamespaces().get(j))) {
+										&& m.getName().equals(
+											theImport.getNamespaces().get(j))) {
 									importedClassifier = (ConcreteClassifier) m;
 									break;
 								}

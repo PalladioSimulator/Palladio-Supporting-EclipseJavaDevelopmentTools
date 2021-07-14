@@ -89,7 +89,7 @@ public class ConcreteClassifierDecider extends AbstractDecider {
 		if (container instanceof IdentifierReference) {
 			IdentifierReference p = (IdentifierReference) container;
 			String packageName = packageName(p);
-			resultList.addAll(JavaClasspath.get().getConcreteClassifiers(packageName));
+			resultList.addAll(JavaClasspath.get(container).getConcreteClassifiers(packageName));
 		}
 
 		if (container instanceof Classifier) {
@@ -108,13 +108,13 @@ public class ConcreteClassifierDecider extends AbstractDecider {
 					innerTypeSuperTypeList.addAll(
 						((ConcreteClassifier) classifier).getAllInnerClassifiers());
 					String cqualifiedName = ((ConcreteClassifier) classifier).getQualifiedName();
-					if (JavaClasspath.get().isPackageRegistered(cqualifiedName
+					if (JavaClasspath.get(container).isPackageRegistered(cqualifiedName
 							+ LogicalJavaURIGenerator.CLASSIFIER_SEPARATOR)) {
 						cqualifiedName += LogicalJavaURIGenerator.CLASSIFIER_SEPARATOR + identifier;
 					} else {
 						cqualifiedName += LogicalJavaURIGenerator.PACKAGE_SEPARATOR + identifier;
 					}
-					ConcreteClassifier cc = JavaClasspath.get().getConcreteClassifier(
+					ConcreteClassifier cc = JavaClasspath.get(container).getConcreteClassifier(
 							cqualifiedName);
 					if (cc.eIsProxy()) {
 						cc = (ConcreteClassifier) EcoreUtil.resolve(cc, classifier);
@@ -187,7 +187,8 @@ public class ConcreteClassifierDecider extends AbstractDecider {
 				} else if (aImport instanceof StaticMemberImport) {
 					StaticMemberImport staticMemberImport = (StaticMemberImport) aImport;
 					if (!staticMemberImport.getStaticMembers().isEmpty()) {
-						//access first element to trigger proxy resolution and avoid ConcurrentModificationException
+						// access first element to trigger proxy resolution
+						// and avoid ConcurrentModificationException
 						staticMemberImport.getStaticMembers().get(0);
 					}
 					resultList.addAll(staticMemberImport.getStaticMembers());
@@ -214,7 +215,7 @@ public class ConcreteClassifierDecider extends AbstractDecider {
 		
 		//5) java.lang
 		if (container instanceof JavaRoot || container.eContainer() == null) {
-			resultList.addAll(JavaClasspath.get().getConcreteClassifiers("java.lang"));
+			resultList.addAll(JavaClasspath.get(container).getConcreteClassifiers("java.lang"));
 		}
 	}
 
@@ -285,7 +286,8 @@ public class ConcreteClassifierDecider extends AbstractDecider {
 			String identifier = nsaElement.getNamespaces().get(idx);
 			EObject target = null;
 			if (idx == 0) {
-				target = relativeNamespaceResolutionWalker.walk(startingPoint, identifier, referenceContainer, crossReference);
+				target = relativeNamespaceResolutionWalker.walk(startingPoint,
+						identifier, referenceContainer, crossReference);
 			} else {
 				for (ConcreteClassifier cand : ((ConcreteClassifier) startingPoint).getAllInnerClassifiers()) {
 					if (identifier.equals(cand.getName())) {

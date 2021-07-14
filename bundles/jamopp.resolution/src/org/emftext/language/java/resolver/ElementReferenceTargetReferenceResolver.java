@@ -201,7 +201,7 @@ public class ElementReferenceTargetReferenceResolver implements
 					return null;
 			}
 			return (ConcreteClassifier) EcoreUtil.resolve(
-					JavaClasspath.get().getConcreteClassifier(potClassifierName), ref);
+					JavaClasspath.get(ref).getConcreteClassifier(potClassifierName), ref);
 		}
 		return null;
 	}

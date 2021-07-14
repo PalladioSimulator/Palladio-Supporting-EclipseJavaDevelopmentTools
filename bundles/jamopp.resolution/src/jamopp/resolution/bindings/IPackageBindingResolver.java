@@ -41,8 +41,8 @@ class IPackageBindingResolver extends AbstractBindingResolver<IPackageBinding> {
 		Resource packContainer = this.getParentResolver().getResourceSet().createResource(uri);
 		packContainer.getContents().add(result);
 		// For the registration, the physical URI is used.
-		uri = JavaClasspath.get().getURIMap().get(uri);
-		JavaClasspath.get().registerJavaRoot(result, uri);
+		uri = JavaClasspath.get(this.getParentResolver().getResourceSet()).getURIMap().get(uri);
+		JavaClasspath.get(this.getParentResolver().getResourceSet()).registerJavaRoot(result, uri);
 		return result;
 	}
 }

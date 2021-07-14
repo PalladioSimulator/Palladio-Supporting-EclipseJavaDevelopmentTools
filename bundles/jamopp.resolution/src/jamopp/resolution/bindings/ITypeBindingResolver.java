@@ -70,8 +70,8 @@ class ITypeBindingResolver extends AbstractBindingResolver<ITypeBinding> {
 			if (potRes == null && ParserOptions.PREFER_BINDING_CONVERSION.isTrue()) {
 				return convertBinding(binding, baseURI);
 			}
-			ConcreteClassifier classifier =	JavaClasspath.get().getConcreteClassifier(
-					binding.getQualifiedName());
+			ConcreteClassifier classifier =	JavaClasspath.get(this.getParentResolver().getResourceSet())
+					.getConcreteClassifier(binding.getQualifiedName());
 			classifier = (ConcreteClassifier) EcoreUtil.resolve(classifier,
 					this.getParentResolver().getResourceSet());
 			if (classifier == null || classifier.eIsProxy()) {
@@ -88,8 +88,8 @@ class ITypeBindingResolver extends AbstractBindingResolver<ITypeBinding> {
 		Resource potRes = this.getParentResolver().getResourceSet().createResource(baseURI);
 		potRes.getContents().add(cu);
 		// For the registration, the physical URI is used.
-		baseURI = JavaClasspath.get().getURIMap().get(baseURI);
-		JavaClasspath.get().registerJavaRoot(cu, baseURI);
+		baseURI = JavaClasspath.get(this.getParentResolver().getResourceSet()).getURIMap().get(baseURI);
+		JavaClasspath.get(this.getParentResolver().getResourceSet()).registerJavaRoot(cu, baseURI);
 		return cu.getClassifiers().get(0);
 	}
 	
@@ -97,7 +97,8 @@ class ITypeBindingResolver extends AbstractBindingResolver<ITypeBinding> {
 		Matcher m1 = parentNamePattern.matcher(binaryName);
 		if (m1.matches()) {
 			String parentName = m1.group(1);
-			ConcreteClassifier parentClassifier = JavaClasspath.get().getConcreteClassifier(parentName);
+			ConcreteClassifier parentClassifier = JavaClasspath.get(this.getParentResolver().getResourceSet()
+					).getConcreteClassifier(parentName);
 			if (parentClassifier != null) {
 				parentClassifier = (ConcreteClassifier) EcoreUtil.resolve(parentClassifier,
 						this.getParentResolver().getResourceSet());

@@ -69,7 +69,7 @@ public class ConcreteClassifierExtension {
 			String fullName = uriString.substring(LogicalJavaURIGenerator.JAVA_CLASSIFIER_PATHMAP.length(), 
 				uriString.length() - LogicalJavaURIGenerator.JAVA_FILE_EXTENSION.length());
 			EList<ConcreteClassifier> result = new UniqueEList<>();
-			result.add(JavaClasspath.get().getConcreteClassifier(fullName));
+			result.add(JavaClasspath.get(me).getConcreteClassifier(fullName));
 			return result;
 		}
 

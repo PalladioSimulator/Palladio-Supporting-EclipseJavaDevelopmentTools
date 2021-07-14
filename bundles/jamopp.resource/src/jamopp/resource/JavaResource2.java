@@ -34,7 +34,7 @@ import jamopp.proxy.IJavaContextDependentURIFragment;
 import jamopp.proxy.IJavaContextDependentURIFragmentCollector;
 
 public class JavaResource2 extends XMIResourceImpl {
-	public static final String JAVAXMI_FILE_EXTENSION = "javaxmi";
+	public static final String JAVAXMI_FILE_EXTENSION = LogicalJavaURIGenerator.JAVAXMI_FILE_EXTENSION_NAME;
 	private static final Logger logger = Logger.getLogger("jamopp.JavaResource2");
 	private Map<String, IJavaContextDependentURIFragment> internalURIFragmentMap = IJavaContextDependentURIFragmentCollector.GLOBAL_INSTANCE.getContextDependentURIFragmentMap();
 	
@@ -58,7 +58,7 @@ public class JavaResource2 extends XMIResourceImpl {
 		if (this.getURI().isFile()) {
 			physicalURI = this.getURI();
 		} else {
-			physicalURI = JavaClasspath.get().getURIMap().get(this.getURI());
+			physicalURI = JavaClasspath.get(this).getURIMap().get(this.getURI());
 		}
 		if (physicalURI == null) {
 			logger.error(this.getURI() + " has no physical URI.");
@@ -69,7 +69,7 @@ public class JavaResource2 extends XMIResourceImpl {
 		if (extension.equals("class")) {
 			try {
 				result = new ClassFileModelLoader().parse(input, "");
-				JavaClasspath.get().registerJavaRoot((JavaRoot) result, physicalURI);
+				JavaClasspath.get(this).registerJavaRoot((JavaRoot) result, physicalURI);
 				this.getContents().add(result);
 			} catch (IOException e) {
 			}
@@ -79,7 +79,7 @@ public class JavaResource2 extends XMIResourceImpl {
 			result = api.parse(this.getURI().toString(), input);
 			JavaRoot root = (JavaRoot) result;
 			root.setOrigin(physicalURI.isFile() ? Origin.FILE : Origin.ARCHIVE);
-			JavaClasspath.get().registerJavaRoot(root, physicalURI);
+			JavaClasspath.get(this).registerJavaRoot(root, physicalURI);
 			this.getContents().add(result);
 			api.setResourceSet(this.getResourceSet());
 			api.resolveBindings();

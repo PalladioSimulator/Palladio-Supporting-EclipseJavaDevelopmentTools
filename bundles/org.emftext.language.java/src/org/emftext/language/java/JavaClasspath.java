@@ -55,35 +55,56 @@ public class JavaClasspath {
 
 	public static JavaClasspath get() {
 		if (globalClasspath == null) {
-			globalClasspath = new JavaClasspath();
-			globalClasspath.registerStdLib();
+			globalClasspath = new JavaClasspath(null);
+//			globalClasspath.registerStdLib();
 		}
 		return globalClasspath;
 	}
 	
 	public static JavaClasspath get(EObject obj) {
+		if (obj == null) {
+			return get();
+		}
 		return get(obj.eResource());
 	}
 	
 	public static JavaClasspath get(Resource resource) {
+		if (resource == null) {
+			return get();
+		}
 		return get(resource.getResourceSet());
 	}
 	
 	public static JavaClasspath get(ResourceSet set) {
+		if (set == null) {
+			return get();
+		}
 		if (!classpaths.containsKey(set)) {
-			classpaths.put(set, new JavaClasspath());
+			classpaths.put(set, new JavaClasspath(set));
 		}
 		return classpaths.get(set);
 	}
 
+	private ResourceSet resourceSet;
+	private boolean registerLocal = false;
 	private Map<String, Set<String>> packageClassifierMap = new LinkedHashMap<>();
+	
+	private JavaClasspath(ResourceSet set) {
+		resourceSet = set;
+	}
+	
+	public void enableLocalRegistration() {
+		registerLocal = true;
+	}
 
 	public void clear() {
 		packageClassifierMap.clear();
 		for (Iterator<Map.Entry<URI, URI>> iter = getURIMap().entrySet().iterator();
 				iter.hasNext();) {
 			String fileExt = iter.next().getKey().fileExtension();
-			if ("java".equals(fileExt) || "class".equals(fileExt)) {
+			if (LogicalJavaURIGenerator.JAVA_FILE_EXTENSION_NAME.equals(fileExt)
+				|| LogicalJavaURIGenerator.JAVA_CLASS_FILE_EXTENSION_NAME.equals(fileExt)
+				|| LogicalJavaURIGenerator.JAVAXMI_FILE_EXTENSION_NAME.equals(fileExt)) {
 				iter.remove();
 			}
 		}
@@ -337,9 +358,8 @@ public class JavaClasspath {
 	}
 	
 	public Map<URI, URI> getURIMap() {
-		ResourceSet set = classpaths.entrySet().stream().filter(e -> e.getValue() == this)
-				.map(e -> e.getKey()).findFirst().orElse(null);
-		return set != null ? set.getURIConverter().getURIMap() : URIConverter.URI_MAP;
+		return resourceSet != null && registerLocal
+				? resourceSet.getURIConverter().getURIMap() : URIConverter.URI_MAP;
 	}
 	
 	private void updateMapping(URI logicalURI, URI physicalURI) {

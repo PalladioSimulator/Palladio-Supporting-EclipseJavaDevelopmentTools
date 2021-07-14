@@ -21,7 +21,6 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.emftext.language.java.JavaClasspath;
 import org.emftext.language.java.LogicalJavaURIGenerator;
-import org.emftext.language.java.classifiers.ConcreteClassifier;
 import org.emftext.language.java.containers.JavaRoot;
 import org.emftext.language.java.references.IdentifierReference;
 import org.emftext.language.java.references.PackageReference;
@@ -85,8 +84,8 @@ public class PackageDecider extends AbstractDecider {
 			}
 			
 			
-			if (JavaClasspath.get().isPackageRegistered(pack)) {
-				org.emftext.language.java.containers.Package p = JavaClasspath.get().getPackage(pack);
+			if (JavaClasspath.get(container).isPackageRegistered(pack)) {
+				org.emftext.language.java.containers.Package p = JavaClasspath.get(container).getPackage(pack);
 				if (p != null) {
 					resultList.add(p);
 				} else {
@@ -105,7 +104,8 @@ public class PackageDecider extends AbstractDecider {
 		if (container instanceof JavaRoot && container.eResource() != null) {
 			EList<EObject> resultList = new BasicEList<EObject>();
 
-			if (JavaClasspath.get().isPackageRegistered(((JavaRoot) container).getNamespacesAsString() + identifier)) {
+			if (JavaClasspath.get(container).isPackageRegistered(
+					((JavaRoot) container).getNamespacesAsString() + identifier)) {
 				PackageReference p = ReferencesFactory.eINSTANCE.createPackageReference();
 				p.setName(identifier);
 				resultList.add(p);

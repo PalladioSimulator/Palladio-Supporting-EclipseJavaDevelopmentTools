@@ -102,12 +102,12 @@ public class JaMoPPJDTParser implements JaMoPPParserAPI {
 				if (root.eResource() == null) {
 					newResource = JaMoPPJDTParser.this.resourceSet.createResource(URI.createFileURI(sourceFilePath));
 					newResource.getContents().add(root);
-					JavaClasspath.get().registerJavaRoot(root, newResource.getURI());
+					JavaClasspath.get(resourceSet).registerJavaRoot(root, newResource.getURI());
 				} else {
 					newResource = root.eResource();
 					if (!newResource.getURI().toFileString().equals(sourceFilePath)) {
 						newResource.setURI(URI.createFileURI(sourceFilePath));
-						JavaClasspath.get().registerJavaRoot(root, newResource.getURI());
+						JavaClasspath.get(resourceSet).registerJavaRoot(root, newResource.getURI());
 					}
 				}
 				result.add(root);
