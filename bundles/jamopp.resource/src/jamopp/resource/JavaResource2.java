@@ -35,7 +35,8 @@ import jamopp.proxy.IJavaContextDependentURIFragmentCollector;
 
 public class JavaResource2 extends XMIResourceImpl {
 	public static final String JAVAXMI_FILE_EXTENSION = LogicalJavaURIGenerator.JAVAXMI_FILE_EXTENSION_NAME;
-	private static final Logger logger = Logger.getLogger("jamopp.JavaResource2");
+	private static final Logger logger = Logger.getLogger("jamopp."
+			+ JavaResource2.class.getSimpleName());
 	private Map<String, IJavaContextDependentURIFragment> internalURIFragmentMap = IJavaContextDependentURIFragmentCollector.GLOBAL_INSTANCE.getContextDependentURIFragmentMap();
 	
 	public JavaResource2() {
@@ -120,7 +121,6 @@ public class JavaResource2 extends XMIResourceImpl {
 				attachResolveError(result, uriFragment.getProxy());
 				return null;
 			} else {
-				logger.debug("Resolved " + id + ".");
 				EObject proxy = uriFragment.getProxy();
 				// Remove an error that might have been added by an earlier attempt.
 				removeResolveError(result, proxy);

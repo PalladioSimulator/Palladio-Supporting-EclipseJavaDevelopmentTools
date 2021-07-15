@@ -14,6 +14,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
@@ -37,6 +38,8 @@ import jamopp.proxy.IJavaContextDependentURIFragmentCollector;
 import jamopp.resolution.bindings.CentralBindingBasedResolver;
 
 public class JaMoPPJDTSingleFileParser implements JaMoPPParserAPI {
+	private static final Logger logger = Logger.getLogger("jamopp."
+			+ JaMoPPJDTSingleFileParser.class.getSimpleName());
 	private final String DEFAULT_ENCODING = StandardCharsets.UTF_8.toString();
 	private ResourceSet resourceSet;
 	private ArrayList<String> exclusionPatterns = new ArrayList<>();
@@ -96,9 +99,11 @@ public class JaMoPPJDTSingleFileParser implements JaMoPPParserAPI {
 				encodings[index] = DEFAULT_ENCODING;
 			}
 			String[] classpathEntries = findClasspathEntries(dir);
-			System.out.println("Parsing");
+			logger.debug("Parsing the directory " + dir.toString() + " with "
+					+ sources.length + " source files and " + classpathEntries.length
+					+ " classpath entries.");
 			this.parseFilesWithJDT(classpathEntries, sources, encodings);
-			System.out.println("Resolving");
+			logger.debug("Resolving the parsed files.");
 			resolveBindings();
 			resolveEverything();
 		} catch (IOException e) {
@@ -232,6 +237,7 @@ public class JaMoPPJDTSingleFileParser implements JaMoPPParserAPI {
 	
 	private void resolveEverything() {
 		if (ParserOptions.RESOLVE_EVERYTHING.isTrue()) {
+			logger.debug("Resolving everything.");
 			int oldSize;
 			do {
 				oldSize = resourceSet.getResources().size();

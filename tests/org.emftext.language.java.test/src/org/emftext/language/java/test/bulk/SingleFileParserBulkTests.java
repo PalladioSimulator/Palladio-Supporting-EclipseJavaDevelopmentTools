@@ -29,6 +29,7 @@ import java.util.Set;
 import org.apache.commons.compress.archivers.ArchiveException;
 import org.apache.commons.compress.archivers.ArchiveStreamFactory;
 import org.apache.commons.compress.archivers.examples.Expander;
+import org.apache.log4j.Logger;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.emftext.language.java.test.AbstractJaMoPPTests;
@@ -39,6 +40,8 @@ import jamopp.parser.jdt.singlefile.JaMoPPJDTSingleFileParser;
 import jamopp.resource.JavaResource2;
 
 public class SingleFileParserBulkTests extends AbstractJaMoPPTests {
+	private final static Logger logger = Logger.getLogger("jamopp."
+			+ SingleFileParserBulkTests.class.getSimpleName());
 	private final static String BASE_ZIP = "JaMoPP-BulkTest" + File.separator + "Tests" + File.separator
 		+ "org.emftext.language.java.test.bulk" + File.separator + "input" + File.separator;
 	private final static String END_ZIP = File.separator + "src.zip";
@@ -202,7 +205,8 @@ public class SingleFileParserBulkTests extends AbstractJaMoPPTests {
 		Set<Resource> parsedFiles = new HashSet<>(set.getResources());
 		int index = 0;
 		for (Resource res : parsedFiles) {
-			System.out.println(index + " of " + parsedFiles.size() + " ("
+			logger.debug("Asserting the resolution of all proxy objects for "
+					+ index + " of " + parsedFiles.size() + " ("
 					+ res.getURI().toString() + ")");
 			assertTrue(res.getContents().size() > 0);
 			this.assertResolveAllProxies(res);
@@ -210,7 +214,7 @@ public class SingleFileParserBulkTests extends AbstractJaMoPPTests {
 		}
 		index = 0;
 		for (Resource res : parsedFiles) {
-			System.out.println("Reprinting " + index + " of " + parsedFiles.size() + " ("
+			logger.debug("Reprinting " + index + " of " + parsedFiles.size() + " ("
 					+ res.getURI().toString() + ")");
 			assertTrue(res.getContents().size() > 0);
 			try {
