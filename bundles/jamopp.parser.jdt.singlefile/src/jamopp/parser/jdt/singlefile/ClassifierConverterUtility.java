@@ -25,6 +25,8 @@ import org.eclipse.jdt.core.dom.EnumDeclaration;
 import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.IExtendedModifier;
+import org.eclipse.jdt.core.dom.IPackageBinding;
+import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.Initializer;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.Modifier;
@@ -33,6 +35,9 @@ import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.TypeParameter;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
+
+import jamopp.options.ParserOptions;
+import jamopp.proxy.IJavaContextDependentURIFragmentCollector;
 
 class ClassifierConverterUtility {
 	@SuppressWarnings("unchecked")
@@ -55,6 +60,24 @@ class ClassifierConverterUtility {
 			.converToModifierOrAnnotationInstance((IExtendedModifier) obj)));
 		BaseConverterUtility.convertToSimpleNameOnlyAndSet(typeDecl.getName(), result);
 		LayoutInformationConverter.convertToMinimalLayoutInformation(result, typeDecl);
+		if (ParserOptions.PREFER_BINDING_CONVERSION.isTrue()) {
+			ITypeBinding typeBinding = typeDecl.resolveBinding();
+			if (typeBinding != null && !typeBinding.isRecovered()) {
+				IPackageBinding packBinding = typeBinding.getPackage();
+				if (packBinding != null && !packBinding.isRecovered()) {
+					org.emftext.language.java.containers.Package packProxy =
+							org.emftext.language.java.containers.ContainersFactory.eINSTANCE.createPackage();
+					for (String nsPart : packBinding.getNameComponents()) {
+						packProxy.getNamespaces().add(nsPart);
+					}
+					packProxy.setName("");
+					IJavaContextDependentURIFragmentCollector.GLOBAL_INSTANCE.registerContextDependentURIFragment(
+							result, org.emftext.language.java.classifiers.ClassifiersPackage.Literals.CONCRETE_CLASSIFIER__PACKAGE,
+							packBinding.getName(), packProxy, -1, packBinding);
+					result.setPackage(packProxy);
+				}
+			}
+		}
 		return result;
 	}
 	
