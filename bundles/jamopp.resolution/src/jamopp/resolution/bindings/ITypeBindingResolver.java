@@ -39,7 +39,7 @@ class ITypeBindingResolver extends AbstractBindingResolver<ITypeBinding> {
 		} else if (binding.isArray()) {
 			return this.getParentResolver().resolve(binding.getElementType());
 		} else if (binding.isTypeVariable()) {
-			TypeParametrizable param;
+			TypeParametrizable param = null;
 			if (binding.getDeclaringClass() != null) {
 				param = (TypeParametrizable) this.getParentResolver().resolve(binding.getDeclaringClass());
 			} else {

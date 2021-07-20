@@ -17,7 +17,7 @@ class IModuleBindingResolver extends AbstractBindingResolver<IModuleBinding> {
 	@Override
 	protected EObject resolve(IModuleBinding binding) {
 		URI uri = LogicalJavaURIGenerator.getModuleURI(binding.getName());
-		Resource modContainer = this.getParentResolver().getResourceSet().getResource(uri, false);
+		Resource modContainer = this.getParentResolver().findResourceInResourceSet(uri);
 		if (modContainer == null) {
 			if (ParserOptions.PREFER_BINDING_CONVERSION.isTrue()) {
 				return convertBindingToModule(binding, uri);

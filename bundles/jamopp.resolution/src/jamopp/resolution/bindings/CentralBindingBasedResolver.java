@@ -1,6 +1,8 @@
 package jamopp.resolution.bindings;
 
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.jdt.core.dom.IAnnotationBinding;
@@ -62,5 +64,14 @@ public class CentralBindingBasedResolver {
 	
 	ResourceSet getResourceSet() {
 		return resSet;
+	}
+	
+	Resource findResourceInResourceSet(URI uri) {
+		for (Resource res : resSet.getResources()) {
+			if (res.getURI().equals(uri)) {
+				return res;
+			}
+		}
+		return null;
 	}
 }
