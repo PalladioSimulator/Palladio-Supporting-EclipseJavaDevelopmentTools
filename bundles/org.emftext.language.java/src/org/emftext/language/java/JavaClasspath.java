@@ -84,6 +84,24 @@ public class JavaClasspath {
 		}
 		return classpaths.get(set);
 	}
+	
+	public static void remove(EObject obj) {
+		if (obj != null) {
+			remove(obj.eResource());
+		}
+	}
+	
+	public static void remove(Resource resource) {
+		if (resource != null) {
+			remove(resource.getResourceSet());
+		}
+	}
+	
+	public static void remove(ResourceSet set) {
+		if (set != null && classpaths.containsKey(set)) {
+			classpaths.remove(set);
+		}
+	}
 
 	private ResourceSet resourceSet;
 	private boolean registerLocal = false;
