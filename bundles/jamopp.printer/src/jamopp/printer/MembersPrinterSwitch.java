@@ -63,9 +63,9 @@ class MembersPrinterSwitch extends MembersSwitch<Boolean> {
 			parent.doSwitch(ModifiersPackage.Literals.ANNOTABLE_AND_MODIFIABLE, element);
 			parent.doSwitch(element.getTypeReference());
 			parent.doSwitch(GenericsPackage.Literals.TYPE_ARGUMENTABLE, element);
-			element.getArrayDimensionsBefore().forEach(dim -> parent.doSwitch(dim));
+			element.getTypeReference().getArrayDimensionsBefore().forEach(dim -> parent.doSwitch(dim));
 			writer.append(" " + element.getName());
-			element.getArrayDimensionsAfter().forEach(dim -> parent.doSwitch(dim));
+			element.getTypeReference().getArrayDimensionsAfter().forEach(dim -> parent.doSwitch(dim));
 			if (element.getInitialValue() != null) {
 				writer.append(" = ");
 				parent.doSwitch(element.getInitialValue());
@@ -84,8 +84,7 @@ class MembersPrinterSwitch extends MembersSwitch<Boolean> {
 	public Boolean caseAdditionalField(AdditionalField element) {
 		try {
 			writer.append(element.getName());
-			element.getArrayDimensionsBefore().forEach(dim -> parent.doSwitch(dim));
-			element.getArrayDimensionsAfter().forEach(dim -> parent.doSwitch(dim));
+			element.getTypeReference().getArrayDimensionsAfter().forEach(dim -> parent.doSwitch(dim));
 			if (element.getInitialValue() != null) {
 				writer.append(" = ");
 				parent.doSwitch(element.getInitialValue());
@@ -140,10 +139,10 @@ class MembersPrinterSwitch extends MembersSwitch<Boolean> {
 			parent.doSwitch(GenericsPackage.Literals.TYPE_PARAMETRIZABLE, element);
 			writer.append(" ");
 			parent.doSwitch(element.getTypeReference());
-			element.getArrayDimensionsBefore().forEach(dim -> parent.doSwitch(dim));
+			element.getTypeReference().getArrayDimensionsBefore().forEach(dim -> parent.doSwitch(dim));
 			writer.append(" " + element.getName());
 			parent.doSwitch(ParametersPackage.Literals.PARAMETRIZABLE, element);
-			element.getArrayDimensionsAfter().forEach(dim -> parent.doSwitch(dim));
+			element.getTypeReference().getArrayDimensionsAfter().forEach(dim -> parent.doSwitch(dim));
 			caseExceptionThrower(element);
 			writer.append(" ");
 			parent.doSwitch(element.getStatement());
@@ -160,10 +159,10 @@ class MembersPrinterSwitch extends MembersSwitch<Boolean> {
 			parent.doSwitch(GenericsPackage.Literals.TYPE_PARAMETRIZABLE, element);
 			writer.append(" ");
 			parent.doSwitch(element.getTypeReference());
-			element.getArrayDimensionsBefore().forEach(dim -> parent.doSwitch(dim));
+			element.getTypeReference().getArrayDimensionsBefore().forEach(dim -> parent.doSwitch(dim));
 			writer.append(" " + element.getName());
 			parent.doSwitch(ParametersPackage.Literals.PARAMETRIZABLE, element);
-			element.getArrayDimensionsAfter().forEach(dim -> parent.doSwitch(dim));
+			element.getTypeReference().getArrayDimensionsAfter().forEach(dim -> parent.doSwitch(dim));
 			caseExceptionThrower(element);
 			writer.append(" ");
 			if (element.getDefaultValue() != null) {

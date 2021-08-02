@@ -162,13 +162,13 @@ public class ConstructorExtension {
                 	}
                     long argumentArrayDimension = argument.getArrayDimension();
                     if (needsPerfectMatch) {
-                        long parameterArrayDimension = parameter.getArrayDimension();
+                        long parameterArrayDimension = parameter.getTypeReference().getArrayDimension();
                         parametersMatch = parametersMatch
                                 && argumentType.equalsType(argumentArrayDimension, parameterType,
                                         parameterArrayDimension);
                     } else {
                         parametersMatch = parametersMatch
-                                && argumentType.isSuperType(argumentArrayDimension, parameterType, parameter);
+                                && argumentType.isSuperType(argumentArrayDimension, parameterType, parameter.getTypeReference());
                     }
                 } else {
                     return false;

@@ -8,6 +8,7 @@ import org.emftext.language.java.JavaClasspath;
 import org.emftext.language.java.LogicalJavaURIGenerator;
 
 import jamopp.options.ParserOptions;
+import jamopp.proxy.IJavaContextDependentURIFragmentCollector;
 
 class IModuleBindingResolver extends AbstractBindingResolver<IModuleBinding> {
 	protected IModuleBindingResolver(CentralBindingBasedResolver parentResolver) {
@@ -36,6 +37,7 @@ class IModuleBindingResolver extends AbstractBindingResolver<IModuleBinding> {
 	}
 	
 	private org.emftext.language.java.containers.Module convertBindingToModule(IModuleBinding binding, URI uri) {
+		IJavaContextDependentURIFragmentCollector.GLOBAL_INSTANCE.setBaseURI(uri);
 		org.emftext.language.java.containers.Module result =
 				JDTBindingConverterUtility.convertToModule(binding);
 		// Logical URI of the module is used to create the corresponding resource.

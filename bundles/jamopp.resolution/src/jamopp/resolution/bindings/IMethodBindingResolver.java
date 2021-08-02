@@ -66,7 +66,8 @@ class IMethodBindingResolver extends AbstractBindingResolver<IMethodBinding> {
 					Parameter currentParam = meth.getParameters().get(i + receiveOffset);
 					if (!convertToTypeName(currentParamType).equals(
 							convertToTypeName(currentParam.getTypeReference()))
-							|| currentParamType.getDimensions() != currentParam.getArrayDimension()) {
+							|| currentParamType.getDimensions()
+							!= currentParam.getTypeReference().getArrayDimension()) {
 						return false;
 					}
 				}
@@ -160,7 +161,8 @@ class IMethodBindingResolver extends AbstractBindingResolver<IMethodBinding> {
 					Parameter currentParam = c.getParameters().get(i + receiveOffset);
 					if (!convertToTypeName(currentType).equals(
 							convertToTypeName(currentParam.getTypeReference()))
-							|| currentType.getDimensions() != currentParam.getArrayDimension()) {
+							|| currentType.getDimensions()
+							!= currentParam.getTypeReference().getArrayDimension()) {
 						return false;
 					}
 				}

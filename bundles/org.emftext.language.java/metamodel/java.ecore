@@ -55,7 +55,7 @@
         eSuperTypes="#//commons/Commentable"/>
     <eClassifiers xsi:type="ecore:EClass" name="ArrayInstantiation" abstract="true"
         eSuperTypes="#//references/Reference"/>
-    <eClassifiers xsi:type="ecore:EClass" name="ArrayInstantiationBySize" eSuperTypes="#//arrays/ArrayInstantiation #_Wo2ZP9z1Ed2bJ_pQViWxFg #//arrays/ArrayTypeable">
+    <eClassifiers xsi:type="ecore:EClass" name="ArrayInstantiationBySize" eSuperTypes="#//arrays/ArrayInstantiation #_Wo2ZP9z1Ed2bJ_pQViWxFg">
       <eOperations name="getArrayDimension" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//ELong">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="body" value="return org.emftext.language.java.extensions.expressions.ExpressionExtension.getArrayDimension((org.emftext.language.java.expressions.Expression) this);"/>
@@ -71,7 +71,7 @@
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="ArrayInstantiationByValuesUntyped"
         eSuperTypes="#//arrays/ArrayInstantiationByValues"/>
-    <eClassifiers xsi:type="ecore:EClass" name="ArrayInstantiationByValuesTyped" eSuperTypes="#//arrays/ArrayInstantiationByValues #_Wo2ZP9z1Ed2bJ_pQViWxFg #//arrays/ArrayTypeable">
+    <eClassifiers xsi:type="ecore:EClass" name="ArrayInstantiationByValuesTyped" eSuperTypes="#//arrays/ArrayInstantiationByValues #_Wo2ZP9z1Ed2bJ_pQViWxFg">
       <eOperations name="getArrayDimension" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//ELong">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="body" value="return org.emftext.language.java.extensions.expressions.ExpressionExtension.getArrayDimension((org.emftext.language.java.expressions.Expression) this);"/>
@@ -647,7 +647,7 @@
     <eClassifiers xsi:type="ecore:EClass" name="EqualityExpressionChild" abstract="true"
         eSuperTypes="#//expressions/AndExpressionChild"/>
     <eClassifiers xsi:type="ecore:EClass" xmi:id="_Wo2YNdz1Ed2bJ_pQViWxFg" name="InstanceOfExpression"
-        eSuperTypes="#//arrays/ArrayTypeable #_Wo2ZP9z1Ed2bJ_pQViWxFg #//expressions/EqualityExpressionChild">
+        eSuperTypes="#_Wo2ZP9z1Ed2bJ_pQViWxFg #//expressions/EqualityExpressionChild">
       <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_Wo2YONz1Ed2bJ_pQViWxFg"
           name="child" lowerBound="1" eType="#//expressions/InstanceOfExpressionChild"
           containment="true"/>
@@ -722,7 +722,7 @@
     <eClassifiers xsi:type="ecore:EClass" name="UnaryModificationExpressionChild"
         abstract="true" eSuperTypes="#//expressions/UnaryExpressionChild"/>
     <eClassifiers xsi:type="ecore:EClass" xmi:id="_Wo2YWdz1Ed2bJ_pQViWxFg" name="CastExpression"
-        eSuperTypes="#_Wo2ZP9z1Ed2bJ_pQViWxFg #//arrays/ArrayTypeable #//expressions/UnaryModificationExpressionChild">
+        eSuperTypes="#_Wo2ZP9z1Ed2bJ_pQViWxFg #//expressions/UnaryModificationExpressionChild">
       <eOperations name="getChild" lowerBound="1" eType="#//expressions/MultiplicativeExpressionChild">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="body" value="return org.emftext.language.java.extensions.expressions.CastExpressionExtension.getChild((org.emftext.language.java.expressions.CastExpression) this);"/>
@@ -768,7 +768,7 @@
     <eClassifiers xsi:type="ecore:EClass" name="ClassTypeConstructorReferenceExpression"
         eSuperTypes="#_Wo2ZP9z1Ed2bJ_pQViWxFg #//generics/CallTypeArgumentable #//expressions/MethodReferenceExpression"/>
     <eClassifiers xsi:type="ecore:EClass" name="ArrayConstructorReferenceExpression"
-        eSuperTypes="#//expressions/MethodReferenceExpression #//arrays/ArrayTypeable #_Wo2ZP9z1Ed2bJ_pQViWxFg"/>
+        eSuperTypes="#//expressions/MethodReferenceExpression #_Wo2ZP9z1Ed2bJ_pQViWxFg"/>
     <eClassifiers xsi:type="ecore:EClass" name="MethodReferenceExpressionChild" abstract="true"
         eSuperTypes="#//expressions/UnaryModificationExpressionChild"/>
     <eClassifiers xsi:type="ecore:EClass" name="LambdaExpression" eSuperTypes="#_Wo2YDNz1Ed2bJ_pQViWxFg">
@@ -1077,7 +1077,7 @@
       <eStructuralFeatures xsi:type="ecore:EReference" name="defaultMembers" upperBound="-1"
           eType="#//members/Member" containment="true"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="AdditionalField" eSuperTypes="#//references/ReferenceableElement #//arrays/ArrayTypeable #//instantiations/Initializable"/>
+    <eClassifiers xsi:type="ecore:EClass" name="AdditionalField" eSuperTypes="#//references/ReferenceableElement #//instantiations/Initializable #_Wo2ZP9z1Ed2bJ_pQViWxFg"/>
     <eClassifiers xsi:type="ecore:EClass" name="Constructor" eSuperTypes="#//members/Member #//parameters/Parametrizable #//generics/TypeParametrizable #//members/ExceptionThrower #//modifiers/AnnotableAndModifiable #//statements/BlockContainer #//statements/StatementListContainer">
       <eOperations name="getStatements" lowerBound="1">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -1100,7 +1100,7 @@
       <eStructuralFeatures xsi:type="ecore:EReference" name="additionalFields" upperBound="-1"
           eType="#//members/AdditionalField" containment="true"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="Method" abstract="true" eSuperTypes="#//members/Member #_Wo2ZP9z1Ed2bJ_pQViWxFg #//arrays/ArrayTypeable #//generics/TypeParametrizable #//parameters/Parametrizable #//references/ReferenceableElement #//members/ExceptionThrower #//modifiers/AnnotableAndModifiable #//statements/StatementContainer">
+    <eClassifiers xsi:type="ecore:EClass" name="Method" abstract="true" eSuperTypes="#//members/Member #_Wo2ZP9z1Ed2bJ_pQViWxFg #//generics/TypeParametrizable #//parameters/Parametrizable #//references/ReferenceableElement #//members/ExceptionThrower #//modifiers/AnnotableAndModifiable #//statements/StatementContainer">
       <eOperations name="isMethodForCall" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="body" value="return org.emftext.language.java.extensions.members.MethodExtension.isMethodForCall((org.emftext.language.java.members.Method) this, (org.emftext.language.java.references.MethodCall) methodCall, needsPerfectMatch);"/>
@@ -1649,7 +1649,7 @@
           eType="#_Wo2ZPdz1Ed2bJ_pQViWxFg" containment="true"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" xmi:id="_Wo2ZPdz1Ed2bJ_pQViWxFg" name="TypeReference"
-        abstract="true" eSuperTypes="#//commons/Commentable">
+        abstract="true" eSuperTypes="#//commons/Commentable #//arrays/ArrayTypeable">
       <eOperations name="getTarget" eType="#_Wo2ZO9z1Ed2bJ_pQViWxFg">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="body" value="return org.emftext.language.java.extensions.types.TypeReferenceExtension.getBoundTarget((org.emftext.language.java.types.TypeReference) this, null);"/>
@@ -1726,7 +1726,7 @@
     <eClassifiers xsi:type="ecore:EClass" xmi:id="_Wo2ZUdz1Ed2bJ_pQViWxFg" name="Short"
         eSuperTypes="#_Wo2ZR9z1Ed2bJ_pQViWxFg"/>
     <eClassifiers xsi:type="ecore:EClass" name="Void" eSuperTypes="#_Wo2ZR9z1Ed2bJ_pQViWxFg"/>
-    <eClassifiers xsi:type="ecore:EClass" name="InferableType" eSuperTypes="#_Wo2ZPdz1Ed2bJ_pQViWxFg #//arrays/ArrayTypeable #//types/TypedElementExtension">
+    <eClassifiers xsi:type="ecore:EClass" name="InferableType" eSuperTypes="#_Wo2ZPdz1Ed2bJ_pQViWxFg #//types/TypedElementExtension">
       <eOperations name="getBoundTargetReference" eType="#_Wo2ZPdz1Ed2bJ_pQViWxFg">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="body" value="return org.emftext.language.java.extensions.types.InferableTypeExtension.getBoundTargetReference((org.emftext.language.java.types.InferableType) this, reference);"/>
@@ -1736,7 +1736,7 @@
     </eClassifiers>
   </eSubpackages>
   <eSubpackages name="variables" nsURI="http://www.emftext.org/java/variables" nsPrefix="variables">
-    <eClassifiers xsi:type="ecore:EClass" name="Variable" abstract="true" eSuperTypes="#//commons/NamedElement #_Wo2ZP9z1Ed2bJ_pQViWxFg #//arrays/ArrayTypeable #//references/ReferenceableElement #//generics/TypeArgumentable">
+    <eClassifiers xsi:type="ecore:EClass" name="Variable" abstract="true" eSuperTypes="#//commons/NamedElement #_Wo2ZP9z1Ed2bJ_pQViWxFg #//references/ReferenceableElement #//generics/TypeArgumentable">
       <eOperations name="createMethodCallStatement" eType="#_Wo2YzNz1Ed2bJ_pQViWxFg">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="body" value="return org.emftext.language.java.extensions.variables.VariableExtension.createMethodCallStatement((org.emftext.language.java.variables.Variable) this, methodName, arguments);"/>
@@ -1758,7 +1758,7 @@
       <eStructuralFeatures xsi:type="ecore:EReference" name="additionalLocalVariables"
           upperBound="-1" eType="#//variables/AdditionalLocalVariable" containment="true"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="AdditionalLocalVariable" eSuperTypes="#//references/ReferenceableElement #//arrays/ArrayTypeable #//instantiations/Initializable"/>
+    <eClassifiers xsi:type="ecore:EClass" name="AdditionalLocalVariable" eSuperTypes="#//references/ReferenceableElement #//instantiations/Initializable #_Wo2ZP9z1Ed2bJ_pQViWxFg"/>
     <eClassifiers xsi:type="ecore:EClass" name="Resource" abstract="true" interface="true"
         eSuperTypes="#//commons/Commentable"/>
   </eSubpackages>

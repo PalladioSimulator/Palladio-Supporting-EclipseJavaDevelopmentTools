@@ -45,24 +45,14 @@ public class MethodReferenceExpressionExtension {
 					call.getArguments().indexOf(parentContainer))
 					.getTypeReference();
 			}
-		} else if (parentContainer.eContainer() instanceof LocalVariable
-				|| parentContainer.eContainer() instanceof AdditionalLocalVariable) {
-			LocalVariable vari;
-			if (parentContainer.eContainer() instanceof AdditionalLocalVariable) {
-				vari = (LocalVariable) parentContainer.eContainer().eContainer();
-			} else {
-				vari = (LocalVariable) parentContainer.eContainer();
-			}
-			targetType = vari.getTypeReference();
-		} else if (parentContainer.eContainer() instanceof Field
-				|| parentContainer.eContainer() instanceof AdditionalField) {
-			Field f;
-			if (parentContainer.eContainer() instanceof AdditionalField) {
-				f = (Field) parentContainer.eContainer().eContainer();
-			} else {
-				f = (Field) parentContainer.eContainer();
-			}
-			targetType = f.getTypeReference();
+		} else if (parentContainer.eContainer() instanceof LocalVariable) {
+			targetType = ((LocalVariable) parentContainer.eContainer()).getTypeReference();
+		} else if (parentContainer.eContainer() instanceof AdditionalLocalVariable) {
+			targetType = ((AdditionalLocalVariable) parentContainer.eContainer()).getTypeReference();
+		} else if (parentContainer.eContainer() instanceof Field) {
+			targetType = ((Field) parentContainer.eContainer()).getTypeReference();
+		} else if (parentContainer.eContainer() instanceof AdditionalField) {
+			targetType = ((AdditionalField) parentContainer.eContainer().eContainer()).getTypeReference();
 		} else if (parentContainer.eContainer() instanceof AssignmentExpression) {
 			AssignmentExpression assExpr = (AssignmentExpression) parentContainer.eContainer();
 			targetType = assExpr.getChild().getOneTypeReference(false);

@@ -20,6 +20,7 @@ import org.emftext.language.java.members.Member;
 import org.emftext.language.java.members.MemberContainer;
 
 import jamopp.options.ParserOptions;
+import jamopp.proxy.IJavaContextDependentURIFragmentCollector;
 
 class ITypeBindingResolver extends AbstractBindingResolver<ITypeBinding> {
 	private Pattern parentNamePattern;
@@ -33,6 +34,9 @@ class ITypeBindingResolver extends AbstractBindingResolver<ITypeBinding> {
 
 	@Override
 	protected EObject resolve(ITypeBinding binding) {
+		if (binding.getName().equals("ClassWithEnumeratingFieldDeclaration")) {
+			System.out.println("hu");
+		}
 		binding = binding.getTypeDeclaration();
 		if (binding.isAnonymous() || binding.isLocal()) {
 			return findLocalOrAnonymousClass(binding.getBinaryName());
@@ -42,8 +46,8 @@ class ITypeBindingResolver extends AbstractBindingResolver<ITypeBinding> {
 			TypeParametrizable param = null;
 			if (binding.getDeclaringClass() != null) {
 				param = (TypeParametrizable) this.getParentResolver().resolve(binding.getDeclaringClass());
-			} else {
-				param = (TypeParametrizable) this.getParentResolver().resolve(binding.getDeclaringMethod());
+//			} else {
+//				param = (TypeParametrizable) this.getParentResolver().resolve(binding.getDeclaringMethod());
 			}
 			if (param == null || param.getTypeParameters() == null) {
 				return null;
@@ -83,6 +87,7 @@ class ITypeBindingResolver extends AbstractBindingResolver<ITypeBinding> {
 	}
 	
 	private ConcreteClassifier convertBinding(ITypeBinding binding, URI baseURI) {
+		IJavaContextDependentURIFragmentCollector.GLOBAL_INSTANCE.setBaseURI(baseURI);
 		CompilationUnit cu = JDTBindingConverterUtility.convertToCompilationUnit(binding);
 		// The logical URI is used to create the corresponding resource.
 		Resource potRes = this.getParentResolver().getResourceSet().createResource(baseURI);

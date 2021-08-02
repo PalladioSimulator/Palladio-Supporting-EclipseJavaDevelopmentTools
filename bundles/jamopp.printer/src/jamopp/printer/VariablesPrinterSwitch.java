@@ -24,9 +24,9 @@ class VariablesPrinterSwitch extends VariablesSwitch<Boolean> {
 			parent.doSwitch(ModifiersPackage.Literals.ANNOTABLE_AND_MODIFIABLE, element);
 			parent.doSwitch(element.getTypeReference());
 			parent.doSwitch(GenericsPackage.Literals.TYPE_ARGUMENTABLE, element);
-			element.getArrayDimensionsBefore().forEach(dim -> parent.doSwitch(dim));
+			element.getTypeReference().getArrayDimensionsBefore().forEach(dim -> parent.doSwitch(dim));
 			writer.append(" " + element.getName());
-			element.getArrayDimensionsAfter().forEach(dim -> parent.doSwitch(dim));
+			element.getTypeReference().getArrayDimensionsAfter().forEach(dim -> parent.doSwitch(dim));
 			if (element.getInitialValue() != null) {
 				writer.append(" = ");
 				parent.doSwitch(element.getInitialValue());
@@ -44,8 +44,7 @@ class VariablesPrinterSwitch extends VariablesSwitch<Boolean> {
 	public Boolean caseAdditionalLocalVariable(AdditionalLocalVariable element) {
 		try {
 			writer.append(element.getName());
-			element.getArrayDimensionsBefore().forEach(dim -> parent.doSwitch(dim));
-			element.getArrayDimensionsAfter().forEach(dim -> parent.doSwitch(dim));
+			element.getTypeReference().getArrayDimensionsAfter().forEach(dim -> parent.doSwitch(dim));
 			if (element.getInitialValue() != null) {
 				writer.append(" = ");
 				parent.doSwitch(element.getInitialValue());

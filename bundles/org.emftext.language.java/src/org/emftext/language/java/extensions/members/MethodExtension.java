@@ -163,14 +163,14 @@ public class MethodExtension {
 					}
 					long argumentArrayDimension = argument.getArrayDimension();
 					if (needsPerfectMatch) {
-						long parameterArrayDimension = parameter.getArrayDimension();
+						long parameterArrayDimension = parameter.getTypeReference().getArrayDimension();
 						parametersMatch = parametersMatch
 							&& argumentType.equalsType(argumentArrayDimension,
 									parameterType, parameterArrayDimension);
 					} else {
 						parametersMatch = parametersMatch 
 							&& argumentType.isSuperType(argumentArrayDimension,
-									parameterType, parameter);
+									parameterType, parameter.getTypeReference());
 					}
 				} else {
 					return false;
@@ -241,15 +241,16 @@ public class MethodExtension {
 				
 				if (!parameterType.eIsProxy() || !argumentType.eIsProxy()) {
 					parametersMatch = parametersMatch && parameterType.isSuperType(
-						paramOne.getArrayDimension(), argumentType, paramTwo);
+						paramOne.getTypeReference().getArrayDimension(),
+						argumentType, paramTwo.getTypeReference());
 				} else {
 					return false;
 				}
 			}
 			
 			Type target = one.getTypeReference().getTarget();
-			parametersMatch = parametersMatch && target.isSuperType(one.getArrayDimension(),
-				two.getTypeReference().getTarget(), two);
+			parametersMatch = parametersMatch && target.isSuperType(one.getTypeReference().getArrayDimension(),
+				two.getTypeReference().getTarget(), two.getTypeReference());
 			
 			return parametersMatch;
 		}

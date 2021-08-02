@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.emftext.language.java.arrays.ArrayTypeable;
 import org.emftext.language.java.classifiers.Classifier;
 import org.emftext.language.java.generics.ExtendsTypeArgument;
@@ -205,81 +206,7 @@ public class TypeReferenceExtension {
 		if (me.eContainer() == null) {
 			return me;
 		}
-		if (me instanceof NamespaceClassifierReference) {
-			NamespaceClassifierReference ncr = (NamespaceClassifierReference) me;
-			NamespaceClassifierReference result = TypesFactory.eINSTANCE.createNamespaceClassifierReference();
-			for (String s : ncr.getNamespaces()) {
-				result.getNamespaces().add(s);
-			}
-			for (ClassifierReference cR : ncr.getClassifierReferences()) {
-				result.getClassifierReferences().add((ClassifierReference) clone(cR));
-			}
-			return result;
-		} else if (me instanceof ClassifierReference) {
-			ClassifierReference ref = (ClassifierReference) me;
-			ClassifierReference result = TypesFactory.eINSTANCE.createClassifierReference();
-			for (TypeArgument arg : ref.getTypeArguments()) {
-				result.getTypeArguments().add(clone(arg));
-			}
-			result.setTarget(ref.getTarget());
-			return result;
-		} else if (me instanceof InferableType) {
-			InferableType infer = (InferableType) me;
-			InferableType result = TypesFactory.eINSTANCE.createInferableType();
-			for (TypeReference ref : infer.getActualTargets()) {
-				result.getActualTargets().add(clone(ref));
-			}
-			return result;
-		} else if (me instanceof TemporalCompositeTypeReference) {
-			TemporalCompositeTypeReference ref = (TemporalCompositeTypeReference) me;
-			List<TypeReference> refList = new ArrayList<>(ref.getTypeReferences());
-			ref.getTypeReferences().clear();
-			for (TypeReference typeRef : refList) {
-				ref.getTypeReferences().add(clone(typeRef));
-			}
-			return ref;
-		} else if (me instanceof org.emftext.language.java.types.Void) {
-			return TypesFactory.eINSTANCE.createVoid();
-		} else if (me instanceof org.emftext.language.java.types.Boolean) {
-			return TypesFactory.eINSTANCE.createBoolean();
-		} else if (me instanceof org.emftext.language.java.types.Byte) {
-			return TypesFactory.eINSTANCE.createByte();
-		} else if (me instanceof org.emftext.language.java.types.Short) {
-			return TypesFactory.eINSTANCE.createShort();
-		} else if (me instanceof org.emftext.language.java.types.Int) {
-			return TypesFactory.eINSTANCE.createInt();
-		} else if (me instanceof org.emftext.language.java.types.Long) {
-			return TypesFactory.eINSTANCE.createLong();
-		} else if (me instanceof org.emftext.language.java.types.Float) {
-			return TypesFactory.eINSTANCE.createFloat();
-		} else if (me instanceof org.emftext.language.java.types.Double) {
-			return TypesFactory.eINSTANCE.createDouble();
-		} else if (me instanceof org.emftext.language.java.types.Char) {
-			return TypesFactory.eINSTANCE.createChar();
-		}
-		return null;
-	}
-	
-	public static TypeArgument clone(TypeArgument me) {
-		if (me instanceof QualifiedTypeArgument) {
-			QualifiedTypeArgument arg = (QualifiedTypeArgument) me;
-			QualifiedTypeArgument result = GenericsFactory.eINSTANCE.createQualifiedTypeArgument();
-			result.setTypeReference(clone(arg.getTypeReference()));
-			return result;
-		} else if (me instanceof UnknownTypeArgument) {
-			return GenericsFactory.eINSTANCE.createUnknownTypeArgument();
-		} else if (me instanceof SuperTypeArgument) {
-			SuperTypeArgument arg = (SuperTypeArgument) me;
-			SuperTypeArgument result = GenericsFactory.eINSTANCE.createSuperTypeArgument();
-			result.setSuperType(clone(arg.getSuperType()));
-			return result;
-		} else if (me instanceof ExtendsTypeArgument) {
-			ExtendsTypeArgument arg = (ExtendsTypeArgument) me;
-			ExtendsTypeArgument result = GenericsFactory.eINSTANCE.createExtendsTypeArgument();
-			result.setExtendType(clone(arg.getExtendType()));
-			return result;
-		}
-		return null;
+		return EcoreUtil.copy(me);
 	}
 	
 	/**

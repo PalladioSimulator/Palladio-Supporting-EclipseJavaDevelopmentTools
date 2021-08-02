@@ -58,6 +58,7 @@ import org.emftext.language.java.statements.Block;
 import org.emftext.language.java.statements.Return;
 import org.emftext.language.java.types.Type;
 import org.emftext.language.java.types.TypeReference;
+import org.emftext.language.java.types.TypedElement;
 import org.emftext.language.java.util.TemporalCompositeTypeReference;
 import org.emftext.language.java.util.TemporalUnknownType;
 import org.emftext.language.java.variables.AdditionalLocalVariable;
@@ -168,24 +169,14 @@ public class ExpressionExtension {
 			} else if (container.eContainer() instanceof AssignmentExpression) {
 				AssignmentExpression assExpr = (AssignmentExpression) container.eContainer();
 				return assExpr.getChild().getOneTypeReference(alternative);
-			} else if (container.eContainer() instanceof LocalVariable
-					|| container.eContainer() instanceof AdditionalLocalVariable) {
-				LocalVariable locVar;
-				if (container.eContainer() instanceof AdditionalLocalVariable) {
-					locVar = (LocalVariable) container.eContainer().eContainer();
-				} else {
-					locVar = (LocalVariable) container.eContainer();
-				}
-				return locVar.getTypeReference();
-			} else if (container.eContainer() instanceof Field
-					|| container.eContainer() instanceof AdditionalField) {
-				Field f;
-				if (container.eContainer() instanceof AdditionalField) {
-					f = (Field) container.eContainer().eContainer();
-				} else {
-					f = (Field) container.eContainer();
-				}
-				return f.getTypeReference();
+			} else if (container.eContainer() instanceof LocalVariable) {
+				return ((LocalVariable) container.eContainer()).getTypeReference();
+			} else if (container.eContainer() instanceof AdditionalLocalVariable) {
+				return ((AdditionalLocalVariable) container.eContainer()).getTypeReference();
+			} else if (container.eContainer() instanceof Field) {
+				return ((Field) container.eContainer()).getTypeReference();
+			} else if (container.eContainer() instanceof AdditionalField) {
+				return ((AdditionalField) container.eContainer().eContainer()).getTypeReference();
 			} else if (container.eContainer() instanceof Return) {
 				while (!(container instanceof Method)) {
 					container = container.eContainer();
@@ -305,32 +296,20 @@ public class ExpressionExtension {
 			
 			if (reference instanceof ElementReference) {
 				ElementReference elementReference = (ElementReference) reference;
-				if (elementReference.getTarget() instanceof ArrayTypeable) {
-					arrayType = (ArrayTypeable) elementReference.getTarget();
+				if (elementReference.getTarget() instanceof TypedElement) {
+					arrayType = ((TypedElement) elementReference.getTarget()).getTypeReference();
 				}
-				if (elementReference.getTarget() instanceof AdditionalLocalVariable) {
-					AdditionalLocalVariable additionalLocalVariable = (AdditionalLocalVariable) elementReference.getTarget();
-					arrayType = (LocalVariable) additionalLocalVariable.eContainer();
-					size += additionalLocalVariable.getArrayDimensionsAfter().size();
-					size -= arrayType.getArrayDimensionsAfter().size();
-				}
-				if (elementReference.getTarget() instanceof AdditionalField) {
-					AdditionalField additionalField = (AdditionalField) elementReference.getTarget();
-					arrayType = (Field) additionalField.eContainer();
-					size += additionalField.getArrayDimensionsAfter().size();
-					size -= arrayType.getArrayDimensionsAfter().size();
-				}
-			}
-			else if (me instanceof ArrayTypeable) {
-				size += ((ArrayTypeable) me).getArrayDimensionsBefore().size() + ((ArrayTypeable) me).getArrayDimensionsAfter().size();
+			} else if (me instanceof ArrayTypeable) {
+				size += ((ArrayTypeable) me).getArrayDimensionsBefore().size()
+						+ ((ArrayTypeable) me).getArrayDimensionsAfter().size();
 				if (me instanceof VariableLengthParameter) {
 					size++;
 				}
 			}
 			size -= reference.getArraySelectors().size();
-		}
-		else if (me instanceof ArrayTypeable) {
-			size += ((ArrayTypeable) me).getArrayDimensionsBefore().size() + ((ArrayTypeable) me).getArrayDimensionsAfter().size();
+		} else if (me instanceof ArrayTypeable) {
+			size += ((ArrayTypeable) me).getArrayDimensionsBefore().size()
+					+ ((ArrayTypeable) me).getArrayDimensionsAfter().size();
 			if (me instanceof VariableLengthParameter) {
 				size++;
 			}

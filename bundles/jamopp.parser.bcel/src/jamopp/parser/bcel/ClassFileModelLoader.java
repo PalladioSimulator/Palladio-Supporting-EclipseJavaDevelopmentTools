@@ -190,7 +190,8 @@ public class ClassFileModelLoader {
 				if (emfMember instanceof Method
 						&& !((Method) emfMember).getParameters().isEmpty()
 						&& !((Method) emfMember).getParameters().get(
-							((Method) emfMember).getParameters().size() - 1).getArrayDimensionsBefore().isEmpty()) {
+							((Method) emfMember).getParameters().size() - 1)
+							.getTypeReference().getArrayDimensionsBefore().isEmpty()) {
 					Member emfMethod2 = constructMethod(method, emfClassifier, true);
 					emfClassifier.getMembers().add(emfMethod2);
 				} else {
@@ -238,7 +239,8 @@ public class ClassFileModelLoader {
 
 		int arrayDimension = getArrayDimension(signature);
         for (int i = 0; i < arrayDimension; i++) {
-        	emfMethod.getArrayDimensionsBefore().add(ArraysFactory.eINSTANCE.createArrayDimension());
+        	emfMethod.getTypeReference().getArrayDimensionsBefore()
+        		.add(ArraysFactory.eINSTANCE.createArrayDimension());
         }
 
         List<String> parameterNames = extractParameterNames(method);
@@ -316,7 +318,8 @@ public class ClassFileModelLoader {
 
         int arrayDimension = getArrayDimension(signature);
         for (int i = 0; i < arrayDimension; i++) {
-        	emfParameter.getArrayDimensionsBefore().add(ArraysFactory.eINSTANCE.createArrayDimension());
+        	emfParameter.getTypeReference().getArrayDimensionsBefore()
+        		.add(ArraysFactory.eINSTANCE.createArrayDimension());
         }
 
 		return emfParameter;
@@ -331,7 +334,8 @@ public class ClassFileModelLoader {
 
         int arrayDimension = getArrayDimension(signature) - 1;
         for (int i = 0; i < arrayDimension; i++) {
-        	emfParameter.getArrayDimensionsBefore().add(ArraysFactory.eINSTANCE.createArrayDimension());
+        	emfParameter.getTypeReference().getArrayDimensionsBefore()
+        		.add(ArraysFactory.eINSTANCE.createArrayDimension());
         }
 
 		return emfParameter;
@@ -363,7 +367,8 @@ public class ClassFileModelLoader {
 
 		int arrayDimension = getArrayDimension(signature);
         for (int i = 0; i < arrayDimension; i++) {
-        	emfField.getArrayDimensionsBefore().add(ArraysFactory.eINSTANCE.createArrayDimension());
+        	emfField.getTypeReference().getArrayDimensionsBefore()
+        		.add(ArraysFactory.eINSTANCE.createArrayDimension());
         }
 
 		if (!"".equals(plainSignature) && typeRef instanceof ClassifierReference) {

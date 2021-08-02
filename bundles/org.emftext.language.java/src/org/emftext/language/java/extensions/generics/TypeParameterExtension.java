@@ -238,6 +238,9 @@ public class TypeParameterExtension {
 		}
 		
 		for (TypeReference prevType : prevTypeList) {
+			if (prevType == null) {
+				continue;
+			}
 			int typeParameterIndex = -1;
 			if (typeParameterDeclarator instanceof ConcreteClassifier) {
 				typeParameterIndex = typeParameterDeclarator.getTypeParameters().indexOf(me);
@@ -660,11 +663,11 @@ public class TypeParameterExtension {
 			if (container instanceof LocalVariable) {
 				ref = ((LocalVariable) container).getTypeReference();
 			} else if (container instanceof AdditionalLocalVariable) {
-				ref = ((LocalVariable) container.eContainer()).getTypeReference();
+				ref = ((AdditionalLocalVariable) container).getTypeReference();
 			} else if (container instanceof Field) {
 				ref = ((Field) container).getTypeReference();
 			} else if (container instanceof AdditionalField) {
-				ref = ((Field) container.eContainer()).getTypeReference();
+				ref = ((AdditionalField) container).getTypeReference();
 			} else if (container instanceof AssignmentExpression) {
 				ref = ((AssignmentExpression) container).getChild().getOneTypeReference(false);
 			} else if (container instanceof CastExpression) {

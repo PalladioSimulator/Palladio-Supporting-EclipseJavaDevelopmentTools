@@ -392,7 +392,8 @@ public class JDTResolverUtility {
 					ITypeBinding currentParamType = binding.getParameterTypes()[i];
 					org.emftext.language.java.parameters.Parameter currentParam = meth.getParameters().get(i + receiveOffset);
 					if (!convertToTypeName(currentParamType).equals(convertToTypeName(currentParam.getTypeReference()))
-						|| currentParamType.getDimensions() != currentParam.getArrayDimension()) {
+						|| currentParamType.getDimensions()
+						!= currentParam.getTypeReference().getArrayDimension()) {
 						return null;
 					}
 				}
@@ -466,7 +467,8 @@ public class JDTResolverUtility {
 								ITypeBinding currentType = binding.getParameterTypes()[i];
 								org.emftext.language.java.parameters.Parameter currentParam = con.getParameters().get(i + receiveOffset);
 								if (!convertToTypeName(currentType).equals(convertToTypeName(currentParam.getTypeReference()))
-									|| currentType.getDimensions() != currentParam.getArrayDimension()) {
+									|| currentType.getDimensions()
+									!= currentParam.getTypeReference().getArrayDimension()) {
 									continue outerLoop;
 								}
 							}

@@ -144,7 +144,7 @@ class ExpressionConverterUtility {
 			org.emftext.language.java.expressions.InstanceOfExpression result = org.emftext.language.java.expressions.ExpressionsFactory.eINSTANCE.createInstanceOfExpression();
 			result.setChild((org.emftext.language.java.expressions.InstanceOfExpressionChild) convertToExpression(castedExpr.getLeftOperand()));
 			result.setTypeReference(BaseConverterUtility.convertToTypeReference(castedExpr.getRightOperand()));
-			BaseConverterUtility.convertToArrayDimensionsAndSet(castedExpr.getRightOperand(), result);
+//			BaseConverterUtility.convertToArrayDimensionsAndSet(castedExpr.getRightOperand(), result);
 			LayoutInformationConverter.convertToMinimalLayoutInformation(result, castedExpr);
 			return result;
 		} else if (expr.getNodeType() == ASTNode.PREFIX_EXPRESSION) {
@@ -183,13 +183,13 @@ class ExpressionConverterUtility {
 			if (castExpr.getType().isIntersectionType()) {
 				IntersectionType interType = (IntersectionType) castExpr.getType();
 				result.setTypeReference(BaseConverterUtility.convertToTypeReference((Type) interType.types().get(0)));
-				BaseConverterUtility.convertToArrayDimensionsAndSet((Type) interType.types().get(0), result);
+//				BaseConverterUtility.convertToArrayDimensionsAndSet((Type) interType.types().get(0), result);
 				for (int index = 1; index < interType.types().size(); index++) {
 					result.getAdditionalBounds().add(BaseConverterUtility.convertToTypeReference((Type) interType.types().get(index)));
 				}
 			} else {
 				result.setTypeReference(BaseConverterUtility.convertToTypeReference(castExpr.getType()));
-				BaseConverterUtility.convertToArrayDimensionsAndSet(castExpr.getType(), result);
+//				BaseConverterUtility.convertToArrayDimensionsAndSet(castExpr.getType(), result);
 			}
 			result.setGeneralChild(convertToExpression(castExpr.getExpression()));
 			LayoutInformationConverter.convertToMinimalLayoutInformation(result, castExpr);
@@ -496,7 +496,7 @@ class ExpressionConverterUtility {
 				org.emftext.language.java.expressions.ArrayConstructorReferenceExpression result = org.emftext.language.java.expressions.ExpressionsFactory
 					.eINSTANCE.createArrayConstructorReferenceExpression();
 				result.setTypeReference(BaseConverterUtility.convertToTypeReference(crRef.getType()));
-				BaseConverterUtility.convertToArrayDimensionsAndSet(crRef.getType(), result);
+//				BaseConverterUtility.convertToArrayDimensionsAndSet(crRef.getType(), result);
 				LayoutInformationConverter.convertToMinimalLayoutInformation(result, crRef);
 				return result;
 			} else {

@@ -62,8 +62,8 @@ class ArraysPrinterSwitch extends ArraysSwitch<Boolean> {
 				parent.doSwitch(expr);
 				writer.append("] ");
 			}
-			element.getArrayDimensionsBefore().forEach(dim -> parent.doSwitch(dim));
-			element.getArrayDimensionsAfter().forEach(dim -> parent.doSwitch(dim));
+			element.getTypeReference().getArrayDimensionsBefore().forEach(dim -> parent.doSwitch(dim));
+			element.getTypeReference().getArrayDimensionsAfter().forEach(dim -> parent.doSwitch(dim));
 			parent.doSwitch(ReferencesPackage.Literals.REFERENCE, element);
 		} catch (IOException e) {
 		}
@@ -83,8 +83,8 @@ class ArraysPrinterSwitch extends ArraysSwitch<Boolean> {
 			writer.append("new ");
 			parent.doSwitch(element.getTypeReference());
 			parent.doSwitch(GenericsPackage.Literals.TYPE_ARGUMENTABLE, element);
-			element.getArrayDimensionsBefore().forEach(dim -> parent.doSwitch(dim));
-			element.getArrayDimensionsAfter().forEach(dim -> parent.doSwitch(dim));
+			element.getTypeReference().getArrayDimensionsBefore().forEach(dim -> parent.doSwitch(dim));
+			element.getTypeReference().getArrayDimensionsAfter().forEach(dim -> parent.doSwitch(dim));
 			writer.append(" ");
 			caseArrayInitializer(element.getArrayInitializer());
 			parent.doSwitch(ReferencesPackage.Literals.REFERENCE, element);

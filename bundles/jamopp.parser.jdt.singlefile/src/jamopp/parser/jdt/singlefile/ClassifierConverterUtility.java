@@ -66,13 +66,15 @@ class ClassifierConverterUtility {
 				IPackageBinding packBinding = typeBinding.getPackage();
 				if (packBinding != null && !packBinding.isRecovered()) {
 					org.emftext.language.java.containers.Package packProxy =
-							org.emftext.language.java.containers.ContainersFactory.eINSTANCE.createPackage();
+						org.emftext.language.java.containers.ContainersFactory.eINSTANCE.createPackage();
 					for (String nsPart : packBinding.getNameComponents()) {
 						packProxy.getNamespaces().add(nsPart);
 					}
 					packProxy.setName("");
-					IJavaContextDependentURIFragmentCollector.GLOBAL_INSTANCE.registerContextDependentURIFragment(
-							result, org.emftext.language.java.classifiers.ClassifiersPackage.Literals.CONCRETE_CLASSIFIER__PACKAGE,
+					IJavaContextDependentURIFragmentCollector.GLOBAL_INSTANCE
+							.registerContextDependentURIFragment(result,
+							org.emftext.language.java.classifiers
+							.ClassifiersPackage.Literals.CONCRETE_CLASSIFIER__PACKAGE,
 							packBinding.getName(), packProxy, -1, packBinding);
 					result.setPackage(packProxy);
 				}
@@ -162,30 +164,34 @@ class ClassifierConverterUtility {
 			AnnotationInstanceOrModifierConverterUtility
 			.converToModifierOrAnnotationInstance((IExtendedModifier) obj)));
 		result.setTypeReference(BaseConverterUtility.convertToTypeReference(fieldDecl.getType()));
-		BaseConverterUtility.convertToArrayDimensionsAndSet(fieldDecl.getType(), result);
+		BaseConverterUtility.convertToArrayDimensionsAndSet(fieldDecl.getType(), result.getTypeReference());
 		VariableDeclarationFragment firstFragment = (VariableDeclarationFragment) fieldDecl.fragments().get(0);
 		BaseConverterUtility.convertToSimpleNameOnlyAndSet(firstFragment.getName(), result);
-		firstFragment.extraDimensions().forEach(obj ->
-			BaseConverterUtility.convertToArrayDimensionAfterAndSet((Dimension) obj, result));
 		if (firstFragment.getInitializer() != null) {
 			result.setInitialValue(ExpressionConverterUtility.convertToExpression(firstFragment.getInitializer()));
 		}
 		for (int index = 1; index < fieldDecl.fragments().size(); index++) {
 			result.getAdditionalFields().add(convertToAdditionalField(
-					(VariableDeclarationFragment) fieldDecl.fragments().get(index)));
+					(VariableDeclarationFragment) fieldDecl.fragments().get(index),
+					fieldDecl.getType()));
 		}
+		firstFragment.extraDimensions().forEach(obj ->
+			BaseConverterUtility.convertToArrayDimensionAfterAndSet((Dimension) obj,
+				result.getTypeReference()));
 		LayoutInformationConverter.convertToMinimalLayoutInformation(result, fieldDecl);
 		return result;
 	}
 	
 	@SuppressWarnings("unchecked")
 	private static org.emftext.language.java.members.AdditionalField
-			convertToAdditionalField(VariableDeclarationFragment frag) {
+			convertToAdditionalField(VariableDeclarationFragment frag, Type type) {
 		org.emftext.language.java.members.AdditionalField result =
 				org.emftext.language.java.members.MembersFactory.eINSTANCE.createAdditionalField();
 		BaseConverterUtility.convertToSimpleNameOnlyAndSet(frag.getName(), result);
+		result.setTypeReference(BaseConverterUtility.convertToTypeReference(type));
+		BaseConverterUtility.convertToArrayDimensionsAndSet(type, result.getTypeReference());
 		frag.extraDimensions().forEach(obj -> BaseConverterUtility
-				.convertToArrayDimensionAfterAndSet((Dimension) obj, result));
+				.convertToArrayDimensionAfterAndSet((Dimension) obj, result.getTypeReference()));
 		if (frag.getInitializer() != null) {
 			result.setInitialValue(ExpressionConverterUtility.convertToExpression(frag.getInitializer()));
 		}
@@ -202,7 +208,7 @@ class ClassifierConverterUtility {
 			AnnotationInstanceOrModifierConverterUtility
 			.converToModifierOrAnnotationInstance((IExtendedModifier) obj)));
 		result.setTypeReference(BaseConverterUtility.convertToTypeReference(annDecl.getType()));
-		BaseConverterUtility.convertToArrayDimensionsAndSet(annDecl.getType(), result);
+		BaseConverterUtility.convertToArrayDimensionsAndSet(annDecl.getType(), result.getTypeReference());
 		BaseConverterUtility.convertToSimpleNameOnlyAndSet(annDecl.getName(), result);
 		if (annDecl.getDefault() != null) {
 			result.setDefaultValue(AnnotationInstanceOrModifierConverterUtility
@@ -227,9 +233,10 @@ class ClassifierConverterUtility {
 			methodDecl.typeParameters().forEach(obj -> result.getTypeParameters().add(
 					convertToTypeParameter((TypeParameter) obj)));
 			result.setTypeReference(BaseConverterUtility.convertToTypeReference(methodDecl.getReturnType2()));
-			BaseConverterUtility.convertToArrayDimensionsAndSet(methodDecl.getReturnType2(), result);
+			BaseConverterUtility.convertToArrayDimensionsAndSet(methodDecl.getReturnType2(),
+					result.getTypeReference());
 			methodDecl.extraDimensions().forEach(obj -> BaseConverterUtility
-					.convertToArrayDimensionAfterAndSet((Dimension) obj, result));
+					.convertToArrayDimensionAfterAndSet((Dimension) obj, result.getTypeReference()));
 			BaseConverterUtility.convertToSimpleNameOnlyAndSet(methodDecl.getName(), result);
 			if (methodDecl.getReceiverType() != null) {
 				result.getParameters().add(convertToReceiverParameter(methodDecl));
@@ -279,9 +286,10 @@ class ClassifierConverterUtility {
 			methodDecl.typeParameters().forEach(obj -> result.getTypeParameters()
 					.add(convertToTypeParameter((TypeParameter) obj)));
 			result.setTypeReference(BaseConverterUtility.convertToTypeReference(methodDecl.getReturnType2()));
-			BaseConverterUtility.convertToArrayDimensionsAndSet(methodDecl.getReturnType2(), result);
+			BaseConverterUtility.convertToArrayDimensionsAndSet(methodDecl.getReturnType2(),
+					result.getTypeReference());
 			methodDecl.extraDimensions().forEach(obj -> BaseConverterUtility
-					.convertToArrayDimensionAfterAndSet((Dimension) obj, result));
+					.convertToArrayDimensionAfterAndSet((Dimension) obj, result.getTypeReference()));
 			BaseConverterUtility.convertToSimpleNameOnlyAndSet(methodDecl.getName(), result);
 			if (methodDecl.getReceiverType() != null) {
 				result.getParameters().add(convertToReceiverParameter(methodDecl));
@@ -375,10 +383,10 @@ class ClassifierConverterUtility {
 				AnnotationInstanceOrModifierConverterUtility
 				.converToModifierOrAnnotationInstance((IExtendedModifier) obj)));
 			result.setTypeReference(BaseConverterUtility.convertToTypeReference(decl.getType()));
-			BaseConverterUtility.convertToArrayDimensionsAndSet(decl.getType(), result);
+			BaseConverterUtility.convertToArrayDimensionsAndSet(decl.getType(), result.getTypeReference());
 			BaseConverterUtility.convertToSimpleNameOnlyAndSet(decl.getName(), result);
 			decl.extraDimensions().forEach(obj -> BaseConverterUtility
-					.convertToArrayDimensionAfterAndSet((Dimension) obj, result));
+					.convertToArrayDimensionAfterAndSet((Dimension) obj, result.getTypeReference()));
 			decl.varargsAnnotations().forEach(obj -> result.getAnnotations().add(
 				AnnotationInstanceOrModifierConverterUtility
 				.convertToAnnotationInstance((Annotation) obj)));
@@ -397,10 +405,10 @@ class ClassifierConverterUtility {
 			AnnotationInstanceOrModifierConverterUtility
 			.converToModifierOrAnnotationInstance((IExtendedModifier) obj)));
 		result.setTypeReference(BaseConverterUtility.convertToTypeReference(decl.getType()));
-		BaseConverterUtility.convertToArrayDimensionsAndSet(decl.getType(), result);
+		BaseConverterUtility.convertToArrayDimensionsAndSet(decl.getType(), result.getTypeReference());
 		BaseConverterUtility.convertToSimpleNameOnlyAndSet(decl.getName(), result);
 		decl.extraDimensions().forEach(obj -> BaseConverterUtility
-				.convertToArrayDimensionAfterAndSet((Dimension) obj, result));
+				.convertToArrayDimensionAfterAndSet((Dimension) obj, result.getTypeReference()));
 		LayoutInformationConverter.convertToMinimalLayoutInformation(result, decl);
 		return result;
 	}

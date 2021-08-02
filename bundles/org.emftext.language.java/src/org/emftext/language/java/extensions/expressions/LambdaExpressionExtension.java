@@ -39,8 +39,9 @@ public class LambdaExpressionExtension {
 				if (!(lambdaParam.getTypeReference() instanceof InferableType)) {
 					Parameter methodParameter = m.getParameters().get(index);
 					if (!lambdaParam.getTypeReference().getTarget()
-							.isSuperType(lambdaParam.getArrayDimension(),
-								methodParameter.getTypeReference().getTarget(), methodParameter)) {
+							.isSuperType(lambdaParam.getTypeReference().getArrayDimension(),
+								methodParameter.getTypeReference().getTarget(),
+								methodParameter.getTypeReference())) {
 						return false;
 					}
 				}
@@ -50,7 +51,7 @@ public class LambdaExpressionExtension {
 			if (lambdaReturn == null) {
 				return true;
 			}
-			return lambdaReturn.isSuperType(expr.getArrayDimension(), methReturn, m);
+			return lambdaReturn.isSuperType(expr.getArrayDimension(), methReturn, m.getTypeReference());
 		}
 		return false;
 	}

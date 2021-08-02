@@ -305,7 +305,7 @@ public class JDTBindingConverterUtility {
 		}
 		result.setName(binding.getName());
 		result.setTypeReference(convertToTypeReferences(binding.getType()).get(0));
-		convertToArrayDimensionsAndSet(binding.getType(), result, false);
+		convertToArrayDimensionsAndSet(binding.getType(), result.getTypeReference(), false);
 		if (binding.getConstantValue() != null) {
 			result.setInitialValue(convertToPrimaryExpression(binding.getConstantValue()));
 		}
@@ -363,7 +363,7 @@ public class JDTBindingConverterUtility {
 			}
 			param.setName("param" + index);
 			param.setTypeReference(convertToTypeReferences(typeBind).get(0));
-			convertToArrayDimensionsAndSet(typeBind, param, binding.isVarargs()
+			convertToArrayDimensionsAndSet(typeBind, param.getTypeReference(), binding.isVarargs()
 					&& index == binding.getParameterTypes().length - 1);
 			IAnnotationBinding[] binds = binding.getParameterAnnotations(index);
 			try {
@@ -400,7 +400,7 @@ public class JDTBindingConverterUtility {
 		}
 		result.setName(binding.getName());
 		result.setTypeReference(convertToTypeReferences(binding.getReturnType()).get(0));
-		convertToArrayDimensionsAndSet(binding.getReturnType(), result, false);
+		convertToArrayDimensionsAndSet(binding.getReturnType(), result.getTypeReference(), false);
 		try {
 			for (ITypeBinding typeBind : binding.getTypeParameters()) {
 				result.getTypeParameters().add(convertToTypeParameter(typeBind));
@@ -427,7 +427,7 @@ public class JDTBindingConverterUtility {
 			}
 			param.setName("param" + index);
 			param.setTypeReference(convertToTypeReferences(typeBind).get(0));
-			convertToArrayDimensionsAndSet(typeBind, param, binding.isVarargs()
+			convertToArrayDimensionsAndSet(typeBind, param.getTypeReference(), binding.isVarargs()
 					&& index == binding.getParameterTypes().length - 1);
 			try {
 				IAnnotationBinding[] binds = binding.getParameterAnnotations(index);

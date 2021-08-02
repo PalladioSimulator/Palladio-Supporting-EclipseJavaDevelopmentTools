@@ -8,6 +8,7 @@ import org.emftext.language.java.JavaClasspath;
 import org.emftext.language.java.LogicalJavaURIGenerator;
 
 import jamopp.options.ParserOptions;
+import jamopp.proxy.IJavaContextDependentURIFragmentCollector;
 
 class IPackageBindingResolver extends AbstractBindingResolver<IPackageBinding> {
 	protected IPackageBindingResolver(CentralBindingBasedResolver parentResolver) {
@@ -36,6 +37,7 @@ class IPackageBindingResolver extends AbstractBindingResolver<IPackageBinding> {
 	}
 	
 	private org.emftext.language.java.containers.Package convertBindingToPackage(IPackageBinding binding, URI uri) {
+		IJavaContextDependentURIFragmentCollector.GLOBAL_INSTANCE.setBaseURI(uri);
 		org.emftext.language.java.containers.Package result = JDTBindingConverterUtility.convertToPackage(binding);
 		// The logical URI is used to create the corresponding resource.
 		Resource packContainer = this.getParentResolver().getResourceSet().createResource(uri);

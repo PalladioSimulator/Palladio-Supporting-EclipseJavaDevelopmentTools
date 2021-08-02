@@ -42,7 +42,6 @@ import org.emftext.language.java.references.StringReference;
 import org.emftext.language.java.references.TextBlockReference;
 import org.emftext.language.java.types.ClassifierReference;
 import org.emftext.language.java.types.InferableType;
-import org.emftext.language.java.types.PrimitiveType;
 import org.emftext.language.java.types.Type;
 import org.emftext.language.java.types.TypeReference;
 import org.emftext.language.java.types.TypedElement;

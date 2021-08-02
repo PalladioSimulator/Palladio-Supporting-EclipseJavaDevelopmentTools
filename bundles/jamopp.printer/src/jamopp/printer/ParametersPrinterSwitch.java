@@ -64,9 +64,9 @@ class ParametersPrinterSwitch extends ParametersSwitch<Boolean> {
 			parent.doSwitch(ModifiersPackage.Literals.ANNOTABLE_AND_MODIFIABLE, element);
 			parent.doSwitch(element.getTypeReference());
 			parent.doSwitch(GenericsPackage.Literals.TYPE_ARGUMENTABLE, element);
-			element.getArrayDimensionsBefore().forEach(dim -> parent.doSwitch(dim));
+			element.getTypeReference().getArrayDimensionsBefore().forEach(dim -> parent.doSwitch(dim));
 			writer.append(" " + element.getName());
-			element.getArrayDimensionsAfter().forEach(dim -> parent.doSwitch(dim));
+			element.getTypeReference().getArrayDimensionsAfter().forEach(dim -> parent.doSwitch(dim));
 		} catch (IOException e) {
 		}
 		return true;
@@ -78,8 +78,8 @@ class ParametersPrinterSwitch extends ParametersSwitch<Boolean> {
 			parent.doSwitch(ModifiersPackage.Literals.ANNOTABLE_AND_MODIFIABLE, element);
 			parent.doSwitch(element.getTypeReference());
 			parent.doSwitch(GenericsPackage.Literals.TYPE_ARGUMENTABLE, element);
-			element.getArrayDimensionsBefore().forEach(dim -> parent.doSwitch(dim));
-			element.getArrayDimensionsAfter().forEach(dim -> parent.doSwitch(dim));
+			element.getTypeReference().getArrayDimensionsBefore().forEach(dim -> parent.doSwitch(dim));
+			element.getTypeReference().getArrayDimensionsAfter().forEach(dim -> parent.doSwitch(dim));
 			writer.append(" ");
 			parent.doSwitch(AnnotationsPackage.Literals.ANNOTABLE, element);
 			writer.append(" ..." + element.getName());

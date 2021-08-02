@@ -15,6 +15,7 @@ package jamopp.parser.jdt.singlefile;
 
 import java.util.HashSet;
 import java.util.List;
+
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.AssertStatement;
 import org.eclipse.jdt.core.dom.Block;
@@ -242,15 +243,16 @@ class StatementConverterUtility {
 			locVar.setTypeReference(BaseConverterUtility.convertToTypeReference(varSt.getType()));
 			VariableDeclarationFragment frag = (VariableDeclarationFragment) varSt.fragments().get(0);
 			BaseConverterUtility.convertToSimpleNameOnlyAndSet(frag.getName(), locVar);
-			BaseConverterUtility.convertToArrayDimensionsAndSet(varSt.getType(), locVar);
+			BaseConverterUtility.convertToArrayDimensionsAndSet(varSt.getType(), locVar.getTypeReference());
 			frag.extraDimensions().forEach(obj -> BaseConverterUtility
-					.convertToArrayDimensionAfterAndSet((Dimension) obj, locVar));
+					.convertToArrayDimensionAfterAndSet((Dimension) obj, locVar.getTypeReference()));
 			if (frag.getInitializer() != null) {
 				locVar.setInitialValue(ExpressionConverterUtility.convertToExpression(frag.getInitializer()));
 			}
 			for (int index = 1; index < varSt.fragments().size(); index++) {
 				locVar.getAdditionalLocalVariables().add(convertToAdditionalLocalVariable(
-						(VariableDeclarationFragment) varSt.fragments().get(index)));
+						(VariableDeclarationFragment) varSt.fragments().get(index),
+						varSt.getType()));
 			}
 			result.setVariable(locVar);
 			LayoutInformationConverter.convertToMinimalLayoutInformation(result, varSt);
@@ -372,12 +374,15 @@ class StatementConverterUtility {
 	
 	@SuppressWarnings("unchecked")
 	private static org.emftext.language.java.variables.AdditionalLocalVariable
-			convertToAdditionalLocalVariable(VariableDeclarationFragment frag) {
+			convertToAdditionalLocalVariable(VariableDeclarationFragment frag,
+			Type type) {
 		org.emftext.language.java.variables.AdditionalLocalVariable result =
 				org.emftext.language.java.variables.VariablesFactory.eINSTANCE.createAdditionalLocalVariable();
 		BaseConverterUtility.convertToSimpleNameOnlyAndSet(frag.getName(), result);
+		result.setTypeReference(BaseConverterUtility.convertToTypeReference(type));
+		BaseConverterUtility.convertToArrayDimensionsAndSet(type, result.getTypeReference());
 		frag.extraDimensions().forEach(obj -> BaseConverterUtility
-				.convertToArrayDimensionAfterAndSet((Dimension) obj, result));
+				.convertToArrayDimensionAfterAndSet((Dimension) obj, result.getTypeReference()));
 		if (frag.getInitializer() != null) {
 			result.setInitialValue(ExpressionConverterUtility.convertToExpression(frag.getInitializer()));
 		}
@@ -395,16 +400,17 @@ class StatementConverterUtility {
 		loc.setTypeReference(BaseConverterUtility.convertToTypeReference(expr.getType()));
 		VariableDeclarationFragment frag = (VariableDeclarationFragment) expr.fragments().get(0);
 		BaseConverterUtility.convertToSimpleNameOnlyAndSet(frag.getName(), loc);
-		BaseConverterUtility.convertToArrayDimensionsAndSet(expr.getType(), loc);
+		BaseConverterUtility.convertToArrayDimensionsAndSet(expr.getType(), loc.getTypeReference());
 		frag.extraDimensions().forEach(obj ->
-			BaseConverterUtility.convertToArrayDimensionAfterAndSet((Dimension) obj, loc));
+			BaseConverterUtility.convertToArrayDimensionAfterAndSet((Dimension) obj, loc.getTypeReference()));
 		if (frag.getInitializer() != null) {
 			loc.setInitialValue(ExpressionConverterUtility.convertToExpression(frag.getInitializer()));
 		}
 		for (int index = 1; index < expr.fragments().size(); index++) {
 			loc.getAdditionalLocalVariables().add(
 					convertToAdditionalLocalVariable(
-							(VariableDeclarationFragment) expr.fragments().get(index)));
+							(VariableDeclarationFragment) expr.fragments().get(index),
+							expr.getType()));
 		}
 		LayoutInformationConverter.convertToMinimalLayoutInformation(loc, expr);
 		return loc;

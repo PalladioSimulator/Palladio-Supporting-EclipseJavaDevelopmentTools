@@ -20,7 +20,8 @@ public class ArrayTypeableExtension {
 	
 	public static long getArrayDimension(ArrayTypeable me) {
 		long size = me.getArrayDimensionsBefore().size() + me.getArrayDimensionsAfter().size();
-		if (me instanceof VariableLengthParameter) {
+		if (me instanceof VariableLengthParameter
+				|| me.eContainer() instanceof VariableLengthParameter) {
 			size++;
 		}
 		return size;

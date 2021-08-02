@@ -205,8 +205,8 @@ class ExpressionsPrinterSwitch extends ExpressionsSwitch<Boolean> {
 			parent.doSwitch(element.getChild());
 			writer.append(" instanceof ");
 			parent.doSwitch(element.getTypeReference());
-			element.getArrayDimensionsBefore().forEach(dim -> parent.doSwitch(dim));
-			element.getArrayDimensionsAfter().forEach(dim -> parent.doSwitch(dim));
+			element.getTypeReference().getArrayDimensionsBefore().forEach(dim -> parent.doSwitch(dim));
+			element.getTypeReference().getArrayDimensionsAfter().forEach(dim -> parent.doSwitch(dim));
 		} catch (IOException e) {
 		}
 		return true;
@@ -284,8 +284,8 @@ class ExpressionsPrinterSwitch extends ExpressionsSwitch<Boolean> {
 		try {
 			writer.append("(");
 			parent.doSwitch(element.getTypeReference());
-			element.getArrayDimensionsBefore().forEach(dim -> parent.doSwitch(dim));
-			element.getArrayDimensionsAfter().forEach(dim -> parent.doSwitch(dim));
+			element.getTypeReference().getArrayDimensionsBefore().forEach(dim -> parent.doSwitch(dim));
+			element.getTypeReference().getArrayDimensionsAfter().forEach(dim -> parent.doSwitch(dim));
 			for (TypeReference ref : element.getAdditionalBounds()) {
 				writer.append(" & ");
 				parent.doSwitch(ref);
@@ -327,8 +327,8 @@ class ExpressionsPrinterSwitch extends ExpressionsSwitch<Boolean> {
 	public Boolean caseArrayConstructorReferenceExpression(ArrayConstructorReferenceExpression element) {
 		try {
 			parent.doSwitch(element.getTypeReference());
-			element.getArrayDimensionsBefore().forEach(dim -> parent.doSwitch(dim));
-			element.getArrayDimensionsAfter().forEach(dim -> parent.doSwitch(dim));
+			element.getTypeReference().getArrayDimensionsBefore().forEach(dim -> parent.doSwitch(dim));
+			element.getTypeReference().getArrayDimensionsAfter().forEach(dim -> parent.doSwitch(dim));
 			writer.append("::new");
 		} catch (IOException e) {
 		}
