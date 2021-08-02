@@ -13,45 +13,24 @@
 package org.emftext.language.java.test.standalone;
 
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
 
-import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
-import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
-import org.emftext.language.java.containers.impl.CompilationUnitImpl;
+import org.eclipse.emf.ecore.resource.Resource.Factory.Registry;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.emftext.language.java.test.bugs.AbstractBugTestCase;
 import org.junit.jupiter.api.Test;
 
-import jamopp.parser.api.JaMoPPParserAPI;
 import jamopp.parser.jdt.singlefile.JaMoPPJDTSingleFileParser;
 import jamopp.resource.JavaResource2Factory;
 
 /**
- * {@code parser.parseDirectory(Paths.get(projectPath)} throws
- *
- * <ul>
- * <li>{@code NoSuchFileException} if openjdk-11-source (apt) is not installed
- * and else</li>
- * <li>{@code StackOverflowError}.</li>
- * </ul>
+ * {@code EcoreUtil.resolveAll(...)} throws {@code NullPointerException}.
  *
  * @author Marvin Meller
  */
 public class StandaloneTest extends AbstractBugTestCase {
-
-    @Test
-    @SuppressWarnings("unused")
-    public void test() {
-        Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap().put("java", new JavaResource2Factory());
-
-        // create
-        final List<CompilationUnitImpl> roots = new ArrayList<>();
-        final ResourceSet rs = new ResourceSetImpl();
-        rs.getResourceFactoryRegistry().getExtensionToFactoryMap().put("containers", new XMIResourceFactoryImpl());
-
-        final JaMoPPParserAPI parser = new JaMoPPJDTSingleFileParser();
-        final ResourceSet units = parser.parseDirectory(Paths.get("src-standalone"));
-    }
+	@Test
+	public void testResolveAll() {
+		Registry.INSTANCE.getExtensionToFactoryMap().put("java", new JavaResource2Factory());
+		EcoreUtil.resolveAll(new JaMoPPJDTSingleFileParser().parseDirectory(Paths.get("src-standalone")));
+	}
 }
