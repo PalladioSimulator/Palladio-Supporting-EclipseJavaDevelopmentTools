@@ -1,8 +1,11 @@
 package jamopp.resolution.bindings;
 
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
+import org.emftext.language.java.LogicalJavaURIGenerator;
+import org.emftext.language.java.classifiers.Classifier;
 import org.emftext.language.java.classifiers.ConcreteClassifier;
 import org.emftext.language.java.generics.TypeParameter;
 import org.emftext.language.java.members.Constructor;
@@ -96,15 +99,20 @@ class IMethodBindingResolver extends AbstractBindingResolver<IMethodBinding> {
 		return qualifiedName;
 	}
 	
-	private static String convertToTypeName(TypeReference ref) {
+	private String convertToTypeName(TypeReference ref) {
 		if (ref instanceof ClassifierReference) {
 			ClassifierReference convRef = (ClassifierReference) ref;
-			if (convRef.getTarget() instanceof ConcreteClassifier) {
-				return ((ConcreteClassifier) convRef.getTarget()).getQualifiedName();
-			} else if (convRef.getTarget() instanceof InferableType) {
+			Classifier target = convRef.getTarget();
+			if (target.eIsProxy()) {
+				target = (Classifier) EcoreUtil.resolve(target,
+						this.getParentResolver().getResourceSet());
+			}
+			if (target instanceof ConcreteClassifier) {
+				return ((ConcreteClassifier) target).getQualifiedName();
+			} else if (target instanceof InferableType) {
 				return "var";
 			} else {
-				return ((TypeParameter) convRef.getTarget()).getName();
+				return ((TypeParameter) target).getName();
 			}
 		} else if (ref instanceof NamespaceClassifierReference) {
 			NamespaceClassifierReference nRef = (NamespaceClassifierReference) ref;
@@ -112,7 +120,7 @@ class IMethodBindingResolver extends AbstractBindingResolver<IMethodBinding> {
 				return convertToTypeName(nRef.getClassifierReferences().get(
 						nRef.getClassifierReferences().size() - 1));
 			}
-			return nRef.getNamespacesAsString();
+			return LogicalJavaURIGenerator.packageName(nRef);
 		} else if (ref instanceof org.emftext.language.java.types.Boolean) {
 			return "boolean";
 		} else if (ref instanceof org.emftext.language.java.types.Byte) {

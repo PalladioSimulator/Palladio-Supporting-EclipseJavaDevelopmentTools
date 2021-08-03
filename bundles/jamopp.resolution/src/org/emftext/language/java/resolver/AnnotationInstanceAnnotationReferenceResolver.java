@@ -21,7 +21,6 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.emftext.language.java.JavaClasspath;
-import org.emftext.language.java.LogicalJavaURIGenerator;
 import org.emftext.language.java.annotations.AnnotationInstance;
 import org.emftext.language.java.classifiers.Annotation;
 import org.emftext.language.java.classifiers.Classifier;
@@ -65,8 +64,8 @@ public class AnnotationInstanceAnnotationReferenceResolver implements
 		if (annotationInstance.getNamespaces().size() > 0) {
 			String containerName = annotationInstance.getNamespacesAsString();
 			ConcreteClassifier target = (ConcreteClassifier) EcoreUtil.resolve(
-					JavaClasspath.get().getConcreteClassifier(containerName
-						+ LogicalJavaURIGenerator.PACKAGE_SEPARATOR + identifier),
+					JavaClasspath.get(annotationInstance).getConcreteClassifier(containerName
+						+ identifier),
 						annotationInstance.eResource());
 
 			if (target instanceof Annotation) {

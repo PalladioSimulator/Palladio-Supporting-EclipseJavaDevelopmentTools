@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 
 import org.eclipse.emf.ecore.util.Switch;
+import org.emftext.language.java.LogicalJavaURIGenerator;
 import org.emftext.language.java.imports.ClassifierImport;
 import org.emftext.language.java.imports.Import;
 import org.emftext.language.java.imports.ImportingElement;
@@ -43,7 +44,7 @@ class ImportsPrinterSwitch extends ImportsSwitch<Boolean> {
 	@Override
 	public Boolean caseClassifierImport(ClassifierImport element) {
 		try {
-			writer.append(element.getNamespacesAsString() + "." + element.getClassifier().getName());
+			writer.append(LogicalJavaURIGenerator.packageName(element) + element.getClassifier().getName());
 		} catch (IOException e) {
 		}
 		return true;
@@ -52,7 +53,9 @@ class ImportsPrinterSwitch extends ImportsSwitch<Boolean> {
 	@Override
 	public Boolean casePackageImport(PackageImport element) {
 		try {
-			writer.append(element.getNamespacesAsString());
+			String n = LogicalJavaURIGenerator.packageName(element);
+			n = n.substring(0, n.length() - 1);
+			writer.append(n);
 			if (element.getClassifier() != null) {
 				writer.append("." + element.getClassifier().getName());
 			}
@@ -65,7 +68,8 @@ class ImportsPrinterSwitch extends ImportsSwitch<Boolean> {
 	@Override
 	public Boolean caseStaticClassifierImport(StaticClassifierImport element) {
 		try {
-			writer.append("static " + element.getNamespacesAsString() + "." + element.getClassifier().getName() + ".*");
+			writer.append("static " + LogicalJavaURIGenerator.packageName(element)
+				+ element.getClassifier().getName() + ".*");
 		} catch (IOException e) {
 		}
 		return true;
@@ -74,8 +78,8 @@ class ImportsPrinterSwitch extends ImportsSwitch<Boolean> {
 	@Override
 	public Boolean caseStaticMemberImport(StaticMemberImport element) {
 		try {
-			writer.append("static " + element.getNamespacesAsString() + "." + element.getClassifier().getName() + "."
-				+ element.getStaticMembers().get(0).getName());
+			writer.append("static " + LogicalJavaURIGenerator.packageName(element) + element.getClassifier().getName()
+				+ LogicalJavaURIGenerator.PACKAGE_SEPARATOR + element.getStaticMembers().get(0).getName());
 		} catch (IOException e) {
 		}
 		return true;

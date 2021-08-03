@@ -8,6 +8,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import org.eclipse.emf.ecore.EClass;
+import org.emftext.language.java.commons.Commentable;
 import org.emftext.language.java.containers.ContainersPackage;
 import org.emftext.language.java.containers.JavaRoot;
 
@@ -28,8 +30,20 @@ public final class JaMoPPPrinter {
 	 * @param output the output for printing.
 	 */
 	public static void print(JavaRoot root, OutputStream output) {
-		try (OutputStreamWriter outWriter = new OutputStreamWriter(output, StandardCharsets.UTF_8); BufferedWriter buffWriter = new BufferedWriter(outWriter)) {
-			internalPrint(root, buffWriter);
+		print((Commentable) root, output);
+	}
+	
+	/**
+	 * Prints an arbitrary Java model element into an OutputStream.
+	 * 
+	 * @param element the Java model element.
+	 * @param output the output for printing.
+	 */
+	public static void print(Commentable element, OutputStream output) {
+		try (OutputStreamWriter outWriter = new OutputStreamWriter(output, StandardCharsets.UTF_8);
+				BufferedWriter buffWriter = new BufferedWriter(outWriter)) {
+			internalPrint(element, element instanceof JavaRoot ? ContainersPackage.Literals.JAVA_ROOT
+					: element.eClass(), buffWriter);
 		} catch (IOException e) {
 		}
 	}
@@ -42,12 +56,12 @@ public final class JaMoPPPrinter {
 	 */
 	public static void print(JavaRoot root, Path file) {
 		try (BufferedWriter writer = Files.newBufferedWriter(file)) {
-			internalPrint(root, writer);
+			internalPrint(root, ContainersPackage.Literals.JAVA_ROOT, writer);
 		} catch (IOException e) {
 		}
 	}
 	
-	private static void internalPrint(JavaRoot root, BufferedWriter writer) {
-		new ComposedParentPrinterSwitch(writer).doSwitch(ContainersPackage.Literals.JAVA_ROOT, root);
+	private static void internalPrint(Commentable root, EClass rootClass, BufferedWriter writer) {
+		new ComposedParentPrinterSwitch(writer).doSwitch(rootClass, root);
 	}
 }

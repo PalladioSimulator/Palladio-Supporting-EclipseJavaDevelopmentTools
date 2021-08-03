@@ -1,0 +1,25 @@
+module clean
+
+import org.eclipse.emf.mwe.utils.DirectoryCleaner
+
+Workflow {
+    component = DirectoryCleaner {
+        directory = "../org.emftext.language.java/src-gen"
+    }
+    
+    component = DirectoryCleaner {
+        directory = "../org.emftext.language.java.edit/src-gen"
+    }
+    
+    component = DirectoryCleaner {
+    	directory = "../org.emftext.language.java.edit/icons"
+    }
+    
+    component = DirectoryCleaner {
+        directory = "../org.emftext.language.java.editor/src-gen"
+    }
+    
+    component = DirectoryCleaner {
+    	directory = "../org.emftext.language.java.editor/icons"
+    }
+}

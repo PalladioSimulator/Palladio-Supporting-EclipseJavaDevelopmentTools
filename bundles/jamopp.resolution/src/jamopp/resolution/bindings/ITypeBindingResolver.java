@@ -6,6 +6,7 @@ import java.util.regex.Pattern;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.emftext.language.java.JavaClasspath;
 import org.emftext.language.java.LogicalJavaURIGenerator;
@@ -17,6 +18,8 @@ import org.emftext.language.java.generics.TypeParameter;
 import org.emftext.language.java.generics.TypeParametrizable;
 import org.emftext.language.java.members.Member;
 import org.emftext.language.java.members.MemberContainer;
+
+import jamopp.options.ParserOptions;
 
 class ITypeBindingResolver extends AbstractBindingResolver<ITypeBinding> {
 	private Pattern parentNamePattern;
@@ -36,11 +39,14 @@ class ITypeBindingResolver extends AbstractBindingResolver<ITypeBinding> {
 		} else if (binding.isArray()) {
 			return this.getParentResolver().resolve(binding.getElementType());
 		} else if (binding.isTypeVariable()) {
-			TypeParametrizable param;
+			TypeParametrizable param = null;
 			if (binding.getDeclaringClass() != null) {
 				param = (TypeParametrizable) this.getParentResolver().resolve(binding.getDeclaringClass());
 			} else {
 				param = (TypeParametrizable) this.getParentResolver().resolve(binding.getDeclaringMethod());
+			}
+			if (param == null || param.getTypeParameters() == null) {
+				return null;
 			}
 			for (TypeParameter p : param.getTypeParameters()) {
 				if (p.getName().equals(binding.getName())) {
@@ -59,29 +65,44 @@ class ITypeBindingResolver extends AbstractBindingResolver<ITypeBinding> {
 				}
 			}
 		} else if (binding.isTopLevel()) {
-			ConcreteClassifier classifier =	JavaClasspath.get().getConcreteClassifier(
-					binding.getQualifiedName());
-			if (classifier != null && !classifier.eIsProxy()) {
-				return classifier;
+			URI baseURI = LogicalJavaURIGenerator.getClassifierURI(binding.getQualifiedName()).trimFragment();
+			Resource potRes = this.getParentResolver().getResourceSet().getResource(baseURI, false);
+			if (potRes == null && ParserOptions.PREFER_BINDING_CONVERSION.isTrue()) {
+				return convertBinding(binding, baseURI);
 			}
-			CompilationUnit cu = JDTBindingConverterUtility.convertToCompilationUnit(binding);
-			// The logical URI is used to create the corresponding resource.
-			URI uri = LogicalJavaURIGenerator.getJavaFileResourceURI(cu.getClassifiers().get(0).getQualifiedName());
-			Resource res = this.getParentResolver().getResourceSet().createResource(uri);
-			res.getContents().add(cu);
-			// For the registration, the physical URI is used.
-			uri = JavaClasspath.get().getURIMap().get(uri);
-			JavaClasspath.get().registerJavaRoot(cu, uri);
-			return JavaClasspath.get().getConcreteClassifier(binding.getQualifiedName());
+			ConcreteClassifier classifier =	JavaClasspath.get(this.getParentResolver().getResourceSet())
+					.getConcreteClassifier(binding.getQualifiedName());
+			classifier = (ConcreteClassifier) EcoreUtil.resolve(classifier,
+					this.getParentResolver().getResourceSet());
+			if (classifier == null || classifier.eIsProxy()) {
+				classifier = convertBinding(binding, baseURI);
+			}
+			return classifier;
 		}
 		return null;
+	}
+	
+	private ConcreteClassifier convertBinding(ITypeBinding binding, URI baseURI) {
+		CompilationUnit cu = JDTBindingConverterUtility.convertToCompilationUnit(binding);
+		// The logical URI is used to create the corresponding resource.
+		Resource potRes = this.getParentResolver().getResourceSet().createResource(baseURI);
+		potRes.getContents().add(cu);
+		// For the registration, the physical URI is used.
+		baseURI = JavaClasspath.get(this.getParentResolver().getResourceSet()).getURIMap().get(baseURI);
+		JavaClasspath.get(this.getParentResolver().getResourceSet()).registerJavaRoot(cu, baseURI);
+		return cu.getClassifiers().get(0);
 	}
 	
 	private EObject findLocalOrAnonymousClass(String binaryName) {
 		Matcher m1 = parentNamePattern.matcher(binaryName);
 		if (m1.matches()) {
 			String parentName = m1.group(1);
-			ConcreteClassifier parentClassifier = JavaClasspath.get().getConcreteClassifier(parentName);
+			ConcreteClassifier parentClassifier = JavaClasspath.get(this.getParentResolver().getResourceSet()
+					).getConcreteClassifier(parentName);
+			if (parentClassifier != null) {
+				parentClassifier = (ConcreteClassifier) EcoreUtil.resolve(parentClassifier,
+						this.getParentResolver().getResourceSet());
+			}
 			if (parentClassifier != null && !parentClassifier.eIsProxy()) {
 				Matcher m2 = innerNamesPattern.matcher(m1.group(2));
 				MemberContainer currentContainer = parentClassifier;

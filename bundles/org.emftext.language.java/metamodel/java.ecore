@@ -413,8 +413,7 @@
         <eParameters name="statementToAdd" lowerBound="1" eType="#_Wo2YzNz1Ed2bJ_pQViWxFg"/>
       </eOperations>
       <eStructuralFeatures xsi:type="ecore:EReference" name="layoutInformations" upperBound="-1"
-          eType="ecore:EClass ../../org.emftext.commons.layout/metamodel/layout.ecore#//LayoutInformation"
-          containment="true"/>
+          eType="#//layout/LayoutInformation" containment="true"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="NamedElement" abstract="true" eSuperTypes="#//commons/Commentable">
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" lowerBound="1"
@@ -446,6 +445,8 @@
           <details key="documentation" value=""/>
         </eAnnotations>
       </eOperations>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="origin" lowerBound="1"
+          eType="#//containers/Origin"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="CompilationUnit" eSuperTypes="#//containers/JavaRoot">
       <eOperations name="getContainedClassifier" eType="#//classifiers/ConcreteClassifier">
@@ -515,6 +516,12 @@
           eType="#//modules/ModuleDirective" containment="true"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="packages" upperBound="-1"
           eType="#//containers/Package"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="Origin">
+      <eLiterals name="FILE"/>
+      <eLiterals name="CLASS" value="1"/>
+      <eLiterals name="ARCHIVE" value="2"/>
+      <eLiterals name="BINDING" value="3"/>
     </eClassifiers>
   </eSubpackages>
   <eSubpackages xmi:id="_Wo2YC9z1Ed2bJ_pQViWxFg" name="expressions" nsURI="http://www.emftext.org/java/expressions"
@@ -1353,7 +1360,7 @@
     </eClassifiers>
   </eSubpackages>
   <eSubpackages name="references" nsURI="http://www.emftext.org/java/references" nsPrefix="references">
-    <eClassifiers xsi:type="ecore:EClass" name="Reference" abstract="true" eSuperTypes="#//expressions/PrimaryExpression #//generics/TypeArgumentable">
+    <eClassifiers xsi:type="ecore:EClass" name="Reference" abstract="true" eSuperTypes="#//expressions/PrimaryExpression #//generics/TypeArgumentable #//types/TypedElementExtension">
       <eOperations name="getReferencedType" eType="#_Wo2ZO9z1Ed2bJ_pQViWxFg">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="body" value="return org.emftext.language.java.extensions.references.ReferenceExtension.getReferencedType((org.emftext.language.java.references.Reference) this);"/>
@@ -1636,6 +1643,11 @@
       <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_Wo2ZQdz1Ed2bJ_pQViWxFg"
           name="typeReference" lowerBound="1" eType="#_Wo2ZPdz1Ed2bJ_pQViWxFg" containment="true"/>
     </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="TypedElementExtension" abstract="true"
+        eSuperTypes="#//commons/Commentable">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="actualTargets" upperBound="-1"
+          eType="#_Wo2ZPdz1Ed2bJ_pQViWxFg" containment="true"/>
+    </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" xmi:id="_Wo2ZPdz1Ed2bJ_pQViWxFg" name="TypeReference"
         abstract="true" eSuperTypes="#//commons/Commentable">
       <eOperations name="getTarget" eType="#_Wo2ZO9z1Ed2bJ_pQViWxFg">
@@ -1714,15 +1726,13 @@
     <eClassifiers xsi:type="ecore:EClass" xmi:id="_Wo2ZUdz1Ed2bJ_pQViWxFg" name="Short"
         eSuperTypes="#_Wo2ZR9z1Ed2bJ_pQViWxFg"/>
     <eClassifiers xsi:type="ecore:EClass" name="Void" eSuperTypes="#_Wo2ZR9z1Ed2bJ_pQViWxFg"/>
-    <eClassifiers xsi:type="ecore:EClass" name="InferableType" eSuperTypes="#_Wo2ZPdz1Ed2bJ_pQViWxFg #//arrays/ArrayTypeable">
+    <eClassifiers xsi:type="ecore:EClass" name="InferableType" eSuperTypes="#_Wo2ZPdz1Ed2bJ_pQViWxFg #//arrays/ArrayTypeable #//types/TypedElementExtension">
       <eOperations name="getBoundTargetReference" eType="#_Wo2ZPdz1Ed2bJ_pQViWxFg">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="body" value="return org.emftext.language.java.extensions.types.InferableTypeExtension.getBoundTargetReference((org.emftext.language.java.types.InferableType) this, reference);"/>
         </eAnnotations>
         <eParameters name="reference" eType="#//references/Reference"/>
       </eOperations>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="actualTargets" upperBound="-1"
-          eType="#_Wo2ZPdz1Ed2bJ_pQViWxFg" containment="true"/>
     </eClassifiers>
   </eSubpackages>
   <eSubpackages name="variables" nsURI="http://www.emftext.org/java/variables" nsPrefix="variables">
@@ -1775,6 +1785,32 @@
     <eClassifiers xsi:type="ecore:EClass" name="ExportsModuleDirective" eSuperTypes="#//modules/AccessProvidingModuleDirective"/>
     <eClassifiers xsi:type="ecore:EClass" name="ModuleReference" eSuperTypes="#//commons/NamespaceAwareElement">
       <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="#//containers/Module"/>
+    </eClassifiers>
+  </eSubpackages>
+  <eSubpackages name="layout" nsURI="http://www.emftext.org/commons/layout" nsPrefix="layout">
+    <eClassifiers xsi:type="ecore:EClass" name="LayoutInformation" abstract="true">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="startOffset" lowerBound="1"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="hiddenTokenText" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="visibleTokenText" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="syntaxElementID" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="ReferenceLayoutInformation" eSuperTypes="#//layout/LayoutInformation">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="object" lowerBound="1"
+          eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EObject"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="AttributeLayoutInformation" eSuperTypes="#//layout/LayoutInformation"/>
+    <eClassifiers xsi:type="ecore:EClass" name="KeywordLayoutInformation" eSuperTypes="#//layout/LayoutInformation"/>
+    <eClassifiers xsi:type="ecore:EClass" name="MinimalLayoutInformation" eSuperTypes="#//layout/ReferenceLayoutInformation">
+      <eOperations name="getSourceString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="if (rootLayout != null) { String rootSource = rootLayout.getVisibleTokenText(); if (rootSource.length() >= getStartOffset() + getLength()) { return rootSource.substring(getStartOffset(), getStartOffset() + getLength()); } return &quot;&quot;; } else { return &quot;&quot;; }"/>
+        </eAnnotations>
+      </eOperations>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="length" lowerBound="1"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="rootLayout" lowerBound="1"
+          eType="#//layout/LayoutInformation"/>
     </eClassifiers>
   </eSubpackages>
 </ecore:EPackage>

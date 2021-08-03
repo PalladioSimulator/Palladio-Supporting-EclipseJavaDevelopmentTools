@@ -3,6 +3,7 @@ package jamopp.printer;
 import java.io.BufferedWriter;
 import java.io.IOException;
 
+import org.emftext.language.java.LogicalJavaURIGenerator;
 import org.emftext.language.java.annotations.AnnotationsPackage;
 import org.emftext.language.java.classifiers.ConcreteClassifier;
 import org.emftext.language.java.containers.CompilationUnit;
@@ -29,7 +30,9 @@ class ContainersPrinterSwitch extends ContainersSwitch<Boolean> {
 			} else {
 				if (root.getNamespaces().size() > 0) {
 					parent.doSwitch(AnnotationsPackage.Literals.ANNOTABLE, root);
-					writer.append("package " + root.getNamespacesAsString() + ";\n\n");
+					String p = root.getNamespacesAsString();
+					p = p.substring(0, p.length() - 1);
+					writer.append("package " + p + ";\n\n");
 				}
 				parent.doSwitch(ImportsPackage.Literals.IMPORTING_ELEMENT, root);
 				if (root instanceof CompilationUnit) {
@@ -48,7 +51,10 @@ class ContainersPrinterSwitch extends ContainersSwitch<Boolean> {
 			if (element.getOpen() != null) {
 				writer.append("open ");
 			}
-			writer.append(element.getNamespacesAsString() + " {\n");
+			String n = LogicalJavaURIGenerator.packageName(element);
+			n = n.substring(0, n.length() - 1);
+			writer.append(n);
+			writer.append(" {\n");
 			for (ModuleDirective dir : element.getTarget()) {
 				parent.doSwitch(dir);
 			}

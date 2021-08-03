@@ -5,8 +5,6 @@ import org.emftext.language.java.classifiers.Interface;
 import org.emftext.language.java.expressions.Expression;
 import org.emftext.language.java.expressions.LambdaExpression;
 import org.emftext.language.java.expressions.LambdaParameters;
-import org.emftext.language.java.generics.TypeArgument;
-import org.emftext.language.java.generics.TypeArgumentable;
 import org.emftext.language.java.generics.TypeParameter;
 import org.emftext.language.java.generics.TypeParametrizable;
 import org.emftext.language.java.instantiations.Instantiation;
@@ -29,17 +27,17 @@ public class InferableTypeExtension {
 				if (ref == null) {
 					return null;
 				}
-				ref = TypeReferenceExtension.clone(ref);
 				if (ref instanceof TemporalCompositeTypeReference) {
 					TemporalCompositeTypeReference tempRef = (TemporalCompositeTypeReference) ref;
-					me.getActualTargets().addAll(tempRef.getTypeReferences());
+					for (TypeReference inRef : tempRef.getTypeReferences()) {
+						me.getActualTargets().add(TypeReferenceExtension.clone(inRef));
+					}
 					return tempRef;
 				}
-				me.getActualTargets().add(ref);
+				me.getActualTargets().add(TypeReferenceExtension.clone(ref));
 				return ref;
-			} else if (me.eContainer() == null || me.eContainer().eContainer() == null) {
-				System.out.println("hu");
-			} else if (me.eContainer() != null && me.eContainer().eContainer() != null && me.eContainer().eContainer() instanceof LambdaParameters) {
+			} else if (me.eContainer() != null && me.eContainer().eContainer() != null
+					&& me.eContainer().eContainer() instanceof LambdaParameters) {
 				LambdaExpression lambExpr = (LambdaExpression) me.eContainer().eContainer().eContainer();
 				TypeReference lambdaType = lambExpr.getOneTypeReference(false);
 				Type lambdaTypeTarget = lambdaType.getTarget();
@@ -55,7 +53,8 @@ public class InferableTypeExtension {
 				if (container instanceof MethodCall || container instanceof Instantiation) {
 					initType = m.getParameters().get(
 							lambExpr.getParameters().getParameters().indexOf(me.eContainer()))
-								.getTypeReference().getBoundTargetReference((Reference) container);
+								.getTypeReference().getBoundTargetReference(
+										(Reference) container);
 				} else {
 					initType = m.getParameters().get(
 						lambExpr.getParameters().getParameters().indexOf(me.eContainer()))
@@ -63,11 +62,6 @@ public class InferableTypeExtension {
 				}
 				initType = TypeReferenceExtension.clone(initType);
 				Type initTypeTarget = initType.getTarget();
-//				if (initType instanceof TypeArgumentable && container instanceof Reference) {
-//					TypeArgument ar = ((TypeArgumentable) initType).getTypeArguments().get(0);
-//					TypeReference ref = TypeReferenceExtension.getTypeReferenceOfTypeArgument(ar);
-//					ref = ref.getBoundTargetReference((Reference) container);
-//				}
 				if (initTypeTarget instanceof TypeParameter) {
 					if (initTypeTarget.eContainer().equals(lambdaTypeTarget)) {
 						int index = ((TypeParametrizable) lambdaTypeTarget)
@@ -78,7 +72,9 @@ public class InferableTypeExtension {
 							initTypeTarget = initType.getTarget();
 							if (initTypeTarget instanceof TypeParameter) {
 								initType = TypeReferenceExtension.clone(
-										initType.getBoundTargetReference((Reference) container));
+										initType.getBoundTargetReference(
+												container instanceof Reference
+													? (Reference) container : null));
 							}
 						}
 					}

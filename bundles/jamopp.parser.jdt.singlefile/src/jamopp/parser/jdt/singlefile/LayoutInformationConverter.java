@@ -19,18 +19,22 @@ import org.emftext.commons.layout.MinimalLayoutInformation;
 import org.emftext.language.java.commons.Commentable;
 import org.emftext.language.java.containers.JavaRoot;
 
+import jamopp.options.ParserOptions;
+
 class LayoutInformationConverter {
 	private static MinimalLayoutInformation currentRootLayout;
 	
 	static void convertJavaRootLayoutInformation(JavaRoot root, ASTNode rootSource, String sourceCode) {
 		currentRootLayout = null;
-		currentRootLayout = LayoutFactory.eINSTANCE.createMinimalLayoutInformation();
-		currentRootLayout.setVisibleTokenText(sourceCode == null ? "" : sourceCode);
-		currentRootLayout.setStartOffset(rootSource.getStartPosition());
-		currentRootLayout.setLength(rootSource.getLength());
-		currentRootLayout.setObject(root);
-		currentRootLayout.setRootLayout(currentRootLayout);
-		root.getLayoutInformations().add(currentRootLayout);
+		if (ParserOptions.CREATE_LAYOUT_INFORMATION.isTrue()) {
+			currentRootLayout = LayoutFactory.eINSTANCE.createMinimalLayoutInformation();
+			currentRootLayout.setVisibleTokenText(sourceCode == null ? "" : sourceCode);
+			currentRootLayout.setStartOffset(rootSource.getStartPosition());
+			currentRootLayout.setLength(rootSource.getLength());
+			currentRootLayout.setObject(root);
+			currentRootLayout.setRootLayout(currentRootLayout);
+			root.getLayoutInformations().add(currentRootLayout);
+		}
 	}
 	
 	static void convertToMinimalLayoutInformation(Commentable target, ASTNode source) {

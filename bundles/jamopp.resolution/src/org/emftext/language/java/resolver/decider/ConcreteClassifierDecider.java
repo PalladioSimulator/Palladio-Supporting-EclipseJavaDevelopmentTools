@@ -21,8 +21,10 @@ import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
+import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.emftext.language.java.JavaClasspath;
+import org.emftext.language.java.LogicalJavaURIGenerator;
 import org.emftext.language.java.classifiers.AnonymousClass;
 import org.emftext.language.java.classifiers.Classifier;
 import org.emftext.language.java.classifiers.ConcreteClassifier;
@@ -87,7 +89,7 @@ public class ConcreteClassifierDecider extends AbstractDecider {
 		if (container instanceof IdentifierReference) {
 			IdentifierReference p = (IdentifierReference) container;
 			String packageName = packageName(p);
-			resultList.addAll(JavaClasspath.get().getConcreteClassifiers(packageName));
+			resultList.addAll(JavaClasspath.get(container).getConcreteClassifiers(packageName));
 		}
 
 		if (container instanceof Classifier) {
@@ -105,8 +107,15 @@ public class ConcreteClassifierDecider extends AbstractDecider {
 				if (classifier instanceof ConcreteClassifier) {
 					innerTypeSuperTypeList.addAll(
 						((ConcreteClassifier) classifier).getAllInnerClassifiers());
-					ConcreteClassifier cc = JavaClasspath.get().getConcreteClassifier(
-							((ConcreteClassifier) classifier).getQualifiedName() + "." + identifier);
+					String cqualifiedName = ((ConcreteClassifier) classifier).getQualifiedName();
+					if (JavaClasspath.get(container).isPackageRegistered(cqualifiedName
+							+ LogicalJavaURIGenerator.CLASSIFIER_SEPARATOR)) {
+						cqualifiedName += LogicalJavaURIGenerator.CLASSIFIER_SEPARATOR + identifier;
+					} else {
+						cqualifiedName += LogicalJavaURIGenerator.PACKAGE_SEPARATOR + identifier;
+					}
+					ConcreteClassifier cc = JavaClasspath.get(container).getConcreteClassifier(
+							cqualifiedName);
 					if (cc.eIsProxy()) {
 						cc = (ConcreteClassifier) EcoreUtil.resolve(cc, classifier);
 						if (!cc.eIsProxy()) {
@@ -150,7 +159,7 @@ public class ConcreteClassifierDecider extends AbstractDecider {
 				break;
 			} else if (p.getTarget() instanceof PackageReference) {
 				PackageReference ref = (PackageReference) p.getTarget();
-				s = ref.getNamespacesAsString() + "." + ref.getName() + "." + s;
+				s = ref.getNamespacesAsString() + ref.getName() + "." + s;
 				break;
 			} else {
 				s = p.getTarget().getName() + "." + s;
@@ -178,7 +187,8 @@ public class ConcreteClassifierDecider extends AbstractDecider {
 				} else if (aImport instanceof StaticMemberImport) {
 					StaticMemberImport staticMemberImport = (StaticMemberImport) aImport;
 					if (!staticMemberImport.getStaticMembers().isEmpty()) {
-						//access first element to trigger proxy resolution and avoid ConcurrentModificationException
+						// access first element to trigger proxy resolution
+						// and avoid ConcurrentModificationException
 						staticMemberImport.getStaticMembers().get(0);
 					}
 					resultList.addAll(staticMemberImport.getStaticMembers());
@@ -205,7 +215,7 @@ public class ConcreteClassifierDecider extends AbstractDecider {
 		
 		//5) java.lang
 		if (container instanceof JavaRoot || container.eContainer() == null) {
-			resultList.addAll(JavaClasspath.get().getConcreteClassifiers("java.lang"));
+			resultList.addAll(JavaClasspath.get(container).getConcreteClassifiers("java.lang"));
 		}
 	}
 
@@ -220,6 +230,13 @@ public class ConcreteClassifierDecider extends AbstractDecider {
 			ConcreteClassifier concreteClassifier = (ConcreteClassifier) element;
 			if (id.equals(concreteClassifier.getName())) {
 				return true;
+			}
+			if (element.eIsProxy()) {
+				String lastSegment = ((InternalEObject) element).eProxyURI().lastSegment();
+				if (lastSegment.endsWith("." + id + LogicalJavaURIGenerator.JAVA_FILE_EXTENSION)
+						|| lastSegment.equals(id + LogicalJavaURIGenerator.JAVA_FILE_EXTENSION)) {
+					return true;
+				}
 			}
 		}
 		return false;
@@ -269,7 +286,8 @@ public class ConcreteClassifierDecider extends AbstractDecider {
 			String identifier = nsaElement.getNamespaces().get(idx);
 			EObject target = null;
 			if (idx == 0) {
-				target = relativeNamespaceResolutionWalker.walk(startingPoint, identifier, referenceContainer, crossReference);
+				target = relativeNamespaceResolutionWalker.walk(startingPoint,
+						identifier, referenceContainer, crossReference);
 			} else {
 				for (ConcreteClassifier cand : ((ConcreteClassifier) startingPoint).getAllInnerClassifiers()) {
 					if (identifier.equals(cand.getName())) {

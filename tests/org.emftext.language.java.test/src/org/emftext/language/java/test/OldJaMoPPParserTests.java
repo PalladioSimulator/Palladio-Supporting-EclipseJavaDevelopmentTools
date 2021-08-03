@@ -78,7 +78,7 @@ import org.emftext.language.java.types.TypeReference;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import jamopp.parser.jdt.singlefile.ParserOptions;
+import jamopp.options.ParserOptions;
 import pkg.NumberLiterals;
 
 /**
@@ -953,7 +953,7 @@ public class OldJaMoPPParserTests extends AbstractJaMoPPTests {
 	
 	@Test
 	public void testFullQualifiedNameReferences() throws Exception {
-		boolean usesBindingsForResolution = ParserOptions.TRUE_VALUE.equals(ParserOptions.RESOLVE_BINDINGS.getValue());
+		boolean usesBindingsForResolution = ParserOptions.RESOLVE_BINDINGS.isTrue();
 		
 		String typename = "FullQualifiedNameReferences";
 		String filename = typename + JAVA_FILE_EXTENSION;

@@ -38,7 +38,7 @@ public class ImportExtension {
 			return null;
 		}
 		
-		String fullQualifiedName = containerName + "." + name;
+		String fullQualifiedName = containerName + name;
 		return me.getConcreteClassifier(fullQualifiedName);
 	}
 	

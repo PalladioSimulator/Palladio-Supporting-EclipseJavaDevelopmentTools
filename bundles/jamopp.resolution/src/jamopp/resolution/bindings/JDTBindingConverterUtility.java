@@ -4,6 +4,8 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EReference;
 import org.eclipse.jdt.core.dom.IAnnotationBinding;
 import org.eclipse.jdt.core.dom.IMemberValuePairBinding;
 import org.eclipse.jdt.core.dom.IMethodBinding;
@@ -13,6 +15,7 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.internal.compiler.problem.AbortCompilation;
+import org.emftext.language.java.containers.Origin;
 
 import jamopp.proxy.IJavaContextDependentURIFragmentCollector;
 
@@ -142,6 +145,8 @@ public class JDTBindingConverterUtility {
 		binding = binding.getTypeDeclaration();
 		org.emftext.language.java.containers.CompilationUnit result =
 				org.emftext.language.java.containers.ContainersFactory.eINSTANCE.createCompilationUnit();
+		result.setOrigin(Origin.BINDING);
+		result.setName(binding.getName());
 		convertIPackageNameComponentsToNamespaces(binding.getPackage(), result);
 		result.getClassifiers().add(convertToConcreteClassifier(binding));
 		return result;
@@ -196,6 +201,11 @@ public class JDTBindingConverterUtility {
 				}
 			}
 			result = resultEnum;
+		}
+		if (binding.getPackage() != null) {
+			result.setPackage(convertToPackageProxy(binding.getPackage(), result,
+					org.emftext.language.java.classifiers.ClassifiersPackage
+					.Literals.CONCRETE_CLASSIFIER__PACKAGE));
 		}
 		try {
 			for (IAnnotationBinding annotBind : binding.getAnnotations()) {
@@ -367,6 +377,10 @@ public class JDTBindingConverterUtility {
 		for (ITypeBinding typeBind : binding.getExceptionTypes()) {
 			result.getExceptions().add(convertToNamespaceClassifierReference(typeBind));
 		}
+		org.emftext.language.java.statements.Block statement =
+				org.emftext.language.java.statements.StatementsFactory.eINSTANCE.createBlock();
+		statement.setName("");
+		result.setBlock(statement);
 		return result;
 	}
 	
@@ -447,6 +461,12 @@ public class JDTBindingConverterUtility {
 						.eINSTANCE.createEmptyStatement());
 			}
 		}
+		if (result.getStatement() == null) {
+			org.emftext.language.java.statements.Block block =
+					org.emftext.language.java.statements.StatementsFactory.eINSTANCE.createBlock();
+			block.setName("");
+			result.setStatement(block);
+		}
 		return result;
 	}
 	
@@ -465,6 +485,7 @@ public class JDTBindingConverterUtility {
 		IJavaContextDependentURIFragmentCollector.GLOBAL_INSTANCE.registerContextDependentURIFragment(classRef,
 				org.emftext.language.java.types.TypesPackage.Literals.CLASSIFIER_REFERENCE__TARGET,
 				proxyClass.getName(), proxyClass, -1, binding);
+		classRef.setTarget(proxyClass);
 		ref.getClassifierReferences().add(classRef);
 		return ref;
 	}
@@ -642,6 +663,7 @@ public class JDTBindingConverterUtility {
 	static org.emftext.language.java.containers.Package convertToPackage(IPackageBinding binding) {
 		org.emftext.language.java.containers.Package pack =
 				org.emftext.language.java.containers.ContainersFactory.eINSTANCE.createPackage();
+		pack.setOrigin(Origin.BINDING);
 		convertIPackageNameComponentsToNamespaces(binding, pack);
 		pack.setName("");
 		try {
@@ -649,6 +671,16 @@ public class JDTBindingConverterUtility {
 				pack.getAnnotations().add(convertToAnnotationInstance(annotBind));
 			}
 		} catch (AbortCompilation e) {
+		}
+		if (binding.getModule() != null) {
+			org.emftext.language.java.containers.Module proxy =
+					org.emftext.language.java.containers.ContainersFactory.eINSTANCE.createModule();
+			proxy.setName(binding.getModule().getName());
+			IJavaContextDependentURIFragmentCollector.GLOBAL_INSTANCE
+				.registerContextDependentURIFragment(pack,
+				org.emftext.language.java.containers.ContainersPackage.Literals.PACKAGE__MODULE,
+				proxy.getName(), proxy, -1, binding.getModule());
+			pack.setModule(proxy);
 		}
 		return pack;
 	}
@@ -660,9 +692,21 @@ public class JDTBindingConverterUtility {
 		}
 	}
 	
+	private static org.emftext.language.java.containers.Package convertToPackageProxy(IPackageBinding binding,
+			EObject container, EReference feature) {
+		org.emftext.language.java.containers.Package proxy =
+				org.emftext.language.java.containers.ContainersFactory.eINSTANCE.createPackage();
+		convertIPackageNameComponentsToNamespaces(binding, proxy);
+		proxy.setName("");
+		IJavaContextDependentURIFragmentCollector.GLOBAL_INSTANCE
+			.registerContextDependentURIFragment(container, feature, binding.getName(), proxy, -1, binding);
+		return proxy;
+	}
+	
 	static org.emftext.language.java.containers.Module convertToModule(IModuleBinding binding) {
 		org.emftext.language.java.containers.Module result =
 				org.emftext.language.java.containers.ContainersFactory.eINSTANCE.createModule();
+		result.setOrigin(Origin.BINDING);
 		try {
 			for (IAnnotationBinding annotBind : binding.getAnnotations()) {
 				result.getAnnotations().add(convertToAnnotationInstance(annotBind));
@@ -679,6 +723,9 @@ public class JDTBindingConverterUtility {
 				org.emftext.language.java.modules.ExportsModuleDirective dir = org.emftext.language
 						.java.modules.ModulesFactory.eINSTANCE.createExportsModuleDirective();
 				convertIPackageNameComponentsToNamespaces(packBind, dir);
+				dir.setAccessablePackage(convertToPackageProxy(packBind, dir,
+					org.emftext.language.java.modules.ModulesPackage.Literals
+					.ACCESS_PROVIDING_MODULE_DIRECTIVE__ACCESSABLE_PACKAGE));
 				String[] mods = binding.getExportedTo(packBind);
 				for (String modName : mods) {
 					org.emftext.language.java.modules.ModuleReference ref = org.emftext.language
@@ -692,6 +739,9 @@ public class JDTBindingConverterUtility {
 				org.emftext.language.java.modules.OpensModuleDirective dir = org.emftext.language
 						.java.modules.ModulesFactory.eINSTANCE.createOpensModuleDirective();
 				convertIPackageNameComponentsToNamespaces(packBind, dir);
+				dir.setAccessablePackage(convertToPackageProxy(packBind, dir,
+					org.emftext.language.java.modules.ModulesPackage.Literals
+					.ACCESS_PROVIDING_MODULE_DIRECTIVE__ACCESSABLE_PACKAGE));
 				String[] mods = binding.getOpenedTo(packBind);
 				for (String modName : mods) {
 					org.emftext.language.java.modules.ModuleReference ref = org.emftext.language
@@ -704,10 +754,7 @@ public class JDTBindingConverterUtility {
 			for (IModuleBinding modBind : binding.getRequiredModules()) {
 				org.emftext.language.java.modules.RequiresModuleDirective dir = org.emftext.language
 						.java.modules.ModulesFactory.eINSTANCE.createRequiresModuleDirective();
-				org.emftext.language.java.modules.ModuleReference ref = org.emftext.language.java
-						.modules.ModulesFactory.eINSTANCE.createModuleReference();
-				convertToNamespacesAndSet(modBind.getName(), ref);
-				dir.setRequiredModule(ref);
+				dir.setRequiredModule(convertToModuleReference(modBind));
 				result.getTarget().add(dir);
 			}
 			for (ITypeBinding typeBind : binding.getUses()) {
@@ -736,5 +783,20 @@ public class JDTBindingConverterUtility {
 		for (String part : singleNamespaces) {
 			ele.getNamespaces().add(part);
 		}
+	}
+	
+	private static org.emftext.language.java.modules.ModuleReference convertToModuleReference(IModuleBinding binding) {
+		org.emftext.language.java.modules.ModuleReference ref = org.emftext.language.java
+				.modules.ModulesFactory.eINSTANCE.createModuleReference();
+		convertToNamespacesAndSet(binding.getName(), ref);
+		org.emftext.language.java.containers.Module proxyMod =
+				org.emftext.language.java.containers.ContainersFactory.eINSTANCE.createModule();
+		proxyMod.setName(binding.getName());
+		IJavaContextDependentURIFragmentCollector.GLOBAL_INSTANCE
+			.registerContextDependentURIFragment(ref,
+			org.emftext.language.java.modules.ModulesPackage.Literals.MODULE_REFERENCE__TARGET,
+			proxyMod.getName(), proxyMod, -1, binding);
+		ref.setTarget(proxyMod);
+		return ref;
 	}
 }

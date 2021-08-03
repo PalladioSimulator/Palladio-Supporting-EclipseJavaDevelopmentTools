@@ -8,7 +8,8 @@ Bundle-ClassPath: .
 Bundle-Activator: org.emftext.language.java.annotations.presentation.JavaEditorPlugin$Implementation
 Bundle-Vendor: Martin Armbruster
 Bundle-Localization: plugin
-Export-Package: org.emftext.language.java.annotations.presentation,
+Export-Package: org.emftext.commons.layout.presentation,
+ org.emftext.language.java.annotations.presentation,
  org.emftext.language.java.arrays.presentation,
  org.emftext.language.java.classifiers.presentation,
  org.emftext.language.java.containers.presentation,
@@ -32,7 +33,6 @@ Require-Bundle: org.eclipse.core.runtime,
  org.emftext.language.java.edit;visibility:=reexport,
  org.eclipse.emf.ecore.xmi;visibility:=reexport,
  org.eclipse.emf.edit.ui;visibility:=reexport,
- org.eclipse.ui.ide;visibility:=reexport,
- org.emftext.commons.layout.edit;visibility:=reexport
+ org.eclipse.ui.ide;visibility:=reexport
 Bundle-ActivationPolicy: lazy
 

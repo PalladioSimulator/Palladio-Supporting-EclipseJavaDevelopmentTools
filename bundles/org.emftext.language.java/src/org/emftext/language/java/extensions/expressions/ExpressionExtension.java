@@ -261,7 +261,7 @@ public class ExpressionExtension {
 			}
 			return tempClass;
 		} else {
-			return TypeReferenceExtension.clone(castExpr.getTypeReference());
+			return castExpr.getTypeReference();
 		}
 	}
 	

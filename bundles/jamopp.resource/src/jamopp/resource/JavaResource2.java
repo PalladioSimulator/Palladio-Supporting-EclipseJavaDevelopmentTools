@@ -7,17 +7,19 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.resource.impl.ResourceImpl;
 import org.eclipse.emf.ecore.util.EObjectWithInverseResolvingEList;
+import org.eclipse.emf.ecore.xmi.impl.XMIResourceImpl;
 import org.emftext.language.java.JavaClasspath;
 import org.emftext.language.java.LogicalJavaURIGenerator;
 import org.emftext.language.java.containers.CompilationUnit;
 import org.emftext.language.java.containers.JavaRoot;
+import org.emftext.language.java.containers.Origin;
 import org.emftext.language.java.members.MemberContainer;
 import org.emftext.language.java.resolver.CentralReferenceResolver;
 import org.emftext.language.java.resolver.result.IJavaElementMapping;
@@ -31,7 +33,10 @@ import jamopp.printer.JaMoPPPrinter;
 import jamopp.proxy.IJavaContextDependentURIFragment;
 import jamopp.proxy.IJavaContextDependentURIFragmentCollector;
 
-public class JavaResource2 extends ResourceImpl {
+public class JavaResource2 extends XMIResourceImpl {
+	public static final String JAVAXMI_FILE_EXTENSION = LogicalJavaURIGenerator.JAVAXMI_FILE_EXTENSION_NAME;
+	private static final Logger logger = Logger.getLogger("jamopp."
+			+ JavaResource2.class.getSimpleName());
 	private Map<String, IJavaContextDependentURIFragment> internalURIFragmentMap = IJavaContextDependentURIFragmentCollector.GLOBAL_INSTANCE.getContextDependentURIFragmentMap();
 	
 	public JavaResource2() {
@@ -43,23 +48,29 @@ public class JavaResource2 extends ResourceImpl {
 	}
 	
 	@Override
-	protected void doLoad(InputStream input, Map<?, ?> options) {
+	public void doLoad(InputStream input, Map<?, ?> options) throws IOException {
+		if (this.getURI().fileExtension().equals(JAVAXMI_FILE_EXTENSION)) {
+			super.doLoad(input, options);
+			return;
+		}
 		IJavaContextDependentURIFragmentCollector.GLOBAL_INSTANCE.setBaseURI(getURI());
 		EObject result = null;
 		URI physicalURI;
 		if (this.getURI().isFile()) {
 			physicalURI = this.getURI();
 		} else {
-			physicalURI = JavaClasspath.get().getURIMap().get(this.getURI());
+			physicalURI = JavaClasspath.get(this).getURIMap().get(this.getURI());
 		}
 		if (physicalURI == null) {
+			logger.error(this.getURI() + " has no physical URI.");
 			throw new IllegalStateException("There has to be a physical URI.");
 		}
+		logger.debug("Loading " + physicalURI);
 		String extension = physicalURI.fileExtension();
 		if (extension.equals("class")) {
 			try {
 				result = new ClassFileModelLoader().parse(input, "");
-				JavaClasspath.get().registerJavaRoot((JavaRoot) result, physicalURI);
+				JavaClasspath.get(this).registerJavaRoot((JavaRoot) result, physicalURI);
 				this.getContents().add(result);
 			} catch (IOException e) {
 			}
@@ -67,7 +78,9 @@ public class JavaResource2 extends ResourceImpl {
 			JaMoPPJDTSingleFileParser api = new JaMoPPJDTSingleFileParser();
 			api.setResourceSet(this.getResourceSet());
 			result = api.parse(this.getURI().toString(), input);
-			JavaClasspath.get().registerJavaRoot((JavaRoot) result, physicalURI);
+			JavaRoot root = (JavaRoot) result;
+			root.setOrigin(physicalURI.isFile() ? Origin.FILE : Origin.ARCHIVE);
+			JavaClasspath.get(this).registerJavaRoot(root, physicalURI);
 			this.getContents().add(result);
 			api.setResourceSet(this.getResourceSet());
 			api.resolveBindings();
@@ -75,12 +88,16 @@ public class JavaResource2 extends ResourceImpl {
 	}
 	
 	@Override
-	protected void doSave(OutputStream output, Map<?, ?> options) {
-		this.getContents().forEach(object -> {
-			if (object instanceof JavaRoot) {
-				JaMoPPPrinter.print((JavaRoot) object, output);
-			}
-		});
+	public void doSave(OutputStream output, Map<?, ?> options) throws IOException {
+		if (this.getURI().fileExtension().equals(JAVAXMI_FILE_EXTENSION)) {
+			super.doSave(output, options);
+		} else {
+			this.getContents().forEach(object -> {
+				if (object instanceof JavaRoot) {
+					JaMoPPPrinter.print((JavaRoot) object, output);
+				}
+			});
+		}
 	}
 	
 	@Override
@@ -146,10 +163,14 @@ public class JavaResource2 extends ResourceImpl {
 				while (j < size && eObject == null) {
 					// this is required for classifiers with '$' in their names
 					String subUriFragment = uriFragmentPath.get(j);
-					name = name + "$" + subUriFragment.substring(
+					String subName = subUriFragment.substring(
 							LogicalJavaURIGenerator.CLASSIFIERS_SUB_PATH_PREFIX.length(),
 							subUriFragment.length() - 2);
+					name = name + "$" + subName;
 					eObject = compilationUnit.getContainedClassifier(name);
+					if (eObject == null) {
+						eObject = compilationUnit.getContainedClassifier(subName);
+					}
 					if (eObject != null) {
 						i = j;
 					} else {

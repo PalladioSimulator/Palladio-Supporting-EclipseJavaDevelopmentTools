@@ -7,6 +7,8 @@ import org.eclipse.jdt.core.dom.IModuleBinding;
 import org.emftext.language.java.JavaClasspath;
 import org.emftext.language.java.LogicalJavaURIGenerator;
 
+import jamopp.options.ParserOptions;
+
 class IModuleBindingResolver extends AbstractBindingResolver<IModuleBinding> {
 	protected IModuleBindingResolver(CentralBindingBasedResolver parentResolver) {
 		super(parentResolver);
@@ -14,19 +16,34 @@ class IModuleBindingResolver extends AbstractBindingResolver<IModuleBinding> {
 
 	@Override
 	protected EObject resolve(IModuleBinding binding) {
-		org.emftext.language.java.containers.Module mod =
-				JavaClasspath.get().getModule(binding.getName());
-		if (mod != null && !mod.eIsProxy()) {
-			return mod;
+		URI uri = LogicalJavaURIGenerator.getModuleURI(binding.getName());
+		Resource modContainer = this.getParentResolver().findResourceInResourceSet(uri);
+		if (modContainer == null) {
+			if (ParserOptions.PREFER_BINDING_CONVERSION.isTrue()) {
+				return convertBindingToModule(binding, uri);
+			}
+			try {
+				modContainer = this.getParentResolver().getResourceSet().getResource(uri, true);
+				if (modContainer != null) {
+					return (org.emftext.language.java.containers.Module) modContainer.getContents().get(0);
+				}
+			} catch (RuntimeException e) {
+			}
+		} else {
+			return (org.emftext.language.java.containers.Module) modContainer.getContents().get(0);
 		}
-		mod = JDTBindingConverterUtility.convertToModule(binding);
+		return convertBindingToModule(binding, uri);
+	}
+	
+	private org.emftext.language.java.containers.Module convertBindingToModule(IModuleBinding binding, URI uri) {
+		org.emftext.language.java.containers.Module result =
+				JDTBindingConverterUtility.convertToModule(binding);
 		// Logical URI of the module is used to create the corresponding resource.
-		URI uri = LogicalJavaURIGenerator.getModuleURI(mod.getNamespacesAsString());
 		Resource modContainer = this.getParentResolver().getResourceSet().createResource(uri);
-		modContainer.getContents().add(mod);
+		modContainer.getContents().add(result);
 		// For the registration, the physical URI is used.
-		uri = JavaClasspath.get().getURIMap().get(uri);
-		JavaClasspath.get().registerJavaRoot(mod, uri);
-		return mod;
+		uri = JavaClasspath.get(this.getParentResolver().getResourceSet()).getURIMap().get(uri);
+		JavaClasspath.get(this.getParentResolver().getResourceSet()).registerJavaRoot(result, uri);
+		return result;
 	}
 }

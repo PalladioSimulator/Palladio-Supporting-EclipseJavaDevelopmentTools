@@ -28,6 +28,7 @@ import org.eclipse.jdt.core.dom.SimpleType;
 import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.WildcardType;
 
+import jamopp.options.ParserOptions;
 import jamopp.proxy.IJavaContextDependentURIFragmentCollector;
 import jamopp.resolution.bindings.JDTBindingConverterUtility;
 
@@ -126,8 +127,7 @@ class BaseConverterUtility {
 					org.emftext.language.java.types.TypesFactory.eINSTANCE.createInferableType();
 			ITypeBinding b = t.resolveBinding();
 			if (b != null && !b.isRecovered()
-					&& ParserOptions.TRUE_VALUE.equals(
-					ParserOptions.RESOLVE_BINDINGS_OF_INFERABLE_TYPES.getValue())) {
+					&& ParserOptions.RESOLVE_BINDINGS_OF_INFERABLE_TYPES.isTrue()) {
 				ref.getActualTargets().addAll(JDTBindingConverterUtility
 						.convertToTypeReferences(b));
 			}

@@ -86,16 +86,36 @@ public class LogicalJavaURIGenerator {
 	 * Java's separator for classifier names ($).
 	 */
 	public static final String CLASSIFIER_SEPARATOR = "$";
+	
+	/**
+	 * The simple file extension for Java files without a preceding dot.
+	 */
+	public static final String JAVA_FILE_EXTENSION_NAME = "java";
 
 	/**
 	 * Java's file extension (.java).
 	 */
-	public static final String JAVA_FILE_EXTENSION = ".java";
+	public static final String JAVA_FILE_EXTENSION = PACKAGE_SEPARATOR + JAVA_FILE_EXTENSION_NAME;
+	
+	/**
+	 * The simple file extension for class files without the preceding dot.
+	 */
+	public static final String JAVA_CLASS_FILE_EXTENSION_NAME = "class";
 
 	/**
 	 * Java's class file extension (.class).
 	 */
-	public static final String JAVA_CLASS_FILE_EXTENSION = ".class";
+	public static final String JAVA_CLASS_FILE_EXTENSION = PACKAGE_SEPARATOR + JAVA_CLASS_FILE_EXTENSION_NAME;
+	
+	/**
+	 * The simple file extension for javaxmi files without the preceding dot.
+	 */
+	public static final String JAVAXMI_FILE_EXTENSION_NAME = "javaxmi";
+	
+	/**
+	 * File extension for javaxmi files.
+	 */
+	public static final String JAVAXMI_FILE_EXTENSION = PACKAGE_SEPARATOR + JAVAXMI_FILE_EXTENSION_NAME;
 	
 	/**
 	 * File name of a module declaration.
@@ -121,12 +141,7 @@ public class LogicalJavaURIGenerator {
 	 */
 	public static URI getJavaFileResourceURI(String fullQualifiedName) {
 		StringBuilder logicalUriString = new StringBuilder(JAVA_CLASSIFIER_PATHMAP);
-		String actualName = fullQualifiedName;
-		int index = fullQualifiedName.indexOf(CLASSIFIER_SEPARATOR);
-		if (index >= 0) {
-			actualName = fullQualifiedName.substring(0, index);
-		}
-		logicalUriString.append(actualName);
+		logicalUriString.append(fullQualifiedName);
 		logicalUriString.append(JAVA_FILE_EXTENSION);
 
 		return URI.createURI(logicalUriString.toString());
@@ -220,6 +235,11 @@ public class LogicalJavaURIGenerator {
 	 * @return the namespace.
 	 */
 	public static String packageName(NamespaceAwareElement nsaElement) {
-		return nsaElement.getNamespacesAsString();
+		StringBuilder builder = new StringBuilder();
+		nsaElement.getNamespaces().forEach(s -> {
+			builder.append(s);
+			builder.append(LogicalJavaURIGenerator.PACKAGE_SEPARATOR);
+		});
+		return builder.toString();
 	}
 }

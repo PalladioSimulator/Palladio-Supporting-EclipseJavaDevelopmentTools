@@ -1,6 +1,7 @@
 package jamopp.parser.jdt.singlefile;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -13,6 +14,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
@@ -26,14 +28,18 @@ import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.FileASTRequestor;
 import org.emftext.language.java.JavaClasspath;
 import org.emftext.language.java.containers.JavaRoot;
+import org.emftext.language.java.containers.Origin;
 import org.emftext.language.java.resolver.CentralReferenceResolver;
 
+import jamopp.options.ParserOptions;
 import jamopp.parser.api.JaMoPPParserAPI;
 import jamopp.proxy.IJavaContextDependentURIFragment;
 import jamopp.proxy.IJavaContextDependentURIFragmentCollector;
 import jamopp.resolution.bindings.CentralBindingBasedResolver;
 
 public class JaMoPPJDTSingleFileParser implements JaMoPPParserAPI {
+	private static final Logger logger = Logger.getLogger("jamopp."
+			+ JaMoPPJDTSingleFileParser.class.getSimpleName());
 	private final String DEFAULT_ENCODING = StandardCharsets.UTF_8.toString();
 	private ResourceSet resourceSet;
 	private ArrayList<String> exclusionPatterns = new ArrayList<>();
@@ -93,10 +99,13 @@ public class JaMoPPJDTSingleFileParser implements JaMoPPParserAPI {
 				encodings[index] = DEFAULT_ENCODING;
 			}
 			String[] classpathEntries = findClasspathEntries(dir);
-			System.out.println("Parsing");
+			logger.debug("Parsing the directory " + dir.toString() + " with "
+					+ sources.length + " source files and " + classpathEntries.length
+					+ " classpath entries.");
 			this.parseFilesWithJDT(classpathEntries, sources, encodings);
-			System.out.println("Resolving");
+			logger.debug("Resolving the parsed files.");
 			resolveBindings();
+			resolveEverything();
 		} catch (IOException e) {
 		}
 		ResourceSet result = this.resourceSet;
@@ -115,7 +124,9 @@ public class JaMoPPJDTSingleFileParser implements JaMoPPParserAPI {
 	private String[] findFiles(Path directory, String...extensions) throws IOException {
 		return Files.walk(directory).filter(path -> Files.isRegularFile(path)
 				&& testFileExtensions(path, extensions))
-				.map(Path::toAbsolutePath).map(Path::toString).filter(this::testPathStringForExclusion)
+				.map(Path::toAbsolutePath).map(Path::toString)
+				.map(s -> s.replace(File.separator, "/"))
+				.filter(this::testPathStringForExclusion)
 				.toArray(i -> new String[i]);
 	}
 	
@@ -137,7 +148,7 @@ public class JaMoPPJDTSingleFileParser implements JaMoPPParserAPI {
 		ArrayList<JavaRoot> result = new ArrayList<>();
 		ASTParser parser = setUpParser();
 		for (String entry : classpathEntries) {
-			JavaClasspath.get().registerZip(URI.createFileURI(entry));
+			JavaClasspath.get(resourceSet).registerZip(URI.createFileURI(entry));
 		}
 		parser.setEnvironment(classpathEntries, new String[] {}, new String[] {}, true);
 		OrdinaryCompilationUnitJDTASTVisitorAndConverter converter =
@@ -149,16 +160,17 @@ public class JaMoPPJDTSingleFileParser implements JaMoPPParserAPI {
 				IJavaContextDependentURIFragmentCollector.GLOBAL_INSTANCE.setBaseURI(fileURI);
 				node.accept(converter);
 				JavaRoot root = converter.getConvertedElement();
+				root.setOrigin(Origin.FILE);
 				Resource newResource;
 				if (root.eResource() == null) {
 					newResource = JaMoPPJDTSingleFileParser.this.resourceSet.createResource(fileURI);
 					newResource.getContents().add(root);
-					JavaClasspath.get().registerJavaRoot(root, fileURI);
+					JavaClasspath.get(resourceSet).registerJavaRoot(root, fileURI);
 				} else {
 					newResource = root.eResource();
 					if (!newResource.getURI().toFileString().equals(sourceFilePath)) {
 						newResource.setURI(fileURI);
-						JavaClasspath.get().registerJavaRoot(root, fileURI);
+						JavaClasspath.get(resourceSet).registerJavaRoot(root, fileURI);
 					}
 				}
 				result.add(root);
@@ -170,6 +182,9 @@ public class JaMoPPJDTSingleFileParser implements JaMoPPParserAPI {
 	private void setUpResourceSet() {
 		if (this.resourceSet == null) {
 			this.resourceSet = new ResourceSetImpl();
+		}
+		if (ParserOptions.REGISTER_LOCAL.isTrue()) {
+			JavaClasspath.get(this.resourceSet).enableLocalRegistration();
 		}
 	}
 	
@@ -189,33 +204,50 @@ public class JaMoPPJDTSingleFileParser implements JaMoPPParserAPI {
 		if (isResolving) {
 			return;
 		}
-		if (ParserOptions.TRUE_VALUE.equals(
-				ParserOptions.RESOLVE_BINDINGS.getValue())) {
+		if (ParserOptions.RESOLVE_BINDINGS.isTrue()) {
 			isResolving = true;
 			CentralReferenceResolver.GLOBAL_INSTANCE.setBindingBasedResolver(
 					new CentralBindingBasedResolver(this.resourceSet));
 			int oldSize;
 			int newSize = this.resourceSet.getResources().size();
 			HashSet<Resource> alreadyResolved = new HashSet<>();
+			boolean resolveAllBindings = ParserOptions.RESOLVE_ALL_BINDINGS.isTrue();
 			do {
 				oldSize = newSize;
 				List<Resource> resources = new ArrayList<>(this.resourceSet.getResources());
 				resources.forEach(r -> {
 					if (!alreadyResolved.contains(r)) {
-						EcoreUtil.resolveAll(r);
-						alreadyResolved.add(r);
+						if (resolveAllBindings || r.getURI().isFile()) {
+							EcoreUtil.resolveAll(r);
+							alreadyResolved.add(r);
+						}
 					}
 				});
 				newSize = this.resourceSet.getResources().size();
 			} while (oldSize != newSize
-					&& ParserOptions.TRUE_VALUE.equals(
-					ParserOptions.RESOLVE_ALL_BINDINGS.getValue()));
+					&& resolveAllBindings);
 			CentralReferenceResolver.GLOBAL_INSTANCE.setBindingBasedResolver(null);
 			Map<String, IJavaContextDependentURIFragment> fragments =
 					IJavaContextDependentURIFragmentCollector.GLOBAL_INSTANCE
 					.getContextDependentURIFragmentMap();
 			fragments.values().forEach(v -> v.setBinding(null));
 			isResolving = false;
+		}
+	}
+	
+	private void resolveEverything() {
+		if (ParserOptions.RESOLVE_EVERYTHING.isTrue()) {
+			logger.debug("Resolving everything.");
+			int oldSize;
+			do {
+				oldSize = resourceSet.getResources().size();
+				for (Resource res : new ArrayList<>(resourceSet.getResources())) {
+					if (res.getContents().isEmpty()) {
+						continue;
+					}
+					EcoreUtil.resolveAll(res);
+				}
+			} while (oldSize != resourceSet.getResources().size());
 		}
 	}
 

@@ -20,6 +20,7 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.emftext.language.java.JavaClasspath;
+import org.emftext.language.java.LogicalJavaURIGenerator;
 import org.emftext.language.java.containers.JavaRoot;
 import org.emftext.language.java.references.IdentifierReference;
 import org.emftext.language.java.references.PackageReference;
@@ -65,20 +66,26 @@ public class PackageDecider extends AbstractDecider {
 			String pack = parentPackage.getTarget().getName();
 			
 			Reference parent = parentPackage.getPrevious();
-			while (parent != null && parent instanceof IdentifierReference) {
+			if (parent != null) {
+				if (!(parent instanceof IdentifierReference)) {
+					return resultList;
+				}
 				IdentifierReference parentCast = (IdentifierReference) parent;
 				if (parentCast.getTarget() instanceof org.emftext.language.java.containers.Package) {
 					pack = ((org.emftext.language.java.containers.Package) parentCast.getTarget())
-						.getNamespacesAsString() + "." + pack;
-					break;
+						.getNamespacesAsString() + pack;
+				} else if (parentCast.getTarget() instanceof PackageReference) {
+					var packRef = (PackageReference) parentCast.getTarget();
+					pack = packRef.getNamespacesAsString() + packRef.getName()
+						+ LogicalJavaURIGenerator.PACKAGE_SEPARATOR + pack;
 				} else {
-					pack = parentCast.getTarget().getName() + "." + pack;
-					parent = parentCast.getPrevious();
+					return resultList;
 				}
 			}
 			
-			if (JavaClasspath.get().isPackageRegistered(pack)) {
-				org.emftext.language.java.containers.Package p = JavaClasspath.get().getPackage(pack);
+			
+			if (JavaClasspath.get(container).isPackageRegistered(pack)) {
+				org.emftext.language.java.containers.Package p = JavaClasspath.get(container).getPackage(pack);
 				if (p != null) {
 					resultList.add(p);
 				} else {
@@ -97,9 +104,12 @@ public class PackageDecider extends AbstractDecider {
 		if (container instanceof JavaRoot && container.eResource() != null) {
 			EList<EObject> resultList = new BasicEList<EObject>();
 
-			PackageReference p = ReferencesFactory.eINSTANCE.createPackageReference();
-			p.setName(identifier);
-			resultList.add(p);
+			if (JavaClasspath.get(container).isPackageRegistered(
+					((JavaRoot) container).getNamespacesAsString() + identifier)) {
+				PackageReference p = ReferencesFactory.eINSTANCE.createPackageReference();
+				p.setName(identifier);
+				resultList.add(p);
+			}
 
 			return resultList;
 		}

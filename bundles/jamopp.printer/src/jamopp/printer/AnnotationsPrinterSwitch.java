@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 
 import org.eclipse.emf.ecore.util.Switch;
+import org.emftext.language.java.LogicalJavaURIGenerator;
 import org.emftext.language.java.annotations.Annotable;
 import org.emftext.language.java.annotations.AnnotationAttributeSetting;
 import org.emftext.language.java.annotations.AnnotationInstance;
@@ -33,7 +34,7 @@ class AnnotationsPrinterSwitch extends AnnotationsSwitch<Boolean> {
 		try {
 			writer.append("@");
 			if (element.getNamespaces().size() > 0) {
-				writer.append(element.getNamespacesAsString() + ".");
+				writer.append(LogicalJavaURIGenerator.packageName(element));
 			}
 			writer.append(element.getAnnotation().getName());
 			if (element.getParameter() != null) {

@@ -3,6 +3,7 @@ package jamopp.printer;
 import java.io.BufferedWriter;
 import java.io.IOException;
 
+import org.emftext.language.java.LogicalJavaURIGenerator;
 import org.emftext.language.java.annotations.AnnotationsPackage;
 import org.emftext.language.java.generics.GenericsPackage;
 import org.emftext.language.java.types.ClassifierReference;
@@ -128,13 +129,17 @@ class TypesPrinterSwitch extends TypesSwitch<Boolean> {
 	@Override
 	public Boolean caseNamespaceClassifierReference(NamespaceClassifierReference element) {
 		try {
-			writer.append(element.getNamespacesAsString());
+			String n = LogicalJavaURIGenerator.packageName(element);
+			if (n.length() > 0) {
+				n = n.substring(0, n.length() - 1);
+			}
+			writer.append(n);
 			if (element.getNamespaces().size() > 0) {
-				writer.append(".");
+				writer.append(LogicalJavaURIGenerator.PACKAGE_SEPARATOR);
 			}
 			for (int index = 0; index < element.getClassifierReferences().size() - 1; index++) {
 				parent.doSwitch(element.getClassifierReferences().get(index));
-				writer.append(".");
+				writer.append(LogicalJavaURIGenerator.PACKAGE_SEPARATOR);
 			}
 			parent.doSwitch(element.getClassifierReferences().get(element.getClassifierReferences().size() - 1));
 		} catch (IOException e) {

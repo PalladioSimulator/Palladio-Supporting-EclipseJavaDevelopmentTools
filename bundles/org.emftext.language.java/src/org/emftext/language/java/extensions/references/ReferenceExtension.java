@@ -80,6 +80,10 @@ public class ReferenceExtension {
 	}
 	
 	public static TypeReference getReferencedTypeReference(Reference me) {
+		if (me.getActualTargets().size() > 0) {
+			return me.getActualTargets().get(0);
+		}
+		
 		if (me instanceof Literal) {
 			return TypeReferenceExtension.convertToTypeReference(((Literal) me).getType());
 		}
@@ -142,7 +146,11 @@ public class ReferenceExtension {
 				type = ((TypedElement) target).getTypeReference();
 				if (type != null && !(type instanceof InferableType)) {
 					TypeReference clonedType = TypeReferenceExtension.clone(type);
-					type = resolveAllTypeParameters(clonedType, (ElementReference) me, type);
+					clonedType = resolveAllTypeParameters(clonedType, (ElementReference) me, type);
+					if (clonedType != null) {
+						me.getActualTargets().add(clonedType);
+						type = clonedType;
+					}
 				}
 			} else if (target instanceof Type /*e.g. Annotation*/) {
 				return TypeReferenceExtension.convertToTypeReference((Type) target);
@@ -177,7 +185,11 @@ public class ReferenceExtension {
 	private static TypeReference resolveAllTypeParameters(TypeReference type, ElementReference me, TypeReference original) {
 		Type t = original.getTarget();
 		if (t instanceof TypeParameter) {
-			return ((TypeParameter) t).getBoundTypeReference(original, me);
+			TypeReference boundRef = ((TypeParameter) t).getBoundTypeReference(original, me);
+			if (boundRef == null || boundRef.getTarget() == null || boundRef.getTarget().equals(t)) {
+				return null;
+			}
+			return TypeReferenceExtension.clone(boundRef);
 		} else {
 			ClassifierReference classRef = type.getPureClassifierReference();
 			ClassifierReference originalClassRef = original.getPureClassifierReference();
@@ -194,6 +206,8 @@ public class ReferenceExtension {
 						if (resolved != null) {
 							resolved = TypeReferenceExtension.clone(resolved);
 							setTypeReferenceOfTypeArgument(typeArgument, resolved);
+						} else {
+							return null;
 						}
 					}
 				}

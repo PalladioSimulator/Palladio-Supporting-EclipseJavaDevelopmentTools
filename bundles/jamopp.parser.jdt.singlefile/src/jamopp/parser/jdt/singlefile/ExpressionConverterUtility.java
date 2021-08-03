@@ -40,6 +40,7 @@ import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeMethodReference;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 
+import jamopp.options.ParserOptions;
 import jamopp.resolution.bindings.JDTBindingConverterUtility;
 
 class ExpressionConverterUtility {
@@ -274,8 +275,7 @@ class ExpressionConverterUtility {
 					IVariableBinding varBind = frag.resolveBinding();
 					ITypeBinding c = varBind == null ? null : varBind.getType();
 					if (c != null && !c.isRecovered()
-							&& ParserOptions.TRUE_VALUE.equals(
-							ParserOptions.RESOLVE_BINDINGS_OF_INFERABLE_TYPES.getValue())) {
+							&& ParserOptions.RESOLVE_BINDINGS_OF_INFERABLE_TYPES.isTrue()) {
 						type.getActualTargets().addAll(
 								JDTBindingConverterUtility.convertToTypeReferences(c));
 					}

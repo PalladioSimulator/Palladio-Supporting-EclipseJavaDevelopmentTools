@@ -32,7 +32,7 @@ class OrdinaryCompilationUnitJDTASTVisitorAndConverter extends ModuleJDTASTVisit
 	private org.emftext.language.java.containers.CompilationUnit convertToCompilationUnit(CompilationUnit cu) {
 		org.emftext.language.java.containers.CompilationUnit result =
 				org.emftext.language.java.containers.ContainersFactory.eINSTANCE.createCompilationUnit();
-		result.setName("");
+		result.setName(((AbstractTypeDeclaration) cu.types().get(0)).getName().getIdentifier());
 		LayoutInformationConverter.convertJavaRootLayoutInformation(result, cu, getSource());
 		cu.types().forEach(obj -> result.getClassifiers().add(
 				ClassifierConverterUtility.convertToConcreteClassifier((AbstractTypeDeclaration) obj)));
