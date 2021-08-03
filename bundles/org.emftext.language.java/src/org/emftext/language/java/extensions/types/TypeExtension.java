@@ -183,7 +183,10 @@ public class TypeExtension {
 			Type type = ((TypedElement)otherArrayType).getTypeReference().getTarget();
 			isTypeParameter = type instanceof TypeParameter;
 		}
-		boolean isVariableLengthParameter = otherArrayType instanceof VariableLengthParameter;
+		boolean isVariableLengthParameter = otherArrayType instanceof VariableLengthParameter
+				|| (otherArrayType != null
+					&& otherArrayType.eContainer() != null
+					&& otherArrayType.eContainer() instanceof VariableLengthParameter);
 		
 		long otherArrayDim = 0;
 		if(otherArrayType != null) {
