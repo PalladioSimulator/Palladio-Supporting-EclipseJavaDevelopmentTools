@@ -34,9 +34,6 @@ class ITypeBindingResolver extends AbstractBindingResolver<ITypeBinding> {
 
 	@Override
 	protected EObject resolve(ITypeBinding binding) {
-		if (binding.getName().equals("ClassWithEnumeratingFieldDeclaration")) {
-			System.out.println("hu");
-		}
 		binding = binding.getTypeDeclaration();
 		if (binding.isAnonymous() || binding.isLocal()) {
 			return findLocalOrAnonymousClass(binding.getBinaryName());
@@ -46,8 +43,6 @@ class ITypeBindingResolver extends AbstractBindingResolver<ITypeBinding> {
 			TypeParametrizable param = null;
 			if (binding.getDeclaringClass() != null) {
 				param = (TypeParametrizable) this.getParentResolver().resolve(binding.getDeclaringClass());
-//			} else {
-//				param = (TypeParametrizable) this.getParentResolver().resolve(binding.getDeclaringMethod());
 			}
 			if (param == null || param.getTypeParameters() == null) {
 				return null;
