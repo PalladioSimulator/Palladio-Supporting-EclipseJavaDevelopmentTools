@@ -40,12 +40,12 @@ import jamopp.parser.jdt.singlefile.JaMoPPJDTSingleFileParser;
 import jamopp.resource.JavaResource2;
 
 public class SingleFileParserBulkTests extends AbstractJaMoPPTests {
-	private final static Logger logger = Logger.getLogger("jamopp."
+	private static final Logger logger = Logger.getLogger("jamopp."
 			+ SingleFileParserBulkTests.class.getSimpleName());
-	private final static String BASE_ZIP = "JaMoPP-BulkTest" + File.separator + "Tests" + File.separator
+	private static final String BASE_ZIP = "JaMoPP-BulkTest" + File.separator + "Tests" + File.separator
 		+ "org.emftext.language.java.test.bulk" + File.separator + "input" + File.separator;
-	private final static String END_ZIP = File.separator + "src.zip";
-	private final static String END_SRC = File.separator + "src";
+	private static final String END_ZIP = File.separator + "src.zip";
+	private static final String END_SRC = File.separator + "src";
 	private String inputFolder;
 	private String generalInputFolder;
 	
@@ -195,7 +195,9 @@ public class SingleFileParserBulkTests extends AbstractJaMoPPTests {
 		if (generalInputFolder == null) {
 			decompressZipFile();
 		}
-		Path target = Paths.get(getTestInputFolder());
+		String testInput = getTestInputFolder();
+		logger.debug("Testing " + testInput);
+		Path target = Paths.get(testInput);
 		JaMoPPJDTSingleFileParser parser = new JaMoPPJDTSingleFileParser();
 		parser.setExclusionPatterns(".*?teammates/src/client/.*?",
 				".*?teammates/src/e2e/.*?",
@@ -224,6 +226,7 @@ public class SingleFileParserBulkTests extends AbstractJaMoPPTests {
 			}
 			index++;
 		}
+		logger.debug("Finished testing " + testInput);
 	}
 	
 	private void decompressZipFile() {

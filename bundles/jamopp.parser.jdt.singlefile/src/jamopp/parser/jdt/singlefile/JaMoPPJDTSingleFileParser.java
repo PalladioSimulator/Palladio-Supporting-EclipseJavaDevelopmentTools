@@ -106,10 +106,12 @@ public class JaMoPPJDTSingleFileParser implements JaMoPPParserAPI {
 			logger.debug("Resolving the parsed files.");
 			resolveBindings();
 			resolveEverything();
+			logger.debug("Resolved the parsed files.");
 		} catch (IOException e) {
 		}
 		ResourceSet result = this.resourceSet;
 		this.resourceSet = null;
+		logger.debug("Parsed the directory.");
 		return result;
 	}
 	
