@@ -281,9 +281,11 @@ public class TypeParameterExtension {
 							resultList.add(0, theType);
 						}
 					}
-					
-					Type prevTypeTarget = prevType.getTarget();
-					if (prevTypeTarget instanceof ConcreteClassifier) {
+					Type prevTypeTarget = null;
+					if (prevType!=null)
+					 prevTypeTarget = prevType.getTarget();
+					if (prevTypeTarget !=null)
+						if (prevTypeTarget instanceof ConcreteClassifier) {
 						// Bound through inheritance?
 						int idx = 0;
 						for (ClassifierReference superClassifierReference
