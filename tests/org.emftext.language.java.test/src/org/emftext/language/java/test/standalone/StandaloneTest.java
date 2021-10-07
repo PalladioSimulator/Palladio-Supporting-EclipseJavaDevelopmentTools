@@ -17,6 +17,7 @@ package org.emftext.language.java.test.standalone;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -78,9 +79,8 @@ public class StandaloneTest {
      * @see org.emftext.language.java.test.AbstractJaMoPPTests
      */
     @ParameterizedTest
-    @ValueSource(strings = { "src-standalone", "acmeair", "piggymetrics", "petclinic", "TeaStore", "src-input",
-            "src-sevenandup", "teammates", "esda", "microservice" })
-    // @Timeout(value = 120, unit = TimeUnit.SECONDS)
+    @ValueSource(strings = { "TeaStore","src-standalone", "acmeair", "piggymetrics", "petclinic", "TeaStore", "src-input","src-sevenandup", "teammates", "esda", "microservice"})
+    
     public void testProject(String input) {
         final JavaRoot root = ContainersFactory.eINSTANCE.createEmptyModel();
         Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap().put("java", new JavaResource2Factory());
@@ -93,11 +93,15 @@ public class StandaloneTest {
         // parameterization.
         // JaMoPPParserAPI parser = new JaMoPPJDTParser();
         // ResourceSet rs = parser.parseUri(URI.createURI(INPUT));
-        final JaMoPPParserAPI parser = new JaMoPPJDTSingleFileParser();
+        final JaMoPPJDTSingleFileParser parser = new JaMoPPJDTSingleFileParser();
+		parser.setExclusionPatterns(".*?teammates/src/client/.*?",
+				".*?teammates/src/e2e/.*?",
+				".*?teammates/src/test/.*?",
+				".*?teammates/src/web/.*?");
+        
         final ResourceSet rs = parser.parseDirectory(directory);
-
-        EcoreUtil.resolveAll(rs);
-
+        //The EMF resolves the possible remaining proxy objects on demand, therefore I commented the following line.
+        //EcoreUtil.resolveAll(rs);
         for (final Resource javaResource : new ArrayList<>(rs.getResources())) {
             if (javaResource.getContents().isEmpty()) {
                 // The output is not interesting for the tests for the moment.
@@ -107,30 +111,31 @@ public class StandaloneTest {
 
             // ENABLE_OUTPUT_OF_LIBRARY_FILES has been removed because no library files are
             // to be output for the the moment.
-            if (!javaResource.getURI().scheme().equals("file")) {
+            //To avoid problems by opening the xmi files, you have to comment the following three lines and to install jamopp in your eclipse (or to open a new eclipse instance)
+            //Additionally, the mappath protocol has to be registered, which I have done yet. 
+           if (!javaResource.getURI().scheme().equals("file")) {
                 continue;
             }
 
             // For the parameterized test, the input parameter was also included in the path
             // for the output.
             final File outputFile = new File(
-                    "standalone_output" + File.separator + input + File.separator + checkScheme(javaResource));
+                    "standalone_output9" + File.separator + input + File.separator + checkScheme(javaResource));
             outputFile.getParentFile().mkdirs();
-
             final URI xmiFileURI = URI.createFileURI(outputFile.getAbsolutePath()).appendFileExtension("xmi");
-            final Resource xmiResource = rs.createResource(xmiFileURI);
+            final Resource xmiResource =  rs.createResource(xmiFileURI);
             xmiResource.getContents().addAll(javaResource.getContents());
+            //The next lines are to avoid deleting the content of java files.
+            try {
+            	
+				xmiResource.save(rs.getLoadOptions());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
         }
 
-        for (final Resource xmiResource : rs.getResources()) {
-            if (xmiResource instanceof XMIResource) {
-                try {
-                    xmiResource.save(rs.getLoadOptions());
-                } catch (final Exception e) {
-                    // The output is not interesting for the tests for the moment.
-                    // e.printStackTrace();
-                }
-            }
+      
         }
 
         /*
@@ -138,7 +143,8 @@ public class StandaloneTest {
          * loaded resources must then be tested further. Here, existing EMF
          * functionality is called, comparable to the AbstractJaMoPPTests.
          */
-    }
+
+  
 
     /**
      * Creates the path including the package hierarchy for the xmi output. Taken
@@ -189,7 +195,11 @@ public class StandaloneTest {
     @BeforeEach
     public void setUpParserOptions() {
         final ParserOptionsValueContainer instance = ParserOptionsValueContainer.getInstance();
-        instance.setValue(ParserOptions.RESOLVE_ALL_BINDINGS, Boolean.TRUE);
+        //If the RESOLVE_ALL_BINDINGS option is true, the bindings are resolved recursively and many models for the JDK can be generated.
+        //This case are tested successfully with some case-studies like teammate, teastore, esda, src-sevenandup ..
+        //However, a time-out exception occurred in other case studies, e.g., microservice. If you build this case study and  install the dependencies, like what I did in the Bulk test of microservice, this problem will be avoided. 
+        //If you do not want to build the code, you can either use a recovery strategy (not fully implemented yet) or easily set this option to false.
+        instance.setValue(ParserOptions.RESOLVE_ALL_BINDINGS, Boolean.FALSE);
         instance.setValue(ParserOptions.RESOLVE_BINDINGS, Boolean.TRUE);
         instance.setValue(ParserOptions.RESOLVE_BINDINGS_OF_INFERABLE_TYPES, Boolean.TRUE);
         instance.setValue(ParserOptions.CREATE_LAYOUT_INFORMATION, Boolean.TRUE);
