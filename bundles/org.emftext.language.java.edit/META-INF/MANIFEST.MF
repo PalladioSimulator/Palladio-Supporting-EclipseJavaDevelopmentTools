@@ -9,7 +9,8 @@ Bundle-ClassPath: .
 Bundle-Activator: org.emftext.language.java.annotations.provider.JavaEditPlugin$Implementation
 Bundle-Vendor: Martin Armbruster
 Bundle-Localization: plugin
-Export-Package: org.emftext.language.java.annotations.provider,
+Export-Package: org.emftext.commons.layout.provider,
+ org.emftext.language.java.annotations.provider,
  org.emftext.language.java.arrays.provider,
  org.emftext.language.java.classifiers.provider,
  org.emftext.language.java.commons.provider,
@@ -31,8 +32,6 @@ Export-Package: org.emftext.language.java.annotations.provider,
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Require-Bundle: org.eclipse.core.runtime,
  org.emftext.language.java;visibility:=reexport,
- org.eclipse.emf.edit;visibility:=reexport,
- org.emftext.commons.layout;visibility:=reexport,
- org.emftext.commons.layout.edit;visibility:=reexport
+ org.eclipse.emf.edit;visibility:=reexport
 Bundle-ActivationPolicy: lazy
 

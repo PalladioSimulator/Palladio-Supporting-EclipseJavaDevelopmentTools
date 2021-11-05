@@ -17,6 +17,7 @@
 package org.emftext.language.java.extensions.commons;
 
 import org.emftext.language.java.JavaClasspath;
+import org.emftext.language.java.LogicalJavaURIGenerator;
 import org.emftext.language.java.classifiers.ConcreteClassifier;
 import org.emftext.language.java.commons.NamespaceAwareElement;
 
@@ -24,19 +25,24 @@ public class NamespaceAwareElementExtension {
 
 	/**
 	 * Converts the namespaces array of the given namespace aware element into a
-	 * String representation using . delimiters.
+	 * String representation using package (.) and class ($) delimiters. The
+	 * method uses the JavaClasspath to determine for each element of the namespace
+	 * if it identifies a package or a class.
 	 * 
 	 * @param me the given namespace aware element.
 	 * @return single string representation of namespace.
 	 */
 	public static String getNamespacesAsString(NamespaceAwareElement me) {
 		StringBuilder builder = new StringBuilder();
-		for (String part : me.getNamespaces()) {
-			builder.append(part);
-			builder.append(".");
-		}
-		if (builder.length() > 0) {
-			builder.delete(builder.length() - 1, builder.length());
+		for (int index = 0; index < me.getNamespaces().size(); index++) {
+			builder.append(me.getNamespaces().get(index));
+			builder.append(LogicalJavaURIGenerator.CLASSIFIER_SEPARATOR);
+			if (JavaClasspath.get(me).existsPackage(builder.toString())) {
+				continue;
+			} else {
+				builder.replace(builder.length() - 1, builder.length(),
+						LogicalJavaURIGenerator.PACKAGE_SEPARATOR);
+			}
 		}
 		return builder.toString();
 	}
@@ -49,6 +55,8 @@ public class NamespaceAwareElementExtension {
 	 * @return classifier at namespace.
 	 */
 	public static ConcreteClassifier getClassifierAtNamespaces(NamespaceAwareElement me) {
-		return JavaClasspath.get().getConcreteClassifier(me.getNamespacesAsString());
+		String s = me.getNamespacesAsString();
+		s = s.substring(0, s.length() - 1);
+		return JavaClasspath.get(me).getConcreteClassifier(s);
 	}
 }

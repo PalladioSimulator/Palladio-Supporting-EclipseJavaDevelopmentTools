@@ -3,12 +3,6 @@
    <feature id="org.emftext.language.java.feature">
       <category name="org.palladiosimulator.jdt.core"/>
    </feature>
-   <bundle id="org.emftext.commons.jdt">
-      <category name="org.palladiosimulator.jdt.metamodel"/>
-   </bundle>
-   <bundle id="org.emftext.commons.layout">
-      <category name="org.palladiosimulator.jdt.metamodel"/>
-   </bundle>
    <bundle id="org.emftext.language.java">
       <category name="org.palladiosimulator.jdt.metamodel"/>
    </bundle>

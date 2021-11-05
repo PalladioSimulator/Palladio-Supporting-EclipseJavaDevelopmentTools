@@ -16,10 +16,20 @@
 package org.emftext.language.java.extensions.references;
 
 import org.emftext.language.java.classifiers.AnonymousClass;
+import org.emftext.language.java.classifiers.ConcreteClassifier;
 import org.emftext.language.java.classifiers.Enumeration;
 import org.emftext.language.java.expressions.NestedExpression;
+import org.emftext.language.java.extensions.types.TypeReferenceExtension;
+import org.emftext.language.java.generics.ExtendsTypeArgument;
+import org.emftext.language.java.generics.QualifiedTypeArgument;
+import org.emftext.language.java.generics.SuperTypeArgument;
+import org.emftext.language.java.generics.TypeArgument;
+import org.emftext.language.java.generics.TypeArgumentable;
+import org.emftext.language.java.generics.TypeParameter;
+import org.emftext.language.java.instantiations.ExplicitConstructorCall;
 import org.emftext.language.java.literals.Literal;
 import org.emftext.language.java.literals.Super;
+import org.emftext.language.java.literals.This;
 import org.emftext.language.java.members.AdditionalField;
 import org.emftext.language.java.members.EnumConstant;
 import org.emftext.language.java.references.ElementReference;
@@ -29,9 +39,13 @@ import org.emftext.language.java.references.ReferenceableElement;
 import org.emftext.language.java.references.ReflectiveClassReference;
 import org.emftext.language.java.references.SelfReference;
 import org.emftext.language.java.references.StringReference;
+import org.emftext.language.java.references.TextBlockReference;
+import org.emftext.language.java.types.ClassifierReference;
+import org.emftext.language.java.types.InferableType;
 import org.emftext.language.java.types.Type;
 import org.emftext.language.java.types.TypeReference;
 import org.emftext.language.java.types.TypedElement;
+import org.emftext.language.java.util.TemporalCompositeTypeReference;
 import org.emftext.language.java.variables.AdditionalLocalVariable;
 
 public class ReferenceExtension {
@@ -54,53 +68,64 @@ public class ReferenceExtension {
 	 * @return the determined type
 	 */
 	public static Type getReferencedType(Reference me) {
+		TypeReference ref = getReferencedTypeReference(me);
+		if (ref != null) {
+			ref = ref.getBoundTargetReference(me);
+		}
+		if (ref instanceof TemporalCompositeTypeReference) {
+			return ((TemporalCompositeTypeReference) ref).asType();
+		}
+		return ref == null ? null : ref.getTarget();
+	}
+	
+	public static TypeReference getReferencedTypeReference(Reference me) {
+		if (me.getActualTargets().size() > 0) {
+			return me.getActualTargets().get(0);
+		}
+		
 		if (me instanceof Literal) {
-			return ((Literal) me).getType();
+			return TypeReferenceExtension.convertToTypeReference(((Literal) me).getType());
 		}
 
-		Type type = null;
+		TypeReference type = null;
 
-		// Referenced element points to a type
 		if (me instanceof TypedElement) {
-			TypeReference typeRef = ((TypedElement) me).getTypeReference();
-			type = typeRef.getBoundTarget(me);
-		}
-		// Element points to this or super
-		else if (me instanceof SelfReference) {
+			// Referenced element points to a type.
+			type = ((TypedElement) me).getTypeReference();
+		} else if (me instanceof SelfReference) {
+			// Element points to this or super.
+			TypeReference thisClassRef = null;
 			Type thisClass = null;
 			if (me.getPrevious() != null) {
-				thisClass = me.getPrevious().getReferencedType();
-			}
-			else {
+				thisClassRef = me.getPrevious().getReferencedTypeReference();
+				thisClass = thisClassRef.getTarget();
+			} else {
 				AnonymousClass anonymousContainer = me.getContainingAnonymousClass();
 				if (anonymousContainer != null) {
 					thisClass = anonymousContainer;
-				}
-				else {
-					thisClass = me.getContainingConcreteClassifier();	
+				} else {
+					thisClass = me.getContainingConcreteClassifier();
 				}
 			}
 			
-			// Find super class if "self" is "super"
+			// Find super class if "self" is "super".
 			if (((SelfReference) me).getSelf() instanceof Super) {
 				if (thisClass instanceof org.emftext.language.java.classifiers.Class) {
-					return ((org.emftext.language.java.classifiers.Class) thisClass).getSuperClass();
+					return TypeReferenceExtension.convertToTypeReference(
+						((org.emftext.language.java.classifiers.Class) thisClass).getSuperClass());
 				}
 				if (thisClass instanceof AnonymousClass) {
-					return ((AnonymousClass)thisClass).getSuperClassifier();
+					return TypeReferenceExtension.convertToTypeReference(((AnonymousClass)thisClass).getSuperClassifier());
 				}
 			}
 			
-			return thisClass;
-		}
-		// Element points to the object's class object
-		else if (me instanceof ReflectiveClassReference) {
-			return me.getClassClass();
-		}
-		// Referenced element points to an element with a type
-		else if (me instanceof ElementReference) {
-			ReferenceableElement target = 
-				(ReferenceableElement) ((ElementReference) me).getTarget();
+			type = thisClassRef != null ? thisClassRef : TypeReferenceExtension.convertToTypeReference(thisClass);
+		} else if (me instanceof ReflectiveClassReference) {
+			// Element points to the object's class object.
+			return TypeReferenceExtension.convertToTypeReference(me.getClassClass());
+		} else if (me instanceof ElementReference) {
+			// Referenced element points to an element with a type.
+			ReferenceableElement target = (ReferenceableElement) ((ElementReference) me).getTarget();
 			
 			if (target == null) {
 				return null;
@@ -117,31 +142,86 @@ public class ReferenceExtension {
 				target = (ReferenceableElement) target.eContainer();
 			}
 			if (target instanceof TypedElement) {
-				TypeReference typeRef = ((TypedElement) target).getTypeReference();
-				if (typeRef != null) {
-					type = typeRef.getBoundTarget(me);
+				type = ((TypedElement) target).getTypeReference();
+				if (type != null && !(type instanceof InferableType)) {
+					TypeReference clonedType = TypeReferenceExtension.clone(type);
+					clonedType = resolveAllTypeParameters(clonedType, (ElementReference) me, type);
+					if (clonedType != null) {
+						me.getActualTargets().add(clonedType);
+						type = clonedType;
+					}
+				}
+			} else if (target instanceof Type /*e.g. Annotation*/) {
+				return TypeReferenceExtension.convertToTypeReference((Type) target);
+			} else if (target instanceof EnumConstant) {
+				type = TypeReferenceExtension.convertToTypeReference((Enumeration) target.eContainer());
+			}
+		}
+		// Strings may also appear as reference.
+		else if (me instanceof StringReference || me instanceof TextBlockReference) {
+			return TypeReferenceExtension.convertToTypeReference(me.getStringClass());
+		} else if (me instanceof NestedExpression) {
+			type = ((NestedExpression) me).getExpression().getOneTypeReference(false);
+		} else if (me instanceof PrimitiveTypeReference) {
+			type = ((PrimitiveTypeReference) me).getPrimitiveType();
+		} else if (me instanceof ExplicitConstructorCall) {
+			ExplicitConstructorCall exCall = (ExplicitConstructorCall) me;
+			ConcreteClassifier thisClass = me.getContainingConcreteClassifier();
+			if (exCall.getCallTarget() instanceof This) {
+				return TypeReferenceExtension.convertToTypeReference(thisClass);
+			} else {
+				if (thisClass instanceof org.emftext.language.java.classifiers.Class) {
+					return TypeReferenceExtension.convertToTypeReference(
+							((org.emftext.language.java.classifiers.Class) thisClass).getSuperClass());
 				}
 			}
-			else if (target instanceof Type /*e.g. Annotation*/ ) {
-				return (Type) target;
-			}
-			else if (target instanceof EnumConstant) {
-				type = (Enumeration)target.eContainer();
-			}	
-		}
-		//Strings may also appear as reference
-		else if (me instanceof StringReference) {
-			return me.getStringClass();
-		}
-		else if (me instanceof NestedExpression) {
-			type = ((NestedExpression) me).getExpression().getType();
-		}
-		else if (me instanceof PrimitiveTypeReference) {
-			type = ((PrimitiveTypeReference) me).getPrimitiveType();
-		}
-		else {
-			assert(false);
+		} else {
+			assert false;
 		}
 		return type;
+	}
+	
+	private static TypeReference resolveAllTypeParameters(TypeReference type, ElementReference me, TypeReference original) {
+		Type t = original.getTarget();
+		if (t instanceof TypeParameter) {
+			TypeReference boundRef = ((TypeParameter) t).getBoundTypeReference(original, me);
+			if (boundRef == null || boundRef.getTarget() == null || boundRef.getTarget().equals(t)) {
+				return null;
+			}
+			return TypeReferenceExtension.clone(boundRef);
+		} else {
+			ClassifierReference classRef = type.getPureClassifierReference();
+			ClassifierReference originalClassRef = original.getPureClassifierReference();
+			if (classRef instanceof TypeArgumentable) {
+				TypeArgumentable typeArg = (TypeArgumentable) classRef;
+				TypeArgumentable originalTypeArg = (TypeArgumentable) originalClassRef;
+				for (int index = 0; index < typeArg.getTypeArguments().size(); index++) {
+					TypeArgument typeArgument = typeArg.getTypeArguments().get(index);
+					TypeArgument originalTypeArgument = originalTypeArg.getTypeArguments().get(index);
+					TypeReference argRef = TypeReferenceExtension.getTypeReferenceOfTypeArgument(typeArgument);
+					TypeReference originalArgRef = TypeReferenceExtension.getTypeReferenceOfTypeArgument(originalTypeArgument);
+					if (argRef != null) {
+						TypeReference resolved = resolveAllTypeParameters(argRef, me, originalArgRef);
+						if (resolved != null) {
+							resolved = TypeReferenceExtension.clone(resolved);
+							setTypeReferenceOfTypeArgument(typeArgument, resolved);
+						} else {
+							return null;
+						}
+					}
+				}
+			}
+		}
+		return type;
+	}
+	
+	private static void setTypeReferenceOfTypeArgument(TypeArgument arg, TypeReference ref) {
+		if (arg instanceof QualifiedTypeArgument) {
+			((QualifiedTypeArgument) arg).setTypeReference(ref);
+		} else if (arg instanceof SuperTypeArgument) {
+			((SuperTypeArgument) arg).setSuperType(ref);
+		} else if (arg instanceof ExtendsTypeArgument) {
+			((ExtendsTypeArgument) arg).setExtendType(ref);
+		}
 	}
 }

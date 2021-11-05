@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: JaMoPP JDT-based Parser for single files
+Bundle-SymbolicName: jamopp.parser.jdt.singlefile
+Bundle-Version: 5.0.0.qualifier
+Bundle-Vendor: Martin Armbruster
+Automatic-Module-Name: jamopp.parser.jdt
+Bundle-RequiredExecutionEnvironment: JavaSE-11
+Require-Bundle: org.eclipse.jdt.core,
+ org.eclipse.core.runtime,
+ org.eclipse.core.resources,
+ org.emftext.language.java,
+ org.eclipse.emf.ecore,
+ jamopp.parser,
+ jamopp.resolution,
+ org.apache.log4j
+Export-Package: jamopp.parser.jdt.singlefile

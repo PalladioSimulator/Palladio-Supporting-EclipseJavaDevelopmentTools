@@ -22,13 +22,16 @@ import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
 import org.emftext.language.java.classifiers.ConcreteClassifier;
 import org.emftext.language.java.expressions.Expression;
+import org.emftext.language.java.instantiations.Instantiation;
 import org.emftext.language.java.instantiations.NewConstructorCall;
 import org.emftext.language.java.members.Constructor;
 import org.emftext.language.java.parameters.Parameter;
+import org.emftext.language.java.parameters.ReceiverParameter;
 import org.emftext.language.java.parameters.VariableLengthParameter;
 import org.emftext.language.java.statements.Statement;
 import org.emftext.language.java.types.Type;
 import org.emftext.language.java.types.TypeReference;
+import org.emftext.language.java.util.TemporalUnknownType;
 
 /**
  * Extension providing utility methods for the the Constructor meta model class.
@@ -58,7 +61,7 @@ public class ConstructorExtension {
      * @return True only if the new {@link Constructor} <code>co</code> is better than the other
      *         one.
      */
-    public static boolean isBetterConstructorForCall(Constructor co, Constructor other, NewConstructorCall call) {
+    public static boolean isBetterConstructorForCall(Constructor co, Constructor other, Instantiation call) {
 
         if (isConstructorForCall(other, call, true)) {
             return false;
@@ -91,7 +94,7 @@ public class ConstructorExtension {
      *            Flag how to handle parameters with variable argument (array) length
      * @return True if the constructor is valid for the call.
      */
-    public static boolean isConstructorForCall(Constructor co, NewConstructorCall call, boolean needsPerfectMatch) {
+    public static boolean isConstructorForCall(Constructor co, Instantiation call, boolean needsPerfectMatch) {
 
         Type callType = call.getReferencedType();
         if (callType instanceof ConcreteClassifier) {
@@ -105,6 +108,10 @@ public class ConstructorExtension {
         EList<Type> argumentTypeList = call.getArgumentTypes();
         EList<Parameter> parameterList = new BasicEList<Parameter>(co.getParameters());
 
+        if (parameterList.size() > 0 && parameterList.get(0) instanceof ReceiverParameter) {
+        	parameterList.remove(0);
+        }
+        
         EList<Type> parameterTypeList = new BasicEList<Type>();
         for (Parameter parameter : parameterList) {
             // Determine types before messing with the parameters
@@ -136,7 +143,6 @@ public class ConstructorExtension {
             }
         }
 
-        // TODO Perform early exit instead
         if (parameterList.size() == argumentTypeList.size()) {
             boolean parametersMatch = true;
             for (int i = 0; i < argumentTypeList.size(); i++) {
@@ -151,23 +157,22 @@ public class ConstructorExtension {
                 }
 
                 if (!parameterType.eIsProxy() || !argumentType.eIsProxy()) {
+                	if (argumentType instanceof TemporalUnknownType) {
+                		continue;
+                	}
                     long argumentArrayDimension = argument.getArrayDimension();
                     if (needsPerfectMatch) {
-                        long parameterArrayDimension = parameter.getArrayDimension();
+                        long parameterArrayDimension = parameter.getTypeReference().getArrayDimension();
                         parametersMatch = parametersMatch
                                 && argumentType.equalsType(argumentArrayDimension, parameterType,
                                         parameterArrayDimension);
                     } else {
                         parametersMatch = parametersMatch
-                                && argumentType.isSuperType(argumentArrayDimension, parameterType, parameter);
+                                && argumentType.isSuperType(argumentArrayDimension, parameterType, parameter.getTypeReference());
                     }
                 } else {
                     return false;
                 }
-
-                // TODO Return if parametersMatch is 'false'? There is not need
-                // to check the other parameters because once parametersMatch is
-                // 'false' it wont become true anymore.
             }
             return parametersMatch;
         }

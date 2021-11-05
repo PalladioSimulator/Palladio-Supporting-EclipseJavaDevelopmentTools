@@ -392,7 +392,8 @@ public class JDTResolverUtility {
 					ITypeBinding currentParamType = binding.getParameterTypes()[i];
 					org.emftext.language.java.parameters.Parameter currentParam = meth.getParameters().get(i + receiveOffset);
 					if (!convertToTypeName(currentParamType).equals(convertToTypeName(currentParam.getTypeReference()))
-						|| currentParamType.getDimensions() != currentParam.getArrayDimension()) {
+						|| currentParamType.getDimensions()
+						!= currentParam.getTypeReference().getArrayDimension()) {
 						return null;
 					}
 				}
@@ -466,7 +467,8 @@ public class JDTResolverUtility {
 								ITypeBinding currentType = binding.getParameterTypes()[i];
 								org.emftext.language.java.parameters.Parameter currentParam = con.getParameters().get(i + receiveOffset);
 								if (!convertToTypeName(currentType).equals(convertToTypeName(currentParam.getTypeReference()))
-									|| currentType.getDimensions() != currentParam.getArrayDimension()) {
+									|| currentType.getDimensions()
+									!= currentParam.getTypeReference().getArrayDimension()) {
 									continue outerLoop;
 								}
 							}
@@ -941,19 +943,7 @@ public class JDTResolverUtility {
 		methBindToCM.forEach(JDTResolverUtility::completeMethod);
 		
 		convertPureTypeBindings();
-		
-		modBindToMod.values().forEach(module -> JavaClasspath.get().registerModule(module));
-		
-		nameToPackage.values().forEach(pack -> JavaClasspath.get().registerPackage(pack));
-		
-		typeBindToAnnot.values().forEach(ann -> JavaClasspath.get().registerConcreteClassifier(ann));
-		
-		typeBindToEnum.values().forEach(enume -> JavaClasspath.get().registerConcreteClassifier(enume));
-		
-		typeBindToInterface.values().forEach(interf -> JavaClasspath.get().registerConcreteClassifier(interf));
-		
-		typeBindToClass.values().forEach(clazz -> JavaClasspath.get().registerConcreteClassifier(clazz));
-		
+
 		escapeAllIdentifiers();
 		
 		modBindToMod.clear();

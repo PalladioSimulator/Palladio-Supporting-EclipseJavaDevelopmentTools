@@ -15,6 +15,7 @@
  ******************************************************************************/
 package org.emftext.language.java.extensions.commons;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -24,7 +25,9 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.UniqueEList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.emftext.language.java.JavaClasspath;
+import org.emftext.language.java.LogicalJavaURIGenerator;
 import org.emftext.language.java.annotations.AnnotationInstance;
 import org.emftext.language.java.classifiers.AnonymousClass;
 import org.emftext.language.java.classifiers.ConcreteClassifier;
@@ -185,7 +188,7 @@ public class CommentableExtension {
 	 *            classified name of the ConcreteClassifier
 	 */
 	public static ConcreteClassifier getConcreteClassifier(Commentable me, String name) {
-		return JavaClasspath.get().getFirstConcreteClassifier(name);
+		return (ConcreteClassifier) EcoreUtil.resolve(JavaClasspath.get(me).getConcreteClassifier(name), me);
 	}
 	
 	/**
@@ -199,14 +202,19 @@ public class CommentableExtension {
 	 */
 	public static EList<ConcreteClassifier> getConcreteClassifiers(
 			Commentable me, String packageName, String classifierQuery) {
+		if (!packageName.endsWith(LogicalJavaURIGenerator.PACKAGE_SEPARATOR)) {
+			packageName += LogicalJavaURIGenerator.PACKAGE_SEPARATOR;
+		}
 		EList<ConcreteClassifier> result = new UniqueEList<ConcreteClassifier>();
 		if (classifierQuery.equals("*")) {
-			org.emftext.language.java.containers.Package pack = JavaClasspath.get().getPackage(packageName);
-			if (pack != null) {
-				result.addAll(pack.getClassifiers());
+			Collection<ConcreteClassifier> classi = JavaClasspath.get(me).getConcreteClassifiers(packageName);
+			if (classi != null) {
+				for (ConcreteClassifier clazz : classi) {
+					result.add(clazz);
+				}
 			}
 		} else {
-			ConcreteClassifier classifier = JavaClasspath.get().getConcreteClassifier(packageName + "." + classifierQuery);
+			ConcreteClassifier classifier = JavaClasspath.get(me).getConcreteClassifier(packageName + classifierQuery);
 			if (classifier != null) {
 				result.add(classifier);
 			}
@@ -224,9 +232,10 @@ public class CommentableExtension {
 	 * @return the Class.
 	 */
 	public static org.emftext.language.java.classifiers.Class getLibClass(Commentable me, String name) {
-		ConcreteClassifier result = JavaClasspath.get().getConcreteClassifier("java.lang." + name);
+		ConcreteClassifier result = JavaClasspath.get(me).getConcreteClassifier("java.lang." + name);
+		result = (ConcreteClassifier) EcoreUtil.resolve(result, me);
 		if (result != null && result instanceof org.emftext.language.java.classifiers.Class) {
-			return (org.emftext.language.java.classifiers.Class) result; 
+			return (org.emftext.language.java.classifiers.Class) result;
 		}
 		return null;
 	}
@@ -241,7 +250,8 @@ public class CommentableExtension {
 	 * @return the interface.
 	 */
 	public static Interface getLibInterface(Commentable me, String name) {
-		ConcreteClassifier interfaceClass = JavaClasspath.get().getConcreteClassifier("java.lang." + name);
+		ConcreteClassifier interfaceClass = JavaClasspath.get(me).getConcreteClassifier("java.lang." + name);
+		interfaceClass = (ConcreteClassifier) EcoreUtil.resolve(interfaceClass, me);
 		if (interfaceClass != null && interfaceClass instanceof Interface) {
 			return (Interface) interfaceClass;
 		}
@@ -285,7 +295,8 @@ public class CommentableExtension {
 	 * @return the Class.
 	 */
 	public static Interface getAnnotationInterface(Commentable me) {
-		ConcreteClassifier proxy = JavaClasspath.get().getConcreteClassifier("java.lang.annotation.Annotation");
+		ConcreteClassifier proxy = JavaClasspath.get(me).getConcreteClassifier("java.lang.annotation.Annotation");
+		proxy = (ConcreteClassifier) EcoreUtil.resolve(proxy, me);
 		if (proxy != null && proxy instanceof Interface) {
 			return (Interface) proxy;
 		}

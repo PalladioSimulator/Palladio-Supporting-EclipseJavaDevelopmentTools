@@ -43,6 +43,8 @@ import org.emftext.language.java.modifiers.Modifier;
 import org.emftext.language.java.modifiers.Static;
 import org.emftext.language.java.parameters.CatchParameter;
 import org.emftext.language.java.parameters.ReceiverParameter;
+import org.emftext.language.java.references.IdentifierReference;
+import org.emftext.language.java.references.MethodCall;
 import org.emftext.language.java.statements.Block;
 import org.emftext.language.java.statements.DefaultSwitchRule;
 import org.emftext.language.java.statements.EmptyStatement;
@@ -56,10 +58,13 @@ import org.emftext.language.java.statements.SwitchCase;
 import org.emftext.language.java.statements.TryBlock;
 import org.emftext.language.java.statements.YieldStatement;
 import org.emftext.language.java.types.InferableType;
-import org.emftext.language.java.types.Int;
+import org.emftext.language.java.types.Type;
 import org.emftext.language.java.types.TypeReference;
+import org.emftext.language.java.variables.LocalVariable;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+
+import jamopp.options.ParserOptions;
 
 /**
  * Test class for the features of Java 7+.
@@ -80,6 +85,7 @@ public class JavaSevenAndUpTest extends AbstractJaMoPPTests {
 	@Test
 	public void testModuleInfo() {
 		try {
+			this.registerInClassPath("pkg2" + File.separator + "SimpleInterfaceWithDefaultMethods.java");
 			String file = "module-info.java";
 			JavaRoot root = this.parseResource(file);
 			this.assertType(root, Module.class);
@@ -389,8 +395,6 @@ public class JavaSevenAndUpTest extends AbstractJaMoPPTests {
 					assertEquals(8, method.getBlock().getStatements().size());
 					LocalVariableStatement locStat = (LocalVariableStatement) method.getBlock().getStatements().get(0);
 					this.assertType(locStat.getVariable().getTypeReference(), InferableType.class);
-					TypeReference reference = ((InferableType) locStat.getVariable().getTypeReference()).getActualTargets().get(0);
-					this.assertType(reference, Int.class);
 				}
 			}
 			this.assertResolveAllProxies(root);
@@ -428,7 +432,11 @@ public class JavaSevenAndUpTest extends AbstractJaMoPPTests {
 			TypeReference typeRef = locStat.getVariable().getTypeReference();
 			this.assertType(typeRef, InferableType.class);
 			InferableType inferType = (InferableType) typeRef;
-			assertEquals(1, inferType.getActualTargets().size());
+			int expectedTypes = 0;
+			if (ParserOptions.RESOLVE_BINDINGS_OF_INFERABLE_TYPES.isTrue()) {
+				expectedTypes = 1;
+			}
+			assertEquals(expectedTypes, inferType.getActualTargets().size());
 			this.assertResolveAllProxies(root);
 			this.parseAndReprint(file);
 		} catch (Exception e) {
@@ -461,6 +469,86 @@ public class JavaSevenAndUpTest extends AbstractJaMoPPTests {
 			swith = (Switch) method.getBlock().getStatements().get(1);
 			this.assertType(swith.getCases().get(0), NormalSwitchRule.class);
 			this.assertType(swith.getCases().get(2), DefaultSwitchRule.class);
+			this.assertResolveAllProxies(root);
+			this.parseAndReprint(file);
+		} catch (Exception e) {
+			fail(e.getMessage());
+		}
+	}
+	
+	@Test
+	public void testClassWithReferences() {
+		try {
+			String file = "pkgJava14" + File.separator + "ClassWithReferences.java";
+			JavaRoot root = this.parseResource(file);
+			this.assertType(root, CompilationUnit.class);
+			this.assertResolveAllProxies(root);
+			this.parseAndReprint(file);
+		} catch (Exception e) {
+			fail(e.getMessage());
+		}
+	}
+	
+	@Test
+	public void testClassWithReferences2() {
+		try {
+			String file = "pkgJava14" + File.separator + "ClassWithReferences2.java";
+			JavaRoot root = this.parseResource(file);
+			this.assertType(root, CompilationUnit.class);
+			this.assertResolveAllProxies(root);
+			this.parseAndReprint(file);
+		} catch (Exception e) {
+			fail(e.getMessage());
+		}
+	}
+	
+	@Test
+	public void testClassWithReferences3() {
+		try {
+			String file = "pkgJava14" + File.separator + "ClassWithReferences3.java";
+			JavaRoot root = this.parseResource(file);
+			this.assertType(root, CompilationUnit.class);
+			this.assertResolveAllProxies(root);
+			this.parseAndReprint(file);
+		} catch (Exception e) {
+			fail(e.getMessage());
+		}
+	}
+	
+	@Test
+	public void testClassWithMoreReferences() {
+		try {
+			String file = "pkgJava14" + File.separator + "ClassWithMoreReferences.java";
+			JavaRoot root = this.parseResource(file);
+			this.assertType(root, CompilationUnit.class);
+			CompilationUnit cu = (CompilationUnit) root;
+			ClassMethod cm = (ClassMethod) cu.getClassifiers().get(0).getMembers().get(5);
+			assertEquals("m", cm.getName());
+			this.assertType(cm.getStatement(), Block.class);
+			Block cmBlock = (Block) cm.getStatement();
+			this.assertType(cmBlock.getStatements().get(0), LocalVariableStatement.class);
+			LocalVariableStatement locStat = (LocalVariableStatement) cmBlock.getStatements().get(0);
+			TypeReference ref = locStat.getVariable().getTypeReference();
+			this.assertType(ref, InferableType.class);
+			Type type = ref.getTarget();
+			this.assertType(type, Interface.class);
+			Interface inter = (Interface) type;
+			assertEquals("Runnable", inter.getName());
+			this.assertType(cmBlock.getStatements().get(cmBlock.getStatements().size() - 1), ExpressionStatement.class);
+			ExpressionStatement exprStat = (ExpressionStatement) cmBlock.getStatements().get(cmBlock.getStatements().size() - 1);
+			this.assertType(exprStat.getExpression(), IdentifierReference.class);
+			IdentifierReference idRef = (IdentifierReference) exprStat.getExpression();
+			assertEquals("a", idRef.getTarget().getName());
+			this.assertType(idRef.getTarget(), LocalVariable.class);
+			LocalVariable var = (LocalVariable) idRef.getTarget();
+			type = var.getTypeReference().getTarget();
+			this.assertType(type, org.emftext.language.java.classifiers.Class.class);
+			org.emftext.language.java.classifiers.Class cl = (org.emftext.language.java.classifiers.Class) type;
+			assertEquals("String", cl.getName());
+			this.assertType(idRef.getNext(), MethodCall.class);
+			MethodCall call = (MethodCall) idRef.getNext();
+			assertEquals("charAt", call.getTarget().getName());
+			assertEquals(1, call.getArguments().size());
 			this.assertResolveAllProxies(root);
 			this.parseAndReprint(file);
 		} catch (Exception e) {

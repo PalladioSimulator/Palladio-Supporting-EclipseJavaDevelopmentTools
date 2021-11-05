@@ -20,15 +20,22 @@ package org.emftext.language.java.extensions.members;
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
 import org.emftext.language.java.classifiers.ConcreteClassifier;
+import org.emftext.language.java.classifiers.Interface;
 import org.emftext.language.java.expressions.Expression;
+import org.emftext.language.java.expressions.LambdaExpression;
+import org.emftext.language.java.extensions.types.TypeReferenceExtension;
 import org.emftext.language.java.members.Method;
+import org.emftext.language.java.parameters.OrdinaryParameter;
 import org.emftext.language.java.parameters.Parameter;
+import org.emftext.language.java.parameters.ParametersFactory;
+import org.emftext.language.java.parameters.ReceiverParameter;
 import org.emftext.language.java.parameters.VariableLengthParameter;
 import org.emftext.language.java.references.MethodCall;
 import org.emftext.language.java.statements.Block;
 import org.emftext.language.java.statements.Statement;
 import org.emftext.language.java.types.Type;
 import org.emftext.language.java.types.TypeReference;
+import org.emftext.language.java.util.TemporalUnknownType;
 
 public class MethodExtension {
 	
@@ -90,6 +97,10 @@ public class MethodExtension {
 		EList<Type> argumentTypeList = methodCall.getArgumentTypes();
 		EList<Parameter> parameterList = new BasicEList<Parameter>(me.getParameters());
 		
+		if (parameterList.size() > 0 && parameterList.get(0) instanceof ReceiverParameter) {
+			parameterList.remove(0);
+		}
+		
 		EList<Type> parameterTypeList = new BasicEList<Type>();
 		for (Parameter parameter : parameterList)  {
 			// Determine types before messing with the parameters
@@ -121,10 +132,9 @@ public class MethodExtension {
 			}
 		}
 		
-		// TODO Perform early exit instead
 		if (parameterList.size() == argumentTypeList.size()) { 
 			boolean parametersMatch = true;
-			for (int i = 0; i < argumentTypeList.size(); i++) {
+			for (int i = 0; i < argumentTypeList.size() && parametersMatch; i++) {
 				Parameter parameter = parameterList.get(i);
 				Expression argument = methodCall.getArguments().get(i);
 
@@ -136,29 +146,115 @@ public class MethodExtension {
 				}
 				
 				if (!parameterType.eIsProxy() || !argumentType.eIsProxy()) {
+					if (argumentType instanceof TemporalUnknownType) {
+						LambdaExpression lambda = argument instanceof LambdaExpression ?
+								(LambdaExpression) argument
+								: argument.getFirstChildByType(LambdaExpression.class);
+						if (lambda != null) {
+							if (!(parameterType instanceof Interface)) {
+								return false;
+							}
+							Method absMeth = ((Interface) parameterType).getAbstractMethodOfFunctionalInterface();
+							if (absMeth.getParameters().size() != lambda.getParameters().getParameters().size()) {
+								return false;
+							}
+						}
+						continue;
+					}
 					long argumentArrayDimension = argument.getArrayDimension();
 					if (needsPerfectMatch) {
-						long parameterArrayDimension = parameter.getArrayDimension();
+						long parameterArrayDimension = parameter.getTypeReference().getArrayDimension();
 						parametersMatch = parametersMatch
 							&& argumentType.equalsType(argumentArrayDimension,
 									parameterType, parameterArrayDimension);
 					} else {
 						parametersMatch = parametersMatch 
 							&& argumentType.isSuperType(argumentArrayDimension,
-									parameterType, parameter);
+									parameterType, parameter.getTypeReference());
 					}
 				} else {
 					return false;
 				}
-				
-				// TODO Return if parametersMatch is 'false'? There is not need
-				// to check the other parameters because once parametersMatch is
-				// 'false' it wont become true anymore.
 			}
-			return parametersMatch; 
+			return parametersMatch;
 		}
 		
-		return false;		
+		return false;
+	}
+	
+	/**
+	 * Checks if the signature, i. e., the parameter types and return type, of two methods match,
+	 * independently of the method and parameter names. It is possible for one method to have specialized parameter
+	 * and return types compared to the other method.
+	 * 
+	 * @param one the first method.
+	 * @param two the second method which can have specialized types.
+	 * @return true if the signatures match. false otherwise.
+	 */
+	public static boolean isSignatureMatching(Method one, Method two) {
+		return isSignatureMatching(one, two, null);
+	}
+	
+	/**
+	 * Checks if the signature, i. e., the parameter types and return type, of two methods match,
+	 * independently of the method and parameter names. It is possible for one method to have specialized parameter
+	 * and return types compared to the other method.
+	 * If the comparison is for finding the referenced method within a MethodReferenceExpression, e. g.,
+	 * StringBuilder::append, where the type of the primary expression (in the example StringBuilder) can be
+	 * part of the parameter types of the second method, the type can be given.
+	 * 
+	 * @param one the first method.
+	 * @param two the second method which can have specialized types.
+	 * @param twoFirstParameter the type in case of MethodReferenceExpressions
+	 *                          which is counted as the first parameter type of the second method.
+	 * @return true if the signatures match. false otherwise.
+	 */
+	public static boolean isSignatureMatching(Method one, Method two, Type twoFirstParameter) {
+		EList<Parameter> parameterListOne = new BasicEList<>(one.getParameters());
+		EList<Parameter> parameterListTwo = new BasicEList<>(two.getParameters());
+		
+		if (parameterListOne.size() > 0 && parameterListOne.get(0) instanceof ReceiverParameter) {
+			parameterListOne.remove(0);
+		}
+		if (parameterListTwo.size() > 0 && parameterListTwo.get(0) instanceof ReceiverParameter) {
+			parameterListTwo.remove(0);
+		}
+		
+		if (twoFirstParameter != null) {
+			OrdinaryParameter p = ParametersFactory.eINSTANCE.createOrdinaryParameter();
+			p.setTypeReference(TypeReferenceExtension.convertToTypeReference(twoFirstParameter));
+			parameterListTwo.add(0, p);
+		}
+
+		if (parameterListOne.size() == parameterListTwo.size()) { 
+			boolean parametersMatch = true;
+			for (int i = 0; i < parameterListOne.size() && parametersMatch; i++) {
+				Parameter paramOne = parameterListOne.get(i);
+				Parameter paramTwo = parameterListTwo.get(i);
+				
+				Type parameterType = paramOne.getTypeReference().getTarget();
+				Type argumentType = paramTwo.getTypeReference().getTarget();
+				
+				if (argumentType == null || parameterType == null) {
+					return false;
+				}
+				
+				if (!parameterType.eIsProxy() || !argumentType.eIsProxy()) {
+					parametersMatch = parametersMatch && parameterType.isSuperType(
+						paramOne.getTypeReference().getArrayDimension(),
+						argumentType, paramTwo.getTypeReference());
+				} else {
+					return false;
+				}
+			}
+			
+			Type target = one.getTypeReference().getTarget();
+			parametersMatch = parametersMatch && target.isSuperType(one.getTypeReference().getArrayDimension(),
+				two.getTypeReference().getTarget(), two.getTypeReference());
+			
+			return parametersMatch;
+		}
+		return false;
 	}
 	
 	/**

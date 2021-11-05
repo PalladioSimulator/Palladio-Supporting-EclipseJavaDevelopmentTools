@@ -77,14 +77,14 @@ class ReferenceConverterUtility {
 			if (arr.getInitializer() != null) {
 				org.emftext.language.java.arrays.ArrayInstantiationByValuesTyped result = org.emftext.language.java.arrays.ArraysFactory.eINSTANCE.createArrayInstantiationByValuesTyped();
 				result.setTypeReference(BaseConverterUtility.convertToTypeReference(arr.getType()));
-				BaseConverterUtility.convertToArrayDimensionsAndSet(arr.getType(), result);
+//				BaseConverterUtility.convertToArrayDimensionsAndSet(arr.getType(), result);
 				result.setArrayInitializer(AnnotationInstanceOrModifierConverterUtility.convertToArrayInitializer(arr.getInitializer()));
 				LayoutInformationConverter.convertToMinimalLayoutInformation(result, arr);
 				return result;
 			} else {
 				org.emftext.language.java.arrays.ArrayInstantiationBySize result = org.emftext.language.java.arrays.ArraysFactory.eINSTANCE.createArrayInstantiationBySize();
 				result.setTypeReference(BaseConverterUtility.convertToTypeReference(arr.getType()));
-				BaseConverterUtility.convertToArrayDimensionsAndSet(arr.getType(), result, arr.dimensions().size());
+//				BaseConverterUtility.convertToArrayDimensionsAndSet(arr.getType(), result, arr.dimensions().size());
 				arr.dimensions().forEach(obj -> result.getSizes().add(ExpressionConverterUtility.convertToExpression((Expression) obj)));
 				LayoutInformationConverter.convertToMinimalLayoutInformation(result, arr);
 				return result;
