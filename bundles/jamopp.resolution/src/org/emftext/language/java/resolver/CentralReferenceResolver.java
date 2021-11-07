@@ -13,7 +13,7 @@
  *   DevBoost GmbH - Berlin, Germany
  *      - initial API and implementation
  *   Martin Armbruster
- *      - Extension for Java 7-13
+ *      - Adaptation and extension for Java 7+
  ******************************************************************************/
 package org.emftext.language.java.resolver;
 

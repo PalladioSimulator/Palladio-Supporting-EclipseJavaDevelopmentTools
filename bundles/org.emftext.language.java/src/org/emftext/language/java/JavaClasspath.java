@@ -13,6 +13,7 @@
  *   DevBoost GmbH - Dresden, Germany
  *      - initial API and implementation
  *   Martin Armbruster
+ *      - Adaptation and extension for Java 7+
  *      - Extension for loading the standard library in Java 9+
  ******************************************************************************/
 
