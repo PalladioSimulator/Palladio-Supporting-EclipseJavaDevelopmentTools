@@ -56,8 +56,9 @@ public class JavaClasspath {
 
 	public static JavaClasspath get() {
 		if (globalClasspath == null) {
-			globalClasspath = new JavaClasspath(null);
-//			globalClasspath.registerStdLib();
+			var localGlobalClasspath = new JavaClasspath(null);
+			localGlobalClasspath.registerStdLib();
+			globalClasspath = localGlobalClasspath;
 		}
 		return globalClasspath;
 	}

@@ -38,12 +38,13 @@ public final class ParserOptionsValueContainer {
 	
 	public static ParserOptionsValueContainer getInstance() {
 		if (instance == null) {
-			instance = new ParserOptionsValueContainer();
-			instance.setValue(ParserOptions.RESOLVE_ALL_BINDINGS, Boolean.TRUE);
-			instance.setValue(ParserOptions.RESOLVE_BINDINGS, Boolean.TRUE);
-			instance.setValue(ParserOptions.RESOLVE_BINDINGS_OF_INFERABLE_TYPES, Boolean.TRUE);
-			instance.setValue(ParserOptions.CREATE_LAYOUT_INFORMATION, Boolean.TRUE);
-			instance.setValue(ParserOptions.PREFER_BINDING_CONVERSION, Boolean.TRUE);
+			var localInstance = new ParserOptionsValueContainer();
+			localInstance.setValue(ParserOptions.RESOLVE_ALL_BINDINGS, Boolean.TRUE);
+			localInstance.setValue(ParserOptions.RESOLVE_BINDINGS, Boolean.TRUE);
+			localInstance.setValue(ParserOptions.RESOLVE_BINDINGS_OF_INFERABLE_TYPES, Boolean.TRUE);
+			localInstance.setValue(ParserOptions.CREATE_LAYOUT_INFORMATION, Boolean.TRUE);
+			localInstance.setValue(ParserOptions.PREFER_BINDING_CONVERSION, Boolean.TRUE);
+			instance = localInstance;
 		}
 		return instance;
 	}

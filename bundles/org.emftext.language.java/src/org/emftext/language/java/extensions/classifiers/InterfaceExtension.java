@@ -30,35 +30,36 @@ import org.emftext.language.java.types.Type;
 import org.emftext.language.java.types.TypeReference;
 
 public class InterfaceExtension {
-	
+
 	/**
-	 * Returns all interfaces extended by this interface. The type of the
-	 * objects in the returned list is {@link ConcreteClassifier}, because
+	 * Returns all interfaces extended by this interface. The type of the objects in
+	 * the returned list is {@link ConcreteClassifier}, because
 	 * <code>java.lang.Object</code> is also extended although it is a Class.
+	 * 
+	 * @param me this interface.
+	 * @return all interfaces.
 	 */
 	public static EList<ConcreteClassifier> getAllSuperClassifiers(Interface me) {
 		EList<ConcreteClassifier> result = new UniqueEList<ConcreteClassifier>();
-		
+
 		EList<TypeReference> explicitExtends = me.getExtends();
 		getAllSuperClassifiers(explicitExtends, result);
-		
+
 		EList<TypeReference> defaultExtends = me.getDefaultExtends();
 		getAllSuperClassifiers(defaultExtends, result);
-		
+
 		return result;
 	}
 
-	private static void getAllSuperClassifiers(
-			List<TypeReference> typeReferences, List<ConcreteClassifier> result) {
-		
+	private static void getAllSuperClassifiers(List<TypeReference> typeReferences, List<ConcreteClassifier> result) {
+
 		for (TypeReference typeReference : typeReferences) {
 			getAllSuperClassifiers(typeReference, result);
 		}
 	}
 
-	private static void getAllSuperClassifiers(TypeReference typeReference,
-			List<ConcreteClassifier> result) {
-		
+	private static void getAllSuperClassifiers(TypeReference typeReference, List<ConcreteClassifier> result) {
+
 		// Use ConcreteClassifier instead of Interface because
 		// java.lang.Object can also act as implemented interface
 		Type target = typeReference.getTarget();
@@ -70,11 +71,11 @@ public class InterfaceExtension {
 			}
 		}
 	}
-	
+
 	/**
 	 * Finds the method of a functional interface.
 	 * 
-	 * @param classifier the functional interface.
+	 * @param me the functional interface.
 	 * @return the method.
 	 */
 	public static Method getAbstractMethodOfFunctionalInterface(Interface me) {

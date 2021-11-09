@@ -43,8 +43,9 @@ public class MethodExtension {
 	/**
 	 * Returns <code>true</code> if the given method matches the given call.
 	 * 
-	 * @param methodCall
-	 * @return
+	 * @param me the given method.
+	 * @param methodCall the method call.
+	 * @return true if the method matches. false otherwise.
 	 */
 	public static boolean isSomeMethodForCall(Method me, MethodCall methodCall) {
 		return me.isMethodForCall(methodCall, false);
@@ -55,9 +56,10 @@ public class MethodExtension {
 	 * a better match for the given method call than {@link Method}
 	 * <code>otherMethod</code>.
 	 * 
-	 * @param otherMethod
-	 * @param methodCall
-	 * @return
+	 * @param me the given method.
+	 * @param otherMethod the other method.
+	 * @param methodCall the method call.
+	 * @return true or false.
 	 */
 	public static boolean isBetterMethodForCall(Method me, Method otherMethod,
 			MethodCall methodCall) {
@@ -148,15 +150,17 @@ public class MethodExtension {
 				
 				if (!parameterType.eIsProxy() || !argumentType.eIsProxy()) {
 					if (argumentType instanceof TemporalUnknownType) {
-						LambdaExpression lambda = argument instanceof LambdaExpression ?
-								(LambdaExpression) argument
+						LambdaExpression lambda = argument instanceof LambdaExpression
+								? (LambdaExpression) argument
 								: argument.getFirstChildByType(LambdaExpression.class);
 						if (lambda != null) {
 							if (!(parameterType instanceof Interface)) {
 								return false;
 							}
-							Method absMeth = ((Interface) parameterType).getAbstractMethodOfFunctionalInterface();
-							if (absMeth.getParameters().size() != lambda.getParameters().getParameters().size()) {
+							Method absMeth = ((Interface) parameterType)
+									.getAbstractMethodOfFunctionalInterface();
+							if (absMeth.getParameters().size()
+									!= lambda.getParameters().getParameters().size()) {
 								return false;
 							}
 						}

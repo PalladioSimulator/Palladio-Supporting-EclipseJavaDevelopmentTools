@@ -34,7 +34,8 @@ public class CompilationUnitExtension {
 	/**
 	 * Returns the first {@link ConcreteClassifier} that is contained in this
 	 * {@link CompilationUnit} and which has the given name.
-	 * 
+	 *
+	 * @param me the context.
 	 * @param name
 	 *            the name of the classifier to search for
 	 * @return the classifier if one is found, otherwise <code>null</code>
@@ -53,6 +54,7 @@ public class CompilationUnitExtension {
 	}
 	
 	/**
+	 * @param me the context.
 	 * @return all classes in the same package imports
 	 */
 	public static EList<ConcreteClassifier> getClassifiersInSamePackage(CompilationUnit me) {
@@ -73,7 +75,8 @@ public class CompilationUnitExtension {
 	 * exactly one exists). If the {@link CompilationUnit} contains multiple
 	 * classifiers or if the contained classifier is not a {@link Class},
 	 * <code>null</code> is returned.
-	 * 
+	 *
+	 * @param me the compilation unit.
 	 * @return the class directly contained in the compilation unit (if there is
 	 *         exactly one contained classifier that is of type {@link Class})
 	 */
@@ -96,6 +99,7 @@ public class CompilationUnitExtension {
 	 * classifiers or if the contained classifier is not an {@link Interface},
 	 * <code>null</code> is returned.
 	 * 
+	 * @param me the compilation unit.
 	 * @return the interface directly contained in the compilation unit (if
 	 *         there is exactly one contained classifier that is of type
 	 *         {@link Interface})
@@ -119,6 +123,7 @@ public class CompilationUnitExtension {
 	 * classifiers or if the contained classifier is not an {@link Annotation},
 	 * <code>null</code> is returned.
 	 * 
+	 * @param me the compilation unit.
 	 * @return the annotation directly contained in the compilation unit (if
 	 *         there is exactly one contained classifier that is of type
 	 *         {@link Annotation})
@@ -142,6 +147,7 @@ public class CompilationUnitExtension {
 	 * multiple classifiers or if the contained classifier is not an
 	 * {@link Enumeration}, <code>null</code> is returned.
 	 * 
+	 * @param me the compilation unit.
 	 * @return the enumeration directly contained in the compilation unit (if
 	 *         there is exactly one contained classifier that is of type
 	 *         {@link Enumeration})
@@ -161,17 +167,23 @@ public class CompilationUnitExtension {
 	
 	/**
 	 * Adds an import of the given class to this compilation unit.
+	 * 
+	 * @param me the compilation unit.
+	 * @param nameOfClassToImport name of the class to import.
 	 */
 	public static void addImport(CompilationUnit me, String nameOfClassToImport) {
-		ClassifierImport import_ = ImportsFactory.eINSTANCE.createClassifierImport();
+		ClassifierImport importElement = ImportsFactory.eINSTANCE.createClassifierImport();
 		ConcreteClassifier classToImport = me.getConcreteClassifier(nameOfClassToImport);
-		import_.setClassifier(classToImport);
-		import_.getNamespaces().addAll(classToImport.getContainingCompilationUnit().getNamespaces());
-		me.getImports().add(import_);
+		importElement.setClassifier(classToImport);
+		importElement.getNamespaces().addAll(classToImport.getContainingCompilationUnit().getNamespaces());
+		me.getImports().add(importElement);
 	}
 	
 	/**
 	 * Adds an import of the given package to this compilation unit.
+	 * 
+	 * @param me the compilation unit.
+	 * @param packageName name of the package to import.
 	 */
 	public static void addPackageImport(CompilationUnit me, String packageName) {
 		PackageImport nsImport = ImportsFactory.eINSTANCE.createPackageImport();

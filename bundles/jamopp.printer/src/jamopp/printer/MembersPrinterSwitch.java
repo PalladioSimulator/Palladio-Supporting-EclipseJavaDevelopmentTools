@@ -138,7 +138,8 @@ class MembersPrinterSwitch extends MembersSwitch<Boolean> {
 					if (element.getName().equals("valueOf") && element.getParameters().size() == 1) {
 						Type t = element.getParameters().get(0).getTypeReference().getTarget();
 						if (t instanceof org.emftext.language.java.classifiers.Class) {
-							org.emftext.language.java.classifiers.Class cla = (org.emftext.language.java.classifiers.Class) t;
+							org.emftext.language.java.classifiers.Class cla =
+									(org.emftext.language.java.classifiers.Class) t;
 							if (cla.getQualifiedName().equals("java.lang.String")) {
 								return true;
 							}

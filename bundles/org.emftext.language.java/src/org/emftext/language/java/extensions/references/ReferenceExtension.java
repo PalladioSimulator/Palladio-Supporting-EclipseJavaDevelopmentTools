@@ -67,6 +67,7 @@ public class ReferenceExtension {
 	 * which the reference points directly, or the type of the element to which
 	 * the reference points.
 	 * 
+	 * @param me the given reference.
 	 * @return the determined type
 	 */
 	public static Type getReferencedType(Reference me) {
@@ -117,7 +118,8 @@ public class ReferenceExtension {
 						((org.emftext.language.java.classifiers.Class) thisClass).getSuperClass());
 				}
 				if (thisClass instanceof AnonymousClass) {
-					return TypeReferenceExtension.convertToTypeReference(((AnonymousClass)thisClass).getSuperClassifier());
+					return TypeReferenceExtension.convertToTypeReference(
+							((AnonymousClass) thisClass).getSuperClassifier());
 				}
 			}
 			
@@ -174,7 +176,8 @@ public class ReferenceExtension {
 			} else {
 				if (thisClass instanceof org.emftext.language.java.classifiers.Class) {
 					return TypeReferenceExtension.convertToTypeReference(
-							((org.emftext.language.java.classifiers.Class) thisClass).getSuperClass());
+							((org.emftext.language.java.classifiers.Class)
+									thisClass).getSuperClass());
 				}
 			}
 		} else {
@@ -200,8 +203,10 @@ public class ReferenceExtension {
 				for (int index = 0; index < typeArg.getTypeArguments().size(); index++) {
 					TypeArgument typeArgument = typeArg.getTypeArguments().get(index);
 					TypeArgument originalTypeArgument = originalTypeArg.getTypeArguments().get(index);
-					TypeReference argRef = TypeReferenceExtension.getTypeReferenceOfTypeArgument(typeArgument);
-					TypeReference originalArgRef = TypeReferenceExtension.getTypeReferenceOfTypeArgument(originalTypeArgument);
+					TypeReference argRef = TypeReferenceExtension
+							.getTypeReferenceOfTypeArgument(typeArgument);
+					TypeReference originalArgRef = TypeReferenceExtension
+							.getTypeReferenceOfTypeArgument(originalTypeArgument);
 					if (argRef != null) {
 						TypeReference resolved = resolveAllTypeParameters(argRef, me, originalArgRef);
 						if (resolved != null) {

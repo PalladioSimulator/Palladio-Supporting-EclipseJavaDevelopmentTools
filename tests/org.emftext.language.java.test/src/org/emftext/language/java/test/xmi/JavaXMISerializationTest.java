@@ -90,16 +90,19 @@ public class JavaXMISerializationTest extends AbstractJaMoPPTests {
 				}
 
 			} else if (root instanceof Package) {
-				outputFileName = root.getNamespacesAsString().replace(".", File.separator) + File.separator + "package-info";
+				outputFileName = root.getNamespacesAsString()
+						.replace(".", File.separator) + File.separator + "package-info";
 				if (outputFileName.startsWith(File.separator)) {
 					outputFileName = outputFileName.substring(1);
 				}
 			} else if (root instanceof org.emftext.language.java.containers.Module) {
-				outputFileName = root.getNamespacesAsString().replace(".", File.separator) + File.separator + "module-info";
+				outputFileName = root.getNamespacesAsString()
+						.replace(".", File.separator) + File.separator + "module-info";
 			} else {
 				fail();
 			}
-			File outputFile = new File("." + File.separator + TEST_OUTPUT_FOLDER_NAME + File.separator + outputFileName);
+			File outputFile = new File("." + File.separator + TEST_OUTPUT_FOLDER_NAME
+					+ File.separator + outputFileName);
 			URI xmiFileURI = URI.createFileURI(outputFile.getAbsolutePath()).appendFileExtension("xmi");	
 			XMIResource xmiResource = (XMIResource) rs.createResource(xmiFileURI);
 			xmiResource.setEncoding(StandardCharsets.UTF_8.toString());

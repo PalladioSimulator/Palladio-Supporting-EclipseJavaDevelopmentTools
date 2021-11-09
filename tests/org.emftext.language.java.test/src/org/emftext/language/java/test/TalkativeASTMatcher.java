@@ -20,14 +20,115 @@ package org.emftext.language.java.test;
 
 import java.math.BigInteger;
 
-import org.eclipse.jdt.core.dom.*;
+import org.eclipse.jdt.core.dom.ASTMatcher;
+import org.eclipse.jdt.core.dom.AnnotationTypeDeclaration;
+import org.eclipse.jdt.core.dom.AnnotationTypeMemberDeclaration;
+import org.eclipse.jdt.core.dom.AnonymousClassDeclaration;
+import org.eclipse.jdt.core.dom.ArrayAccess;
+import org.eclipse.jdt.core.dom.ArrayCreation;
+import org.eclipse.jdt.core.dom.ArrayInitializer;
+import org.eclipse.jdt.core.dom.ArrayType;
+import org.eclipse.jdt.core.dom.AssertStatement;
+import org.eclipse.jdt.core.dom.Assignment;
+import org.eclipse.jdt.core.dom.ASTNode;
+import org.eclipse.jdt.core.dom.Block;
+import org.eclipse.jdt.core.dom.BlockComment;
+import org.eclipse.jdt.core.dom.BooleanLiteral;
+import org.eclipse.jdt.core.dom.BreakStatement;
+import org.eclipse.jdt.core.dom.CastExpression;
+import org.eclipse.jdt.core.dom.CatchClause;
+import org.eclipse.jdt.core.dom.CharacterLiteral;
+import org.eclipse.jdt.core.dom.ClassInstanceCreation;
+import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.eclipse.jdt.core.dom.ConditionalExpression;
+import org.eclipse.jdt.core.dom.ConstructorInvocation;
+import org.eclipse.jdt.core.dom.ContinueStatement;
+import org.eclipse.jdt.core.dom.CreationReference;
+import org.eclipse.jdt.core.dom.Dimension;
+import org.eclipse.jdt.core.dom.DoStatement;
+import org.eclipse.jdt.core.dom.EmptyStatement;
+import org.eclipse.jdt.core.dom.EnhancedForStatement;
+import org.eclipse.jdt.core.dom.EnumConstantDeclaration;
+import org.eclipse.jdt.core.dom.EnumDeclaration;
+import org.eclipse.jdt.core.dom.ExportsDirective;
+import org.eclipse.jdt.core.dom.ExpressionMethodReference;
+import org.eclipse.jdt.core.dom.ExpressionStatement;
+import org.eclipse.jdt.core.dom.FieldAccess;
+import org.eclipse.jdt.core.dom.FieldDeclaration;
+import org.eclipse.jdt.core.dom.ForStatement;
+import org.eclipse.jdt.core.dom.IfStatement;
+import org.eclipse.jdt.core.dom.ImportDeclaration;
+import org.eclipse.jdt.core.dom.InfixExpression;
+import org.eclipse.jdt.core.dom.Initializer;
+import org.eclipse.jdt.core.dom.InstanceofExpression;
+import org.eclipse.jdt.core.dom.IntersectionType;
+import org.eclipse.jdt.core.dom.Javadoc;
+import org.eclipse.jdt.core.dom.LabeledStatement;
+import org.eclipse.jdt.core.dom.LambdaExpression;
+import org.eclipse.jdt.core.dom.LineComment;
+import org.eclipse.jdt.core.dom.MarkerAnnotation;
+import org.eclipse.jdt.core.dom.MemberRef;
+import org.eclipse.jdt.core.dom.MemberValuePair;
+import org.eclipse.jdt.core.dom.MethodDeclaration;
+import org.eclipse.jdt.core.dom.MethodInvocation;
+import org.eclipse.jdt.core.dom.MethodRef;
+import org.eclipse.jdt.core.dom.MethodRefParameter;
+import org.eclipse.jdt.core.dom.Modifier;
+import org.eclipse.jdt.core.dom.ModuleDeclaration;
+import org.eclipse.jdt.core.dom.ModuleModifier;
+import org.eclipse.jdt.core.dom.NameQualifiedType;
+import org.eclipse.jdt.core.dom.NormalAnnotation;
+import org.eclipse.jdt.core.dom.NullLiteral;
+import org.eclipse.jdt.core.dom.NumberLiteral;
+import org.eclipse.jdt.core.dom.OpensDirective;
+import org.eclipse.jdt.core.dom.PackageDeclaration;
+import org.eclipse.jdt.core.dom.ParameterizedType;
+import org.eclipse.jdt.core.dom.ParenthesizedExpression;
+import org.eclipse.jdt.core.dom.PostfixExpression;
+import org.eclipse.jdt.core.dom.PrefixExpression;
+import org.eclipse.jdt.core.dom.PrimitiveType;
+import org.eclipse.jdt.core.dom.ProvidesDirective;
+import org.eclipse.jdt.core.dom.QualifiedName;
+import org.eclipse.jdt.core.dom.QualifiedType;
+import org.eclipse.jdt.core.dom.RequiresDirective;
+import org.eclipse.jdt.core.dom.ReturnStatement;
+import org.eclipse.jdt.core.dom.SimpleName;
+import org.eclipse.jdt.core.dom.SimpleType;
+import org.eclipse.jdt.core.dom.SingleMemberAnnotation;
+import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
+import org.eclipse.jdt.core.dom.StringLiteral;
+import org.eclipse.jdt.core.dom.SuperConstructorInvocation;
+import org.eclipse.jdt.core.dom.SuperFieldAccess;
+import org.eclipse.jdt.core.dom.SuperMethodInvocation;
+import org.eclipse.jdt.core.dom.SuperMethodReference;
+import org.eclipse.jdt.core.dom.SwitchCase;
+import org.eclipse.jdt.core.dom.SwitchExpression;
+import org.eclipse.jdt.core.dom.SwitchStatement;
+import org.eclipse.jdt.core.dom.SynchronizedStatement;
+import org.eclipse.jdt.core.dom.TagElement;
+import org.eclipse.jdt.core.dom.TextElement;
+import org.eclipse.jdt.core.dom.ThisExpression;
+import org.eclipse.jdt.core.dom.ThrowStatement;
+import org.eclipse.jdt.core.dom.TryStatement;
+import org.eclipse.jdt.core.dom.TypeDeclaration;
+import org.eclipse.jdt.core.dom.TypeDeclarationStatement;
+import org.eclipse.jdt.core.dom.TypeLiteral;
+import org.eclipse.jdt.core.dom.TypeMethodReference;
+import org.eclipse.jdt.core.dom.TypeParameter;
+import org.eclipse.jdt.core.dom.UnionType;
+import org.eclipse.jdt.core.dom.UsesDirective;
+import org.eclipse.jdt.core.dom.VariableDeclarationExpression;
+import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
+import org.eclipse.jdt.core.dom.VariableDeclarationStatement;
+import org.eclipse.jdt.core.dom.WhileStatement;
+import org.eclipse.jdt.core.dom.WildcardType;
+import org.eclipse.jdt.core.dom.YieldStatement;
 
 /**
- * An extension of the JDT ASTMatcher that prints information
- * whenever the matching of two ASTs fails. In addition some
- * normalizations are applied to number literals to removed
- * redundant characters that can cause comparison failures
- * even though the numbers are the same.
+ * An extension of the JDT ASTMatcher that prints information whenever the
+ * matching of two ASTs fails. In addition some normalizations are applied to
+ * number literals to removed redundant characters that can cause comparison
+ * failures even though the numbers are the same.
  */
 public class TalkativeASTMatcher extends ASTMatcher {
 
@@ -133,7 +234,7 @@ public class TalkativeASTMatcher extends ASTMatcher {
 		String oToken = o.getEscapedValue();
 		String nToken = node.getEscapedValue();
 
-		//octal notation and escaped characters
+		// octal notation and escaped characters
 		if (oToken.matches("\\'\\\\.+\\'")) {
 			oToken = oToken.substring(1, oToken.length() - 1);
 			oToken = "'" + CharacterEscaper.unescapeEscapedCharacters(oToken) + "'";
@@ -174,12 +275,12 @@ public class TalkativeASTMatcher extends ASTMatcher {
 
 		return setDiff(node, other, super.match(node, other));
 	}
-	
+
 	@Override
 	public boolean match(CreationReference node, Object other) {
 		return setDiff(node, other, super.match(node, other));
 	}
-	
+
 	@Override
 	public boolean match(Dimension node, Object other) {
 		return setDiff(node, other, super.match(node, other));
@@ -214,12 +315,12 @@ public class TalkativeASTMatcher extends ASTMatcher {
 
 		return setDiff(node, other, super.match(node, other));
 	}
-	
+
 	@Override
 	public boolean match(ExportsDirective node, Object other) {
 		return setDiff(node, other, super.match(node, other));
 	}
-	
+
 	@Override
 	public boolean match(ExpressionMethodReference node, Object other) {
 		return setDiff(node, other, super.match(node, other));
@@ -278,7 +379,7 @@ public class TalkativeASTMatcher extends ASTMatcher {
 
 		return setDiff(node, other, super.match(node, other));
 	}
-	
+
 	@Override
 	public boolean match(IntersectionType node, Object other) {
 		return setDiff(node, other, super.match(node, other));
@@ -294,7 +395,7 @@ public class TalkativeASTMatcher extends ASTMatcher {
 
 		return setDiff(node, other, super.match(node, other));
 	}
-	
+
 	@Override
 	public boolean match(LambdaExpression node, Object other) {
 		return setDiff(node, other, super.match(node, other));
@@ -353,17 +454,17 @@ public class TalkativeASTMatcher extends ASTMatcher {
 
 		return setDiff(node, other, super.match(node, other));
 	}
-	
+
 	@Override
 	public boolean match(ModuleDeclaration node, Object other) {
 		return setDiff(node, other, super.match(node, other));
 	}
-	
+
 	@Override
 	public boolean match(ModuleModifier node, Object other) {
 		return setDiff(node, other, super.match(node, other));
 	}
-	
+
 	@Override
 	public boolean match(NameQualifiedType node, Object other) {
 		return setDiff(node, other, super.match(node, other));
@@ -419,19 +520,19 @@ public class TalkativeASTMatcher extends ASTMatcher {
 			}
 			token = actualLiteral.toString();
 		}
-		
+
 		token = token.toLowerCase();
 		token = token.replaceAll("_", "");
-		
+
 		if (token.startsWith("-0x")) {
 			token = token.substring(1);
 			return token = "-" + normalizeNumberToken(token);
 		}
-		
+
 		if (token.startsWith("- ")) {
 			token = "-" + token.substring(2);
 		}
-		
+
 		if (token.endsWith("l")) {
 			token = token.substring(0, token.length() - 1);
 		}
@@ -485,10 +586,9 @@ public class TalkativeASTMatcher extends ASTMatcher {
 
 		if (other instanceof NumberLiteral) {
 			String nToken = node.toString();
-			String oToken = ((NumberLiteral)other).getToken();
+			String oToken = ((NumberLiteral) other).getToken();
 			return setDiff(node, other, numberMatch(nToken, oToken));
-		}
-		else {
+		} else {
 			return setDiff(node, other, super.match(node, other));
 		}
 
@@ -499,7 +599,7 @@ public class TalkativeASTMatcher extends ASTMatcher {
 
 		return setDiff(node, other, super.match(node, other));
 	}
-	
+
 	@Override
 	public boolean match(ProvidesDirective node, Object other) {
 		return setDiff(node, other, super.match(node, other));
@@ -516,7 +616,7 @@ public class TalkativeASTMatcher extends ASTMatcher {
 
 		return setDiff(node, other, super.match(node, other));
 	}
-	
+
 	@Override
 	public boolean match(RequiresDirective node, Object other) {
 		return setDiff(node, other, super.match(node, other));
@@ -562,7 +662,7 @@ public class TalkativeASTMatcher extends ASTMatcher {
 		String nString = node.getEscapedValue();
 		String oString = o.getEscapedValue();
 
-		//normalize escaped strings
+		// normalize escaped strings
 		nString = CharacterEscaper.unescapeEscapedCharacters(nString);
 		oString = CharacterEscaper.unescapeEscapedCharacters(oString);
 
@@ -586,7 +686,7 @@ public class TalkativeASTMatcher extends ASTMatcher {
 
 		return setDiff(node, other, super.match(node, other));
 	}
-	
+
 	@Override
 	public boolean match(SuperMethodReference node, Object other) {
 		return setDiff(node, other, super.match(node, other));
@@ -597,7 +697,7 @@ public class TalkativeASTMatcher extends ASTMatcher {
 
 		return setDiff(node, other, super.match(node, other));
 	}
-	
+
 	@Override
 	public boolean match(SwitchExpression node, Object other) {
 		return setDiff(node, other, super.match(node, other));
@@ -645,7 +745,6 @@ public class TalkativeASTMatcher extends ASTMatcher {
 		return setDiff(node, other, super.match(node, other));
 	}
 
-
 	@Override
 	public boolean match(TypeDeclaration node, Object other) {
 
@@ -663,7 +762,7 @@ public class TalkativeASTMatcher extends ASTMatcher {
 
 		return setDiff(node, other, super.match(node, other));
 	}
-	
+
 	@Override
 	public boolean match(TypeMethodReference node, Object other) {
 		return setDiff(node, other, super.match(node, other));
@@ -674,12 +773,12 @@ public class TalkativeASTMatcher extends ASTMatcher {
 
 		return setDiff(node, other, super.match(node, other));
 	}
-	
+
 	@Override
 	public boolean match(UnionType node, Object other) {
 		return setDiff(node, other, super.match(node, other));
 	}
-	
+
 	@Override
 	public boolean match(UsesDirective node, Object other) {
 		return setDiff(node, other, super.match(node, other));
@@ -713,12 +812,11 @@ public class TalkativeASTMatcher extends ASTMatcher {
 
 		return setDiff(node, other, super.match(node, other));
 	}
-	
+
 	@Override
 	public boolean match(YieldStatement node, Object other) {
 		return setDiff(node, other, super.match(node, other));
 	}
-
 
 	private String diff = "";
 
@@ -727,7 +825,7 @@ public class TalkativeASTMatcher extends ASTMatcher {
 			diff += ("\nORIGINAL: \n");
 			if (o1 instanceof ASTNode) {
 				diff += "(POSITION: " + ((ASTNode) o1).getStartPosition() + ")\n";
-			}	
+			}
 			diff += (o1.toString());
 			diff += ("\nREPRINT:\n");
 			if (o2 instanceof ASTNode) {

@@ -87,7 +87,8 @@ public class InferableTypeExtension {
 								initType = TypeReferenceExtension.clone(
 										initType.getBoundTargetReference(
 												container instanceof Reference
-													? (Reference) container : null));
+													? (Reference) container
+															: null));
 							}
 						}
 					}
