@@ -15,22 +15,37 @@ package org.emftext.language.java.test;
 
 import java.nio.file.Paths;
 import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import jamopp.parser.jdt.JaMoPPJDTParser;
+import jamopp.options.ParserOptions;
+import jamopp.parser.jdt.singlefile.JaMoPPJDTSingleFileParser;
 
 /**
  * Class for testing the parseDirectory method of the JaMoPPJDTParser.
  */
 public class JaMoPPJDTParserDirectoryTest extends AbstractJaMoPPTests {
-	private JaMoPPJDTParser parser;
+	private JaMoPPJDTSingleFileParser parser;
+	
+	@BeforeAll
+	public static void firstSetup() {
+		AbstractJaMoPPTests.initLogging();
+		ParserOptions.RESOLVE_ALL_BINDINGS.setValue(Boolean.TRUE);
+		ParserOptions.RESOLVE_EVERYTHING.setValue(Boolean.TRUE);
+	}
+	
+	@AfterAll
+	public static void lastTearDown() {
+		ParserOptions.RESOLVE_EVERYTHING.setValue(Boolean.FALSE);
+	}
 	
 	@BeforeEach
 	public void setUp() {
 		super.initResourceFactory();
-		parser = new JaMoPPJDTParser();
+		parser = new JaMoPPJDTSingleFileParser();
 	}
 	
 	@Test

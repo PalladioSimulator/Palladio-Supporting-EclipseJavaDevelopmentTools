@@ -83,6 +83,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 
+import jamopp.options.ParserOptions;
 import jamopp.resource.JavaResource2;
 import jamopp.resource.JavaResource2Factory;
 
@@ -100,6 +101,7 @@ public abstract class AbstractJaMoPPTests {
 //		ConsoleAppender ca = new ConsoleAppender(new PatternLayout("[%d{DATE}] %-5p: %c - %m%n"),
 //				ConsoleAppender.SYSTEM_OUT);
 //		logger.addAppender(ca);
+		ParserOptions.RESOLVE_ALL_BINDINGS.setValue(Boolean.FALSE);
 	}
 
 	@BeforeEach
@@ -669,7 +671,10 @@ public abstract class AbstractJaMoPPTests {
 	
 	protected void assertModelValid(ResourceSet set) {
 		StringBuilder builder = new StringBuilder();
-		for (Resource res : set.getResources()) {
+		for (Resource res : new ArrayList<>(set.getResources())) {
+			if (res.getContents().size() == 0) {
+				continue;
+			}
 			org.eclipse.emf.common.util.Diagnostic result = Diagnostician.INSTANCE.validate(res.getContents().get(0));
 			if (!result.getChildren().isEmpty()) {
 				builder.append("EMF validation problems found in '");

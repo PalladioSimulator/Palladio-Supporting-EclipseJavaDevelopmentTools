@@ -41,6 +41,7 @@ import org.junit.jupiter.api.Test;
 import jamopp.parser.jdt.singlefile.JaMoPPJDTSingleFileParser;
 import jamopp.resource.JavaResource2;
 
+@Disabled("Requires initialization of all submodules and dependency resolution.")
 public class SingleFileParserBulkTests extends AbstractJaMoPPTests {
 	private static final Logger LOGGER = Logger.getLogger("jamopp."
 			+ SingleFileParserBulkTests.class.getSimpleName());
