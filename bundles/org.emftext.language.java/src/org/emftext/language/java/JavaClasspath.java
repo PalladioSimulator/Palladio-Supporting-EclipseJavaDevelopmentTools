@@ -212,6 +212,9 @@ public class JavaClasspath {
 			e.getValue().stream().map(cc -> e.getKey() + cc).map(this::getProxyConcreteClassifiers)
 				.filter(p -> p != null && !p.isEmpty()).forEach(p -> result.addAll(p));
 		});
+		if (this != get()) {
+			result.addAll(get().getConcreteClassifiers(packageName));
+		}
 		return result;
 	}
 	
