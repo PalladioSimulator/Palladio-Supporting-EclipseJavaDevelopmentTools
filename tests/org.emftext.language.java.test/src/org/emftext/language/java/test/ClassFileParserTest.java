@@ -14,6 +14,7 @@
 package org.emftext.language.java.test;
 
 import java.io.File;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 
 import org.eclipse.emf.common.util.URI;
@@ -29,7 +30,7 @@ import jamopp.options.ParserOptions;
  * A test class for the ClassFileParser.
  */
 public class ClassFileParserTest extends AbstractJaMoPPTests {
-	private static final String BIN_FOLDER = "bin";
+	private static String BIN_FOLDER;
 	private static final String CLASS_FILE_EXTENSION = ".class";
 	
 	@BeforeAll
@@ -38,6 +39,11 @@ public class ClassFileParserTest extends AbstractJaMoPPTests {
 		ParserOptions.RESOLVE_BINDINGS.setValue(Boolean.FALSE);
 		ParserOptions.RESOLVE_BINDINGS_OF_INFERABLE_TYPES.setValue(Boolean.FALSE);
 		ParserOptions.PREFER_BINDING_CONVERSION.setValue(Boolean.FALSE);
+		String binFolder = "bin";
+		if (Files.notExists(Paths.get(".", binFolder))) {
+			binFolder = "target" + File.separator + "classes";
+		}
+		BIN_FOLDER = binFolder;
 	}
 	
 	@AfterAll
