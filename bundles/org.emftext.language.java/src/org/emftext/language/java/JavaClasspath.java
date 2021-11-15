@@ -13,6 +13,7 @@
  *   DevBoost GmbH - Dresden, Germany
  *      - initial API and implementation
  *   Martin Armbruster
+ *      - Adaptation and extension for Java 7+
  *      - Extension for loading the standard library in Java 9+
  ******************************************************************************/
 
@@ -55,8 +56,9 @@ public class JavaClasspath {
 
 	public static JavaClasspath get() {
 		if (globalClasspath == null) {
-			globalClasspath = new JavaClasspath(null);
-//			globalClasspath.registerStdLib();
+			var localGlobalClasspath = new JavaClasspath(null);
+			localGlobalClasspath.registerStdLib();
+			globalClasspath = localGlobalClasspath;
 		}
 		return globalClasspath;
 	}
@@ -210,6 +212,9 @@ public class JavaClasspath {
 			e.getValue().stream().map(cc -> e.getKey() + cc).map(this::getProxyConcreteClassifiers)
 				.filter(p -> p != null && !p.isEmpty()).forEach(p -> result.addAll(p));
 		});
+		if (this != get()) {
+			result.addAll(get().getConcreteClassifiers(packageName));
+		}
 		return result;
 	}
 	

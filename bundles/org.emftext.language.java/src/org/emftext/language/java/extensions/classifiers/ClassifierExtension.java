@@ -21,24 +21,30 @@ import org.emftext.language.java.classifiers.ConcreteClassifier;
 import org.emftext.language.java.containers.CompilationUnit;
 
 public class ClassifierExtension {
-	
+
 	public static EList<ConcreteClassifier> getAllSuperClassifiers(Classifier me) {
 		// Method has to be specified in subclasses
 		throw new UnsupportedOperationException();
 	}
 
 	/**
-	 * Adds an import of the given class to the compilation unit that contains
-	 * this classifier.
+	 * Adds an import of the given class to the compilation unit that contains this
+	 * classifier.
+	 * 
+	 * @param me the given class.
+	 * @param nameOfClassToImport name to the class to import.
 	 */
 	public static void addImport(Classifier me, String nameOfClassToImport) {
 		CompilationUnit compilationUnit = me.getParentByType(CompilationUnit.class);
 		compilationUnit.addImport(nameOfClassToImport);
 	}
-	
+
 	/**
 	 * Adds an import of the given package to the compilation unit that contains
 	 * this classifier.
+	 * 
+	 * @param me the given classifier.
+	 * @param packageName the name of the imported package.
 	 */
 	public static void addPackageImport(Classifier me, String packageName) {
 		CompilationUnit compilationUnit = me.getParentByType(CompilationUnit.class);

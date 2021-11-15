@@ -25,33 +25,28 @@ import org.emftext.language.java.literals.LongLiteral;
 import org.emftext.language.java.literals.NullLiteral;
 
 public class LiteralExtension {
-	
+
 	/**
+	 * @param me the literal.
 	 * @return type of the literal
 	 */
 	public static org.emftext.language.java.classifiers.Class getOneType(Literal me) {
-		//Overrides implementation in Expression
+		// Overrides implementation in Expression
 		org.emftext.language.java.classifiers.Class javaClass = null;
-		
+
 		if (me instanceof NullLiteral) {
 			javaClass = me.getLibClass("Void");
-		}
-		else if (me instanceof BooleanLiteral) {
+		} else if (me instanceof BooleanLiteral) {
 			javaClass = me.getLibClass("Boolean");
-		}
-		else if (me instanceof DoubleLiteral) {
+		} else if (me instanceof DoubleLiteral) {
 			javaClass = me.getLibClass("Double");
-		}
-		else if (me instanceof FloatLiteral) {
+		} else if (me instanceof FloatLiteral) {
 			javaClass = me.getLibClass("Float");
-		}
-		else if (me instanceof IntegerLiteral) {
+		} else if (me instanceof IntegerLiteral) {
 			javaClass = me.getLibClass("Integer");
-		}
-		else if (me instanceof LongLiteral) {
+		} else if (me instanceof LongLiteral) {
 			javaClass = me.getLibClass("Long");
-		}
-		else if (me instanceof CharacterLiteral) {
+		} else if (me instanceof CharacterLiteral) {
 			javaClass = me.getLibClass("Character");
 		}
 

@@ -39,9 +39,12 @@ import org.emftext.language.java.containers.CompilationUnit;
 import org.emftext.language.java.containers.JavaRoot;
 import org.emftext.language.java.containers.Package;
 import org.emftext.language.java.test.AbstractJaMoPPTests;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import jamopp.parser.jdt.JaMoPPJDTParser;
+import jamopp.options.ParserOptions;
+import jamopp.parser.jdt.singlefile.JaMoPPJDTSingleFileParser;
+import jamopp.resource.JavaResource2;
 
 public class JavaXMISerializationTest extends AbstractJaMoPPTests {
 
@@ -49,13 +52,29 @@ public class JavaXMISerializationTest extends AbstractJaMoPPTests {
 	protected static final String TEST_OUTPUT_FOLDER_NAME = "output";
 	private HashMap<String, String> inputFileToOutputFile = new HashMap<>();
 	
+	@BeforeAll
+	public static void generalSetup() {
+		AbstractJaMoPPTests.initLogging();
+		ParserOptions.RESOLVE_ALL_BINDINGS.setValue(Boolean.TRUE);
+	}
+	
 	@Test
 	public void testXMISerialization() throws Exception {
+		String[] excludings = {".*?UnicodeIdentifiers.java"};
 		File inputFolder = new File("./" + TEST_INPUT_FOLDER_NAME);
 		List<File> allTestFiles = collectAllFilesRecursive(inputFolder, "java");
+		allTestFiles.removeIf(f -> {
+			for (String ex : excludings) {
+				if (f.getName().matches(ex)) {
+					return true;
+				}
+			}
+			return false;
+		});
 
-		JaMoPPJDTParser parser = new JaMoPPJDTParser();
+		JaMoPPJDTSingleFileParser parser = new JaMoPPJDTSingleFileParser();
 		parser.setResourceSet(getResourceSet());
+		parser.setExclusionPatterns(excludings);
 		parser.parseDirectory(inputFolder.toPath());
 
 		transferToXMI();
@@ -90,16 +109,19 @@ public class JavaXMISerializationTest extends AbstractJaMoPPTests {
 				}
 
 			} else if (root instanceof Package) {
-				outputFileName = root.getNamespacesAsString().replace(".", File.separator) + File.separator + "package-info";
+				outputFileName = root.getNamespacesAsString()
+						.replace(".", File.separator) + File.separator + "package-info";
 				if (outputFileName.startsWith(File.separator)) {
 					outputFileName = outputFileName.substring(1);
 				}
 			} else if (root instanceof org.emftext.language.java.containers.Module) {
-				outputFileName = root.getNamespacesAsString().replace(".", File.separator) + File.separator + "module-info";
+				outputFileName = root.getNamespacesAsString()
+						.replace(".", File.separator) + File.separator + "module-info";
 			} else {
 				fail();
 			}
-			File outputFile = new File("." + File.separator + TEST_OUTPUT_FOLDER_NAME + File.separator + outputFileName);
+			File outputFile = new File("." + File.separator + TEST_OUTPUT_FOLDER_NAME
+					+ File.separator + outputFileName);
 			URI xmiFileURI = URI.createFileURI(outputFile.getAbsolutePath()).appendFileExtension("xmi");	
 			XMIResource xmiResource = (XMIResource) rs.createResource(xmiFileURI);
 			xmiResource.setEncoding(StandardCharsets.UTF_8.toString());
@@ -110,7 +132,9 @@ public class JavaXMISerializationTest extends AbstractJaMoPPTests {
 			}
 		}
 		for (Resource xmiResource : rs.getResources()) {
-			if (xmiResource instanceof XMIResource) {
+			// JavaResource2 extends from XMIResource.
+			// Therefore, only resources which are not JavaResource2 are saved.
+			if (!(xmiResource instanceof JavaResource2)) {
 				try {
 					xmiResource.save(rs.getLoadOptions());
 				} catch (Exception e) {

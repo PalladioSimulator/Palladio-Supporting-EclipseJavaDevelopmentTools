@@ -68,11 +68,11 @@ public class Bug1541Test extends AbstractBugTestCase {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		r.save(out, null);
 		System.out.println("Test1541.testPrinting() " + out.toString());
-		assertTrue(out.toString().matches( // \\u003b is ; \\u007b is { \\u007d is }
-				"package\\s++org\\.my\\.namespace1\\u003b\\s++class\\s++ClassA\\s++\\u007b" +
-				"\\s++public\\s++void\\s++m1\\(\\)\\s++\\u007b" +
-				"\\s++return\\u003b" +
-				"\\s++\\u007d" +
-				"\\s++\\u007d\\s++"));
+		assertTrue(out.toString().matches(// \\u003b is ; \\u007b is { \\u007d is }
+				"package\\s++org\\.my\\.namespace1\\u003b\\s++class\\s++ClassA\\s++\\u007b"
+				+ "\\s++public\\s++void\\s++m1\\(\\)\\s++\\u007b"
+				+ "\\s++return\\u003b"
+				+ "\\s++\\u007d"
+				+ "\\s++\\u007d\\s++"));
 	}
 }

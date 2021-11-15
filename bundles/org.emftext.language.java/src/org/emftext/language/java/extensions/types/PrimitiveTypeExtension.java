@@ -23,6 +23,7 @@ import org.emftext.language.java.types.PrimitiveType;
 public class PrimitiveTypeExtension {
 
 	/**
+	 * @param me the primitive type.
 	 * @param context to check protected visibility
 	 * @return all members (including super type members)
 	 */
@@ -32,6 +33,7 @@ public class PrimitiveTypeExtension {
 	}
 	
 	/**
+	 * @param me the type to wrap.
 	 * @return primitive type as a class representation
 	 */
 	public static org.emftext.language.java.classifiers.Class wrapPrimitiveType(PrimitiveType me) {

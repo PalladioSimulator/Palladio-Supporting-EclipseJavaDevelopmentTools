@@ -28,7 +28,7 @@ import org.junit.jupiter.api.Test;
  */
 public class ImportResolverTest extends AbstractResolverTestCase {
 
-    private static String BASE_PATH = "ImportResolverTest" + File.separator;
+    private static String BASE_PATH = "importResolverTest" + File.separator;
 
     /**
      * A test to parse and resolve a class containing an import of a Java Standard Library

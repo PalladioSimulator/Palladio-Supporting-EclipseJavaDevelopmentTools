@@ -12,6 +12,8 @@
  *   Software Technology Group - TU Dresden, Germany;
  *   DevBoost GmbH - Berlin, Germany
  *      - initial API and implementation
+ *   Martin Armbruster
+ *      - Adaptation and extension for Java 7+
  ******************************************************************************/
 package org.emftext.language.java.resolver.decider;
 
@@ -74,7 +76,8 @@ public class LocalVariableDecider extends AbstractDecider {
 				return true;
 			}
 			if (StatementsPackage.Literals.BLOCK__STATEMENTS.equals(element.eContainmentFeature())
-					|| StatementsPackage.Literals.SWITCH_CASE__STATEMENTS.equals(element.eContainmentFeature())) {
+					|| StatementsPackage.Literals.SWITCH_CASE__STATEMENTS
+					.equals(element.eContainmentFeature())) {
 				return true;
 			}
 		}

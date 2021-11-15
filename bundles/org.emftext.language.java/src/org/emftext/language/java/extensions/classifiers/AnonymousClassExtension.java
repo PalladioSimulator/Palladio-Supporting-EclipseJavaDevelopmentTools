@@ -31,8 +31,9 @@ import org.emftext.language.java.types.Type;
 import org.emftext.language.java.types.TypeReference;
 
 public class AnonymousClassExtension {
-	
+
 	/**
+	 * @param me the given anonymous class.
 	 * @param context to check protected visibility
 	 * @return a view on all members including super classifiers' members
 	 */
@@ -40,13 +41,13 @@ public class AnonymousClassExtension {
 		EList<Member> memberList = new UniqueEList<Member>();
 		memberList.addAll(me.getMembers());
 		memberList.addAll(me.getDefaultMembers());
-		
+
 		NewConstructorCall ncCall = null;
 		EObject eContainer = me.eContainer();
 		if (eContainer instanceof NewConstructorCall) {
 			ncCall = (NewConstructorCall) eContainer;
 		}
-		
+
 		if (ncCall == null) {
 			return memberList;
 		} else {
@@ -57,7 +58,7 @@ public class AnonymousClassExtension {
 				EList<Member> superMemberList = classifier.getAllMembers(context);
 				for (Member superMember : superMemberList) {
 					// Exclude private members
-					if (superMember instanceof AnnotableAndModifiable) {					
+					if (superMember instanceof AnnotableAndModifiable) {
 						if (superMember.eIsProxy()) {
 							superMember = (Member) EcoreUtil.resolve(superMember, me);
 						}
@@ -73,15 +74,16 @@ public class AnonymousClassExtension {
 			return memberList;
 		}
 	}
-	
+
 	/**
+	 * @param me the given anonymous class.
 	 * @return a view on all super classifiers
 	 */
 	public static EList<ConcreteClassifier> getAllSuperClassifiers(AnonymousClass me) {
 		EList<ConcreteClassifier> superClassifierList = new UniqueEList<ConcreteClassifier>();
-		
+
 		ConcreteClassifier superClassifier = me.getSuperClassifier();
-		
+
 		if (superClassifier != null) {
 			superClassifierList.add(superClassifier);
 			superClassifierList.addAll(superClassifier.getAllSuperClassifiers());
@@ -90,8 +92,9 @@ public class AnonymousClassExtension {
 		}
 		return superClassifierList;
 	}
-	
+
 	/**
+	 * @param me the given anonymous class.
 	 * @return the direct super classifier
 	 */
 	public static ConcreteClassifier getSuperClassifier(AnonymousClass me) {
