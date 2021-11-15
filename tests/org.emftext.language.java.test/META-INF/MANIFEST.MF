@@ -17,11 +17,15 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.jface.text,
  jamopp.resource,
  org.apache.commons.compress,
- org.junit.jupiter.api,
- org.junit.jupiter.engine,
- org.junit.jupiter.params,
  jamopp.parser.jdt.singlefile,
  org.apache.log4j,
  jamopp.parser
 Export-Package: org.emftext.language.java.test
-Import-Package: jamopp.parser.jdt
+Import-Package: jamopp.parser.jdt,
+ org.junit,
+ org.junit.jupiter.api,
+ org.junit.jupiter.api.condition,
+ org.junit.jupiter.api.extension,
+ org.junit.jupiter.api.function,
+ org.junit.jupiter.api.io,
+ org.junit.jupiter.api.parallel

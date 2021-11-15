@@ -131,17 +131,21 @@ public class JavaSevenAndUpTest extends AbstractJaMoPPTests {
 				} else if (m instanceof Method) {
 					assertEquals("lambdas", m.getName());
 					this.assertIsPublic((Method) m);
-					this.assertType(((Method) m).getTypeReference(), org.emftext.language.java.types.Void.class);
+					this.assertType(((Method) m).getTypeReference(),
+							org.emftext.language.java.types.Void.class);
 					for (Statement s : ((Method) m).getBlock().getStatements()) {
-						assertTrue(s instanceof ExpressionStatement || s instanceof LocalVariableStatement);
+						assertTrue(s instanceof ExpressionStatement
+								|| s instanceof LocalVariableStatement);
 						if (s instanceof ExpressionStatement) {
 							ExpressionStatement castedS = (ExpressionStatement) s;
 							this.assertType(castedS.getExpression(), AssignmentExpression.class);
-							AssignmentExpression expr = (AssignmentExpression) castedS.getExpression();
+							AssignmentExpression expr = (AssignmentExpression)
+									castedS.getExpression();
 							this.assertType(expr.getValue(), LambdaExpression.class);
 						} else if (s instanceof LocalVariableStatement) {
 							LocalVariableStatement castedS = (LocalVariableStatement) s;
-							this.assertType(castedS.getVariable().getInitialValue(), LambdaExpression.class);
+							this.assertType(castedS.getVariable().getInitialValue(),
+									LambdaExpression.class);
 						}
 					}
 				}
@@ -171,7 +175,8 @@ public class JavaSevenAndUpTest extends AbstractJaMoPPTests {
 					assertTrue(castedS.getVariable().getInitialValue() instanceof BinaryIntegerLiteral
 							|| castedS.getVariable().getInitialValue() instanceof BinaryLongLiteral);
 				} else if (s instanceof ExpressionStatement) {
-					AssignmentExpression expr = ((AssignmentExpression) ((ExpressionStatement) s).getExpression());
+					AssignmentExpression expr = ((AssignmentExpression)
+							((ExpressionStatement) s).getExpression());
 					assertTrue(expr.getValue() instanceof BinaryIntegerLiteral
 							|| expr.getValue() instanceof BinaryLongLiteral);
 				}
@@ -317,17 +322,21 @@ public class JavaSevenAndUpTest extends AbstractJaMoPPTests {
 			this.assertType(locStat.getVariable().getInitialValue(), PrimaryExpressionReferenceExpression.class);
 			locStat = (LocalVariableStatement) method.getBlock().getStatements().get(1);
 			this.assertType(locStat.getVariable().getInitialValue(), ClassTypeConstructorReferenceExpression.class);
-			AssignmentExpression expr = (AssignmentExpression) ((ExpressionStatement) method.getBlock().getStatements().get(2)).getExpression();
+			AssignmentExpression expr = (AssignmentExpression)
+					((ExpressionStatement) method.getBlock().getStatements().get(2)).getExpression();
 			this.assertType(expr.getValue(), ClassTypeConstructorReferenceExpression.class);
-			expr = (AssignmentExpression) ((ExpressionStatement) method.getBlock().getStatements().get(3)).getExpression();
+			expr = (AssignmentExpression) ((ExpressionStatement)
+					method.getBlock().getStatements().get(3)).getExpression();
 			this.assertType(expr.getValue(), ClassTypeConstructorReferenceExpression.class);
-			expr = (AssignmentExpression) ((ExpressionStatement) method.getBlock().getStatements().get(4)).getExpression();
+			expr = (AssignmentExpression) ((ExpressionStatement)
+					method.getBlock().getStatements().get(4)).getExpression();
 			this.assertType(expr.getValue(), PrimaryExpressionReferenceExpression.class);
 			locStat = (LocalVariableStatement) method.getBlock().getStatements().get(5);
 			this.assertType(locStat.getVariable().getInitialValue(), PrimaryExpressionReferenceExpression.class);
 			locStat = (LocalVariableStatement) method.getBlock().getStatements().get(6);
 			this.assertType(locStat.getVariable().getInitialValue(), ArrayConstructorReferenceExpression.class);
-			expr = (AssignmentExpression) ((ExpressionStatement) method.getBlock().getStatements().get(7)).getExpression();
+			expr = (AssignmentExpression) ((ExpressionStatement)
+					method.getBlock().getStatements().get(7)).getExpression();
 			this.assertType(expr.getValue(), ArrayConstructorReferenceExpression.class);
 			this.assertResolveAllProxies(root);
 			this.parseAndReprint(file);
@@ -357,13 +366,16 @@ public class JavaSevenAndUpTest extends AbstractJaMoPPTests {
 						assertFalse(method.getParameters().get(i) instanceof ReceiverParameter);
 					}
 				} else if (member instanceof org.emftext.language.java.classifiers.Class) {
-					org.emftext.language.java.classifiers.Class innerClass = (org.emftext.language.java.classifiers.Class) member;
+					org.emftext.language.java.classifiers.Class innerClass =
+							(org.emftext.language.java.classifiers.Class) member;
 					this.assertMemberCount(innerClass, 3);
 					for (Member innerMember : innerClass.getMembers()) {
 						if (innerMember instanceof Constructor) {
-							this.assertType(((Constructor) innerMember).getParameters().get(0), ReceiverParameter.class);
+							this.assertType(((Constructor) innerMember)
+									.getParameters().get(0), ReceiverParameter.class);
 						} else if (innerMember instanceof Method) {
-							this.assertType(((Method) innerMember).getParameters().get(0), ReceiverParameter.class);
+							this.assertType(((Method) innerMember)
+									.getParameters().get(0), ReceiverParameter.class);
 						} else {
 							fail("There should be no other member.");
 						}
@@ -393,7 +405,8 @@ public class JavaSevenAndUpTest extends AbstractJaMoPPTests {
 				if (member instanceof Method) {
 					Method method = (Method) member;
 					assertEquals(8, method.getBlock().getStatements().size());
-					LocalVariableStatement locStat = (LocalVariableStatement) method.getBlock().getStatements().get(0);
+					LocalVariableStatement locStat = (LocalVariableStatement)
+							method.getBlock().getStatements().get(0);
 					this.assertType(locStat.getVariable().getTypeReference(), InferableType.class);
 				}
 			}
@@ -534,8 +547,10 @@ public class JavaSevenAndUpTest extends AbstractJaMoPPTests {
 			this.assertType(type, Interface.class);
 			Interface inter = (Interface) type;
 			assertEquals("Runnable", inter.getName());
-			this.assertType(cmBlock.getStatements().get(cmBlock.getStatements().size() - 1), ExpressionStatement.class);
-			ExpressionStatement exprStat = (ExpressionStatement) cmBlock.getStatements().get(cmBlock.getStatements().size() - 1);
+			this.assertType(cmBlock.getStatements().get(
+					cmBlock.getStatements().size() - 1), ExpressionStatement.class);
+			ExpressionStatement exprStat = (ExpressionStatement)
+					cmBlock.getStatements().get(cmBlock.getStatements().size() - 1);
 			this.assertType(exprStat.getExpression(), IdentifierReference.class);
 			IdentifierReference idRef = (IdentifierReference) exprStat.getExpression();
 			assertEquals("a", idRef.getTarget().getName());

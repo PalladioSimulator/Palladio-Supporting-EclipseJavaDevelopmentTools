@@ -12,6 +12,8 @@
  *   Software Technology Group - TU Dresden, Germany;
  *   DevBoost GmbH - Berlin, Germany
  *      - initial API and implementation
+ *   Martin Armbruster
+ *      - Adaptation
  ******************************************************************************/
 package jamopp.parser.jdt.singlefile;
 

@@ -15,6 +15,7 @@
  *      - initial API and implementation
  *   Martin Armbruster
  *      - Extension with getStatements()
+ *      - Adaptation and extension for Java 7+
  ******************************************************************************/
 package org.emftext.language.java.extensions.members;
 

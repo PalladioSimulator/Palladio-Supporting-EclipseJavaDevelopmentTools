@@ -1,3 +1,16 @@
+/*******************************************************************************
+ * Copyright (c) 2021, Martin Armbruster
+ * 
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors:
+ *   Martin Armbruster
+ *      - Initial implementation
+ ******************************************************************************/
+
 package jamopp.printer;
 
 import java.io.BufferedWriter;
@@ -125,7 +138,8 @@ class MembersPrinterSwitch extends MembersSwitch<Boolean> {
 					if (element.getName().equals("valueOf") && element.getParameters().size() == 1) {
 						Type t = element.getParameters().get(0).getTypeReference().getTarget();
 						if (t instanceof org.emftext.language.java.classifiers.Class) {
-							org.emftext.language.java.classifiers.Class cla = (org.emftext.language.java.classifiers.Class) t;
+							org.emftext.language.java.classifiers.Class cla =
+									(org.emftext.language.java.classifiers.Class) t;
 							if (cla.getQualifiedName().equals("java.lang.String")) {
 								return true;
 							}
