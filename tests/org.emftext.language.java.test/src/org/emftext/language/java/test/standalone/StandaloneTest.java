@@ -22,6 +22,7 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import org.emftext.language.java.containers.impl.CompilationUnitImpl;
 import org.emftext.language.java.test.bugs.AbstractBugTestCase;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import jamopp.parser.api.JaMoPPParserAPI;
@@ -39,6 +40,7 @@ import jamopp.resource.JavaResource2Factory;
  *
  * @author Marvin Meller
  */
+@Disabled
 public class StandaloneTest extends AbstractBugTestCase {
 
     @Test

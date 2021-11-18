@@ -23,6 +23,7 @@ import org.emftext.language.java.containers.JavaRoot;
 public class JavaRootExtension {
 	
 	/**
+	 * @param me the context.
 	 * @return all classes in the same package imports
 	 */
 	public static EList<ConcreteClassifier> getClassifiersInSamePackage(JavaRoot me) {

@@ -139,6 +139,7 @@ public class ConcreteClassifierExtension {
 	 * Returns all members of the given classifier including inner classes and 
 	 * all members of super types (extended classes and implemented interfaces).
 	 * 
+	 * @param me the given classifier.
 	 * @param context to check protected visibility
 	 * @return member list
 	 */

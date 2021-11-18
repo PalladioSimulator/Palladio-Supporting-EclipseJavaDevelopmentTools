@@ -62,7 +62,7 @@ public class JaMoPPParserAPITest extends AbstractJaMoPPTests {
 		//System.out.print("setup");
 		String filenameParent = "scr-input/ClassB" + JAVA_FILE_EXTENSION;
 		String filenameChild = "scr-input/ClassA" + JAVA_FILE_EXTENSION;
-		CompilationUnit cu = (CompilationUnit) parseResource(filenameParent,filenameChild);
+		CompilationUnit cu = (CompilationUnit) parseResource(filenameParent, filenameChild);
 		System.out.print("setup");
 		System.out.print(cu.getClassifiers().get(1).getName());
 		System.out.print(cu.getClassifiers().get(2).getName());

@@ -47,7 +47,7 @@ public class TemporalCompositeClassifier extends ClassifierImpl {
 
 	public EList<ConcreteClassifier> getAllSuperClassifiers() {
 		EList<ConcreteClassifier> result = new UniqueEList<ConcreteClassifier>();
-		for(EObject superType : getSuperTypes()) {
+		for (EObject superType : getSuperTypes()) {
 			result.addAll(((Classifier) superType).getAllSuperClassifiers());
 		}
 		return result;

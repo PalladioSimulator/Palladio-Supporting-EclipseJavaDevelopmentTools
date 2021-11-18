@@ -46,7 +46,7 @@ public class Bug1819Test extends AbstractBugTestCase {
 		r.getContents().add(cu);
 		
 		ByteArrayOutputStream os = new ByteArrayOutputStream();
-		r.save(os , null);
+		r.save(os, null);
 		String result = new String(os.toByteArray()).trim();
 	
 		assertTrue(result.matches("class\\s++" + className + "\\s++\\u007b\\s++\\u007d\\s*+"));
@@ -71,7 +71,7 @@ public class Bug1819Test extends AbstractBugTestCase {
 		resource.getContents().add(cu);
 		
 		ByteArrayOutputStream os = new ByteArrayOutputStream();
-		resource.save(os , null);
+		resource.save(os, null);
 		String result = new String(os.toByteArray()).trim();
 		
 		assertTrue(result.matches("package\\s++" + packageName + "\\u003b\\s++"

@@ -34,8 +34,10 @@ public class VariableExtension {
 	 * variable. If the variable's type does not offer such a method, null is
 	 * returned.
 	 * 
-	 * @param methodName 
-	 * @param arguments 
+	 * @param me the given variable.
+	 * @param methodName name of the called method.
+	 * @param arguments arguments of the method call.
+	 * @return the created call statement.
 	 */
 	public static ExpressionStatement createMethodCallStatement(Variable me, String methodName, EList<Expression> arguments) {
 		
@@ -49,8 +51,10 @@ public class VariableExtension {
 	 * variable. If the variable's type does not offer such a method, null is
 	 * returned.
 	 * 
-	 * @param methodName 
-	 * @param arguments 
+	 * @param me the given variable.
+	 * @param methodName the name of the called method.
+	 * @param arguments the arguments of the called method.
+	 * @return the reference.
 	 */
 	public static IdentifierReference createMethodCall(Variable me, String methodName, EList<Expression> arguments) {
 		

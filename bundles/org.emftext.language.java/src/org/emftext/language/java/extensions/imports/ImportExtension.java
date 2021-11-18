@@ -29,6 +29,7 @@ public class ImportExtension {
 	 * Returns the classifier with the given name 
 	 * located in the namespace defined by the import.
 	 * 
+	 * @param me the import.
 	 * @param name the name of the classifier
 	 * @return imported classifier (proxy)
 	 */
@@ -46,6 +47,7 @@ public class ImportExtension {
 	 * Returns all imported members assuming the import's namespace
 	 * identifies a classifier.
 	 * 
+	 * @param me the import.
 	 * @return list of imported classifiers (proxies)
 	 */
 	public static EList<NamedElement> getImportedMembers(Import me) {
@@ -69,7 +71,7 @@ public class ImportExtension {
 	 * Returns a list of imported classifiers assuming the import's namespace
 	 * identifies a package.
 	 * 
-	 * @param _this 
+	 * @param me the import.
 	 * @return imported classifier (proxy)
 	 */
 	public static EList<ConcreteClassifier> getImportedClassifiers(Import me) {
