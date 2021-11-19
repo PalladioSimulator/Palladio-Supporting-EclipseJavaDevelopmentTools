@@ -32,6 +32,7 @@ import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.Resource.Diagnostic;
 import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.util.EcoreUtil.EqualityHelper;
 import org.eclipse.emf.ecore.xmi.XMIResource;
@@ -44,12 +45,11 @@ import org.junit.jupiter.api.Test;
 
 import jamopp.options.ParserOptions;
 import jamopp.parser.jdt.singlefile.JaMoPPJDTSingleFileParser;
-import jamopp.resource.JavaResource2;
 
 public class JavaXMISerializationTest extends AbstractJaMoPPTests {
 
 	protected static final String TEST_INPUT_FOLDER_NAME = "src-input";
-	protected static final String TEST_OUTPUT_FOLDER_NAME = "output";
+	protected static String TEST_OUTPUT_FOLDER_NAME = "output";
 	private HashMap<String, String> inputFileToOutputFile = new HashMap<>();
 	
 	@BeforeAll
@@ -76,25 +76,32 @@ public class JavaXMISerializationTest extends AbstractJaMoPPTests {
 		parser.setResourceSet(getResourceSet());
 		parser.setExclusionPatterns(excludings);
 		parser.parseDirectory(inputFolder.toPath());
+		
+		EcoreUtil.resolveAll(getResourceSet());
+		for (Resource res : new ArrayList<>(getResourceSet().getResources())) {
+			this.assertResolveAllProxies(res);
+		}
 
-		transferToXMI();
+		ResourceSet targetSet = transferToXMI(getResourceSet(), false);
 		
 		for (final File file : allTestFiles) {
-			compare(file);
+			compare(targetSet, file);
 		}
 		
 		inputFileToOutputFile.clear();
 	}
 	
-	private void transferToXMI() throws Exception {
-		ResourceSet rs = getResourceSet();
-		EcoreUtil.resolveAll(rs);
+	protected ResourceSet transferToXMI(ResourceSet sourceSet, boolean includeAllResources) throws Exception {
 		int emptyFileName = 0;
 		
-		for (Resource javaResource : new ArrayList<Resource>(rs.getResources())) {
-			assertResolveAllProxies(javaResource);
+		ResourceSet targetSet = new ResourceSetImpl();
+		
+		for (Resource javaResource : new ArrayList<>(sourceSet.getResources())) {
 			if (javaResource.getContents().isEmpty()) {
 				System.out.println("WARNING: Emtpy Resource: " + javaResource.getURI());
+				continue;
+			}
+			if (!includeAllResources && !javaResource.getURI().isFile()) {
 				continue;
 			}
 			JavaRoot root = (JavaRoot) javaResource.getContents().get(0);
@@ -123,7 +130,7 @@ public class JavaXMISerializationTest extends AbstractJaMoPPTests {
 			File outputFile = new File("." + File.separator + TEST_OUTPUT_FOLDER_NAME
 					+ File.separator + outputFileName);
 			URI xmiFileURI = URI.createFileURI(outputFile.getAbsolutePath()).appendFileExtension("xmi");	
-			XMIResource xmiResource = (XMIResource) rs.createResource(xmiFileURI);
+			XMIResource xmiResource = (XMIResource) targetSet.createResource(xmiFileURI);
 			xmiResource.setEncoding(StandardCharsets.UTF_8.toString());
 			xmiResource.getContents().addAll(javaResource.getContents());
 			
@@ -131,21 +138,17 @@ public class JavaXMISerializationTest extends AbstractJaMoPPTests {
 				inputFileToOutputFile.put(javaResource.getURI().toFileString(), outputFile.getAbsolutePath());
 			}
 		}
-		for (Resource xmiResource : rs.getResources()) {
-			// JavaResource2 extends from XMIResource.
-			// Therefore, only resources which are not JavaResource2 are saved.
-			if (!(xmiResource instanceof JavaResource2)) {
-				try {
-					xmiResource.save(rs.getLoadOptions());
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+		for (Resource xmiResource : targetSet.getResources()) {
+			try {
+				xmiResource.save(targetSet.getLoadOptions());
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
+		return targetSet;
 	}
 	
-	protected void compare(File file) throws Exception {
-		ResourceSet rs = getResourceSet();
+	protected void compare(ResourceSet rs, File file) throws Exception {
 		String outputXMIFileName = inputFileToOutputFile.get(file.getAbsolutePath());
 		URI xmiFileURI = URI.createFileURI(outputXMIFileName).trimFileExtension().appendFileExtension("xmi");
 		Resource xmiResource = rs.getResource(xmiFileURI, false);
