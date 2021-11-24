@@ -39,7 +39,8 @@ import org.emftext.language.java.test.bugs.AbstractBugTestCase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import jamopp.options.ParserOptions;
 import jamopp.options.ParserOptionsValueContainer;
 import jamopp.parser.api.JaMoPPParserAPI;
@@ -60,7 +61,10 @@ import jamopp.resource.JavaResource2Factory;
  *
  * @version 1.2
  */
-public class StandaloneTest {
+
+@Disabled
+public class StandaloneTest extends AbstractBugTestCase {
+
 
     /**
      * This test generates corresponding EMF resources for the Java files in a

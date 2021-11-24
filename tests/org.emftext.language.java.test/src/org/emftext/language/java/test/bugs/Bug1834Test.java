@@ -49,10 +49,10 @@ public class Bug1834Test extends AbstractBugTestCase {
 		System.out.println("printResult =>" + printResult + "<=");
 		
 		String expected = 
-			"public class Test {" + NL +
-			"\tpublic void m() {" + NL +
-			"\t}" + NL + 
-			"}";
+			"public class Test {" + NL
+			+ "\tpublic void m() {" + NL
+			+ "\t}" + NL
+			+ "}";
 		assertTrue(printResult.contains(expected), "Print result must contain expected code.");
 	}
 }

@@ -47,6 +47,8 @@ public class AnnotableAndModifiableExtension {
 
 	/**
 	 * Sets the visibility of this element to <code>private</code>.
+	 * 
+	 * @param me this element.
 	 */
 	public static void makePrivate(AnnotableAndModifiable me) {
 		if (me.isPrivate()) {
@@ -59,6 +61,8 @@ public class AnnotableAndModifiableExtension {
 	
 	/**
 	 * Sets the visibility of this element to <code>public</code>.
+	 * 
+	 * @param me this element.
 	 */
 	public static void makePublic(AnnotableAndModifiable me) {
 		if (me.isPublic()) {
@@ -71,6 +75,8 @@ public class AnnotableAndModifiableExtension {
 	
 	/**
 	 * Sets the visibility of this element to <code>protected</code>.
+	 * 
+	 * @param me this element.
 	 */
 	public static void makeProtected(AnnotableAndModifiable me) {
 		if (me.isProtected()) {
@@ -83,6 +89,8 @@ public class AnnotableAndModifiableExtension {
 	
 	/**
 	 * Removes all modifiers from this element.
+	 * 
+	 * @param me this element.
 	 */
 	public static void removeAllModifiers(AnnotableAndModifiable me) {
 		List<Modifier> modifiers = me.getModifiers();
@@ -92,6 +100,9 @@ public class AnnotableAndModifiableExtension {
 	
 	/**
 	 * Returns an unmodifiable list of the modifiers that apply to this element.
+	 * 
+	 * @param me this element.
+	 * @return the modifiers.
 	 */
 	public static EList<Modifier> getModifiers(AnnotableAndModifiable me) {
 		EList<AnnotationInstanceOrModifier> elements = me.getAnnotationsAndModifiers();
@@ -106,6 +117,9 @@ public class AnnotableAndModifiableExtension {
 	
 	/**
 	 * Returns an unmodifiable list of the annotations that apply to this element.
+	 * 
+	 * @param me this element.
+	 * @return the annotations.
 	 */
 	public static EList<AnnotationInstance> getAnnotationInstances(AnnotableAndModifiable me) {
 		EList<AnnotationInstanceOrModifier> elements = me.getAnnotationsAndModifiers();
@@ -122,6 +136,7 @@ public class AnnotableAndModifiableExtension {
 	 * Adds the given type of modifier to this element. This method does not
 	 * check for duplicate modifiers!
 	 * 
+	 * @param me this element.
 	 * @param newModifier the modifier to add
 	 */
 	public static void addModifier(AnnotableAndModifiable me, Modifier newModifier) {
@@ -131,7 +146,8 @@ public class AnnotableAndModifiableExtension {
 	/**
 	 * Removes the given type of modifier from this element.
 	 * 
-	 * @param modifierType
+	 * @param me this element.
+	 * @param modifierType type of the modifier to remove.
 	 */
 	public static void removeModifier(AnnotableAndModifiable me, Class<?> modifierType) {
 		List<AnnotationInstanceOrModifier> modifiers = me.getAnnotationsAndModifiers();
@@ -158,7 +174,10 @@ public class AnnotableAndModifiableExtension {
 	
 	/**
 	 * Checks whether this element has an modifier of the given type.
-	 * @param type 
+	 * 
+	 * @param me this element.
+	 * @param type type of the modifier.
+	 * @return true or false.
 	 */
 	public static boolean hasModifier(AnnotableAndModifiable me, Class<?> type) {
 		List<AnnotationInstanceOrModifier> modifiers = me.getAnnotationsAndModifiers();
@@ -174,6 +193,9 @@ public class AnnotableAndModifiableExtension {
 	 * Returns <code>true</code> if this element is static (either by an
 	 * explicit modifier <code>static</code> or because this element is part of
 	 * an interface).
+	 * 
+	 * @param me this element.
+	 * @return true if this element is static. false otherwise.
 	 */
 	public static boolean isStatic(AnnotableAndModifiable me) {
 		//all members of an interface are static by default
@@ -214,8 +236,8 @@ public class AnnotableAndModifiableExtension {
 		ConcreteClassifier myClassifier = ((Commentable) me.eContainer()).getParentConcreteClassifier();
 		//special case: self reference to outer instance
 		if (lContext instanceof Reference) {
-			if (((Reference)lContext).getPrevious() instanceof SelfReference) {
-				SelfReference selfReference = (SelfReference) ((Reference)lContext).getPrevious();
+			if (((Reference) lContext).getPrevious() instanceof SelfReference) {
+				SelfReference selfReference = (SelfReference) ((Reference) lContext).getPrevious();
 				if (selfReference.getSelf() instanceof Self) {
 					if (selfReference.getPrevious() != null) {
 						Type type = selfReference.getPrevious().getReferencedType();
@@ -234,17 +256,17 @@ public class AnnotableAndModifiableExtension {
 				}
 				return true;
 			}
-			if(modifier instanceof Public) {
+			if (modifier instanceof Public) {
 				return false;
 			}
-			if(modifier instanceof Protected) {
+			if (modifier instanceof Protected) {
 				//package visibility
-				if (me.getContainingPackageName() != null && 
-						me.getContainingPackageName().equals(lContext.getContainingPackageName())) {
+				if (me.getContainingPackageName() != null
+						&& me.getContainingPackageName().equals(lContext.getContainingPackageName())) {
 					return false;
 				}
 				//try outer classifiers as well 
-				while(lContextClassifier instanceof Classifier) {
+				while (lContextClassifier instanceof Classifier) {
 					if (lContextClassifier.isSuperType(0, myClassifier, null)) {
 						return false;
 					}
@@ -256,8 +278,8 @@ public class AnnotableAndModifiableExtension {
 						lContextClassifier = null;
 					}
 					
-					if (lContextClassifier != null && !lContextClassifier.eIsProxy() && 
-							lContextClassifier.isSuperType(0, myClassifier, null)) {
+					if (lContextClassifier != null && !lContextClassifier.eIsProxy()
+							&& lContextClassifier.isSuperType(0, myClassifier, null)) {
 						return false;
 					}
 				}
@@ -283,8 +305,8 @@ public class AnnotableAndModifiableExtension {
 			}
 		}
 		//package visibility?
-		if (me.getContainingPackageName() != null && 
-				me.getContainingPackageName().equals(lContext.getContainingPackageName())) {
+		if (me.getContainingPackageName() != null
+				&& me.getContainingPackageName().equals(lContext.getContainingPackageName())) {
 			return false;
 		}
 

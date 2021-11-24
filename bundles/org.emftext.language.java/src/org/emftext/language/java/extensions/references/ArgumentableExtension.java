@@ -26,6 +26,7 @@ public class ArgumentableExtension {
 	/**
 	 * Returns a list containing the types of the given {@link Argumentable}.
 	 * 
+	 * @param me the given argumentable.
 	 * @return list of types of 'me'
 	 */
 	public static EList<Type> getArgumentTypes(Argumentable me) {

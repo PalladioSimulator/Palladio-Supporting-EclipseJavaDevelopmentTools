@@ -92,8 +92,8 @@ public class MemberContainerExtension {
 	}
 	
 	/**
-	 * @param name 
-	 * @param name
+	 * @param me the container.
+	 * @param name name of the classifier.
 	 * @return classifier with the given name defined in this member container
 	 */
 	public static ConcreteClassifier getContainedClassifier(MemberContainer me, String name) {
@@ -111,8 +111,8 @@ public class MemberContainerExtension {
 	}
 	
 	/**
-	 * @param name 
-	 * @param name
+	 * @param me the container.
+	 * @param name name of the field.
 	 * @return field with the given name defined in this member container
 	 */
 	public static Field getContainedField(MemberContainer me, String name) {
@@ -130,6 +130,7 @@ public class MemberContainerExtension {
 	}
 
 	/**
+	 * @param me the container.
 	 * @param name the method name to search for
 	 * 
 	 * @return method with the given name defined in this member container;
@@ -142,8 +143,7 @@ public class MemberContainerExtension {
 			if (member instanceof Method && name.equals(member.getName())) {
 				if (found != null) {
 					return null;
-				}
-				else {
+				} else {
 					found = (Method) member;
 				}
 			}
@@ -152,8 +152,7 @@ public class MemberContainerExtension {
 			if (member instanceof Method && name.equals(member.getName())) {
 				if (found != null) {
 					return null;
-				}
-				else {
+				} else {
 					found = (Method) member;
 				}
 			}

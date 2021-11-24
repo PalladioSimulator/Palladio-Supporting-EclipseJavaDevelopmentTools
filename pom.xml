@@ -8,7 +8,7 @@
     <parent>
         <groupId>org.palladiosimulator</groupId>
         <artifactId>eclipse-parent-updatesite</artifactId>
-        <version>0.7.3</version>
+        <version>0.7.4</version>
     </parent>
 
     <groupId>org.palladiosimulator.jdt</groupId>
@@ -18,14 +18,27 @@
 
     <properties>
         <org.palladiosimulator.maven.tychotprefresh.tplocation.2>${project.basedir}/releng/org.palladiosimulator.jdt.targetplatform/org.palladiosimulator.jdt.targetplatform.target</org.palladiosimulator.maven.tychotprefresh.tplocation.2>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
     <modules>
         <module>releng</module>
         <module>bundles</module>
         <module>features</module>
-        <!--<module>tests</module>-->
+        <module>tests</module>
         <!--<module>products</module>-->
     </modules>
+    
+    <build>
+    	<plugins>
+    		<plugin>
+    			<groupId>org.apache.maven.plugins</groupId>
+    			<artifactId>maven-checkstyle-plugin</artifactId>
+    			<configuration>
+    				<excludes>unicode/**/*,bugs/**/*,locations/**/*,mbtp/**/*,pkg/**/*,pkg2/**/*,refs/**/*,resolving/**/*,resolving_new/**/*,spechier/**/*,staticcalltarget/**/*</excludes>
+    			</configuration>
+    		</plugin>
+    	</plugins>
+    </build>
 
 </project>

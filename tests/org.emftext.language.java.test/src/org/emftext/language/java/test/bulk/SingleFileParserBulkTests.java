@@ -12,6 +12,8 @@
  *   Software Technology Group - TU Dresden, Germany;
  *   DevBoost GmbH - Dresden, Germany
  *      - initial API and implementation
+ *   Martin Armbruster
+ *      - Adaptation and extension for Java 7+
  ******************************************************************************/
 package org.emftext.language.java.test.bulk;
 
@@ -39,8 +41,9 @@ import org.junit.jupiter.api.Test;
 import jamopp.parser.jdt.singlefile.JaMoPPJDTSingleFileParser;
 import jamopp.resource.JavaResource2;
 
+@Disabled("Requires initialization of all submodules and dependency resolution.")
 public class SingleFileParserBulkTests extends AbstractJaMoPPTests {
-	private static final Logger logger = Logger.getLogger("jamopp."
+	private static final Logger LOGGER = Logger.getLogger("jamopp."
 			+ SingleFileParserBulkTests.class.getSimpleName());
 	private static final String BASE_ZIP = "JaMoPP-BulkTest" + File.separator + "Tests" + File.separator
 		+ "org.emftext.language.java.test.bulk" + File.separator + "input" + File.separator;
@@ -196,7 +199,7 @@ public class SingleFileParserBulkTests extends AbstractJaMoPPTests {
 			decompressZipFile();
 		}
 		String testInput = getTestInputFolder();
-		logger.debug("Testing " + testInput);
+		LOGGER.debug("Testing " + testInput);
 		Path target = Paths.get(testInput);
 		JaMoPPJDTSingleFileParser parser = new JaMoPPJDTSingleFileParser();
 		parser.setExclusionPatterns(".*?teammates/src/client/.*?",
@@ -207,7 +210,7 @@ public class SingleFileParserBulkTests extends AbstractJaMoPPTests {
 		Set<Resource> parsedFiles = new HashSet<>(set.getResources());
 		int index = 0;
 		for (Resource res : parsedFiles) {
-			logger.debug("Asserting the resolution of all proxy objects for "
+			LOGGER.debug("Asserting the resolution of all proxy objects for "
 					+ index + " of " + parsedFiles.size() + " ("
 					+ res.getURI().toString() + ")");
 			assertTrue(res.getContents().size() > 0);
@@ -216,7 +219,7 @@ public class SingleFileParserBulkTests extends AbstractJaMoPPTests {
 		}
 		index = 0;
 		for (Resource res : parsedFiles) {
-			logger.debug("Reprinting " + index + " of " + parsedFiles.size() + " ("
+			LOGGER.debug("Reprinting " + index + " of " + parsedFiles.size() + " ("
 					+ res.getURI().toString() + ")");
 			assertTrue(res.getContents().size() > 0);
 			try {
@@ -226,7 +229,7 @@ public class SingleFileParserBulkTests extends AbstractJaMoPPTests {
 			}
 			index++;
 		}
-		logger.debug("Finished testing " + testInput);
+		LOGGER.debug("Finished testing " + testInput);
 	}
 	
 	private void decompressZipFile() {
