@@ -93,7 +93,9 @@ public class StandaloneTest extends JavaXMISerializationTest {
 		File outputDir = new File(TEST_OUTPUT_FOLDER_NAME);
 		outputDir.mkdirs();
 		
-		transferToXMI(rs, false);
+		ResourceSet target = transferToXMI(rs, false);
+		// Ignored because the stored proxy objects cannot be resolved.
+//		this.compare(target);
 	}
 
 	/*
