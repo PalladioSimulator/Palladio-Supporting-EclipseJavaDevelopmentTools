@@ -46,7 +46,7 @@ class IPackageBindingResolver extends AbstractBindingResolver<IPackageBinding> {
 				}
 			} catch (RuntimeException e) {
 			}
-		} else {
+		} else if (!packContainer.getContents().isEmpty()) {
 			return (org.emftext.language.java.containers.Package) packContainer.getContents().get(0);
 		}
 		return convertBindingToPackage(binding, uri);
