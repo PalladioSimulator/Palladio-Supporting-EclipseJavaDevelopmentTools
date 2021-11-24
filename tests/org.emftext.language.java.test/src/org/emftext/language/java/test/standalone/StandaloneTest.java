@@ -29,7 +29,6 @@ import org.emftext.language.java.test.xmi.JavaXMISerializationTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-
 import jamopp.options.ParserOptions;
 import jamopp.options.ParserOptionsValueContainer;
 import jamopp.parser.jdt.singlefile.JaMoPPJDTSingleFileParser;
