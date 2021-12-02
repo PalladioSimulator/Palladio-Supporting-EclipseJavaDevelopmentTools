@@ -1,8 +1,0 @@
-State
-
-- Complete support for Java up to 14 and support of Java 15 in meta-model and printer implementation.
-- Removed loading of class files and old reference resolution and parser.
-- For parsing and reference resolution, JDT is used.
-- New printer.
-- Replaced the JavaResource with a new, simple JavaResource2 implementation.
-- Updated and extended all test cases.

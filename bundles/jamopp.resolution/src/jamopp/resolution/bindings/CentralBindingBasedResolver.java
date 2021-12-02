@@ -87,4 +87,40 @@ public class CentralBindingBasedResolver {
 		}
 		return null;
 	}
+	
+	Resource findPackageResourceInResourceSet(String packageName) {
+		for (Resource res: resSet.getResources()) {
+			if (res.getContents().size() > 0) {
+				if (res.getContents().get(0) instanceof org.emftext.language.java.containers.Package) {
+					org.emftext.language.java.containers.Package pack =
+							(org.emftext.language.java.containers.Package) res.getContents().get(0);
+					String packName = pack.getNamespacesAsString();
+					packName = packName.length() != 0
+							? packName.substring(0, packName.length() - 1) : packName;
+					if (packName.equals(packageName)) {
+						return res;
+					}
+				}
+			}
+		}
+		return null;
+	}
+	
+	Resource findModuleResourceInResourceSet(String moduleName) {
+		for (Resource res : resSet.getResources()) {
+			if (res.getContents().size() > 0) {
+				if (res.getContents().get(0) instanceof org.emftext.language.java.containers.Module) {
+					org.emftext.language.java.containers.Module mod =
+							(org.emftext.language.java.containers.Module) res.getContents().get(0);
+					String modName = mod.getNamespacesAsString();
+					modName = modName.length() != 0
+							? modName.substring(0, modName.length() - 1) : modName;
+					if (modName.equals(moduleName)) {
+						return res;
+					}
+				}
+			}
+		}
+		return null;
+	}
 }

@@ -13,3 +13,12 @@
 [submodule "tests/org.emftext.language.java.test/esda"]
 	path = tests/org.emftext.language.java.test/esda
 	url = https://github.com/kit-sdq/esda
+[submodule "tests/org.emftext.language.java.test/acmeair"]
+	path = tests/org.emftext.language.java.test/acmeair
+	url = https://github.com/acmeair/acmeair.git
+[submodule "tests/org.emftext.language.java.test/piggymetrics"]
+	path = tests/org.emftext.language.java.test/piggymetrics
+	url = https://github.com/sqshq/piggymetrics.git
+[submodule "tests/org.emftext.language.java.test/petclinic"]
+	path = tests/org.emftext.language.java.test/petclinic
+	url = https://github.com/spring-petclinic/spring-petclinic-microservices.git

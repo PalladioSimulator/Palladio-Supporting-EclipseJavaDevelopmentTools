@@ -107,6 +107,9 @@ class ITypeBindingResolver extends AbstractBindingResolver<ITypeBinding> {
 	}
 	
 	private EObject findLocalOrAnonymousClass(String binaryName) {
+		if (binaryName == null) {
+			return null;
+		}
 		Matcher m1 = parentNamePattern.matcher(binaryName);
 		if (m1.matches()) {
 			String parentName = m1.group(1);
