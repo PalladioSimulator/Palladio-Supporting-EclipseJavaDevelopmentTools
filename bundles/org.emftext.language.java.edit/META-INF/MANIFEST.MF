@@ -4,7 +4,7 @@ Bundle-Name: JaMoPP (Java Model Parser and Printer) Metamodel Edit Sup
  port
 Bundle-SymbolicName: org.emftext.language.java.edit;singleton:=true
 Automatic-Module-Name: org.emftext.language.java.edit
-Bundle-Version: 5.0.0.qualifier
+Bundle-Version: 5.1.0.qualifier
 Bundle-ClassPath: .
 Bundle-Activator: org.emftext.language.java.annotations.provider.JavaEditPlugin$Implementation
 Bundle-Vendor: Martin Armbruster
