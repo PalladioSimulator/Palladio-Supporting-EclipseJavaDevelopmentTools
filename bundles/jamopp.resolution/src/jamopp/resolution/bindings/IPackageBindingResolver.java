@@ -31,7 +31,10 @@ class IPackageBindingResolver extends AbstractBindingResolver<IPackageBinding> {
 	@Override
 	protected EObject resolve(IPackageBinding binding) {
 		URI uri = LogicalJavaURIGenerator.getPackageURI(binding.getName());
-		Resource packContainer = this.getParentResolver().findResourceInResourceSet(uri);
+		Resource packContainer = this.getParentResolver().findPackageResourceInResourceSet(binding.getName());
+		if (packContainer == null) {
+			packContainer = this.getParentResolver().findResourceInResourceSet(uri);
+		}
 		if (packContainer == null) {
 			if (ParserOptions.PREFER_BINDING_CONVERSION.isTrue()) {
 				return convertBindingToPackage(binding, uri);
@@ -43,7 +46,7 @@ class IPackageBindingResolver extends AbstractBindingResolver<IPackageBinding> {
 				}
 			} catch (RuntimeException e) {
 			}
-		} else {
+		} else if (!packContainer.getContents().isEmpty()) {
 			return (org.emftext.language.java.containers.Package) packContainer.getContents().get(0);
 		}
 		return convertBindingToPackage(binding, uri);

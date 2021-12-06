@@ -105,7 +105,8 @@ public class ElementReferenceTargetReferenceResolver implements
 				container.eContainer();
 			ConcreteClassifier classifier = (ConcreteClassifier) parent.getChild().getType();
 			Type targetType = parent.getTargetType();
-			if (targetType != null && !targetType.eIsProxy() && targetType instanceof Interface) {
+			if (classifier != null && targetType != null
+					&& !targetType.eIsProxy() && targetType instanceof Interface) {
 				Method functionalMethod = ((Interface) targetType).getAbstractMethodOfFunctionalInterface();
 				for (Member mem : classifier.getAllMembers(classifier)) {
 					if (mem.getName().equals(identifier) && mem instanceof Method) {
