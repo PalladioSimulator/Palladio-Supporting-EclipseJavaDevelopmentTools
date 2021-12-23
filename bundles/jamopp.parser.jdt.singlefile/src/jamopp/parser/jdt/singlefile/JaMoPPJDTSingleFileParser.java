@@ -200,6 +200,7 @@ public class JaMoPPJDTSingleFileParser implements JaMoPPParserAPI {
 		}
 		if (ParserOptions.REGISTER_LOCAL.isTrue()) {
 			JavaClasspath.get(this.resourceSet).enableLocalRegistration();
+			JavaClasspath.get(this.resourceSet).registerStdLib();
 		}
 	}
 	
