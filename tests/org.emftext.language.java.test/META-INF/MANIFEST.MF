@@ -19,7 +19,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.apache.commons.compress,
  jamopp.parser.jdt.singlefile,
  org.apache.log4j,
- jamopp.parser
+ jamopp.parser,
+ com.google.gson
 Export-Package: org.emftext.language.java.test
 Import-Package: jamopp.parser.jdt,
  org.junit,
