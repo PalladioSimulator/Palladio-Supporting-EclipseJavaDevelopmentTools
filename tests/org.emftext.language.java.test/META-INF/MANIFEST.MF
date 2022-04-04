@@ -23,6 +23,7 @@ Require-Bundle: org.eclipse.core.runtime,
  com.google.gson
 Export-Package: org.emftext.language.java.test
 Import-Package: jamopp.parser.jdt,
+ jamopp.recovery.trivial,
  org.junit,
  org.junit.jupiter.api,
  org.junit.jupiter.api.condition,
