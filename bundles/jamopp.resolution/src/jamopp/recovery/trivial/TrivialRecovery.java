@@ -42,7 +42,7 @@ public class TrivialRecovery {
 	private Resource artificialResource;
 	private CompilationUnit artificialCU;
 	private org.emftext.language.java.classifiers.Class artificialClass;
-	private org.emftext.language.java.classifiers.Class artificialObjectClass;
+	private org.emftext.language.java.classifiers.Class objectClass;
 	private HashMap<String, org.emftext.language.java.classifiers.Class> artClasses = new HashMap<>();
 	private HashMap<String, Annotation> artAnnotations = new HashMap<>();
 	private HashMap<String, Field> artFields = new HashMap<>();
@@ -71,6 +71,7 @@ public class TrivialRecovery {
 				}
 			}
 		}
+		this.set.getResources().forEach(resource -> resource.getErrors().clear());
 	}
 	
 	private EObject recoverActualElement(EObject obj) {
@@ -100,7 +101,7 @@ public class TrivialRecovery {
 			}
 			var result = MembersFactory.eINSTANCE.createField();
 			var reference = TypesFactory.eINSTANCE.createClassifierReference();
-			reference.setTarget(this.artificialObjectClass);
+			reference.setTarget(this.objectClass);
 			result.setTypeReference(reference);
 			result.setName(name);
 			this.artificialClass.getMembers().add(result);
@@ -166,10 +167,17 @@ public class TrivialRecovery {
 			this.artificialClass.setName("SyntheticClass");
 			this.artificialCU.getClassifiers().add(this.artificialClass);
 			
-			this.artificialObjectClass = ClassifiersFactory.eINSTANCE.createClass();
-			this.artificialObjectClass.setName("Object");
-			this.artificialCU.getClassifiers().add(this.artificialObjectClass);
-			this.artClasses.put("Object", this.artificialObjectClass);
+			this.objectClass = findObjectClass();
+			this.artClasses.put("Object", objectClass);
 		}
+	}
+	
+	private org.emftext.language.java.classifiers.Class findObjectClass() {
+		return this.set.getResources().stream().filter(resource -> !resource.getContents().isEmpty()
+				&& resource.getContents().get(0) instanceof CompilationUnit)
+			.map(resource -> (CompilationUnit) resource.getContents().get(0))
+			.filter(cu -> cu.getNamespaces().size() == 2 && cu.getNamespaces().get(0).equals("java")
+					&& cu.getNamespaces().get(1).equals("lang") && cu.getName().equals("Object"))
+			.map(cu -> (org.emftext.language.java.classifiers.Class) cu.getClassifiers().get(0)).findFirst().get();
 	}
 }
