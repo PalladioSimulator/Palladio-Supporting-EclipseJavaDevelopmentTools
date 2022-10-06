@@ -142,6 +142,9 @@ public class JavaXMISerializationTest extends AbstractJaMoPPTests {
 		for (var xmiResource : new ArrayList<>(rs.getResources())) {
 		
 			assertNotNull(xmiResource);
+			if (xmiResource.getContents().isEmpty()) {
+				continue;
+			}
 			EObject root = xmiResource.getContents().get(0);
 			
 			//reload

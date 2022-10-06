@@ -583,7 +583,7 @@ public class JDTBindingConverterUtility {
 		if (value instanceof String) {
 			org.emftext.language.java.references.StringReference ref =
 					org.emftext.language.java.references.ReferencesFactory.eINSTANCE.createStringReference();
-			ref.setValue((String) value);
+			ref.setValue("");
 			return ref;
 		} else if (value instanceof Boolean) {
 			org.emftext.language.java.literals.BooleanLiteral literal =
