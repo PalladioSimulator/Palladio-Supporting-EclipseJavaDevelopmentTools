@@ -18,6 +18,8 @@ Currently, JaMoPP can be installed from its [update site](https://updatesite.pal
 4. In "org.emftext.language.java/workflow/", execute the "generate.mwe2" file.
 5. Now, JaMoPP should be usable. Please, note: the file encoding needs to be set to UTF-8. Otherwise, there can be compilation errors.
 
+# Documentation 
+The current documentation of the extended JaMoPP is available on [KIT library ](https://publikationen.bibliothek.kit.edu/1000149186)
 # Sources on GitHub
 
 [https://github.com/PalladioSimulator/Palladio-Supporting-EclipseJavaDevelopmentTools](https://github.com/PalladioSimulator/Palladio-Supporting-EclipseJavaDevelopmentTools)
