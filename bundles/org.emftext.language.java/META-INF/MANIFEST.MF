@@ -74,12 +74,6 @@ Export-Package: jamopp.options,
  org.emftext.language.java.variables,
  org.emftext.language.java.variables.impl,
  org.emftext.language.java.variables.util
-Require-Bundle: org.eclipse.core.runtime,
- org.eclipse.emf.ecore;visibility:=reexport,
- org.eclipse.emf.mwe2.launch,
- org.objectweb.asm,
- org.eclipse.emf.mwe2.lib,
- org.apache.log4j,
- org.apache.commons.logging,
- org.eclipse.emf.codegen.ecore
+Require-Bundle: org.eclipse.emf.ecore,
+ org.palladiosimulator.jdt.workflow;resolution:=optional
 Bundle-ActivationPolicy: lazy

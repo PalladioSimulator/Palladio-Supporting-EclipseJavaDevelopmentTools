@@ -8,4 +8,4 @@ Automatic-Module-Name: jamopp.parser.bcel
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Export-Package: jamopp.parser.bcel
 Require-Bundle: org.emftext.language.java,
- org.eclipse.emf
+ org.eclipse.emf.common

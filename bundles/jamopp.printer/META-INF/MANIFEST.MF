@@ -6,5 +6,6 @@ Bundle-Version: 5.1.0.qualifier
 Automatic-Module-Name: jamopp.printer
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-Vendor: Martin Armbruster
-Require-Bundle: org.emftext.language.java
+Require-Bundle: org.emftext.language.java,
+ org.eclipse.emf.ecore
 Export-Package: jamopp.printer

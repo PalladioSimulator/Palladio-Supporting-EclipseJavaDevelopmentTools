@@ -8,4 +8,5 @@ Automatic-Module-Name: jamopp.parser
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Export-Package: jamopp.parser.api
 Require-Bundle: org.emftext.language.java,
- org.eclipse.emf
+ org.eclipse.emf.common,
+ org.eclipse.emf.ecore
