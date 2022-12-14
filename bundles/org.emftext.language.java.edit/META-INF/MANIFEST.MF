@@ -31,7 +31,7 @@ Export-Package: org.emftext.commons.layout.provider,
  org.emftext.language.java.variables.provider
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Require-Bundle: org.eclipse.core.runtime,
- org.emftext.language.java;visibility:=reexport,
- org.eclipse.emf.edit;visibility:=reexport
+ org.emftext.language.java,
+ org.eclipse.emf.edit
 Bundle-ActivationPolicy: lazy
 

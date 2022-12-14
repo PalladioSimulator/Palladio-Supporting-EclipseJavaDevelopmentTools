@@ -20,16 +20,12 @@ Require-Bundle: org.eclipse.core.runtime,
  jamopp.parser.jdt.singlefile,
  org.apache.log4j,
  jamopp.parser,
- com.google.gson
+ com.google.gson,
+ jamopp.resolution,
+ jamopp.parser.jdt
 Export-Package: org.emftext.language.java.test
-Import-Package: jamopp.parser.jdt,
- jamopp.recovery.trivial,
- org.junit,
+Import-Package: org.junit,
  org.junit.jupiter.api,
- org.junit.jupiter.api.condition,
- org.junit.jupiter.api.extension,
- org.junit.jupiter.api.function,
- org.junit.jupiter.api.io,
- org.junit.jupiter.api.parallel,
  org.junit.jupiter.params,
- org.junit.jupiter.params.provider
+ org.junit.jupiter.params.provider,
+ org.junit.platform.commons.annotation
