@@ -6,7 +6,7 @@ Bundle-Version: 5.1.0.qualifier
 Bundle-ClassPath: .
 Bundle-Vendor: Martin Armbruster
 Bundle-Localization: plugin
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-17
 Automatic-Module-Name: org.emftext.language.java
 Export-Package: jamopp.options,
  org.emftext.commons.layout,

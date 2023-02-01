@@ -5,7 +5,7 @@ Bundle-SymbolicName: jamopp.parser.bcel
 Bundle-Version: 5.1.0.qualifier
 Bundle-Vendor: Martin Armbruster
 Automatic-Module-Name: jamopp.parser.bcel
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-17
 Export-Package: jamopp.parser.bcel
 Require-Bundle: org.emftext.language.java,
  org.eclipse.emf.common

@@ -5,7 +5,7 @@ Bundle-SymbolicName: jamopp.standalone
 Bundle-Version: 5.1.0.qualifier
 Bundle-Vendor: Martin Armbruster
 Automatic-Module-Name: jamopp.parser
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-17
 Export-Package: jamopp.standalone
 Require-Bundle: org.emftext.language.java,
  jamopp.parser.jdt,

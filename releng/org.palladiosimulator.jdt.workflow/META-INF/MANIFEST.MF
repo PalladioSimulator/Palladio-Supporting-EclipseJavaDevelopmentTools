@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.palladiosimulator.jdt.workflow;singleton:=true
 Bundle-Version: 5.1.0.qualifier
 Bundle-ClassPath: .
 Bundle-Vendor: Martin Armbruster
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-17
 Automatic-Module-Name: org.palladiosimulator.jdt.workflow
 Require-Bundle: org.eclipse.emf.ecore,
  org.eclipse.emf.mwe2.lib,

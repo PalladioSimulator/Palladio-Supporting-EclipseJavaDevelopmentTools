@@ -29,7 +29,7 @@ Export-Package: org.emftext.commons.layout.provider,
  org.emftext.language.java.statements.provider,
  org.emftext.language.java.types.provider,
  org.emftext.language.java.variables.provider
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-17
 Require-Bundle: org.eclipse.core.runtime,
  org.emftext.language.java,
  org.eclipse.emf.edit
