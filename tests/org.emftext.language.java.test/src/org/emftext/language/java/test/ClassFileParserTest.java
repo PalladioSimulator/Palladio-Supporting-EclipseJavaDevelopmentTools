@@ -96,20 +96,19 @@ public class ClassFileParserTest extends AbstractJaMoPPTests {
 		parseAndReprint(folder + File.separator + "VariableReferencing.java");
 	}
 
-//	Error after switching to Java 17 and Eclipse 2022-12, needs to be investigated further
-//	@Test
-//	public void testStaticCalls() throws Exception {
-//		String registeredType = "AClass";
-//		JavaClasspath.get().registerClassifier("", registeredType,
-//				createURI(BIN_FOLDER, registeredType + CLASS_FILE_EXTENSION));
-//		JavaClasspath.get().registerClassifier(registeredType + "$", "A",
-//				createURI(BIN_FOLDER, registeredType + "$A" + CLASS_FILE_EXTENSION));
-//		registeredType = "CallTargetsProvider";
-//		String pack = "staticcalltarget";
-//		JavaClasspath.get().registerClassifier(pack, registeredType,
-//				createURI(BIN_FOLDER, pack, registeredType + CLASS_FILE_EXTENSION));
-//		parseAndReprint("StaticCalls.java");
-//	}
+	@Test
+	public void testStaticCalls() throws Exception {
+		String registeredType = "AClass";
+		JavaClasspath.get().registerClassifier("", registeredType,
+				createURI(BIN_FOLDER, registeredType + CLASS_FILE_EXTENSION));
+		JavaClasspath.get().registerClassifier(registeredType + "$", "A",
+				createURI(BIN_FOLDER, registeredType + "$A" + CLASS_FILE_EXTENSION));
+		registeredType = "CallTargetsProvider";
+		String pack = "staticcalltarget";
+		JavaClasspath.get().registerClassifier(pack, registeredType,
+				createURI(BIN_FOLDER, pack, registeredType + CLASS_FILE_EXTENSION));
+		parseAndReprint("StaticCalls.java");
+	}
 	
 	private URI createURI(String... relPath) {
 		return URI.createFileURI(Paths.get(".", relPath).toAbsolutePath().toString());
