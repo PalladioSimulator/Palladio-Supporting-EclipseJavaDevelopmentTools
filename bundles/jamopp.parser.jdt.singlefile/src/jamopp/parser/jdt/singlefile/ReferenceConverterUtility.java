@@ -37,6 +37,7 @@ import org.eclipse.jdt.core.dom.StringLiteral;
 import org.eclipse.jdt.core.dom.SuperConstructorInvocation;
 import org.eclipse.jdt.core.dom.SuperFieldAccess;
 import org.eclipse.jdt.core.dom.SuperMethodInvocation;
+import org.eclipse.jdt.core.dom.TextBlock;
 import org.eclipse.jdt.core.dom.ThisExpression;
 import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeLiteral;
@@ -240,6 +241,13 @@ class ReferenceConverterUtility {
 			org.emftext.language.java.references.Reference parent = internalConvertToReference(arr.getType());
 			parent.setNext(result);
 			LayoutInformationConverter.convertToMinimalLayoutInformation(result, arr);
+			return result;
+		} else if (expr.getNodeType() == ASTNode.TEXT_BLOCK) {
+			TextBlock textBlock = (TextBlock) expr;
+			org.emftext.language.java.references.TextBlockReference result = org.emftext.language
+					.java.references.ReferencesFactory.eINSTANCE.createTextBlockReference();
+			result.setValue(textBlock.getEscapedValue());
+			LayoutInformationConverter.convertToMinimalLayoutInformation(result, textBlock);
 			return result;
 		}
 		return null;
