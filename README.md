@@ -1,3 +1,7 @@
+# **MOVED AND DEPRECATED**
+
+**Please, note: this repository moved [to the MDSD tools organization](https://github.com/MDSD-Tools/TheExtendedJavaModelParserAndPrinter) where further development will take place. Thus, this repository is deprecated and will be not maintained.**
+
 # The Extended Java Model Parser and Printer (JaMoPP)
 
 JaMoPP can parse Java source code into EMF-based models and vice versa. It can be used for code analysis and refactoring.
