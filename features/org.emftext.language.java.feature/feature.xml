@@ -2,7 +2,7 @@
 <feature
       id="org.emftext.language.java.feature"
       label="JaMoPP - Java Model Parser and Printer"
-      version="5.1.0.qualifier"
+      version="5.2.0"
       provider-name="Martin Armbruster">
 
    <description url="http://www.jamopp.org">
