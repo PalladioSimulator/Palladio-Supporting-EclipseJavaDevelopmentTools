@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: JaMoPP (Java Model Parser and Printer) Metamodel Editor
 Bundle-SymbolicName: org.emftext.language.java.editor;singleton:=true
 Automatic-Module-Name: org.emftext.language.java.editor
-Bundle-Version: 5.1.0.qualifier
+Bundle-Version: 5.2.0.qualifier
 Bundle-ClassPath: .
 Bundle-Activator: org.emftext.language.java.annotations.presentation.JavaEditorPlugin$Implementation
 Bundle-Vendor: Martin Armbruster
